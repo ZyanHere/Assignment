@@ -2,48 +2,93 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export default function Login() {
+export default function Signup() {
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Left Side - Login Form */}
-      <div className="w-1/2">
-        <div className="flex flex-col justify-center items-start max-w-[418px] mx-auto h-screen">
+      {/* Left Side - Signup Form */}
+      <div className="w-1/2 mt-20 mb-20">
+        <div className="flex flex-col justify-center items-start max-w-[404px] mx-auto ">
           <Image
             src="/auth-asset/logo.png"
             alt="Logo"
-            width={75}
+            width={81.5}
             height={62}
             className="mb-[32px]"
           />
 
-          <h1 className="text-black text-[32px] font-medium">Welcome back!</h1>
-
-          <p className="text-black text-[16px] font-medium">
-            Please login to continue to your account
-          </p>
+          <h1 className="text-black text-[32px] font-medium">
+            Get Started Now
+          </h1>
 
           <form className="w-full max-w-md mt-[70px]">
-            <div className="">
+            {/* Name */}
+            <div>
               <label className="block text-sm font-medium text-black">
-                Mobile Number
+                Name
               </label>
               <input
                 type="text"
-                placeholder="Enter your number"
-                className="w-full pl-[10px] pr-[267px] pt-[10px] pb-[13px] 
+                placeholder="Enter Name"
+                className="w-full pl-[10px] pr-[316px] pt-[10px] pb-[13px] 
                             border border-[#D9D9D9] rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-yellow-500
                           placeholder:text-black placeholder:opacity-20 "
               />
             </div>
 
-            <div className="mb-4">
+            {/* Mobile Number */}
+            <div>
+              <label className="block text-sm font-medium text-black mt-[14px]">
+                Mobile Number
+              </label>
+              <input
+                type="text"
+                placeholder="Enter mobile number"
+                className="w-full pl-[10px] pr-[256px] pt-[10px] pb-[13px] 
+                            border border-[#D9D9D9] rounded-[10px] 
+                            focus:outline-none focus:ring-2 focus:ring-yellow-500
+                          placeholder:text-black placeholder:opacity-20 "
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-black mt-[14px]">
+                Email Address
+              </label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full pl-[10px] pr-[287px] pt-[10px] pb-[13px] 
+                            border border-[#D9D9D9] rounded-[10px] 
+                            focus:outline-none focus:ring-2 focus:ring-yellow-500
+                          placeholder:text-black placeholder:opacity-20 "
+              />
+            </div>
+
+            {/* Password */}
+            <div>
               <label className="block text-sm font-medium text-black mt-[14px]">
                 Password
               </label>
               <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Enter Password"
+                className="w-full pl-[10px] pr-[290px] pt-[10px] pb-[13px] 
+                            border border-[#D9D9D9] rounded-[10px] 
+                            focus:outline-none focus:ring-2 focus:ring-yellow-500
+                          placeholder:text-black placeholder:opacity-20 "
+              />
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="block text-sm font-medium text-black mt-[14px]">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="Re-Enter Password"
                 className="w-full pl-[10px] pr-[267px] pt-[10px] pb-[13px] 
                             border border-[#D9D9D9] rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-yellow-500
@@ -54,7 +99,7 @@ export default function Login() {
             <div className="flex justify-end mt-1">
               <a
                 href="#"
-                className="text-[#FFC107] text-[12px] font-medium  hover:underline"
+                className="text-[#FFC107] text-[12px] font-medium hover:underline"
               >
                 Forgot password?
               </a>
@@ -66,7 +111,6 @@ export default function Login() {
                 id="remember"
                 className="shrink-0 border border-black mr-[6px]"
               />
-
               <label htmlFor="remember" className="text-[14px] text-black">
                 Remember
               </label>
@@ -79,7 +123,7 @@ export default function Login() {
              bg-[#FFC107] text-white font-semibold 
              hover:bg-yellow-600 transition duration-200"
             >
-              Sign In
+              Sign Up
             </button>
           </form>
 
@@ -89,11 +133,11 @@ export default function Login() {
             <hr className="flex-grow #F5F5F5" />
           </div>
 
-          <div className="w-full flex justify-between mt-4 ">
-            {/* Google Sign-In */}
-            <div >
+          <div className="w-full flex justify-between mt-4">
+            {/* Google Sign-Up */}
+            <div>
               <button
-                className=" flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
+                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
                      hover:bg-gray-100 transition duration-200"
               >
                 <Image
@@ -103,15 +147,15 @@ export default function Login() {
                   height={20}
                 />
                 <span className="ml-2 text-black text-sm font-medium">
-                  Sign in with Google
+                  Sign up with Google
                 </span>
               </button>
             </div>
 
-            {/* Apple Sign-In */}
+            {/* Apple Sign-Up */}
             <div>
               <button
-                className=" flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
+                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
                      hover:bg-gray-100 transition duration-200"
               >
                 <Image
@@ -121,26 +165,26 @@ export default function Login() {
                   height={20}
                 />
                 <span className="ml-2 text-black text-sm font-medium">
-                  Sign in with Apple
+                  Sign up with Apple
                 </span>
               </button>
             </div>
           </div>
 
           <div className="mt-4 text-sm text-black w-full flex justify-center items-center">
-            Don’t have an account?
+            Already have an account?
             <Link
-              href="/signup"
+              href="/login"
               className="text-[#FFC107] font-medium hover:underline ml-1"
             >
-              Sign Up
+              Sign In
             </Link>
           </div>
         </div>
       </div>
 
       {/* Right Side - Background Image */}
-      <div className="hidden md:block w-1/2  shrink-0 rounded-l-[40px] relative">
+      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
