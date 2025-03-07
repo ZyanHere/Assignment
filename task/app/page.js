@@ -1,17 +1,22 @@
+import Header from "./components/header";
 import Sidebar from "./components/sidebar";
 
 
-export default function Home() {
+const Home = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content */}
-      <div className="flex-1 p-8">
-        <h1 className="text-2xl font-bold">Welcome to the E-commerce Platform</h1>
-        {/* Add the homepage content here */}
+      <div className="flex-1">
+        {/* Header */}
+        <Header />
+
+        {/* Other Homepage Content */}
+        <div className="p-6">Your Homepage Content Here...</div>
       </div>
     </div>
   );
-}
+};
+
+export default Home;

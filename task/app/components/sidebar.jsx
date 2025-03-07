@@ -40,7 +40,7 @@ const Sidebar = () => {
       </nav>
 
       {/* Settings */}
-      <div className="mt-96">
+      <div className="mt-180">
         <Link href="/settings">
           <div className="flex items-center gap-4 p-3 cursor-pointer transition-colors duration-200 text-gray-700 hover:text-black">
             <Image src="/sidebar/settings.png" alt="Settings" width={24} height={24} />
