@@ -15,7 +15,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-[260px] h-screen bg-white shadow-md p-5">
+    <div className="w-[320px] h-screen bg-white shadow-md p-5">
       <div className="flex justify-left">
         <Image src="/auth-asset/logo.png" alt="logo" width={66} height={50} />
       </div>
