@@ -2,7 +2,7 @@
 
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "./ui2/button";
 
 // const categories = ["All", "Grocery", "Fashion", "Gift", "Electronics"];
 

@@ -32,7 +32,7 @@ const Footer = () => {
         </div>
       </footer>
 
-      <div className="bg-[#48744D] h-[125px] p-6 mt-20 flex items-center justify-center rounded-tl-[50px] rounded-tr-[50px]">
+      {/* <div className="bg-[#48744D] h-[125px] p-6 mt-20 flex items-center justify-center rounded-tl-[50px] rounded-tr-[50px]">
         <div className=" pt-[22px] flex items-center justify-center relative">
           <Image
             src="/footer/circle.svg"
@@ -45,7 +45,7 @@ const Footer = () => {
         <p className="text-[#FCCD25] pt-[22px] text-[25px] font-bold ml-7">
           Enjoy best deals everyday from nearby store
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };
