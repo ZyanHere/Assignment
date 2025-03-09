@@ -15,7 +15,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-[320px] h-screen bg-white shadow-md p-5">
+    <div className="w-[280px] h-screen bg-white shadow-md p-5">
       <div className="flex justify-left">
         <Image src="/auth-asset/logo.png" alt="logo" width={66} height={50} />
       </div>
@@ -40,7 +40,7 @@ const Sidebar = () => {
       </nav>
 
       {/* Settings */}
-      <div className="mt-180">
+      <div className="mt-130">
         <Link href="/settings">
           <div className="flex items-center gap-4 p-3 cursor-pointer transition-colors duration-200 text-gray-700 hover:text-black">
             <Image src="/sidebar/settings.png" alt="Settings" width={24} height={24} />
