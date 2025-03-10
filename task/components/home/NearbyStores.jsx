@@ -43,7 +43,7 @@ const NearbyStores = () => {
       </h2>
       <div className="ml-24 mr-24 flex justify-between">
         {stores.map((store, index) => (
-          <div key={index} className="w-[345px] bg-white rounded-lg shadow-md">
+          <div key={index} className="w-[445px] bg-white rounded-lg shadow-md">
             <div className="relative">
               <img
                 src={store.img}
