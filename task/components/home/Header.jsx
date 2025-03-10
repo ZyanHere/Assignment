@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-const header = () => {
+const Header = () => {
   return (
     <div className="bg-white flex justify-between items-center p-[20px] w-full h-[48px] shadow-md ">
       <div className="flex-1 max-w-4xl relative">
@@ -37,4 +37,4 @@ const header = () => {
   );
 };
 
-export default header;
+export default Header;

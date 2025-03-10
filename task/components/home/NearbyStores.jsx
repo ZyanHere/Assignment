@@ -60,7 +60,7 @@ const NearbyStores = () => {
               >
                 <img
                   src={
-                    favorites[index] ? "/shops/Heart.svg" : "/shops/Heart.svg"
+                    favorites[index] ? "/shops/Heart-red.svg" : "/shops/Heart.svg"
                   }
                   alt="Favorite"
                   className="w-6 h-6"
