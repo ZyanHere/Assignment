@@ -1,47 +1,31 @@
-"use client";
+import React from "react";
 
-import { MapPin } from "lucide-react";
-import { useState } from "react";
-import { Button } from "../../components/home/ui2/button";
-
-// const categories = ["All", "Grocery", "Fashion", "Gift", "Electronics"];
-
-const categories = [
-  { name: "All", icon: "/assets/all_logo.svg" },
-  { name: "Grocery", icon: "/assets/grocery_logo.png" },
-  { name: "Fashion", icon: "/assets/fashion_logo.png" },
-  { name: "Gift", icon: "/assets/gift_logo.png" },
-  { name: "Electronics", icon: "/assets/electronics_logo.png" },
-];
-
-export default function CategoryTabs() {
-  const [activeTab, setActiveTab] = useState("All");
+const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
+  const categories = [
+    { key: "all", label: "All" },
+    { key: "grocery", label: "Grocery" },
+    { key: "fashion", label: "Fashion" },
+    { key: "gift", label: "Gift" },
+    { key: "electronics", label: "Electronics" },
+  ];
 
   return (
-    <div className="flex flex-col items-start gap-4 p-4">
-      {/* Location Selector */}
-      <div className="flex items-center gap-2 text-lg font-semibold">
-        <span className="text-black">ST Joseph Indian Composite</span>
-        <img src="/assets/Down.svg" alt="Down Arrow" className="w-5 h-5" />
-      </div>
-
-      {/* Category Tabs */}
-      <div className="flex gap-4 rounded-lg">
-        {categories.map((category) => (
-          <Button
-            key={category.name}
-            className={`flex items-center justify-center flex-col px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              activeTab === category.name
-                ? "bg-yellow-400 text-black"
-                : "bg-[#FFF1B8] text-gray-700"
-            }`}
-            onClick={() => setActiveTab(category.name)}
-          >
-            <img src={category.icon} alt={category.name} className="w-5 h-5" />
-            {category.name}
-          </Button>
-        ))}
-      </div>
+    <div className="flex space-x-4 bg-white shadow-sm p-4 rounded-md mx-6 mt-4">
+      {categories.map((category) => (
+        <button
+          key={category.key}
+          className={`px-4 py-2 text-sm font-semibold rounded-md transition ${
+            selectedTab === category.key
+              ? "bg-yellow-400 text-black"
+              : "bg-gray-200 text-gray-700 hover:bg-yellow-300"
+          }`}
+          onClick={() => setSelectedTab(category.key)}
+        >
+          {category.label}
+        </button>
+      ))}
     </div>
   );
-}
+};
+
+export default CategoryTabs;

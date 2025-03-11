@@ -8,10 +8,10 @@ const Sidebar = () => {
 
   const navItems = [
     { name: "Home", path: "/", icon: "/sidebar/home.png" },
-    { name: "Categories", path: "/categories", icon: "/sidebar/categories.png"},
-    { name: "Stores", path: "/stores", icon: "/sidebar/stores.png" },
-    { name: "Cart", path: "/cart", icon: "/sidebar/cart.png" },
-    { name: "Orders", path: "/orders", icon: "/sidebar/orders.png" },
+    { name: "Categories", path: "/categories", icon: "/sidebar/categories2.png"},
+    { name: "Stores", path: "/stores", icon: "/sidebar/stores2.png" },
+    { name: "Cart", path: "/cart", icon: "/sidebar/cart2.png" },
+    { name: "Orders", path: "/orders", icon: "/sidebar/orders2.png" },
   ];
 
   return (
