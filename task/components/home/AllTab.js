@@ -48,6 +48,15 @@ const AllTabContent = () => {
         <Image src="/banners/banner3.png" alt="Banner3" width={450} height={200} />
       </div>
 
+      <div className="pl-6 w-full mt-5">
+        <section className="bg-white shadow-sm w-full ">
+          <h2 className="text-lg font-bold mb-3 text-black">Few minutes left ...</h2>
+          <div className="w-full max-w-[1500px] mx-auto">
+            <BrandCarousel />
+          </div>
+        </section>
+      </div>
+
       <NearbyStores />
     </>
   );

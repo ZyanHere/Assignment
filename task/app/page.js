@@ -9,26 +9,23 @@ import Footer from "@/components/home/footer";
 import GroceryTabContent from "@/components/home/GroceryTab";
 import FashionTabContent from "@/components/home/FashionTab";
 import AllTabContent from "@/components/home/AllTab";
+import { Divide } from "lucide-react";
 
 const Home = () => {
-  // State to track selected tab
-  const [selectedTab, setSelectedTab] = useState("all"); // Default tab: 'all'
+  const [selectedTab, setSelectedTab] = useState("all");
 
-  // Function to render the correct tab content
-  const renderTabContent = () => {
+  const renderTab = () => {
     switch (selectedTab) {
+      case "all":
+        return <AllTabContent />;
       case "grocery":
         return <GroceryTabContent />;
       case "fashion":
         return <FashionTabContent />;
-      // case "gift":
-      //   return <GiftTabContent />;
-      // case "electronics":
-      //   return <ElectronicsTabContent />;
       default:
         return <AllTabContent />;
     }
-  };
+  }
 
   return (
     <div className="flex">
@@ -39,12 +36,10 @@ const Home = () => {
         {/* Header */}
         <Header />
 
-        {/* Category Tabs with State Management */}
-        <CategoryTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-
-        {/* Render Content Based on Selected Tab */}
-        <div className="p-6">{renderTabContent()}</div>
-
+        {/* this is state management */}
+        <CategoryTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab}/> 
+        <div className="p-6">{renderTab()}</div>
+        
         <Footer />
       </div>
     </div>

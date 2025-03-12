@@ -43,7 +43,7 @@ const NearbyStores = () => {
       </h2>
       <div className="ml-24 mr-24 flex justify-between">
         {stores.map((store, index) => (
-          <div key={index} className="w-[445px] bg-white rounded-lg shadow-md">
+          <div key={index} className="w-[425px] bg-white rounded-lg shadow-md">
             <div className="relative">
               <img
                 src={store.img}
@@ -63,7 +63,7 @@ const NearbyStores = () => {
                     favorites[index] ? "/shops/Heart-red.svg" : "/shops/Heart.svg"
                   }
                   alt="Favorite"
-                  className="w-6 h-6"
+                  className="w-8 h-8"
                 />
               </button>
             </div>
