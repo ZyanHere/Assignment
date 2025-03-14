@@ -10,7 +10,6 @@ const ProCard = ({ imageSrc, name, price, stockStatus }) => {
   
     return (
         <div className="flex flex-col items-left justify-left gap-[11.063px] w-[230px] h-[388px] border rounded-2xl shadow-sm p-4">
-          {/* Image Container */}
           <div className="relative flex items-center justify-center w-[194.287px] h-[192.804px] bg-blue-50 rounded-xl p-6">
             <Image
               src={imageSrc}
@@ -29,10 +28,8 @@ const ProCard = ({ imageSrc, name, price, stockStatus }) => {
             </Button>
           </div>
     
-          {/* Stock Status */}
           <p className="text-gray-500 text-sm">{stockStatus}</p>
     
-          {/* Product Details */}
           <div className="w-full px-4 text-center">
             <h3 className="text-lg font-bold">{name}</h3>
             <p className="text-gray-600 text-sm">(100% Natural & Farm Fresh)</p>

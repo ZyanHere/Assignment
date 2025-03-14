@@ -9,7 +9,7 @@ import Footer from "@/components/home/footer";
 import GroceryTabContent from "@/components/home/GroceryTab";
 import FashionTabContent from "@/components/home/FashionTab";
 import AllTabContent from "@/components/home/AllTab";
-import { Divide } from "lucide-react";
+
 
 const Home = () => {
   const [selectedTab, setSelectedTab] = useState("all");
