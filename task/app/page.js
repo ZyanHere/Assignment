@@ -9,6 +9,8 @@ import Footer from "@/components/home/footer";
 import GroceryTabContent from "@/components/home/GroceryTab";
 import FashionTabContent from "@/components/home/FashionTab";
 import AllTabContent from "@/components/home/AllTab";
+import GiftTabContent from "@/components/home/GiftTab";
+import ElectronicTabContent from "@/components/home/Electronics";
 
 
 const Home = () => {
@@ -22,6 +24,10 @@ const Home = () => {
         return <GroceryTabContent />;
       case "fashion":
         return <FashionTabContent />;
+      case "gift":
+        return <GiftTabContent />;
+      case "electronics":
+        return <ElectronicTabContent />;
       default:
         return <AllTabContent />;
     }

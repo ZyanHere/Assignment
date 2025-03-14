@@ -1,64 +1,43 @@
-import Image from "next/image";
-import BrandCarousel from "./BrandCarousel";
-import Essentials from "./Essentials";
-import FourSec from "./FourSec";
-import NearbyStores from "./NearbyStores";
+import SecondCarousel from "./secondCarousel";
+import Banner from "@/app/components/CustomComponents/Banner";
+const ElectronicTabContent = () => {
 
-const AllTab = () => {
   return (
-    <>
-      {/* Hero Image Section */}
-      <div
-        className="rounded-lg overflow-hidden bg-cover bg-center m-[20px_21px]"
-        style={{ backgroundImage: "url(/assets/banner-bg.png)" }}
-      >
-        <Image src="/assets/hero_banner.svg" alt="Hero Banner" width={100} height={100} className="w-full " />
-      </div>
+    <div className="p-6">
+      <Banner />
 
-      <div className="pl-6 w-full">
-        <section className="bg-white shadow-sm w-full p-5">
-          <h2 className="text-lg font-semibold mb-5 text-black">Few minutes left...</h2>
-          <FourSec />
-        </section>
-      </div>
-
-      {/* ✅ Brand Carousel - Fixed Layout Issues ✅ */}
-      <div className="pl-6 w-full mt-5">
+      <div className=" w-full mt-15">
+        <h3 className="text-3xl font-bold text-gray-800 mb-3">Most Popular</h3>
         <section className="bg-white shadow-sm w-full ">
-          <h2 className="text-lg font-bold mb-3 text-black">Top brands last minutes deal</h2>
           <div className="w-full max-w-[1500px] mx-auto">
-            <BrandCarousel />
+            <SecondCarousel />
           </div>
         </section>
       </div>
 
-      <Essentials />
-
-      <div className="pl-6 w-full">
-        <section className="bg-white w-full p-5">
-          <h2 className="text-lg font-semibold mb-8 text-black">Let's step out</h2>
-          <FourSec />
-        </section>
-      </div>
-
-      <div className="mt-15 flex justify-center gap-8">
-        <Image src="/banners/banner1.png" alt="Banner1" width={450} height={200} />
-        <Image src="/banners/banner2.png" alt="Banner2" width={450} height={200} />
-        <Image src="/banners/banner3.png" alt="Banner3" width={450} height={200} />
-      </div>
-
-      <div className="pl-6 w-full mt-12 ">
+      <div className=" w-full mt-15">
+        <h3 className="text-3xl font-bold text-gray-800 mb-3">Just For You</h3>
         <section className="bg-white shadow-sm w-full ">
-          <h2 className="text-lg font-bold mb-3 text-black">Few minutes left...</h2>
           <div className="w-full max-w-[1500px] mx-auto">
-            <BrandCarousel />
+            <SecondCarousel />
           </div>
         </section>
       </div>
 
-      <NearbyStores />
-    </>
+      <div className=" w-full mt-15">
+        <section className="bg-white shadow-sm w-full ">
+          <div className="w-full max-w-[1500px] mx-auto">
+            <SecondCarousel />
+          </div>
+        </section>
+      </div>
+
+      <div className="mt-30">
+        <Banner/>
+      </div>
+      
+    </div>
   );
 };
 
-export default AllTab;
+export default ElectronicTabContent;

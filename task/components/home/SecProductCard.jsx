@@ -30,7 +30,7 @@ const ProCard = ({ imageSrc, name, price, stockStatus }) => {
     
           <p className="text-gray-500 text-sm">{stockStatus}</p>
     
-          <div className="w-full px-4 text-center">
+          <div className="w-full ">
             <h3 className="text-lg font-bold">{name}</h3>
             <p className="text-gray-600 text-sm">(100% Natural & Farm Fresh)</p>
           </div>

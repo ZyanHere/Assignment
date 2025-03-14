@@ -21,7 +21,7 @@ const Sidebar = () => {
       </div>
 
       {/* navigation */}
-      <nav className="flex flex-col mt-[7px] gap-2 ">
+      <nav className="flex flex-col mt-[12px] gap-2 ">
         {navItems.map((item) => (
           <Link key={item.name} href={item.path}>
             <div
