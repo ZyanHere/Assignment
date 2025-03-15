@@ -4,14 +4,14 @@ import { Button } from "../ui/button";
 
 const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
   const categories = [
-    { key: "all", name: "All", icon: "/assets/all_logo.svg" },
-    { key: "grocery", name: "Grocery", icon: "/assets/grocery_logo.png" },
-    { key: "fashion", name: "Fashion", icon: "/assets/fashion_logo.png" },
-    { key: "gift", name: "Gift", icon: "/assets/gift_logo.png" },
+    { key: "all", name: "All", icon: "/home/assets/all_logo.svg" },
+    { key: "grocery", name: "Grocery", icon: "/home/assets/grocery_logo.png" },
+    { key: "fashion", name: "Fashion", icon: "/home/assets/fashion_logo.png" },
+    { key: "gift", name: "Gift", icon: "/home/assets/gift_logo.png" },
     {
       key: "electronics",
       name: "Electronics",
-      icon: "/assets/electronics_logo.png",
+      icon: "/home/assets/electronics_logo.png",
     },
   ];
 
@@ -33,7 +33,7 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
       <div className="flex items-center gap-2 text-lg font-semibold">
         <span className="text-black">ST Joseph Indian Composite</span>
         <Image
-          src="/assets/Down.svg"
+          src="/home/assets/Down.svg"
           alt="down Arrow"
           width={20}
           height={20}

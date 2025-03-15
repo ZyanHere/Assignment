@@ -3,21 +3,21 @@ import { useState } from "react";
 
 const stores = [
   {
-    img: "/shops/pantaloons.png",
+    img: "/home/shops/pantaloons.png",
     name: "Pantaloons",
     distance: "1 Km",
     location: "Pimple Saudagar",
     rating: "4.9",
   },
   {
-    img: "/shops/basket.png",
+    img: "/home/shops/basket.png",
     name: "Nature's Basket",
     distance: "1 Km",
     location: "Pimple Saudagar",
     rating: "4.9",
   },
   {
-    img: "/shops/metro.png",
+    img: "/home/shops/metro.png",
     name: "Metro",
     distance: "2 Km",
     location: "Pimple Saudagar",
@@ -51,7 +51,7 @@ const NearbyStores = () => {
                 className="w-full h-[200px] object-cover rounded-t-lg"
               />
               <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/50 text-white px-2 py-1 rounded-full">
-                <img src="/shops/star.svg" alt="Star" className="w-4 h-4" />
+                <img src="/home/shops/star.svg" alt="Star" className="w-4 h-4" />
                 <span className="text-sm font-semibold">{store.rating}</span>
               </div>
               <button
@@ -60,7 +60,7 @@ const NearbyStores = () => {
               >
                 <img
                   src={
-                    favorites[index] ? "/shops/Heart-red.svg" : "/shops/Heart.svg"
+                    favorites[index] ? "/home/shops/Heart-red.svg" : "/home/shops/Heart.svg"
                   }
                   alt="Favorite"
                   className="w-8 h-8"

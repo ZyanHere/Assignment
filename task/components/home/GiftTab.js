@@ -5,7 +5,7 @@ const GiftTabContent = () => {
     return (
         <div className="p-3">
             <div>
-                <Image src="/banners/GiftBanner.png" alt="Gift Banner" width={1088} height={100} className="w-full rounded-sm" />
+                <Image src="/home/banners/GiftBanner.png" alt="Gift Banner" width={1088} height={100} className="w-full rounded-sm" />
             </div>
 
             <div className=" w-full mt-15">
@@ -28,9 +28,9 @@ const GiftTabContent = () => {
 
 
             <div className=" mt-15 flex justify-center gap-8 ">
-                <Image src="/banners/gift1.png" alt="gift1" width={450} height={200} />
-                <Image src="/banners/gift2.png" alt="gift2" width={450} height={200} />
-                <Image src="/banners/gift3.png" alt="gift3" width={450} height={200} />
+                <Image src="/home/banners/gift1.png" alt="gift1" width={450} height={200} />
+                <Image src="/home/banners/gift2.png" alt="gift2" width={450} height={200} />
+                <Image src="/home/banners/gift3.png" alt="gift3" width={450} height={200} />
             </div>
 
 

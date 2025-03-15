@@ -7,11 +7,11 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Home", path: "/", icon: "/sidebar/home.png" },
-    { name: "Categories", path: "/categories", icon: "/sidebar/categories2.png"},
-    { name: "Stores", path: "/stores", icon: "/sidebar/stores2.png" },
-    { name: "Cart", path: "/cart", icon: "/sidebar/cart2.png" },
-    { name: "Orders", path: "/orders", icon: "/sidebar/orders2.png" },
+    { name: "Home", path: "/", icon: "/home/sidebar/home.png" },
+    { name: "Categories", path: "/categories", icon: "/home/sidebar/categories2.png"},
+    { name: "Stores", path: "/stores", icon: "/home/sidebar/stores2.png" },
+    { name: "Cart", path: "/cart", icon: "/home/sidebar/cart2.png" },
+    { name: "Orders", path: "/orders", icon: "/home/sidebar/orders2.png" },
   ];
 
   return (
@@ -43,7 +43,7 @@ const Sidebar = () => {
       <div className="mt-130">
         <Link href="/settings">
           <div className="flex items-center gap-4 p-3 cursor-pointer transition-colors duration-200 text-gray-700 hover:text-black">
-            <Image src="/sidebar/settings.png" alt="Settings" width={24} height={24} />
+            <Image src="/home/sidebar/settings.png" alt="Settings" width={24} height={24} />
             <span className="text-lg">Settings</span>
           </div>
         </Link>

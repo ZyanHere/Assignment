@@ -9,7 +9,7 @@ const GroceryTabContent = () => {
 
       {/* Hero Banner */ }
        <div>
-        <Image src="/grocery/grocery-banner.png" alt="Hero Banner" width={1098} height={288} className="w-full rounded-sm" />
+        <Image src="/home/grocery/grocery-banner.png" alt="Hero Banner" width={1098} height={288} className="w-full rounded-sm" />
       </div>
 
       {/* Vegetables Section */}

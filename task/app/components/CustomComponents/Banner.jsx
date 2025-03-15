@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
 const images = [
-  "grocery/grocery-banner.png",
-  "grocery/grocery-banner.png",
-  "grocery/grocery-banner.png",
-  "grocery/grocery-banner.png",
-  "grocery/grocery-banner.png",
+  "home/grocery/grocery-banner.png",
+  "home/grocery/grocery-banner.png",
+  "home/grocery/grocery-banner.png",
+  "home/grocery/grocery-banner.png",
+  "home/grocery/grocery-banner.png",
 ];
 
 export default function Banner() {

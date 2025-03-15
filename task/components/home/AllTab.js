@@ -11,9 +11,9 @@ const AllTabContent = () => {
       {/* Hero Image Section */}
       <div
         className="rounded-lg overflow-hidden bg-cover bg-center m-[20px_21px]"
-        style={{ backgroundImage: "url(/assets/banner-bg.png)" }}
+        style={{ backgroundImage: "url(/home/assets/banner-bg.png)" }}
       >
-        <Image src="/assets/hero_banner.svg" alt="Hero Banner" width={100} height={100} className="w-full " />
+        <Image src="/home/assets/hero_banner.svg" alt="Hero Banner" width={100} height={100} className="w-full " />
       </div>
 
       <div className="pl-6 w-full">
@@ -43,9 +43,9 @@ const AllTabContent = () => {
       </div>
 
       <div className=" mt-15 flex justify-center gap-8 ">
-        <Image src="/banners/banner1.png" alt="Banner1" width={450} height={200} />
-        <Image src="/banners/banner2.png" alt="Banner2" width={450} height={200} />
-        <Image src="/banners/banner3.png" alt="Banner3" width={450} height={200} />
+        <Image src="/home/banners/banner1.png" alt="Banner1" width={450} height={200} />
+        <Image src="/home/banners/banner2.png" alt="Banner2" width={450} height={200} />
+        <Image src="/home/banners/banner3.png" alt="Banner3" width={450} height={200} />
       </div>
 
       <div className="pl-6 w-full mt-5">

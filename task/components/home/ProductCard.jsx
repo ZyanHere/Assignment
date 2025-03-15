@@ -9,7 +9,7 @@ const ProductCard = () => {
         {/* Product Image */}
         <div className="bg-blue-50 p-2 rounded-lg">
           <Image
-            src="/essentials/Macbook.png"
+            src="/home/essentials/Macbook.png"
             alt="Macbook Pro"
             width={150}
             height={100}

@@ -1,9 +1,9 @@
 const FourSec = () => {
     const items = [
-      { img: "/hero1/stay.png", label: "Stay" },
-      { img: "/hero1/movie.png", label: "Movie" },
-      { img: "/hero1/buffet.png", label: "Buffet" },
-      { img: "/hero1/event.png", label: "Event" },
+      { img: "/home/hero1/stay.png", label: "Stay" },
+      { img: "/home/hero1/movie.png", label: "Movie" },
+      { img: "/home/hero1/buffet.png", label: "Buffet" },
+      { img: "/home/hero1/event.png", label: "Event" },
     ];
   
     return (

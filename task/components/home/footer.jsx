@@ -18,7 +18,7 @@ const Footer = () => {
               className="flex-1 px-3 py-2 outline-none bg-transparent pr-10"
             />
             <Image 
-              src="/footer/icon-send.svg" 
+              src="/home/footer/icon-send.svg" 
               alt="Arrow Icon" 
               width={20} 
               height={20} 
@@ -64,20 +64,20 @@ const Footer = () => {
           </p>
           <div className="mt-2 flex cursor-pointer">
             <Image
-              src="/footer/qrcode.png"
+              src="/home/footer/qrcode.png"
               alt="QR Code"
               width={75}
               height={75}
             />
             <div className="flex-col ml-2 cursor-pointer">
               <Image
-                src="/footer/playStore.png"
+                src="/home/footer/playStore.png"
                 alt="Google Play"
                 width={120}
                 height={40}
               />
               <Image
-                src="/footer/appstore.png"
+                src="/home/footer/appstore.png"
                 alt="App Store"
                 width={120}
                 height={40}
@@ -85,16 +85,16 @@ const Footer = () => {
             </div>
           </div>
           <div className="flex  space-x-8 mt-6 cursor-pointer">
-            <Image src="/footer/fb.svg" alt="Facebook" width={24} height={24} />
-            <Image src="/footer/tw.svg" alt="Twitter" width={24} height={24} />
+            <Image src="/home/footer/fb.svg" alt="Facebook" width={24} height={24} />
+            <Image src="/home/footer/tw.svg" alt="Twitter" width={24} height={24} />
             <Image
-              src="/footer/ig.svg"
+              src="/home/footer/ig.svg"
               alt="Instagram"
               width={24}
               height={24}
             />
             <Image
-              src="/footer/Linkedin.svg"
+              src="/home/footer/Linkedin.svg"
               alt="LinkedIn"
               width={24}
               height={24}
