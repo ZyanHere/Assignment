@@ -1,10 +1,25 @@
 const storesData = {
-  pantaloons: {
-    name: "Pantaloons",
-    location: "Ambience Mall, Gurgaon",
-    banner: "/store.png",
-    products: [],
+  
+  "pantaloons": {
+    "name": "Pantaloons",
+    "location": "Pimple Saudagar",
+    "logo": "/store/Nature-logo.png",
+    "distance": "4 km",
+    "banner": "/pantaloons-banner.jpg",
+    "products": [
+      {
+        "id": 1,
+        "name": "Men's Casual Shirt",
+        "category": "Clothing & Apparel",
+        "image": "/store/saree.png",
+        "weight": "1 Piece",
+        "price": 1200,
+        "mrp": 1500,
+        "discount": "20% OFF"
+      }
+    ]
   },
+
   "natures-basket": {
     name: "Nature's Basket",
     location: "Pimple Saudagar",

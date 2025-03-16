@@ -7,7 +7,6 @@ const StoreCard = ({ product, storeName }) => {
 
   return (
     <div className="p-7 border rounded-lg shadow-md bg-white max-w-[250px]">
-      {/* Product Image */}
       <div className="relative flex items-center justify-center w-[194.287px] h-[192.804px] bg-blue-50 rounded-xl p-6">
         <Image
           src={product.image}

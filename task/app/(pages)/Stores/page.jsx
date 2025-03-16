@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Header from "@/components/home/Header";
 import Sidebar from "@/components/home/sidebar";
 import StoreBanner from "@/components/stores/StoreBanner";
@@ -10,13 +11,19 @@ import Image from "next/image";
 const StoresPage = () => {
   return (
     <div className="flex">
-      {/* Sidebar */}
       <Sidebar />
 
       <div className="flex-1">
         <Header />
 
         <div className="p-6">
+          {/* Breadcrumb - Default "Stores" */}
+          <nav className="mb-4 text-black text-4xl">
+            <Link href="/stores" className="hover:underline font-medium">
+              Stores
+            </Link>
+          </nav>
+
           <StoreBanner />
 
           <div className="w-full max-w-[1500px] mx-auto mt-6">
@@ -29,14 +36,12 @@ const StoresPage = () => {
             />
           </div>
 
-          <h2 className="text-xl font-semibold mt-8 mb-4">Stores nearby</h2>
+          <h2 className="text-4xl font-semibold mt-8 mb-4">Stores nearby</h2>
 
           {/* Store Carousel */}
-          {Object.entries(storesData).map(([key, store]) =>
-            key !== "pantaloons" ? (
-              <StoreCarousel key={key} slug={key} {...store} />
-            ) : null
-          )}
+          {Object.entries(storesData).map(([key, store]) => (
+            <StoreCarousel key={key} slug={key} {...store} />
+          ))}
         </div>
       </div>
     </div>
