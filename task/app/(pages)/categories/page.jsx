@@ -1,6 +1,7 @@
 "use client";
 
 import CategoryCarousel from "@/components/categories/CategoryCarousel";
+import CategoryFooter from "@/components/categories/CategoryFooter";
 import Header from "@/components/home/Header";
 import Sidebar from "@/components/home/sidebar";
 import categoryData from "@/data/categoryData";
@@ -115,6 +116,8 @@ const CategoryPage = () => {
           <div className="p-8">
             <CategoryCarousel />
           </div>
+          
+          <CategoryFooter/>
         </div>
       </div>
     </div>
