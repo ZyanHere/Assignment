@@ -10,7 +10,12 @@ import Link from "next/link";
 
 const StoreSlugPage = () => {
     const { slug } = useParams();
-    const store = storesData[slug];
+    const store = storesData[slug]; // const storesData = {
+                                        //"pantaloons": {    storesData[slug] here slug directly matches a key in the object.
+                                        // pantaloons is that key in the object
+
+
+        //const store = storesData[slug]; used this method as storesData is an object, not an array, else would have use array search
 
     if (!store) {
         return <p className="text-center text-red-500 text-2xl">Store not found</p>;

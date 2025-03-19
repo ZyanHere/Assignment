@@ -1,14 +1,29 @@
 "use client";
 
-import CategoryCarousel from "@/components/categories/CategoryCarousel";
-import CategoryFooter from "@/components/categories/CategoryFooter";
-import Header from "@/components/home/Header";
-import Sidebar from "@/components/home/sidebar";
-import categoryData from "@/data/categoryData";
-import Image from "next/image";
+import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import Sidebar from "@/components/home/sidebar";
+import Header from "@/components/home/Header";
+import categoryData from "@/data/categoryData";
+import CategoryCarousel from "@/components/categories/CategoryCarousel";
 
-const CategoryPage = () => {
+const CategorySlugPage = () => {
+  const { slug } = useParams();
+
+  // Find the selected category based on the slug -------> this is for arraysearch
+  // const category = categoryData.find((cat) => cat.slug === slug)
+
+  const category = categoryData[slug];
+
+  if (!category) {
+    return (
+      <div className="flex h-screen items-center justify-center text-red-500 text-2xl">
+        Category not found
+      </div>
+    );
+  }
+
   return (
     <div className="flex">
       <Sidebar />
@@ -23,9 +38,12 @@ const CategoryPage = () => {
               <Link href="/categories" className="hover:underline font-medium">
                 Categories
               </Link>
+              <span className="mx-2 text-gray-400">&gt;</span>
+              <span className="font-semibold text-yellow-500">
+                {category.name}
+              </span>
             </nav>
 
-            {/* Filters and Sort Buttons */}
             <div className="flex items-center gap-4">
               <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100">
                 <Image
@@ -61,67 +79,33 @@ const CategoryPage = () => {
               </button>
             </div>
           </div>
-
-          {/* categories */}
-          <div className="grid grid-cols-8 gap-6 px-8 mt-2">
-          {Object.values(categoryData).map((category) => {
-              const isAllCategory = category.slug === "all";
-              return isAllCategory ? (
-                // "all" category stays on the same page
-                <div key={category.slug} className="flex flex-col items-center">
+          {/* subcategories */}
+          <div className="grid grid-cols-5 gap-6 px-8 mt-4">
+            {category.subcategories?.map((sub) => (
+              <Link key={sub.slug} href={`/categories/${slug}/${sub.slug}`}>
+                <div className="flex flex-col items-center cursor-pointer hover:scale-105 transition">
                   <Image
-                    src={category.image}
-                    alt={category.name}
+                    src={sub.image || "/categories/default.png"}
+                    alt={sub.name}
                     width={100}
                     height={100}
                     className="w-24 h-18 object-contain"
                   />
-                  <p className="text-center mt-2 font-bold text-yellow-400">
-                    {category.name}
-                  </p>
+                  <p className="text-center mt-2 font-semibold">{sub.name}</p>
                 </div>
-              ) : (
-                // other categories to slug
-                <Link key={category.slug} href={`/categories/${category.slug}`}>
-                  <div className="flex flex-col items-center cursor-pointer hover:scale-105 transition">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={100}
-                      height={100}
-                      className="w-24 h-18 object-contain"
-                    />
-                    <p className="text-center mt-2 font-semibold">
-                      {category.name}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
+              </Link>
+            ))}
           </div>
-
-          <div className="mt-6 flex justify-center">
-            <Image
-              src="/categories/category-bg.png"
-              alt="Category Background"
-              width={1400}
-              height={400}
-              className="w-[1500px] h-[400px] max-w-full object-cover"
-            />
-          </div>
-
           <div className="p-8">
             <CategoryCarousel />
           </div>
           <div className="p-8">
             <CategoryCarousel />
           </div>
-          
-          <CategoryFooter />
         </div>
       </div>
     </div>
   );
 };
 
-export default CategoryPage;
+export default CategorySlugPage;
