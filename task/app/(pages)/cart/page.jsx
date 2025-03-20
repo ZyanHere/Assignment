@@ -17,6 +17,9 @@ import {
   Truck,
   Wallet,
   HandCoins,
+  Mic,
+  PhoneOff,
+  BellOff,
 } from "lucide-react";
 import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
@@ -69,6 +72,7 @@ export default function CartPage() {
   const [cart, setCart] = useState(initialCart);
   const [purchaseMode, setPurchaseMode] = useState("homeDelivary");
   const [selectedAddress, setSelectedAddress] = useState(1);
+  const [activeInstruction, setActiveInstruction] = useState("soundbite");
 
   // Update Quantity
   const updateQuantity = (id, amount) => {
@@ -277,6 +281,51 @@ export default function CartPage() {
               </span>
               <span className="font-semibold text-lg text-black">{`₹${billDetails.grandTotal.amount}`}</span>
             </div>
+          </div>
+
+          {/* Delivery Instruction Section */}
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold mb-3 pl-40">
+              Delivery instruction
+            </h2>
+
+            {/* Instruction Options */}
+            <div className="flex justify-center gap-4">
+              {[
+                { label: "Soundbite", icon: <Mic />, key: "soundbite" },
+                {
+                  label: "Avoid Calling",
+                  icon: <PhoneOff />,
+                  key: "avoidCalling",
+                },
+                { label: "No Ringing", icon: <BellOff />, key: "noRinging" },
+              ].map((item) => (
+                <div
+                  key={item.key}
+                  className={`flex flex-col items-center p-4 rounded-lg shadow-md cursor-pointer transition-all
+          ${
+            activeInstruction === item.key
+              ? "bg-yellow-100 text-yellow-600 border border-yellow-400"
+              : "bg-white text-gray-700 border border-gray-300"
+          }`}
+                  onClick={() => setActiveInstruction(item.key)}
+                >
+                  <div className="w-[43.744px] h-[39.766px] flex items-center justify-center">
+                    {item.icon}
+                  </div>
+                  <span className="font-medium mt-2">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Click to Pay Button */}
+          <div className="px-40">
+            <Link href="/payment-mode">
+              <button className="mt-6 w-full py-4 text-lg font-semibold text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-md cursor-pointer">
+                Click to pay
+              </button>
+            </Link>
           </div>
         </div>
       </div>
