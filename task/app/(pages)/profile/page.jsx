@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Logout from "@/components/profile/Logout";
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("about");
@@ -64,6 +65,8 @@ const ProfilePage = () => {
         return <Messages />;
       case "notifications":
         return <Notifications />;
+      case "logout":
+        return <Logout />;
       default:
         return <AboutMe />;
     }
