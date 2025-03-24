@@ -16,7 +16,7 @@ const ORDERS = [
         quantity: 3,
         date: "23/01/2025",
         price: "165",
-        status: "Pending",
+        status: "pending",
         actionLabel: "View",
       },
     ],
@@ -50,19 +50,23 @@ const ORDERS = [
         quantity: 3,
         date: "23/01/2025",
         price: "190",
-        status: "Pending",
+        status: "pending",
         actionLabel: "View",
       },
     ],
   },
 ];
 
+
+
 export default function OrderHistory() {
+    
   return (
     <div className="flex flex-col gap-6">
       {ORDERS.map((order) => (
-        <OrderCard key={order.id} order={order}/>
+        <OrderCard key={order.id} order={order} />
       ))}
+      
     </div>
   );
 }

@@ -1,18 +1,10 @@
-"use client";
-
-import Image from "next/image";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
-export default function OrderCard({ order }) {
+
+export default function OrderCard({ order, customButtons = <></> }) {
   const { storeName, status, items } = order;
 
   // Determine status label dynamically.
@@ -51,12 +43,20 @@ export default function OrderCard({ order }) {
         <Table className="table-fixed w-full">
           <TableHeader>
             <TableRow className="bg-gray-100">
-              <TableHead className="p-2 w-[30%] min-w-[180px]">Product</TableHead>
-              <TableHead className="p-2 w-[10%] min-w-[80px]">Quantity</TableHead>
+              <TableHead className="p-2 w-[30%] min-w-[180px]">
+                Product
+              </TableHead>
+              <TableHead className="p-2 w-[10%] min-w-[80px]">
+                Quantity
+              </TableHead>
               <TableHead className="p-2 w-[15%] min-w-[100px]">Date</TableHead>
               <TableHead className="p-2 w-[15%] min-w-[100px]">Price</TableHead>
-              <TableHead className="p-2 w-[15%] min-w-[120px]">Status</TableHead>
-              <TableHead className="p-2 w-[15%] min-w-[120px]">Action</TableHead>
+              <TableHead className="p-2 w-[15%] min-w-[120px]">
+                Status
+              </TableHead>
+              <TableHead className="p-2 w-[15%] min-w-[120px]">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -96,14 +96,20 @@ export default function OrderCard({ order }) {
 
       {/* Bottom Actions */}
       <div className="flex justify-end mt-4 gap-2">
-        {status === "completed" && (
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white text-sm">
-            Leave a Review
-          </Button>
+        {customButtons ? (
+          customButtons
+        ) : (
+          <>
+            {status === "completed" && (
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white text-sm">
+                Leave a Review
+              </Button>
+            )}
+            <Button variant="outline" className="text-sm">
+              Chat with seller
+            </Button>
+          </>
         )}
-        <Button variant="outline" className="text-sm">
-          Chat with seller
-        </Button>
       </div>
     </div>
   );
