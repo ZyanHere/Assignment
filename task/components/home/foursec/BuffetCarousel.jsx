@@ -6,15 +6,16 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import RestaurantCard from "./RestaurentCard";
+import Link from "next/link";
 
 const BuffetCarousel = ({ title, seeAllLink, items }) => {
   return (
     <div className="mt-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">{title}</h2>
-        <a href={seeAllLink} className="text-orange-500 text-sm font-semibold">
+        <Link href={seeAllLink} className="text-orange-500 text-sm font-semibold">
           See All
-        </a>
+        </Link>
       </div>
       <div className="py-4">
         <Carousel className="w-full mx-auto">

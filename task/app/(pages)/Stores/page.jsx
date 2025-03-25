@@ -1,51 +1,54 @@
 "use client";
 
-import Link from "next/link";
+import BuffetCarousel from "@/components/home/foursec/BuffetCarousel";
+import RestaurantCard from "@/components/home/foursec/RestaurentCard";
 import Header from "@/components/home/Header";
 import Sidebar from "@/components/home/sidebar";
-import StoreBanner from "@/components/stores/StoreBanner";
-import StoreCarousel from "@/components/stores/StoreCarousel";
-import storesData from "@/data/storeData";
-import Image from "next/image";
+import { buffetData } from "@/data/buffetData";
+import Link from "next/link";
 
-const StoresPage = () => {
+const BuffetPage = () => {
   return (
     <div className="flex">
       <Sidebar />
-
       <div className="flex-1">
         <Header />
 
         <div className="p-6">
-          {/* Breadcrumb - Default "Stores" */}
-          <nav className="mb-4 text-black text-4xl">
-            <Link href="/stores" className="hover:underline font-medium">
-              Stores
-            </Link>
-          </nav>
+          <div className="px-6 md:px-12">
+            {/* Breadcrumb */}
+            <nav className="mb-4 text-black text-4xl">
+              <Link href="/" className="hover:underline font-medium">
+                Home
+              </Link>{" "}
+              &gt;{" "}
+              <Link href="/buffet" className="hover:underline font-medium">
+                Restaurants
+              </Link>
+            </nav>
 
-          <StoreBanner />
+            {/* Buffet Sections */}
+            <BuffetCarousel title="Popular Now" seeAllLink="/buffet/popular" items={buffetData.popular} />
+            <BuffetCarousel title="In Your Area" seeAllLink="/buffet/area" items={buffetData.inYourArea} />
 
-          <div className="w-full max-w-[1500px] mx-auto mt-6">
-            <Image
-              src="/store/store2.png"
-              width={1500}
-              height={274}
-              className="w-full h-auto object-cover rounded-lg"
-              alt="Store Image"
-            />
+            {/* Previous Choices Section */}
+            <div className="flex justify-between items-center mt-6">
+              <h2 className="text-xl font-semibold">Based on your previous choices</h2>
+              <Link href="/buffet/choices" className="text-orange-500 text-sm font-semibold">
+                See All
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              {buffetData.previousChoices.map((restaurant, index) => (
+                <RestaurantCard key={index} {...restaurant} index={index} />
+              ))}
+            </div>
           </div>
-
-          <h2 className="text-4xl font-semibold mt-8 mb-4">Stores nearby</h2>
-
-          {/* Store Carousel */}
-          {Object.entries(storesData).map(([key, store]) => (
-            <StoreCarousel key={key} slug={key} {...store} />
-          ))}
         </div>
       </div>
     </div>
   );
 };
 
-export default StoresPage;
+export default BuffetPage;
