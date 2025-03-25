@@ -1,10 +1,18 @@
-import { cn } from "@/lib/utils";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { Button } from "../ui/button";
+"use client";
+
 import Image from "next/image";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
-
-export default function OrderCard({ order, customButtons = <></> }) {
+export default function OrderCard({ order, customButtons = null }) {
   const { storeName, status, items } = order;
 
   // Determine status label dynamically.
@@ -17,6 +25,7 @@ export default function OrderCard({ order, customButtons = <></> }) {
 
   return (
     <div className="border rounded-lg p-4 relative bg-white shadow-sm">
+      {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <Image
@@ -39,24 +48,17 @@ export default function OrderCard({ order, customButtons = <></> }) {
         </span>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto">
         <Table className="table-fixed w-full">
           <TableHeader>
             <TableRow className="bg-gray-100">
-              <TableHead className="p-2 w-[30%] min-w-[180px]">
-                Product
-              </TableHead>
-              <TableHead className="p-2 w-[10%] min-w-[80px]">
-                Quantity
-              </TableHead>
+              <TableHead className="p-2 w-[30%] min-w-[180px]">Product</TableHead>
+              <TableHead className="p-2 w-[10%] min-w-[80px]">Quantity</TableHead>
               <TableHead className="p-2 w-[15%] min-w-[100px]">Date</TableHead>
               <TableHead className="p-2 w-[15%] min-w-[100px]">Price</TableHead>
-              <TableHead className="p-2 w-[15%] min-w-[120px]">
-                Status
-              </TableHead>
-              <TableHead className="p-2 w-[15%] min-w-[120px]">
-                Action
-              </TableHead>
+              <TableHead className="p-2 w-[15%] min-w-[120px]">Status</TableHead>
+              <TableHead className="p-2 w-[15%] min-w-[120px]">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -65,9 +67,7 @@ export default function OrderCard({ order, customButtons = <></> }) {
                 <TableCell className="p-2 w-[30%]">
                   <div className="flex items-center gap-2">
                     <Image
-                      src={
-                        item.productImage || "/profile/product-placeholder.jpg"
-                      }
+                      src={item.productImage || "/profile/product-placeholder.jpg"}
                       alt={item.product}
                       width={40}
                       height={40}
@@ -96,7 +96,7 @@ export default function OrderCard({ order, customButtons = <></> }) {
 
       {/* Bottom Actions */}
       <div className="flex justify-end mt-4 gap-2">
-        {customButtons ? (
+        {customButtons !== null ? (
           customButtons
         ) : (
           <>

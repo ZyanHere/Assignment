@@ -1,0 +1,41 @@
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import RestaurantCard from "./RestaurentCard";
+
+const BuffetCarousel = ({ title, seeAllLink, items }) => {
+  return (
+    <div className="mt-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">{title}</h2>
+        <a href={seeAllLink} className="text-orange-500 text-sm font-semibold">
+          See All
+        </a>
+      </div>
+      <div className="py-4">
+        <Carousel className="w-full mx-auto">
+          <CarouselContent className="-ml-4">
+            {items.map((restaurant, index) => (
+              <CarouselItem
+                key={index}
+                className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-[22.35%] flex-shrink-0"
+              >
+                <div className="p-1">
+                  <RestaurantCard {...restaurant} index={index} />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
+    </div>
+  );
+};
+
+export default BuffetCarousel;
