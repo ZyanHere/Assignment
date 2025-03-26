@@ -8,7 +8,7 @@ export default function RecommendedHotels() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Recommended for You</h2>
         <Link
-          href="/hotels/recommended"
+          href="/home/hotel/recommended"
           className="text-blue-500 text-lg font-semibold"
         >
           See All

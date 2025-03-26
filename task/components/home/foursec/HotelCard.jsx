@@ -21,7 +21,7 @@ const HotelCard = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Most Popular</h2>
         <Link
-          href="/hotels/popular"
+          href="/home/hotel/popular"
           className="text-blue-500 text-lg font-semibold"
         >
           See All
@@ -59,7 +59,6 @@ const HotelCard = () => {
                 height={32}
               />
             </div>
-
 
             <div className="flex justify-between absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent text-white">
               <div>
