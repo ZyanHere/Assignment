@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const FourSec = () => {
   const items = [
-    { img: "/home/hero1/stay.png", label: "Stay", link: "/home/stay" },
+    { img: "/home/hero1/stay.png", label: "Stay", link: "/home/hotel" },
     { img: "/home/hero1/movie.png", label: "Movie", link: "/home/movie" },
     { img: "/home/hero1/buffet.png", label: "Buffet", link: "/home/buffet" },
     { img: "/home/hero1/event.png", label: "Event", link: "/home/event" },

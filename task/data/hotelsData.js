@@ -1,0 +1,71 @@
+export const hotelsData = {
+    mostPopular: [
+      {
+        id: 1,
+        name: "The Horizon Retreat",
+        location: "Los Angeles, CA",
+        price: "1000 Rs/night",
+        rating: 4.5,
+        image: "/hotels/horizon-retreat.png",
+      },
+      {
+        id: 2,
+        name: "Opal Grove Inn",
+        location: "San Diego, CA",
+        price: "1000 Rs/night",
+        rating: 4.5,
+        image: "/hotels/opal-grove.png",
+      },
+      {
+        id: 3,
+        name: "Astra Grand Hotel",
+        location: "New York, NY",
+        price: "1000 Rs/night",
+        rating: 4.5,
+        image: "/hotels/astra-grand.png",
+      },
+      {
+        id: 4,
+        name: "The Horizon Retreat",
+        location: "Los Angeles, CA",
+        price: "1000 Rs/night",
+        rating: 4.5,
+        image: "/hotels/horizon-retreat.png",
+      },
+    ],
+    recommendedForYou: [
+      {
+        id: 5,
+        name: "Sunset Bay Resort",
+        location: "Miami, FL",
+        price: "1200 Rs/night",
+        rating: 4.7,
+        image: "/hotels/sunset-bay.png",
+      },
+      {
+        id: 6,
+        name: "Crystal Palace Hotel",
+        location: "Las Vegas, NV",
+        price: "1500 Rs/night",
+        rating: 4.8,
+        image: "/hotels/crystal-palace.png",
+      },
+      {
+        id: 7,
+        name: "Mountain View Lodge",
+        location: "Denver, CO",
+        price: "900 Rs/night",
+        rating: 4.4,
+        image: "/hotels/mountain-view.png",
+      },
+      {
+        id: 8,
+        name: "Palm Paradise Inn",
+        location: "Honolulu, HI",
+        price: "1300 Rs/night",
+        rating: 4.6,
+        image: "/hotels/palm-paradise.png",
+      },
+    ],
+  };
+  
