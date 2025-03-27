@@ -20,6 +20,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -30,6 +55,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -53,6 +103,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -63,6 +138,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -86,6 +186,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -96,6 +221,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -119,6 +269,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -129,6 +304,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -154,6 +354,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -164,6 +389,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -187,6 +437,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -197,6 +472,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -220,6 +520,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -230,6 +555,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -253,6 +603,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -263,6 +638,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -288,6 +688,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -298,6 +723,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -321,6 +771,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -331,6 +806,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -354,6 +854,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -364,6 +889,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -387,6 +937,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -397,6 +972,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -422,6 +1022,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -432,6 +1057,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -455,6 +1105,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -465,6 +1140,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -488,6 +1188,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -498,6 +1223,31 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
@@ -521,6 +1271,31 @@ export const hotelsData = {
           price: 1000,
           rating: 4.5,
           image: "/hotels/chennai-room.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
         {
           id: 102,
@@ -531,8 +1306,34 @@ export const hotelsData = {
           price: 8000,
           rating: 4.8,
           image: "/hotels/sea-view-suite.png",
+          facilities: [
+            {
+           "description": "The ideal place for those looking for a luxurious and tranquil holiday experience with stunning sea views.",
+           "reviews": [
+             {
+               "id": 10101,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             },
+             {
+               "id": 10102,
+               "reviewer": "Mirai Kamazuki",
+               "rating": 5.0,
+               "review": "The service is on point, and I really like the facilities. Good job!"
+             },
+             {
+               "id": 10103,
+               "reviewer": "Kim Borrdy",
+               "rating": 4.5,
+               "review": "Amazing! The room is better than the picture. Thanks for an amazing experience!"
+             }
+           ],
+           "banner": "/hotels/roomBanner.png"
+         }]
         },
       ],
     },
   ],
+  
 };
