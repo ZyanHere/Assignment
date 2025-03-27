@@ -30,7 +30,7 @@ const HotelCard = () => {
       </div>
       <div className="grid grid-cols-4 gap-7 mt-4">
         {hotelsData.mostPopular.map((hotel, index) => (
-          <Link key={hotel.id} href={`/hotels/rooms/${hotel.slug}`}>
+          <Link key={hotel.id} href={`/home/hotel/rooms/${hotel.slug}`}>
             <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
               <Image
                 src={hotel.image}

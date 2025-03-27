@@ -17,7 +17,7 @@ export default function RecommendedHotels() {
 
       <div className="space-y-8">
         {hotelsData.recommended.map((hotel) => (
-          <Link key={hotel.id} href={`/hotels/rooms/${hotel.slug}`}>
+          <Link key={hotel.id} href={`/home/hotel/rooms/${hotel.slug}`}>
             <div className="flex items-center border-b pb-3 p-10">
               <Image
                 src={hotel.image}
