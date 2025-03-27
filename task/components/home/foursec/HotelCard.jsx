@@ -16,6 +16,7 @@ const HotelCard = () => {
       return newFavorites;
     });
   };
+
   return (
     <div className="mb-6 p-6">
       <div className="flex justify-between items-center">
@@ -29,50 +30,49 @@ const HotelCard = () => {
       </div>
       <div className="grid grid-cols-4 gap-7 mt-4">
         {hotelsData.mostPopular.map((hotel, index) => (
-          <div
-            key={hotel.id}
-            className="relative bg-white rounded-lg shadow-md overflow-hidden"
-          >
-            <Image
-              src={hotel.image}
-              alt={hotel.name}
-              width={300}
-              height={200}
-              className="w-full h-100 object-cover"
-            />
-
-            <div
-              className="absolute top-3 right-3 cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleFavorite(index);
-              }}
-            >
+          <Link key={hotel.id} href={`/hotels/rooms/${hotel.slug}`}>
+            <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
               <Image
-                src={
-                  favorites[index]
-                    ? "/home/shops/Heart-red.svg"
-                    : "/home/shops/Heart.svg"
-                }
-                alt="Favorite"
-                width={32}
-                height={32}
+                src={hotel.image}
+                alt={hotel.name}
+                width={300}
+                height={200}
+                className="w-full h-100 object-cover"
               />
-            </div>
 
-            <div className="flex justify-between absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent text-white">
-              <div>
-                <h3 className="font-semibold text-lg">{hotel.name}</h3>
-                <p className="text-sm">{hotel.location}</p>
-                <p className="text-sm font-semibold">{hotel.price} Rs/night</p>
+              <div
+                className="absolute top-3 right-3 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevents navigation when clicking the heart icon
+                  toggleFavorite(index);
+                }}
+              >
+                <Image
+                  src={
+                    favorites[index]
+                      ? "/home/shops/Heart-red.svg"
+                      : "/home/shops/Heart.svg"
+                  }
+                  alt="Favorite"
+                  width={32}
+                  height={32}
+                />
               </div>
 
-              <div className="flex items-center text-yellow-400 text-lg mt-1">
-                {"⭐"}
-                <span className="ml-1">{hotel.rating}</span>
+              <div className="flex justify-between absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent text-white">
+                <div>
+                  <h3 className="font-semibold text-lg">{hotel.name}</h3>
+                  <p className="text-sm">{hotel.location}</p>
+                  <p className="text-sm font-semibold">{hotel.price} Rs/night</p>
+                </div>
+
+                <div className="flex items-center text-yellow-400 text-lg mt-1">
+                  {"⭐"}
+                  <span className="ml-1">{hotel.rating}</span>
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
