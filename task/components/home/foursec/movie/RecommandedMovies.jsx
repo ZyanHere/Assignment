@@ -1,9 +1,10 @@
 "use client";
+import { movieData } from "@/data/movieData";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-const Recommended = ({ movies = [] }) => {
+const Recommended = () => {
   const [favorites, setFavorites] = useState([]);
 
   const toggleFavorite = (movieId) => {
@@ -12,17 +13,19 @@ const Recommended = ({ movies = [] }) => {
     );
   };
 
+  const movies = movieData.Recommanded.slice(0, 3);
+
   return (
     <section className="mb-10">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Recommended for You</h2>
-        <Link href="/movies/recommended" className="text-blue-600 font-medium">
+        <Link href="/home/movie/recommended" className="text-blue-600 font-medium">
           See All
         </Link>
       </div>
       <div className="flex flex-col gap-6 mt-4">
         {movies.map((movie) => (
-          <Link key={movie.id} href={`/home/movies/${movie.slug}`} className="relative block">
+          <Link key={movie.id} href={`/home/movie/${movie.slug}`} className="relative block">
             <div className="relative bg-white shadow-md rounded-lg overflow-hidden flex p-4">
               <Image src={movie.image} alt={movie.title} width={160} height={160} className="rounded-lg object-cover" />
               <div className="ml-6 flex-1 mt-4">
