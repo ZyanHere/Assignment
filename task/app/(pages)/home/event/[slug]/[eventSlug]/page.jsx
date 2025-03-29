@@ -1,27 +1,27 @@
 "use client";
 import { useParams } from "next/navigation";
-import { movieData } from "@/data/movieData";
+import { eventData } from "@/data/eventData";
 import Image from "next/image";
 import Header from "@/components/home/Header";
 import Sidebar from "@/components/home/sidebar";
 
-const MovieDetailPage = () => {
-  const { movieSlug } = useParams();
+const EventDetailPage = () => {
+  const { slug, eventSlug } = useParams();
   const generateSlug = (title) => title.toLowerCase().replace(/\s+/g, "-");
 
-  const allMovies = [
-    ...movieData.FewMinutesLeft,
-    ...movieData.PopularNow,
-    ...movieData.Recommanded,
+  const allEvents = [
+    ...eventData.UpcomingEvents,
+    ...eventData.FeaturedEvents,
+    ...eventData.RecommendedEvents,
   ];
 
-  const movie = allMovies.find((m) => generateSlug(m.title) === movieSlug);
+  const event = allEvents.find((e) => generateSlug(e.title) === eventSlug);
 
-  if (!movie) {
-    return <div className="p-6 text-red-500 text-lg">Movie not found</div>;
+  if (!event) {
+    return <div className="p-6 text-red-500 text-lg">Event not found</div>;
   }
 
-  const movieDetails = movie.desc[0];
+  const eventDetails = event.desc[0];
 
   return (
     <div className="flex">
@@ -29,63 +29,55 @@ const MovieDetailPage = () => {
       <div className="flex-1">
         <Header />
         <div className="p-6">
-          <nav className="text-2xl mb-6">
-            Home &gt; Movies &gt;{" "}
-            <span className="text-yellow-500 font-semibold">{movie.title}</span>
+          <nav className="text-2xl mb-6 ">
+            Home &gt; Events &gt;{" "}
+            <span className="text-yellow-500 font-semibold">{event.title}</span>
           </nav>
 
-          {/* Movie Banner */}
           <div className="relative h-[450px] rounded-2xl overflow-hidden">
-            <Image
-              src={movieDetails.image}
-              alt={movie.title}
+            <Image 
+              src={eventDetails.image} 
+              alt={event.title} 
               fill
               className="object-cover"
             />
           </div>
 
-          {/* Movie Details */}
           <div className="mt-8 max-w-7xl mx-auto">
-            <h1 className="text-4xl font-bold uppercase mb-4">{movie.title}</h1>
-
+            <h1 className="text-4xl font-bold uppercase mb-4">{event.title}</h1>
+            
             <div className="bg-gray-100 p-6 rounded-xl mb-8">
               <div className="grid grid-cols-2 gap-4 text-lg">
                 <div className="flex items-center gap-2">
                   <span>🗓</span>
-                  <span className="font-semibold">{movie.date}</span>
+                  <span className="font-semibold">{event.date}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>⏰</span>
-                  <span className="font-semibold">{movieDetails.time}</span>
+                  <span className="font-semibold">{eventDetails.time}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>📍</span>
-                  <span className="font-semibold">{movieDetails.location}</span>
+                  <span className="font-semibold">{eventDetails.location}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>💺</span>
-                  <span className="font-semibold">
-                    {movieDetails.seatsLeft} seats left
-                  </span>
+                  <span className="font-semibold">{eventDetails.seatsLeft} seats left</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>🔞</span>
-                  <span className="font-semibold">
-                    Age Limit - {movieDetails.ageLimit} years
-                  </span>
+                  <span className="font-semibold">Age Limit - {eventDetails.ageLimit} years</span>
                 </div>
               </div>
             </div>
 
-            {/* About Section */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">ABOUT THE MOVIE</h2>
-              <p className="text-gray-600 leading-relaxed">
-                {movieDetails.description}
+              <h2 className="text-2xl font-bold mb-4">ABOUT THE EVENT</h2>
+              <p className=" leading-relaxed">
+                {eventDetails.description}
               </p>
             </section>
 
-            {/* Terms & Conditions */}
             <div className="p-6 shadow-2xl rounded-xl">
               <section className="mb-8">
                 <h2 className="text-2xl font-bold mb-10">TERMS & CONDITIONS</h2>
@@ -109,7 +101,7 @@ const MovieDetailPage = () => {
 
             {/* Grab Deal Button */}
             <button className="w-full py-4 mt-5 bg-yellow-400 text-black font-bold rounded-xl hover:bg-yellow-500 transition-colors">
-              GRAB DEAL - {movie.price} Rs
+              GRAB DEAL - {event.price} Rs
             </button>
           </div>
         </div>
@@ -118,4 +110,4 @@ const MovieDetailPage = () => {
   );
 };
 
-export default MovieDetailPage;
+export default EventDetailPage;
