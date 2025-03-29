@@ -16,11 +16,10 @@ const MoviePage = () => {
             Home &gt; <span className="text-yellow-500 font-semibold">Movies</span>
           </nav>
           <div className="p-6">
-          <FewMinutesLeft movies={movieData.FewMinutesLeft} />
-          <PopularNow movies={movieData.PopularNow} />
-          <Recommended movies={movieData.Recommanded} />
+            <FewMinutesLeft />
+            <PopularNow />
+            <Recommended />
           </div>
-          
         </div>
       </div>
     </div>

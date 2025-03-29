@@ -8,6 +8,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
         {
             "id": 2,
@@ -17,6 +28,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
         {
             "id": 3,
@@ -26,6 +48,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
     ],
     "PopularNow" : [
@@ -37,6 +70,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
         {
             "id": 2,
@@ -46,6 +90,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
         {
             "id": 3,
@@ -55,6 +110,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
     ],
     "Recommanded" : [
@@ -66,6 +132,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
         {
             "id": 2,
@@ -75,6 +152,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
         {
             "id": 3,
@@ -84,6 +172,17 @@ export const movieData = {
             "location": "Mumbai",
             "price": 500,
             "image": "/home/tiger.png",
+            "desc": [
+                {
+                    time: "03:00",
+                    location: "Great Stadium",
+                    seatsLeft: 4,
+                    ageLimit: "16",
+                    image: "/home/tigerBanner.png",
+                    description:
+                      "Inspired by true events, the film follows Indian spy Tiger (Salman Khan) and Pakistani spy Zoya (Katrina Kaif), who come out of hiding to undertake a dangerous mission...",
+                  },
+            ]
         },
     ]
 }
