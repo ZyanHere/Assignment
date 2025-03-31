@@ -6,7 +6,10 @@ import { useState } from "react";
 
 //mock api service
 const mockAPI = {
-  signup: () => new Promise((resolve) => setTimeout(resolve, 1500)),
+  signup: () => new Promise((resolve) => {
+    localStorage.setItem('tempUser', JSON.stringify(data));
+    setTimeout(resolve, 1500);
+  }),
 };
 
 export default function Signup() {
@@ -30,7 +33,7 @@ export default function Signup() {
     setLoading(true);
     try {
       await mockAPI.signup();
-      router.push("/verification");
+      router.push(`/verification?phone=${encodeURIComponent(data.phone)}`);
     } catch {
       setError("Failed to create account. Please try again.");
     } finally {

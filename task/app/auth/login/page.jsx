@@ -1,8 +1,39 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+
+
+// Mock API Service
+const mockAPI = {
+  login: () => new Promise(resolve => setTimeout(resolve, 1500))
+};
+
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    try {
+      await mockAPI.login({
+        phone: e.target.phone.value,
+        password: e.target.password.value
+      });
+      router.push('/');
+    } catch (err) {
+      setError('Login failed. Use any demo values');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left Side - Login Form */}
@@ -28,11 +59,13 @@ export default function Login() {
                 Mobile Number
               </label>
               <input
-                type="text"
-                placeholder="Enter your number"
-                className="w-full pl-[10px] pr-[267px] pt-[10px] pb-[13px] 
-                            border border-[#D9D9D9] rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-yellow-500
+                name="phone"
+                type="tel"
+                placeholder="Enter your mobile number"
+                pattern="[0-9]{11}"
+                required
+                className="w-full px-[10px] py-[13px] border border-[#D9D9D9] rounded-[10px] 
+                          focus:outline-none focus:ring-2 focus:ring-yellow-500
                           placeholder:text-black placeholder:opacity-20 "
               />
             </div>
@@ -42,22 +75,20 @@ export default function Login() {
                 Password
               </label>
               <input
+                name="password"
                 type="password"
-                placeholder="Enter your password"
-                className="w-full pl-[10px] pr-[267px] pt-[10px] pb-[13px] 
-                            border border-[#D9D9D9] rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-yellow-500
+                placeholder="Enter any password"
+                required
+                className="w-full px-[10px] py-[13px] border border-[#D9D9D9] rounded-[10px]
+                          focus:outline-none focus:ring-2 focus:ring-yellow-500
                           placeholder:text-black placeholder:opacity-20 "
               />
             </div>
 
             <div className="flex justify-end mt-1">
-              <a
-                href="#"
-                className="text-[#FFC107] text-[12px] font-medium  hover:underline"
-              >
+              <Link href="/forgot-password" className="text-[#FFC107] text-[12px] font-medium hover:underline">
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <div className="mt-[5px]">
@@ -66,21 +97,21 @@ export default function Login() {
                 id="remember"
                 className="shrink-0 border border-black mr-[6px]"
               />
-
-              <label htmlFor="remember" className="text-[14px] text-black">
-                Remember
-              </label>
             </div>
 
+            {/* Submit Button */}
             <button
-              className="w-full flex justify-center items-center 
-             py-[15px] pb-[14px] mt-[16px]
-             rounded-[10px] border border-[rgba(255,196,64,0.73)] 
-             bg-[#FFC107] text-white font-semibold 
-             hover:bg-yellow-600 transition duration-200"
+              type="submit"
+              disabled={loading}
+              className={`w-full py-[15px] mt-[16px] rounded-[10px] bg-[#FFC107] text-white font-semibold 
+                        hover:bg-yellow-600 transition duration-200
+                        ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
             >
-              Sign In
+              {loading ? 'Signing In...' : 'Sign In'}
             </button>
+
+            {/* Error Message */}
+            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
           </form>
 
           <div className="flex items-center mt-[32px] mb-[40px] w-full max-w-md">
