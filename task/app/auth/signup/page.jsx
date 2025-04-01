@@ -1,43 +1,49 @@
 "use client";
+import { signUpStart } from "@/lib/redux/user/userSlice";
+import { signupSchema } from "@/lib/validators/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { FiEyeOff, FiEye } from "react-icons/fi";
 
-//mock api service
-const mockAPI = {
-  signup: () => new Promise((resolve) => {
-    localStorage.setItem('tempUser', JSON.stringify(data));
-    setTimeout(resolve, 1500);
-  }),
-};
 
 export default function Signup() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [passwordsMatch, setPasswordMatch] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
+  // Zod form validation setup
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(signupSchema),
+  });
 
-    //passwords match
-    if (data.password !== data.confirmPassword) {
-      setPasswordMatch(false);
-      return;
-    }
-
-    setLoading(true);
+  const onSubmit = async (formData) => {
     try {
-      await mockAPI.signup();
-      router.push(`/verification?phone=${encodeURIComponent(data.phone)}`);
-    } catch {
-      setError("Failed to create account. Please try again.");
-    } finally {
-      setLoading(false);
+      dispatch(signUpStart());
+
+      //remove confirmPassword before sending to api
+      const { confirmPassword, ...signupData } = formData;
+
+      //api call
+      const response = await axios.post("/api/auth/signup", signupData);
+
+      //handle success
+      if (response.data.success) {
+        toast.success("Account created successfully!");
+        router.push(`/verification?phone=${encodeURIComponent(formData.phone)}`);
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "An error occurred";
+      toast.error(errorMessage);
     }
   };
 
@@ -58,22 +64,31 @@ export default function Signup() {
             Get Started Now
           </h1>
 
-          <form onSubmit={handleSubmit} className="w-full max-w-md mt-[70px]">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full max-w-md mt-[70px]"
+          >
             {/* Name */}
             <div>
               <label className="block text-sm font-medium text-black">
                 Name
               </label>
               <input
-                name="name"
-                type="text"
-                required
+                {...register("name")}
+                className={`w-full p-3 border rounded-[10px] ${
+                  errors.name ? "border-red-500" : "border-[#D9D9D9]"
+                } focus:ring-2 focus:ring-yellow-500`}
                 placeholder="Enter Name"
-                className="w-full pl-[10px] pr-[316px] pt-[10px] pb-[13px] 
-                            border border-[#D9D9D9] rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-yellow-500
-                          placeholder:text-black placeholder:opacity-20 "
+                // className="w-full pl-[10px] pr-[316px] pt-[10px] pb-[13px]
+                //             border border-[#D9D9D9] rounded-[10px]
+                //             focus:outline-none focus:ring-2 focus:ring-yellow-500
+                //           placeholder:text-black placeholder:opacity-20 "
               />
+              {errors.name && (
+                <span className="text-red-500 text-sm">
+                  {errors.name.message}
+                </span>
+              )}
             </div>
             {/* Mobile Number */}
             <div>
@@ -81,16 +96,22 @@ export default function Signup() {
                 Mobile Number
               </label>
               <input
-                name="phone"
-                type="text"
-                placeholder="Enter mobile number"
-                pattern="[0-9]{11}"
-                required
-                className="w-full pl-[10px] pr-[256px] pt-[10px] pb-[13px] 
-                            border border-[#D9D9D9] rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-yellow-500
-                          placeholder:text-black placeholder:opacity-20 "
+                {...register("phone")}
+                type="tel"
+                className={`w-full p-3 border rounded-lg ${
+                  errors.phone ? "border-red-500" : "border-[#D9D9D9]"
+                } focus:ring-2 focus:ring-yellow-500`}
+                placeholder="03001234567"
               />
+              {errors.phone && (
+                <span className="text-red-500 text-sm">
+                  {errors.phone.message}
+                </span>
+              )}
+              {/* // className="w-full pl-[10px] pr-[256px] pt-[10px] pb-[13px] 
+                //             border border-[#D9D9D9] rounded-[10px] 
+                //             focus:outline-none focus:ring-2 focus:ring-yellow-500
+                //           placeholder:text-black placeholder:opacity-20 " */}
             </div>
             {/* Email */}
             <div>
@@ -98,51 +119,90 @@ export default function Signup() {
                 Email Address
               </label>
               <input
-                name="email"
-                type="email"
+                {...register("email")}
+                className={`w-full p-3 border rounded-lg ${
+                  errors.email ? "border-red-500" : "border-[#D9D9D9]"
+                } focus:ring-2 focus:ring-yellow-500`}
                 placeholder="Enter your email"
-                required
-                className="w-full pl-[10px] pr-[287px] pt-[10px] pb-[13px] 
+              />
+              {errors.email && (
+                <span className="text-red-500 text-sm">
+                  {errors.email.message}
+                </span>
+              )}
+              {/* className="w-full pl-[10px] pr-[287px] pt-[10px] pb-[13px] 
                             border border-[#D9D9D9] rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-yellow-500
-                          placeholder:text-black placeholder:opacity-20 "
-              />
+                          placeholder:text-black placeholder:opacity-20 " */}
             </div>
             {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-black mt-[14px]">
-                Password
-              </label>
-              <input
-                name="password"
-                type="password"
-                placeholder="Enter Password"
-                minLength={8}
-                required
-                className="w-full pl-[10px] pr-[290px] pt-[10px] pb-[13px] 
-                            border border-[#D9D9D9] rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-yellow-500
-                          placeholder:text-black placeholder:opacity-20 "
-              />
+            <div className=" relative">
+              <label className="block text-sm font-medium text-black mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  {...register("password")}
+                  className={`w-full p-3 border rounded-lg ${
+                    errors.password ? 'border-red-500' : 'border-[#D9D9D9]'
+                  } focus:ring-2 focus:ring-yellow-500`}
+                  placeholder="Enter Password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </button>
+              </div>
+              {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
             </div>
+
+{/* 
+            className="w-full pl-[10px] pr-[290px] pt-[10px] pb-[13px]
+                  //             border border-[#D9D9D9] rounded-[10px]
+                  //             focus:outline-none focus:ring-2 focus:ring-yellow-500
+                  //           placeholder:text-black placeholder:opacity-20 " */}
+
+
+
+
+
             {/* Confirm Password */}
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-black mt-[14px]">
                 Confirm Password
               </label>
-              <input
-                name="confirmPassword"
-                type="password"
-                placeholder="Re-Enter Password"
-                onChange={() => setPasswordMatch(true)}
-                className={`w-full px-[10px] py-[13px] border rounded-[10px] placeholder:text-black placeholder:opacity-20 
-                  ${passwordsMatch ? "border-[#D9D9D9]" : "border-red-500"}
-                  focus:outline-none focus:ring-2 focus:ring-yellow-500`}
-              />
-              {!passwordsMatch && (
-                <p className="text-red-500 text-sm mt-1">
-                  Passwords do not match
-                </p>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  {...register("confirmPassword")}
+                  className={`w-full p-3 border rounded-lg ${
+                    errors.confirmPassword
+                      ? "border-red-500"
+                      : "border-[#D9D9D9]"
+                  } focus:ring-2 focus:ring-yellow-500`}
+                  placeholder="Re-Enter Password"
+                  // className={`w-full px-[10px] py-[13px] border rounded-[10px] placeholder:text-black placeholder:opacity-20
+                  //   ${passwordsMatch ? "border-[#D9D9D9]" : "border-red-500"}
+                  //   focus:outline-none focus:ring-2 focus:ring-yellow-500`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  {showConfirmPassword ? (
+                    <FiEyeOff size={20} />
+                  ) : (
+                    <FiEye size={20} />
+                  )}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <span className="text-red-500 text-sm">
+                  {errors.confirmPassword.message}
+                </span>
               )}
             </div>
             <div className="flex justify-end mt-1">
@@ -165,13 +225,13 @@ export default function Signup() {
                 Remember
               </label>
             </div>
-            f
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-[15px] mt-[16px] rounded-[10px] bg-[#FFC107] text-white font-semibold 
-              hover:bg-yellow-600 transition duration-200
-              ${loading ? "opacity-75 cursor-not-allowed" : ""}`}
+              className="w-full py-3 bg-[#FFC107] font-semibold rounded-lg hover:bg-yellow-600 disabled:opacity-75 disabled:cursor-not-allowed transition-colors"
+              // className={`w-full py-[15px] mt-[16px] rounded-[10px] bg-[#FFC107] text-white font-semibold 
+              // hover:bg-yellow-600 transition duration-200
+              // ${loading ? "opacity-75 cursor-not-allowed" : ""}`}
             >
               {loading ? "Creating Account..." : "Sign Up"}
             </button>

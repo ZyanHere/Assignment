@@ -1,4 +1,3 @@
-import { eventData } from "@/data/eventData";
 import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
 import UpcomingEvents from "@/components/home/foursec/event/UpcomingEvents";
