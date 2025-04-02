@@ -9,7 +9,7 @@ const images = [
 ];
 
 
-export default function Banner() {
+export default function ElecBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

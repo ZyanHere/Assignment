@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
-const FashionCard = ({ imageSrc, name, price, stockStatus, gender }) => {
+const GiftCard = ({ imageSrc, name, price, stockStatus, gender }) => {
   const [added, setAdded] = useState(false);
 
   return (
@@ -37,7 +37,9 @@ const FashionCard = ({ imageSrc, name, price, stockStatus, gender }) => {
 
       <div className="w-full">
         <h3 className="text-lg font-bold">{name}</h3>
-        <p className="text-gray-600 text-sm">For {gender.toLowerCase()}</p>
+        <p className="text-gray-600 text-sm">
+            {gender ? `For ${gender.toLowerCase()}` : "Memorable Gifting Experience"}
+        </p>
       </div>
 
       <div className="flex text-yellow-500 text-lg">
@@ -49,4 +51,4 @@ const FashionCard = ({ imageSrc, name, price, stockStatus, gender }) => {
   );
 };
 
-export default FashionCard;
+export default GiftCard;

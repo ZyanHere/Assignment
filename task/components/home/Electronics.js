@@ -1,39 +1,40 @@
-import SecondCarousel from "./secondCarousel";
-import Banner from "@/app/components/CustomComponents/Banner";
+import ElecBanner from "@/app/components/CustomComponents/ElecBanner";
+import ElectronicsCarousel from "./ElectronicsCarousel";
+import ElecHeroBanner from "@/app/components/CustomComponents/ElecHeroBanner";
 const ElectronicTabContent = () => {
 
   return (
     <div className="p-6">
-      <Banner />
+      <ElecHeroBanner />
 
-      <div className=" w-full mt-15">
+      <div className=" w-full mt-16">
         <h3 className="text-3xl font-bold text-gray-800 mb-3">Most Popular</h3>
         <section className="bg-white shadow-sm w-full ">
           <div className="w-full max-w-[1500px] mx-auto">
-            <SecondCarousel />
+          <ElectronicsCarousel category="MostPopular" />
           </div>
         </section>
       </div>
 
-      <div className=" w-full mt-15">
+      <div className=" w-full mt-16">
         <h3 className="text-3xl font-bold text-gray-800 mb-3">Just For You</h3>
         <section className="bg-white shadow-sm w-full ">
           <div className="w-full max-w-[1500px] mx-auto">
-            <SecondCarousel />
+          <ElectronicsCarousel category="ForYou" />
           </div>
         </section>
       </div>
 
-      <div className=" w-full mt-15">
+      <div className=" w-full mt-16">
         <section className="bg-white shadow-sm w-full ">
           <div className="w-full max-w-[1500px] mx-auto">
-            <SecondCarousel />
+          <ElectronicsCarousel category="ForYou" reverse/>
           </div>
         </section>
       </div>
 
       <div className="mt-30">
-        <Banner/>
+        <ElecBanner/>
       </div>
       
     </div>

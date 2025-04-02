@@ -10,7 +10,7 @@ const images = [
   "/home/fashion/fashion-banner6.jpg",
 ];
 
-export default function HeroBanner() {
+export default function ElecHeroBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
