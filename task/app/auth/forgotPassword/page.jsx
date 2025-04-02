@@ -1,6 +1,44 @@
+"use client";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from "next/image";
 
 export default function ForgotPassword() {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const cleanedNumber = phoneNumber.replace(/\D/g, '');
+      if (cleanedNumber.length !== 10){
+        throw new Error('Invalid phone number format. Please enter a 10-digit number.');
+      }
+
+      //req to BE
+      const response = await fetch('/api/v1/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify({ phone: cleanedNumber }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send OTP');
+      }
+    } catch (error) {
+      
+    }
+  }
   return (
     <div className="flex min-h-screen  bg-white">
       {/* Left Side - Forgot Password Form */}

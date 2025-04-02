@@ -1,13 +1,81 @@
-"use client"
+"use client";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import toast from "react-hot-toast";
 
 export default function Verification() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [timer, setTimer] = useState(30);
   const [resendDisabled, setResendDisabled] = useState(true);
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
- 
+  // Get phone number from URL parameters
+  const phoneParam = searchParams.get("phone");
+  const rawPhone = phoneParam ? decodeURIComponent(phoneParam) : "";
+  const formattedPhone = rawPhone.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+
+  const handleVerify = async () => {
+    try {
+      setIsVerifying(true);
+      const code = otp.join("");
+
+      //send verif req to BE
+      const response = await fetch("/api/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phone: rawPhone, code }),
+      });
+
+      if (!response.ok) throw new Error("Invalid OTP");
+      router.push("/auth/success");
+    } catch (error) {
+      alert(error.message);
+      setOtp(["", "", "", ""]);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  // Resend OTP handler
+  const handleResendOtp = async () => {
+    if (!rawPhone) {
+      toast.error("Phone number not found");
+      return;
+    }
+
+    try {
+      setIsResending(true);
+      const response = await fetch("/api/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: rawPhone }),
+      });
+
+      if (!response.ok) throw new Error("Failed to resend OTP");
+
+      toast.success("New OTP sent successfully!");
+      setOtp(["", "", "", ""]); // Clear existing OTP inputs
+      setTimer(30);
+      setResendDisabled(true);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  //  // Auto-submit when all OTP digits are entered
+  // useEffect(() => {
+  //   if (otp.every(digit => digit !== '') && !isVerifying) {
+  //     handleVerify();
+  //   }
+  // }, [otp]);
 
   // Handle Timer for Resend Button
   useEffect(() => {
@@ -27,38 +95,43 @@ export default function Verification() {
       <div className="w-1/2 flex flex-col justify-center items-center bg-white px-10">
         <h2 className="text-[32px] font-normal text-black">Verification</h2>
         <p className="text-[#828282] text-lg mt-[30px]">
-          Enter the 4 digit code we sent to <span className="font-medium">+92-3469560184</span>
+          Enter the 4 digit code we sent to{" "}
+          <span className="font-medium">{formattedPhone}</span>
         </p>
 
         {/* OTP Input Fields */}
-        <div className="flex space-x-[24px] mt-[33px]">
+        <div className="flex gap-4 my-8">
+          {otp.map((digit, index) => (
             <input
+              key={index}
               type="text"
+              inputMode="numeric"
               maxLength="1"
-              className="w-16 h-14 border border-gray-400 rounded-md text-center text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              value={digit}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                const newOtp = [...otp];
+                newOtp[index] = value;
+                setOtp(newOtp);
+                // Auto-focus to next input
+                if (value && index < 3) {
+                  document.getElementById(`otp-${index + 1}`)?.focus();
+                }
+              }}
+              id={`otp-${index}`}
+              className="w-16 h-16 text-2xl text-center border-2 border-gray-300 rounded-lg focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200"
+              disabled={isVerifying}
             />
-            <input
-              type="text"
-              maxLength="1"
-              className="w-16 h-14 border border-gray-400 rounded-md text-center text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
-            <input
-              type="text"
-              maxLength="1"
-              className="w-16 h-14 border border-gray-400 rounded-md text-center text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
-            <input
-              type="text"
-              maxLength="1"
-              className="w-16 h-14 border border-gray-400 rounded-md text-center text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
+          ))}
         </div>
 
         {/* Timer */}
-        <p className="text-red-500 text-sm mt-[24px]">{timer > 0 ? `00:${timer < 10 ? `0${timer}` : timer}` : null}</p>
+        <p className="text-red-500 text-sm mt-[24px]">
+          {timer > 0 ? `00:${timer < 10 ? `0${timer}` : timer}` : null}
+        </p>
 
         {/* Continue Button */}
-        <button className="bg-yellow-400 text-white text-[16px] w-[470px] py-3 mt-6 rounded-md hover:bg-yellow-500">
+        <button className="bg-yellow-400 font-medium text-[16px] w-[470px] py-3 mt-6 rounded-md hover:bg-yellow-500">
           VERIFY
         </button>
 
@@ -66,28 +139,29 @@ export default function Verification() {
         <p className="text-gray-500 text-sm mt-[33px]">
           If you didn’t receive a code!{" "}
           <button
-            className={`text-orange-500 font-medium ${resendDisabled ? "opacity-50 cursor-not-allowed" : "hover:underline"}`}
-            disabled={resendDisabled}
-            onClick={() => {
-              setTimer(30);
-              setResendDisabled(true);
-            }}
+            onClick={handleResendOtp}
+            className={`text-yellow-500 font-medium ${
+              resendDisabled || isResending
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:underline"
+            }`}
+            disabled={resendDisabled || isResending}
           >
-            Resend
+            {isResending ? "Sending..." : "Resend Code"}
           </button>
         </p>
       </div>
 
       {/* Right Side */}
       <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative">
-              <Image
-                src="/auth-asset/hero-bg.png"
-                alt="Background"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-l-[40px]"
-              />
-            </div>
+        <Image
+          src="/auth-asset/hero-bg.png"
+          alt="Background"
+          layout="fill"
+          objectFit="cover"
+          className="rounded-l-[40px]"
+        />
+      </div>
     </div>
   );
 }
