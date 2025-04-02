@@ -1,23 +1,44 @@
 "use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { setAutoLocationSuccess, setLocationFailure, setLocationStart } from "@/lib/redux/location/locationSlice";
 
 export default function Location() {
+  const dispatch = useDispatch();
+  const router = useRouter();
   // Function to get user location
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          alert(
-            `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`
-          );
-        },
-        (error) => {
-          alert("Error getting location. Please enter manually.");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
+  const handleLocationAccess = () => {
+    dispatch(setLocationStart());
+    
+    if (!navigator.geolocation) {
+      dispatch(setLocationFailure("Geolocation not supported"));
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const locationData = {
+          coordinates: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          },
+          address: "Auto-detected location"
+        };
+        dispatch(setAutoLocationSuccess(locationData));
+        router.push("/");
+      },
+      (error) => {
+        const errorMessage = error.code === error.PERMISSION_DENIED 
+          ? "Location access denied" 
+          : "Error getting location";
+        dispatch(setLocationFailure(errorMessage));
+        if (error.code === error.PERMISSION_DENIED) {
+          router.push("/manual-location");
+        }
+      }
+    );
   };
 
   return (
@@ -43,16 +64,16 @@ export default function Location() {
 
         {/* Allow Location Button */}
         <button
-          className="bg-yellow-400 text-white w-full py-2 mt-[51px] rounded-3xl shadow-2xl hover:bg-yellow-500"
-          onClick={getLocation}
+          className="bg-yellow-400 font-medium w-full py-2 mt-[51px] rounded-3xl shadow-2xl hover:bg-yellow-500"
+          onClick={handleLocationAccess}
         >
           Allow Location Access
         </button>
 
         {/* Enter Manually */}
         <p
-          className="text-[#FDDC58] text-[18px] mt-[30px] cursor-pointer hover:underline"
-          onClick={() => alert("Enter your location manually.")}
+          className="text-[#ecbe08] text-[18px] mt-[30px] cursor-pointer hover:underline"
+          onClick={() => router.push("/auth/manual-location")}
         >
           Enter Location Manually
         </p>

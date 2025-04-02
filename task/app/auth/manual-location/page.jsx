@@ -3,28 +3,50 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
 
 export default function Location() {
   const [location, setLocation] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  // Function to get user location
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          alert(
-            `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`
-          );
-        },
-        () => {
-          alert("Error getting location. Please enter manually.");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
-    }
-  };
+
+ // Function to get user location and update Redux
+ const getCurrentLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // Reverse geocode coordinates to get city name
+        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`)
+          .then((res) => res.json())
+          .then((data) => {
+            const city = data.city || data.locality || "Unknown Location";
+            setLocation(city);
+          });
+      },
+      () => {
+        alert("Error getting location. Please enter manually.");
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by your browser.");
+  }
+};
+
+// Handle confirmation and Redux storage
+const handleConfirmation = () => {
+  if (!location.trim()) {
+    alert("Please enter or detect a location first");
+    return;
+  }
+  
+  dispatch(setManualLocation({
+    address: location,
+    coordinates: null 
+  }));
+  
+  router.push("/");
+};
 
   return (
     <div className="flex h-screen bg-white">
@@ -49,7 +71,7 @@ export default function Location() {
           <div className="relative w-[380px] ml-22">
             {/* Search Icon (SVG from Public Folder) */}
             <img
-              src="/auth-asset/search.svg" // Place your SVG file inside "public/icons"
+              src="/auth-asset/search.svg" 
               alt="Search"
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 opacity-60"
             />
@@ -84,6 +106,16 @@ export default function Location() {
         <p className="text-gray-500">Search Result</p>
         </div>
         
+      </div>
+
+      {/* Add confirmation button below existing content */}
+      <div className="w-[380px] ml-22 mt-8">
+          <button
+            onClick={handleConfirmation}
+            className="w-full bg-yellow-400 text-white py-3 rounded-lg hover:bg-yellow-500 transition-colors"
+          >
+            Confirm Location
+          </button>
       </div>
 
       {/* Right Side */}
