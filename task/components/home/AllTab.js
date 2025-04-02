@@ -7,21 +7,28 @@ import NearbyStores from "@/components/home/NearbyStores";
 
 const AllTabContent = () => {
   return (
-    <>
+    <main className="space-y-6 md:space-y-8">
       {/* Hero Image Section */}
       <div
-        className="rounded-lg overflow-hidden bg-cover bg-center m-[20px_21px]"
+        className="mx-4 md:mx-6 rounded-lg overflow-hidden bg-cover bg-center m-[20px_21px]"
         style={{ backgroundImage: "url(/home/assets/banner-bg.png)" }}
       >
-        <Image src="/home/assets/hero_banner.svg" alt="Hero Banner" width={100} height={100} className="w-full " />
+        <Image 
+          src="/home/assets/hero_banner.svg" 
+          alt="Hero Banner" 
+          width={1200}
+          height={400}
+          className="w-full h-auto"
+          priority
+        />
       </div>
 
-      <div className="pl-6 w-full">
-        <section className="bg-white shadow-sm w-full p-5">
-          <h2 className="text-lg font-semibold mb-5 text-black">Few minutes left...</h2>
-          <FourSec />
-        </section>
-      </div>
+      <section className="mx-4 md:mx-6 bg-white shadow-sm p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-semibold mb-4 text-black">
+          Few minutes left...
+        </h2>
+        <FourSec />
+      </section>
 
       {/* ✅ Brand Carousel - Fixed Layout Issues ✅ */}
       <div className="pl-6 w-full mt-5">
@@ -58,7 +65,7 @@ const AllTabContent = () => {
       </div>
 
       <NearbyStores />
-    </>
+    </main>
   );
 };
 

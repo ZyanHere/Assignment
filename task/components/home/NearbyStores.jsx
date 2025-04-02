@@ -37,21 +37,25 @@ const NearbyStores = () => {
   };
 
   return (
-    <section className="p-6 mt-4">
-      <h2 className="text-2xl font-semibold mb-6 text-black">
+    <section className="p-4 md:p-6 mt-4">
+      <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-black">
         Shops from nearby stores
       </h2>
-      <div className="ml-24 mr-24 flex justify-between">
+      <div className="flex flex-col md:flex-row gap-6 justify-center">
         {stores.map((store, index) => (
-          <div key={index} className="w-[425px] bg-white rounded-lg shadow-md">
-            <div className="relative">
+          <div key={index} className="w-full rounded-lg shadow-md overflow-hidden">
+            <div className="relative ">
               <img
                 src={store.img}
                 alt={store.name}
                 className="w-full h-[200px] object-cover rounded-t-lg"
               />
               <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/50 text-white px-2 py-1 rounded-full">
-                <img src="/home/shops/star.svg" alt="Star" className="w-4 h-4" />
+                <img
+                  src="/home/shops/star.svg"
+                  alt="Star"
+                  className="w-4 h-4"
+                />
                 <span className="text-sm font-semibold">{store.rating}</span>
               </div>
               <button
@@ -60,7 +64,9 @@ const NearbyStores = () => {
               >
                 <img
                   src={
-                    favorites[index] ? "/home/shops/Heart-red.svg" : "/home/shops/Heart.svg"
+                    favorites[index]
+                      ? "/home/shops/Heart-red.svg"
+                      : "/home/shops/Heart.svg"
                   }
                   alt="Favorite"
                   className="w-8 h-8"

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const FourSec = () => {
@@ -9,16 +10,21 @@ const FourSec = () => {
   ];
 
   return (
-    <div className="flex gap-[85px] justify-center">
+    <div className="flex flex-wrap gap-4 justify-center md:gap-[85px]">
       {items.map((item, index) => (
-        <Link key={index} href={item.link} passHref>
-          <div className="w-[291px] h-[244px] bg-[#FFF8E1] flex flex-col items-center justify-center rounded-xl shadow-md cursor-pointer transition-transform hover:scale-105">
-            <img
+        <Link key={index} href={item.link} passHref legacyBehavior>
+          <div className="w-[280px] h-[220px] md:w-[291px] md:h-[244px] 
+                        bg-[#FFF8E1] flex flex-col items-center justify-center
+                         rounded-xl shadow-md cursor-pointer 
+                         transition-transform hover:scale-105">
+            <Image
               src={item.img}
               alt={item.label}
-              className="w-[165px] h-[145px] mt-2 object-cover rounded-lg"
+              width={165}
+              height={145}
+              className="mt-2 object-cover rounded-lg"
             />
-            <span className="font-semibold text-black pt-[22px]">{item.label}</span>
+            <span className="font-semibold text-black pt-4">{item.label}</span>
           </div>
         </Link>
       ))}
