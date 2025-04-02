@@ -1,6 +1,6 @@
 "use client";
 
-import { GROCERY_PRODUCTS } from "@/data/groceryData";
+import { FASHION_PRODUCTS } from "@/data/fashionData";
 import {
   Carousel,
   CarouselContent,
@@ -8,13 +8,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
-import ProCard from "./SecProductCard";
+import FashionCard from "./FashionCard";
 
 
 
-const SecondCarousel = ({category}) => {
+const FashionCarousel = ({category}) => {
 
-  const products = GROCERY_PRODUCTS[category] || [];
+  const products = FASHION_PRODUCTS[category] || [];
   return (
     <div className="py-6">
       <Carousel className="w-full mx-auto">
@@ -25,7 +25,7 @@ const SecondCarousel = ({category}) => {
               className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-[18.5%] flex-shrink-0"
             >
               <div className="p-1">
-              <ProCard {...product} />
+              <FashionCard {...product} />
               </div>
             </CarouselItem>
           ))}
@@ -37,4 +37,4 @@ const SecondCarousel = ({category}) => {
   );
 };
 
-export default SecondCarousel;
+export default FashionCarousel;

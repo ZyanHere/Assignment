@@ -4,20 +4,20 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
-const ProCard = ({ imageSrc, name, price, stockStatus }) => {
+const FashionCard = ({ imageSrc, name, price, stockStatus, gender }) => {
   const [added, setAdded] = useState(false);
 
   return (
-    <div className="flex flex-col items-left justify-left gap-3 w-[230px] h-[388px] border rounded-2xl shadow-sm p-4">
+    <div className="flex flex-col items-left justify-left gap-3 w-[230px] h-[388px] border rounded-2xl shadow-sm p-4 hover:shadow-md transition-shadow">
       <div className="relative flex items-center justify-center w-full h-[192px] bg-blue-50 rounded-xl p-6">
-        <Image
+      <Image
           src={imageSrc}
           alt={name}
-          width={148}
-          height={90}
-          className="w-[148px] h-[90px] object-contain"
-         
+          width={180}
+          height={180}
+          className="w-full h-full object-contain"
         />
+
 
         <Button
           onClick={() => setAdded(!added)}
@@ -37,7 +37,7 @@ const ProCard = ({ imageSrc, name, price, stockStatus }) => {
 
       <div className="w-full">
         <h3 className="text-lg font-bold">{name}</h3>
-        <p className="text-gray-600 text-sm">(100% Natural & Farm Fresh)</p>
+        <p className="text-gray-600 text-sm">For {gender.toLowerCase()}</p>
       </div>
 
       <div className="flex text-yellow-500 text-lg">
@@ -49,4 +49,4 @@ const ProCard = ({ imageSrc, name, price, stockStatus }) => {
   );
 };
 
-export default ProCard;
+export default FashionCard;
