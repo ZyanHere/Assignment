@@ -1,37 +1,17 @@
 "use client";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import useTimer from "@/lib/hooks/useTimer";
+import { useState } from "react";
+
 
 const ProductCard = ({ product }) => {
   const [added, setAdded] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(product.time));
-
-  function calculateTimeLeft(endTime) {
-    const difference = endTime - Date.now();
-    
-    if (difference <= 0) return { expired: true };
-
-    return {
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / 1000 / 60) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-      expired: false
-    };
-  }
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(product.time));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [product.time]);
+  const timeLeft = useTimer(product.time);
 
   return (
     <div className="pb-2">
       <div className="w-[180px] p-3 border border-blue-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-        {/* Product Image */}
         <div className="relative bg-blue-50 p-2 rounded-lg h-[120px]">
           <Image
             src={product.image}
@@ -41,13 +21,11 @@ const ProductCard = ({ product }) => {
           />
         </div>
 
-        {/* Product Details */}
         <h3 className="font-bold text-sm mt-2 line-clamp-1">{product.name}</h3>
         <p className="text-xs text-gray-500 line-clamp-1">({product.brand})</p>
         <p className="text-xs text-gray-500">{product.weight}</p>
         <p className="text-xs text-gray-500 line-clamp-1">By {product.seller}</p>
 
-        {/* Timer Section */}
         <div className="mt-2">
           {timeLeft.expired ? (
             <div className="text-center text-red-500 text-xs font-medium py-2">
@@ -71,7 +49,6 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* Price Details */}
         <div className="mt-2">
           <p className="text-sm text-blue-700 font-semibold">
             {product.discount}% OFF
@@ -86,7 +63,6 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        {/* Add Button */}
         <Button
           onClick={() => setAdded(!added)}
           variant="outline"

@@ -13,11 +13,11 @@
      <div className="flex">
        {/* Sidebar */}
        <Sidebar />
- 
-       <div className="flex-1">
-         <Header />
- 
-         <div className="p-6">
+
+       <div className="flex-1 flex flex-col">
+        <Header />
+
+         <main className="p-6 mx-auto w-full">
            {/* Breadcrumb - Default "Stores" */}
            <nav className="mb-4 text-black text-4xl">
              <Link href="/stores" className="hover:underline font-medium">
@@ -25,30 +25,37 @@
              </Link>
            </nav>
  
-           <StoreBanner />
+           <div className="mb-12">
+            <StoreBanner />
+          </div>
+
  
-           <div className="w-full max-w-[1500px] mx-auto mt-6">
-             <Image
-               src="/store/store2.png"
-               width={1500}
-               height={274}
-               className="w-full h-auto object-cover rounded-lg"
-               alt="Store Image"
-             />
-           </div>
+           <div className="mt-12 bg-white rounded-xl overflow-hidden shadow-lg">
+            <Image
+              src="/store/store2.png"
+              width={1500}
+              height={400}
+              className="w-full h-auto object-cover"
+              alt="Special offers"
+              priority
+            />
+          </div>
  
-           <h2 className="text-4xl font-semibold mt-8 mb-4">Stores nearby</h2>
- 
-           {/* Store Carousel */}
-           {Object.entries(storesData).map(([key, store]) =>
-             key !== "pantaloons" ? (
-               <StoreCarousel key={key} slug={key} {...store} />
-             ) : null
-           )}
-           {Object.entries(storesData).map(([key, store]) => (
-             <StoreCarousel key={key} slug={key} {...store} />
-           ))}
-         </div>
+          <section className="space-y-16 mt-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">
+              Stores Nearby
+            </h2>
+            
+            {Object.entries(storesData).map(([key, store]) => (
+              <StoreCarousel 
+                key={key} 
+                slug={key} 
+                {...store} 
+                className="mb-12 last:mb-0"
+              />
+            ))}
+          </section>
+         </main>
        </div>
      </div>
    );

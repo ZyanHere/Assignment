@@ -1,33 +1,13 @@
 "use client";
-
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import useTimer from "@/lib/hooks/useTimer";
 
-const CategoryCard = ({ image, name, weight, store, discount, mrp, price,time }) => {
+
+const CategoryCard = ({ image, name, weight, store, discount, mrp, price, time }) => {
   const [added, setAdded] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(time));
-
-  function calculateTimeLeft(endTime) {
-    const difference = endTime - Date.now();
-    
-    if (difference <= 0) return { expired: true };
-
-    return {
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / 1000 / 60) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-      expired: false
-    };
-  }
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(time));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [time]);
+  const timeLeft = useTimer(time);
 
   return (
     <div className="flex flex-col items-start gap-3 w-[230px] h-[390px] border rounded-2xl shadow-sm p-4 hover:shadow-md transition-shadow">
@@ -41,7 +21,6 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price,time })
           className="w-[148px] h-[90px] object-contain"
         />
 
-        {/* Add Button */}
         <Button
           onClick={() => setAdded(!added)}
           className="absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border border-blue-400 text-blue-400 font-medium rounded-md hover:bg-blue-100 transition bg-white shadow-md"
@@ -49,7 +28,6 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price,time })
           {added ? "✓" : "ADD"}
         </Button>
 
-        {/* Discount Badge */}
         {discount && (
           <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
             {discount}% OFF
@@ -57,16 +35,12 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price,time })
         )}
       </div>
 
-      {/* Product Name */}
       <h3 className="text-lg font-bold">{name}</h3>
-
-      {/* Weight & Store Name */}
       <p className="text-black text-md">{weight}</p>
       <p className="text-black text-md">By {store}</p>
 
-      {/* Timer */}
-       {/* Timer Section */}
-       <div className="mt-2 w-full">
+      {/* Timer Section */}
+      <div className="mt-2 w-full">
         {timeLeft.expired ? (
           <div className="text-center text-red-500 text-sm font-medium">
             Offer Expired
@@ -97,7 +71,6 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price,time })
         )}
       </div>
 
-      {/* Price Section */}
       <div className="flex items-center gap-2">
         <p className="text-gray-400 line-through text-md">₹{mrp}</p>
         <p className="text-lg font-bold">₹{price}</p>
