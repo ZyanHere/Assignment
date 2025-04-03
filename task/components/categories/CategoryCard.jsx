@@ -1,14 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
-const CategoryCard = ({ image, name, weight, store, discount, mrp, price }) => {
+const CategoryCard = ({ image, name, weight, store, discount, mrp, price,time }) => {
   const [added, setAdded] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(time));
+
+  function calculateTimeLeft(endTime) {
+    const difference = endTime - Date.now();
+    
+    if (difference <= 0) return { expired: true };
+
+    return {
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+      expired: false
+    };
+  }
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft(time));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [time]);
 
   return (
-    <div className="flex flex-col items-start gap-3 w-[230px] h-[390px] border rounded-2xl shadow-sm p-4">
+    <div className="flex flex-col items-start gap-3 w-[230px] h-[390px] border rounded-2xl shadow-sm p-4 hover:shadow-md transition-shadow">
       {/* Product Image */}
       <div className="relative flex items-center justify-center w-[194.287px] h-[192.804px] bg-blue-50 rounded-xl p-6">
         <Image
@@ -28,9 +50,11 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price }) => {
         </Button>
 
         {/* Discount Badge */}
-        <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
-          {discount}
-        </span>
+        {discount && (
+          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+            {discount}% OFF
+          </span>
+        )}
       </div>
 
       {/* Product Name */}
@@ -41,17 +65,42 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price }) => {
       <p className="text-black text-md">By {store}</p>
 
       {/* Timer */}
-      <p className="text-lg text-black mt-1 tracking-widest flex justify-between  w-[150px] mx-auto">
-          <span>03</span> : <span>01</span> : <span>23</span>
-        </p>
-        <p className="text-[10px] flex justify-between w-[150px] mx-auto tracking-wider">
-          <span>hours</span> <span>minutes</span> <span>seconds</span>
-        </p>
+       {/* Timer Section */}
+       <div className="mt-2 w-full">
+        {timeLeft.expired ? (
+          <div className="text-center text-red-500 text-sm font-medium">
+            Offer Expired
+          </div>
+        ) : (
+          <div className="flex justify-center gap-3 text-sm bg-gray-100 p-2 rounded">
+            <div className="flex flex-col items-center">
+              <span className="font-bold text-lg">
+                {String(timeLeft.hours).padStart(2, '0')}
+              </span>
+              <span className="text-xs text-gray-500">hours</span>
+            </div>
+            <span className="text-lg">:</span>
+            <div className="flex flex-col items-center">
+              <span className="font-bold text-lg">
+                {String(timeLeft.minutes).padStart(2, '0')}
+              </span>
+              <span className="text-xs text-gray-500">minutes</span>
+            </div>
+            <span className="text-lg">:</span>
+            <div className="flex flex-col items-center">
+              <span className="font-bold text-lg">
+                {String(timeLeft.seconds).padStart(2, '0')}
+              </span>
+              <span className="text-xs text-gray-500">seconds</span>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Price Section */}
       <div className="flex items-center gap-2">
-        <p className="text-gray-400 line-through text-sm">{mrp}</p>
-        <p className="text-lg font-bold">{price}</p>
+        <p className="text-gray-400 line-through text-md">₹{mrp}</p>
+        <p className="text-lg font-bold">₹{price}</p>
       </div>
     </div>
   );

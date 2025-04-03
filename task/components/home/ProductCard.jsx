@@ -4,85 +4,97 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 
 const ProductCard = ({ product }) => {
-  const [timeLeft, setTimeLeft] = useState(product.initialTime);
+  const [added, setAdded] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(product.time));
+
+  function calculateTimeLeft(endTime) {
+    const difference = endTime - Date.now();
+    
+    if (difference <= 0) return { expired: true };
+
+    return {
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+      expired: false
+    };
+  }
 
   useEffect(() => {
-    if (timeLeft <= 0) return;
-
-    const timerId = setInterval(() => {
-      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft(product.time));
     }, 1000);
 
-    return () => clearInterval(timerId);
-  }, [timeLeft]);
-
-  const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return {
-      hours: hours.toString().padStart(2, "0"),
-      minutes: minutes.toString().padStart(2, "0"),
-      seconds: secs.toString().padStart(2, "0"),
-    };
-  };
-
-  const { hours, minutes, seconds } = formatTime(timeLeft);
+    return () => clearInterval(timer);
+  }, [product.time]);
 
   return (
     <div className="pb-2">
-      <div className="w-[180px] p-3 border border-blue-200 rounded-lg shadow-sm">
+      <div className="w-[180px] p-3 border border-blue-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
         {/* Product Image */}
-        <div className="bg-blue-50 p-2 rounded-lg">
+        <div className="relative bg-blue-50 p-2 rounded-lg h-[120px]">
           <Image
             src={product.image}
             alt={product.name}
-            width={150}
-            height={100}
-            className="mx-auto"
+            fill
+            className="object-contain"
           />
         </div>
 
         {/* Product Details */}
-        <h3 className="font-bold text-sm mt-2">{product.name}</h3>
-        <p className="text-xs text-gray-500">({product.brand})</p>
+        <h3 className="font-bold text-sm mt-2 line-clamp-1">{product.name}</h3>
+        <p className="text-xs text-gray-500 line-clamp-1">({product.brand})</p>
         <p className="text-xs text-gray-500">{product.weight}</p>
-        <p className="text-xs text-gray-500">By {product.seller}</p>
+        <p className="text-xs text-gray-500 line-clamp-1">By {product.seller}</p>
 
-        {/* Timer */}
-        <div className="flex flex-col items-center mt-2">
-          {/* Time values with colons */}
-          <div className="flex items-center justify-center gap-1 text-blue-700 text-sm font-medium">
-            <span>{hours}</span>
-            <span>:</span>
-            <span>{minutes}</span>
-            <span>:</span>
-            <span>{seconds}</span>
-          </div>
-
-          {/* Labels */}
-          <div className="flex items-center justify-center gap-6 text-gray-500 text-xs mt-1">
-            <span className="w-6 text-center">hours</span>
-            <span className="w-6 text-center">min</span>
-            <span className="w-6 text-center">sec</span>
-          </div>
+        {/* Timer Section */}
+        <div className="mt-2">
+          {timeLeft.expired ? (
+            <div className="text-center text-red-500 text-xs font-medium py-2">
+              Offer Expired
+            </div>
+          ) : (
+            <div className="flex flex-col items-center bg-gray-100 rounded p-1">
+              <div className="flex items-center justify-center gap-1 text-blue-700 text-sm font-medium">
+                <span>{String(timeLeft.hours).padStart(2, '0')}</span>
+                <span>:</span>
+                <span>{String(timeLeft.minutes).padStart(2, '0')}</span>
+                <span>:</span>
+                <span>{String(timeLeft.seconds).padStart(2, '0')}</span>
+              </div>
+              <div className="flex items-center justify-center gap-4 text-gray-500 text-[10px] mt-1">
+                <span className="w-6 text-center">hours</span>
+                <span className="w-6 text-center">min</span>
+                <span className="w-6 text-center">sec</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Price Details */}
-        <p className="text-sm text-blue-700 font-semibold mt-1">
-          {product.discount}% OFF
-        </p>
-        <p className="text-xs text-gray-400 line-through">
-          MRP: ₹{product.originalPrice}
-        </p>
-        <p className="text-sm font-bold">₹{product.discountedPrice}</p>
+        <div className="mt-2">
+          <p className="text-sm text-blue-700 font-semibold">
+            {product.discount}% OFF
+          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-gray-400 line-through">
+              ₹{product.originalPrice}
+            </p>
+            <p className="text-sm font-bold text-green-600">
+              ₹{product.discountedPrice}
+            </p>
+          </div>
+        </div>
 
         {/* Add Button */}
         <Button
+          onClick={() => setAdded(!added)}
           variant="outline"
-          className="w-full mt-2 text-blue-700 border-blue-200"
+          className={`w-full mt-2 border-blue-200 ${
+            added ? "text-green-500" : "text-blue-700"
+          }`}
         >
-          ADD
+          {added ? "✓ Added" : "ADD"}
         </Button>
       </div>
     </div>

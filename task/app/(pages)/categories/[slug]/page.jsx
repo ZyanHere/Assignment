@@ -7,6 +7,7 @@ import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
 import categoryData from "@/data/categoryData";
 import CategoryCarousel from "@/components/categories/CategoryCarousel";
+import { FilterButton } from "../page";
 
 const CategorySlugPage = () => {
   const { slug } = useParams();
@@ -32,68 +33,29 @@ const CategorySlugPage = () => {
         <Header />
 
         <div className="p-6">
-          <div className="flex justify-between items-center px-6 py-1 ">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-2 md:px-6 py-1">
             {/* breadcrumb */}
             <nav className="mb-4 text-2xl">
               <Link href="/categories" className="hover:underline font-medium">
                 Categories
               </Link>
-              <span className="mx-2 text-gray-400">&gt;</span>
+              <span className="mx-2">&gt;</span>
               <span className="font-semibold text-yellow-500">
                 {category.name}
               </span>
             </nav>
 
-            <div className="flex items-center gap-4">
-              <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100">
-                <Image
-                  src="/categories/icon.svg"
-                  alt="Filter"
-                  width={20}
-                  height={20}
-                />
-                Filters
-                <Image
-                  src="/categories/down.svg"
-                  alt="Arrow"
-                  width={16}
-                  height={16}
-                  className="ml-5"
-                />
-              </button>
-              <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100 ml-4">
-                <Image
-                  src="/categories/icon.svg"
-                  alt="Sort"
-                  width={20}
-                  height={20}
-                />
-                Sort
-                <Image
-                  src="/categories/down.svg"
-                  alt="Arrow"
-                  width={16}
-                  height={16}
-                  className="ml-5"
-                />
-              </button>
+            <div className="flex gap-2 w-full md:w-auto">
+              <FilterButton>Filters</FilterButton>
+              <FilterButton>Sort</FilterButton>
             </div>
           </div>
+
+
           {/* subcategories */}
-          <div className="grid grid-cols-5 gap-6 px-8 mt-4">
-            {category.subcategories?.map((sub) => (
-              <Link key={sub.slug} href={`/categories/${slug}/${sub.slug}`}>
-                <div className="flex flex-col items-center cursor-pointer hover:scale-105 transition">
-                  <Image
-                    src={sub.image || "/categories/default.png"}
-                    alt={sub.name}
-                    width={100}
-                    height={100}
-                    className="w-24 h-18 object-contain"
-                  />
-                  <p className="text-center mt-2 font-semibold">{sub.name}</p>
-                </div>
-              </Link>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-2 md:px-8 mt-6">
+          {category.subcategories?.map((sub) => (
+              <SubcategoryItem key={sub.slug} slug={slug} sub={sub} />
             ))}
           </div>
           <div className="p-8">
@@ -107,5 +69,24 @@ const CategorySlugPage = () => {
     </div>
   );
 };
+
+
+const SubcategoryItem = ({ slug, sub }) => (
+  <Link href={`/categories/${slug}/${sub.slug}`} className="group">
+    <div className="flex flex-col items-center p-3 hover:bg-gray-50 rounded-xl transition-all">
+      <div className="relative w-20 h-20 md:w-24 md:h-24">
+        <Image
+          src={sub.image || "/categories/default.png"}
+          alt={sub.name}
+          fill
+          className="object-contain"
+        />
+      </div>
+      <p className="text-center mt-2 text-sm md:text-base font-medium group-hover:text-blue-600">
+        {sub.name}
+      </p>
+    </div>
+  </Link>
+);
 
 export default CategorySlugPage;

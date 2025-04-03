@@ -26,94 +26,25 @@ const CategoryPage = () => {
             </nav>
 
             {/* Filters and Sort Buttons */}
-            <div className="flex items-center gap-4">
-              <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100">
-                <Image
-                  src="/categories/icon.svg"
-                  alt="Filter"
-                  width={20}
-                  height={20}
-                />
-                Filters
-                <Image
-                  src="/categories/down.svg"
-                  alt="Arrow"
-                  width={16}
-                  height={16}
-                  className="ml-5"
-                />
-              </button>
-              <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100 ml-4">
-                <Image
-                  src="/categories/icon.svg"
-                  alt="Sort"
-                  width={20}
-                  height={20}
-                />
-                Sort
-                <Image
-                  src="/categories/down.svg"
-                  alt="Arrow"
-                  width={16}
-                  height={16}
-                  className="ml-5"
-                />
-              </button>
+            <div className="flex gap-2 w-full md:w-auto">
+              <FilterButton>Filters</FilterButton>
+              <FilterButton>Sort</FilterButton>
             </div>
           </div>
 
           {/* categories */}
-          <div className="grid grid-cols-8 gap-6 px-8 mt-2">
-          {Object.values(categoryData).map((category) => {
-              const isAllCategory = category.slug === "all";
-              return isAllCategory ? (
-                // "all" category stays on the same page
-                <div key={category.slug} className="flex flex-col items-center">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    width={100}
-                    height={100}
-                    className="w-24 h-18 object-contain"
-                  />
-                  <p className="text-center mt-2 font-bold text-yellow-400">
-                    {category.name}
-                  </p>
-                </div>
-              ) : (
-                // other categories to slug
-                <Link key={category.slug} href={`/categories/${category.slug}`}>
-                  <div className="flex flex-col items-center cursor-pointer hover:scale-105 transition">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      width={100}
-                      height={100}
-                      className="w-24 h-18 object-contain"
-                    />
-                    <p className="text-center mt-2 font-semibold">
-                      {category.name}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4 px-2 md:px-8 mt-4">
+            {Object.entries(categoryData).map(([slug, category]) => (
+              <CategoryItem key={slug} slug={slug} category={category} />
+            ))}
           </div>
 
-          <div className="mt-6 flex justify-center">
-            <Image
-              src="/categories/category-bg.png"
-              alt="Category Background"
-              width={1400}
-              height={400}
-              className="w-[1500px] h-[400px] max-w-full object-cover"
-            />
+          <div className="mt-6 mx-2 md:mx-auto">
+            <ResponsivePromoBanner />
           </div>
 
           <div className="p-8">
             <CategoryCarousel />
-          </div>
-          <div className="p-8">
             <CategoryCarousel />
           </div>
           
@@ -123,5 +54,58 @@ const CategoryPage = () => {
     </div>
   );
 };
+
+export const FilterButton = ({ children }) => (
+  <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100 w-full md:w-auto justify-center">
+    <Image
+      src="/categories/icon.svg"
+      alt="icon"
+      width={20}
+      height={20}
+      className="shrink-0"
+    />
+    {children}
+    <Image
+      src="/categories/down.svg"
+      alt="arrow"
+      width={16}
+      height={16}
+      className="ml-2"
+    />
+  </button>
+);
+
+
+const CategoryItem = ({ slug, category }) => (
+  <Link href={`/categories/${slug}`} className="group">
+    <div className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-xl transition-all">
+      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24">
+        <Image
+          src={category.image}
+          alt={category.name}
+          fill
+          className="object-contain"
+        />
+      </div>
+      <p className={`text-center mt-2 text-sm md:text-base font-medium ${
+        slug === "all" ? "text-yellow-400" : "group-hover:text-blue-600"
+      }`}>
+        {category.name}
+      </p>
+    </div>
+  </Link>
+);
+
+const ResponsivePromoBanner = () => (
+  <div className="relative aspect-[3.5/1] w-full max-w-[1500px] ml-10 rounded-xl overflow-hidden">
+    <Image
+      src="/categories/category-bg.png"
+      alt="Category Background"
+      fill
+      className="object-cover"
+    />
+  </div>
+);
+
 
 export default CategoryPage;

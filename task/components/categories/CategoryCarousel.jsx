@@ -17,9 +17,10 @@ const categoryProducts = [
     name: "Fresh Pear",
     weight: "100 g",
     store: "Nature's Basket",
-    discount: "20% OFF",
-    mrp: "₹165",
-    price: "₹100",
+    discount: "20",
+    mrp: "165",
+    price: "100",
+    time: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
     image: "/categories/pear.png",
   },
   {
@@ -27,9 +28,10 @@ const categoryProducts = [
     name: "Gooseberry",
     weight: "100 g",
     store: "Nature's Basket",
-    discount: "20% OFF",
-    mrp: "₹165",
-    price: "₹100",
+    discount: "20",
+    mrp: "165",
+    price: "100",
+    time: Date.now() + 12 * 60 * 60 * 1000,  
     image: "/categories/gooseberry.png",
   },
   {
@@ -37,9 +39,10 @@ const categoryProducts = [
     name: "Beetroot",
     weight: "100 g",
     store: "Nature's Basket",
-    discount: "20% OFF",
-    mrp: "₹165",
-    price: "₹100",
+    discount: "20",
+    mrp: "165",
+    price: "100",
+    time: Date.now() + 12 * 60 * 60 * 1000,  
     image: "/categories/beetroot.png",
   },
   {
@@ -47,9 +50,10 @@ const categoryProducts = [
     name: "Exotic Brinjal",
     weight: "100 g",
     store: "Nature's Basket",
-    discount: "20% OFF",
-    mrp: "₹165",
-    price: "₹100",
+    discount: "20",
+    mrp: "165",
+    price: "100",
+    time: Date.now() + 12 * 60 * 60 * 1000, 
     image: "/categories/brinjal.png",
   },
   {
@@ -57,9 +61,10 @@ const categoryProducts = [
     name: "Custard Apple",
     weight: "100 g",
     store: "Nature's Basket",
-    discount: "20% OFF",
-    mrp: "₹165",
-    price: "₹100",
+    discount: "20",
+    mrp: "165",
+    price: "100",
+    time: Date.now() + 12 * 60 * 60 * 1000, 
     image: "/categories/custardapple.png",
   },
   {
@@ -67,9 +72,10 @@ const categoryProducts = [
     name: "Mango",
     weight: "100 g",
     store: "Nature's Basket",
-    discount: "20% OFF",
-    mrp: "₹165",
-    price: "₹100",
+    discount: "20",
+    mrp: "165",
+    price: "100",
+    time: Date.now() + 12 * 60 * 60 * 1000, 
     image: "/categories/mangoes.png",
   },
 ];
@@ -93,6 +99,7 @@ const CategoryCarousel = () => {
                   discount={product.discount}
                   mrp={product.mrp}
                   price={product.price}
+                  time={product.time}
                 />
               </div>
             </CarouselItem>
