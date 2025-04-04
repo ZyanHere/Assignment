@@ -15,36 +15,55 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-[280px] h-screen bg-white shadow-md p-5">
-      <div className="flex justify-left">
-        <Image src="/auth-asset/logo.png" alt="logo" width={66} height={50} />
-      </div>
+    <div className="w-[280px] h-screen bg-gray-50 shadow-sm border-r border-gray-100 p-6 flex flex-col">
+      {/* Logo */}
+      <Link href="/" className="pb-6 mb-6 border-b border-gray-100">
+        <Image 
+          src="/auth-asset/logo.png" 
+          alt="Logo" 
+          width={80} 
+          height={60}
+          className="hover:scale-105 transition-transform"
+        />
+      </Link>
 
-      {/* navigation */}
-      <nav className="flex flex-col mt-[12px] gap-2 ">
+      {/* Navigation */}
+      <nav className="flex flex-col gap-1 flex-1">
         {navItems.map((item) => (
           <Link key={item.name} href={item.path}>
             <div
-              className={`flex items-center gap-4 p-3 cursor-pointer 
-                        ${
-                          pathname === item.path
-                            ? "bg-[#FFFBEA] text-[#FBC02D] font-semibold border-r-4 border-[#FBC02D]"
-                            : "text-gray-700 hover:bg-[#FFFDE7]"
-                        }`}
+              className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all
+                ${
+                  pathname === item.path
+                    ? "bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 font-semibold shadow-sm"
+                    : "text-gray-600 hover:bg-gray-50 hover:pl-4"
+                }`}
             >
-              <Image src={item.icon} alt={item.name} width={24} height={24} />
-              <span className="text-lg">{item.name}</span>
+              <Image 
+                src={item.icon} 
+                alt={item.name} 
+                width={22} 
+                height={22}
+                className={`${pathname === item.path ? 'opacity-100' : 'opacity-70'}`}
+              />
+              <span className="text-[15px]">{item.name}</span>
             </div>
           </Link>
         ))}
       </nav>
 
       {/* Settings */}
-      <div className="mt-130">
+      <div className="pt-6 border-t border-gray-100">
         <Link href="/settings">
-          <div className="flex items-center gap-4 p-3 cursor-pointer transition-colors duration-200 text-gray-700 hover:text-black">
-            <Image src="/home/sidebar/settings.png" alt="Settings" width={24} height={24} />
-            <span className="text-lg">Settings</span>
+          <div className="flex items-center gap-3 p-3 text-gray-600 hover:bg-gray-50 rounded-xl transition hover:pl-4">
+            <Image
+              src="/home/sidebar/settings.png"
+              alt="Settings"
+              width={22}
+              height={22}
+              className="opacity-70"
+            />
+            <span className="text-[15px]">Settings</span>
           </div>
         </Link>
       </div>

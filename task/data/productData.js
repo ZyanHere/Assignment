@@ -9,7 +9,7 @@ export const products = [
       discountedPrice: 67460,
       discount: "20",
       image: "/home/essentials/Macbook.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 3 hours 1 min 23 sec in seconds
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ export const products = [
       discountedPrice: 19999,
       discount: "25",
       image: "/home/essentials/headphones.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 2 hours 45 min
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 3,
@@ -33,7 +33,7 @@ export const products = [
       discountedPrice: 67460,
       discount: "20",
       image: "/home/essentials/Macbook.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 3 hours 1 min 23 sec in seconds
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 4,
@@ -45,7 +45,7 @@ export const products = [
       discountedPrice: 19999,
       discount: "25",
       image: "/home/essentials/headphones.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 2 hours 45 min
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 5,
@@ -57,7 +57,7 @@ export const products = [
       discountedPrice: 67460,
       discount: "20",
       image: "/home/essentials/Macbook.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 3 hours 1 min 23 sec in seconds
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 6,
@@ -69,7 +69,7 @@ export const products = [
       discountedPrice: 19999,
       discount: "25",
       image: "/home/essentials/headphones.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 2 hours 45 min
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 7,
@@ -81,7 +81,7 @@ export const products = [
       discountedPrice: 67460,
       discount: "20",
       image: "/home/essentials/Macbook.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 3 hours 1 min 23 sec in seconds
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 8,
@@ -93,7 +93,7 @@ export const products = [
       discountedPrice: 19999,
       discount: "25",
       image: "/home/essentials/headphones.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 2 hours 45 min
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 9,
@@ -105,7 +105,7 @@ export const products = [
       discountedPrice: 67460,
       discount: "20",
       image: "/home/essentials/Macbook.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 3 hours 1 min 23 sec in seconds
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
     {
       id: 10,
@@ -117,7 +117,7 @@ export const products = [
       discountedPrice: 19999,
       discount: "25",
       image: "/home/essentials/headphones.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 2 hours 45 min
+      time: Date.now() + 24 * 60 * 60 * 1000
     },
     {
       id: 11,
@@ -129,7 +129,7 @@ export const products = [
       discountedPrice: 67460,
       discount: "20",
       image: "/home/essentials/Macbook.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 3 hours 1 min 23 sec in seconds
+      time: Date.now() + 24 * 60 * 60 * 1000
     },
     {
       id: 12,
@@ -141,7 +141,7 @@ export const products = [
       discountedPrice: 19999,
       discount: "25",
       image: "/home/essentials/headphones.png",
-      time: Date.now() + 24 * 60 * 60 * 1000 // 2 hours 45 min
+      time: Date.now() + 24 * 60 * 60 * 1000 
     },
   ];
   

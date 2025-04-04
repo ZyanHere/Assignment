@@ -33,10 +33,10 @@ const Essentials = () => {
       <h2 className="text-2xl font-semibold mb-6 text-black pl-4">
         Daily Essentials
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-4 ">
         {categories.map((item, index) => (
-          <div key={index} className="flex flex-col items-center text-center p-1">
-            <div className="bg-[#EFFAFB] p-2 rounded-lg shadow-md w-full aspect-square flex items-center justify-center">
+          <div key={index} className="flex flex-col items-center text-center p-1 ">
+            <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-lg  w-full aspect-square flex items-center justify-center shadow-lg cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5">
             <Image
                 src={item.img}
                 alt={item.label}

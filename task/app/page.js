@@ -38,13 +38,13 @@ const Home = () => {
       {/* Sidebar */}
       <Sidebar />
 
-      <div className="flex-1">
+      <div className="flex-1 bg-gray-100">
         {/* Header */}
         <Header />
 
         {/* this is state management */}
         <CategoryTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab}/> 
-        <div className="p-6">{renderTab()}</div>
+        <div className="p-6 ">{renderTab()}</div>
         
         <Footer />
       </div>
