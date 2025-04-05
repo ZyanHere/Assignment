@@ -16,68 +16,46 @@ export default function ProductClient({ product }) {
       <Sidebar />
       <div className="flex-1 bg-gray-100">
         <Header />
-        <div className="max-w-4xl mx-auto p-6">
-          {/* Product Header Section */}
-          <div className="flex gap-6 mb-8">
-            <div className="w-1/2 bg-blue-50 rounded-xl p-4">
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={400}
-                height={400}
-                className="object-contain w-full h-auto"
-              />
-            </div>
-
-            {/* Product Details */}
-            <div className="w-1/2 space-y-4">
-              <h1 className="text-3xl font-bold">{product.name}</h1>
-
-              {/* Price Section */}
-              <div className="flex items-center gap-4">
-                <span className="text-2xl font-bold text-green-600">
-                  ₹{product.price}
-                </span>
-                <span className="text-gray-400 line-through">
-                  ₹{product.mrp}
-                </span>
-                <span className="text-red-500 font-medium">
-                  {product.discount}
-                </span>
-              </div>
-
-              {/* Timer */}
-              {timeLeft && !timeLeft.expired && (
-                <div className="bg-gray-100 p-4 rounded-lg">
-                  <div className="flex gap-2 justify-center text-xl font-bold">
-                    <span>{String(timeLeft.hours).padStart(2, "0")}</span>:
-                    <span>{String(timeLeft.minutes).padStart(2, "0")}</span>:
-                    <span>{String(timeLeft.seconds).padStart(2, "0")}</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-500 mt-2">
-                    <span>HOURS</span>
-                    <span>MINUTES</span>
-                    <span>SECONDS</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Add to Cart Section */}
-              <button className="w-full py-3 bg-yellow-500 text-white font-bold rounded hover:bg-yellow-600 transition">
-                ADD TO CART
-              </button>
-            </div>
+        <div className="flex gap-8 p-6 bg-white rounded-lg shadow-md">
+          <div className="relative w-80 h-80 rounded-lg overflow-hidden bg-green-200">
+            <Image
+              src={product.image}
+              alt={product.name}
+              height={300}
+              width={300}
+              objectFit="cover"
+              className="mt-6 ml-4"
+            />
           </div>
 
-          {/* Product Description */}
-          <div className="mb-8">
-            <h2 className="text-xl font-bold mb-4">Description</h2>
-            <p className="text-gray-600">
-              {product.details?.description || "No description available"}
-            </p>
-          </div>
+        <div>
+          <h1 className="text-2xl font-bold">{product.name}</h1>
+          <p className="text-gray-800">{product.category}</p>
+          <p className="text-lg font-semibold">
+            MRP: <span className="line-through">{product.mrp}</span>{' '}
+            <span className="text-green-600">₹{product.price}</span>
+          </p>
+        </div>
+
         </div>
       </div>
     </div>
   );
 }
+
+
+ {/* Timer */}
+          {/* {timeLeft && !timeLeft.expired && (
+                <div className="bg-gray-100 p-2 rounded-lg">
+                  <div className="flex gap-2 justify-center text-xl font-bold">
+                    <span>{String(timeLeft.hours).padStart(2, "0")}</span>:
+                    <span>{String(timeLeft.minutes).padStart(2, "0")}</span>:
+                    <span>{String(timeLeft.seconds).padStart(2, "0")}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-500 mt-1">
+                    <span>HOURS</span>
+                    <span>MINUTES</span>
+                    <span>SECONDS</span>
+                  </div>
+                </div>
+              )} */}

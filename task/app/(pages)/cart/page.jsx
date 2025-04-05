@@ -25,17 +25,23 @@ import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
 import Link from "next/link";
 import Image from "next/image";
+import { useCart } from "@/lib/contexts/cart-context";
 
-const initialCart = [
-  {
-    id: 1,
-    name: "Pear",
-    brand: "Pantaloons",
-    price: 165,
-    quantity: 1,
-    image: "/categories/pear.png",
-  },
-];
+// const initialCart = [
+//   {
+//     id: 1,
+//     name: "Pear",
+//     brand: "Pantaloons",
+//     price: 165,
+//     quantity: 1,
+//     image: "/categories/pear.png",
+//   },
+// ];
+
+const formatCurrency = (amount) =>
+  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(
+    amount
+  );
 
 const addresses = [
   {
@@ -48,47 +54,65 @@ const addresses = [
   },
 ];
 
-const billDetails = {
-  subTotal: { label: "Sub total", amount: 100, mrp: 165, icon: <Receipt /> },
-  deliveryFee: {
-    label: "Delivery fee",
-    amount: 0,
-    original: 165,
-    icon: <Truck />,
-  },
-  transactionFee: { label: "Transaction fee", amount: 20, icon: <Wallet /> },
-  savings: { label: "Total savings", amount: 30, icon: <HandCoins /> },
-};
 
-const grandTotal =
-  billDetails.subTotal.amount +
-  billDetails.deliveryFee.amount +
-  billDetails.transactionFee.amount -
-  billDetails.savings.amount;
 
-billDetails.grandTotal = { label: "Grand Total", amount: grandTotal };
 
 export default function CartPage() {
-  const [cart, setCart] = useState(initialCart);
+  const { cart, updateQuantity, removeItem } = useCart();
   const [purchaseMode, setPurchaseMode] = useState("homeDelivary");
   const [selectedAddress, setSelectedAddress] = useState(1);
   const [activeInstruction, setActiveInstruction] = useState("soundbite");
 
-  // Update Quantity
-  const updateQuantity = (id, amount) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + amount) }
-          : item
-      )
-    );
+   // Calculate bill details
+   const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const deliveryFee = 0;
+  const transactionFee = 20;
+  const savings = 30;
+  const grandTotal = subtotal + deliveryFee + transactionFee - savings;
+
+  const billDetails = {
+    subTotal: {
+      label: "Sub total",
+      amount: subtotal,
+      mrp: subtotal + 65,
+      icon: <Receipt />,
+    },
+    deliveryFee: {
+      label: "Delivery fee",
+      amount: deliveryFee,
+      original: 165,
+      icon: <Truck />,
+    },
+    transactionFee: {
+      label: "Transaction fee",
+      amount: transactionFee,
+      icon: <Wallet />,
+    },
+    savings: { label: "Total savings", amount: savings, icon: <HandCoins /> },
+    grandTotal: {
+      label: "Grand Total",
+      amount: grandTotal,
+    },
   };
 
+  // Update Quantity
+  // const updateQuantity = (id, amount) => {
+  //   setCart((prevCart) =>
+  //     prevCart.map((item) =>
+  //       item.id === id
+  //         ? { ...item, quantity: Math.max(1, item.quantity + amount) }
+  //         : item
+  //     )
+  //   );
+  // };
+
   // Remove Item
-  const removeItem = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  };
+  // const removeItem = (id) => {
+  //   setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  // };
 
   return (
     <div className="flex">
@@ -107,70 +131,80 @@ export default function CartPage() {
           </nav>
 
           {/* Cart Table */}
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[300px]">Product</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead className="text-center">Quantity</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {cart.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="flex items-center space-x-4">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={100}
-                        height={100}
-                        className="w-14 h-14 rounded-lg"
-                      />
-                      <div>
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-gray-500">By {item.brand}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>MRP ₹{item.price}</TableCell>
-                    <TableCell className="text-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, -1)}
-                      >
-                        -
-                      </Button>
-                      <span className="mx-2">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, 1)}
-                      >
-                        +
-                      </Button>
-                    </TableCell>
-                    <TableCell>MRP ₹{item.price * item.quantity}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        onClick={() => removeItem(item.id)}
-                      >
-                        <Trash2 size={18} />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-            {/* Checkout Button */}
-            <div className="flex justify-end mt-4">
-              <Button className="bg-green-500 text-white">+ Let's Go</Button>
+          {cart.length === 0 ? (
+            <div className="text-center py-8 text-green-700">
+              Your cart is empty.{" "}
+              <Link href="/" className="text-blue-500 hover:underline">
+                Continue shopping
+              </Link>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="bg-white shadow-md rounded-lg p-4">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[300px]">Product</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead className="text-center">Quantity</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {cart.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="flex items-center space-x-4">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            width={100}
+                            height={100}
+                            className="w-14 h-14 rounded-lg"
+                          />
+                          <div>
+                            <p className="font-medium">{item.name}</p>
+                            <p className="text-sm text-gray-500">
+                              By {item.brand}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell>MRP ₹{item.price}</TableCell>
+                        <TableCell className="text-center">
+                        <Button
+                          onClick={() => updateQuantity(item.cartId, -1)}
+                        >
+                            -
+                          </Button>
+                          <span className="mx-2">{item.quantity}</span>
+                          <Button
+                          onClick={() => updateQuantity(item.cartId, 1)}
+                        >
+                            +
+                          </Button>
+                        </TableCell>
+                        <TableCell>MRP ₹{item.price * item.quantity}</TableCell>
+                        <TableCell>
+                        <Button
+                          onClick={() => removeItem(item.cartId)}
+                        >
+                            <Trash2 size={18} />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+
+                {/* Checkout Button */}
+                <div className="flex justify-end mt-4">
+                  <Button className="bg-green-500 text-white">
+                    + Let's Go
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Purchase Mode & Address Section */}
           <div className="p-6 bg-white shadow-md rounded-lg mt-6">

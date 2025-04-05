@@ -5,7 +5,7 @@ const storesData = {
     "logo": "/store/pantaloons-logo.png",
     "distance": "4 km",
     "banner": "/store/pantaloons-banner.png",
-    "sections": ["Fashion", "Apparel"], // Sections for Pantaloons
+    "sections": ["Fashion", "Apparel"], 
     "products": [
       {
         "id": 1,
@@ -15,9 +15,10 @@ const storesData = {
         "weight": "1 Piece",
         "price": 1200,
         "mrp": 1500,
-        "discount": "20% OFF",
+        "discount": "20",
         "details": {
           image: "/store/pear.png",
+          rating: "4",
           description: "A pear is a sweet, bell-shaped fruit with a juicy texture and a slightly grainy flesh. It comes in various colors, including green, yellow, and red, and is rich in fiber and antioxidants.",
           seller: {
             license: "1111222333444556",
@@ -45,9 +46,10 @@ const storesData = {
         "weight": "1 Piece",
         "price": 2500,
         "mrp": 3000,
-        "discount": "15% OFF",
+        "discount": "15",
         "details": {
           image: "/store/pear.png",
+          rating: "4",
           description: "A pear is a sweet, bell-shaped fruit with a juicy texture and a slightly grainy flesh. It comes in various colors, including green, yellow, and red, and is rich in fiber and antioxidants.",
           seller: {
             license: "1111222333444556",
@@ -85,9 +87,10 @@ const storesData = {
         "weight": "100g",
         "price": 100,
         "mrp": 125,
-        "discount": "20% OFF",
+        "discount": "20",
         "details": {
           image: "/store/pear.png",
+          rating: "4",
           description: "A pear is a sweet, bell-shaped fruit with a juicy texture and a slightly grainy flesh. It comes in various colors, including green, yellow, and red, and is rich in fiber and antioxidants.",
           seller: {
             license: "1111222333444556",
@@ -114,9 +117,10 @@ const storesData = {
         "weight": "500g",
         "price": 80,
         "mrp": 100,
-        "discount": "20% OFF",
+        "discount": "20",
         "details": {
           image: "/store/pear.png",
+          rating: "4",
           description: "A pear is a sweet, bell-shaped fruit with a juicy texture and a slightly grainy flesh. It comes in various colors, including green, yellow, and red, and is rich in fiber and antioxidants.",
           seller: {
             license: "1111222333444556",
@@ -154,9 +158,10 @@ const storesData = {
         "weight": "1L",
         "price": 50,
         "mrp": 60,
-        "discount": "15% OFF",
+        "discount": "15",
         "details": {
           image: "/store/pear.png",
+          rating: "4",
           description: "A pear is a sweet, bell-shaped fruit with a juicy texture and a slightly grainy flesh. It comes in various colors, including green, yellow, and red, and is rich in fiber and antioxidants.",
           seller: {
             license: "1111222333444556",
@@ -183,9 +188,10 @@ const storesData = {
         "weight": "1L",
         "price": 150,
         "mrp": 180,
-        "discount": "16% OFF",
+        "discount": "16",
         "details": {
           image: "/store/pear.png",
+          rating: "4",
           description: "A pear is a sweet, bell-shaped fruit with a juicy texture and a slightly grainy flesh. It comes in various colors, including green, yellow, and red, and is rich in fiber and antioxidants.",
           seller: {
             license: "1111222333444556",

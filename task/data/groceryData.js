@@ -3,6 +3,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 1,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Broccoli",
           price: "100",
           stockStatus: "Few stock left",
@@ -10,6 +11,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 2,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Apple",
           price: "150",
           stockStatus: "In stock",
@@ -17,6 +19,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 3,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Carrot",
           price: "80",
           stockStatus: "Few stock left",
@@ -24,6 +27,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 4,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Tomato",
           price: "60",
           stockStatus: "In stock",
@@ -31,6 +35,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 5,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Milk",
           price: "50",
           stockStatus: "Limited stock",
@@ -38,6 +43,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 6,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Banana",
           price: "120",
           stockStatus: "Fresh stock",
@@ -45,6 +51,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 7,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Orange",
           price: "130",
           stockStatus: "In stock",
@@ -52,6 +59,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 8,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Onion",
           price: "90",
           stockStatus: "Few stock left",
@@ -59,6 +67,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 9,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Grapes",
           price: "200",
           stockStatus: "Fresh stock",
@@ -66,6 +75,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 10,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Potato",
           price: "40",
           stockStatus: "In stock",
@@ -73,6 +83,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 11,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Pineapple",
           price: "250",
           stockStatus: "Limited stock",
@@ -80,6 +91,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 12,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Watermelon",
           price: "300",
           stockStatus: "Fresh stock",
@@ -89,6 +101,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 1,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Broccoli",
           price: "100",
           stockStatus: "Few stock left",
@@ -96,6 +109,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 2,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Apple",
           price: "150",
           stockStatus: "In stock",
@@ -103,6 +117,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 3,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Carrot",
           price: "80",
           stockStatus: "Few stock left",
@@ -110,6 +125,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 4,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Tomato",
           price: "60",
           stockStatus: "In stock",
@@ -117,6 +133,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 5,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Milk",
           price: "50",
           stockStatus: "Limited stock",
@@ -124,6 +141,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 6,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Banana",
           price: "120",
           stockStatus: "Fresh stock",
@@ -131,6 +149,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 7,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Orange",
           price: "130",
           stockStatus: "In stock",
@@ -138,6 +157,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 8,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Onion",
           price: "90",
           stockStatus: "Few stock left",
@@ -145,6 +165,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 9,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Grapes",
           price: "200",
           stockStatus: "Fresh stock",
@@ -152,6 +173,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 10,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Potato",
           price: "40",
           stockStatus: "In stock",
@@ -159,6 +181,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 11,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Pineapple",
           price: "250",
           stockStatus: "Limited stock",
@@ -166,6 +189,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 12,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Watermelon",
           price: "300",
           stockStatus: "Fresh stock",
@@ -175,6 +199,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 1,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Broccoli",
           price: "100",
           stockStatus: "Few stock left",
@@ -182,6 +207,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 2,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Apple",
           price: "150",
           stockStatus: "In stock",
@@ -189,6 +215,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 3,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Carrot",
           price: "80",
           stockStatus: "Few stock left",
@@ -196,6 +223,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 4,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Tomato",
           price: "60",
           stockStatus: "In stock",
@@ -203,6 +231,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 5,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Milk",
           price: "50",
           stockStatus: "Limited stock",
@@ -210,6 +239,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 6,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Banana",
           price: "120",
           stockStatus: "Fresh stock",
@@ -217,6 +247,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 7,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Orange",
           price: "130",
           stockStatus: "In stock",
@@ -224,6 +255,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 8,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Onion",
           price: "90",
           stockStatus: "Few stock left",
@@ -231,6 +263,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 9,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Grapes",
           price: "200",
           stockStatus: "Fresh stock",
@@ -238,6 +271,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 10,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Potato",
           price: "40",
           stockStatus: "In stock",
@@ -245,6 +279,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 11,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Pineapple",
           price: "250",
           stockStatus: "Limited stock",
@@ -252,6 +287,7 @@ export const GROCERY_PRODUCTS = {
         {
           id: 12,
           imageSrc: "/home/grocery/broccoli.png",
+          brand: "BigBazzar",
           name: "Watermelon",
           price: "300",
           stockStatus: "Fresh stock",
