@@ -2,11 +2,29 @@
 import Image from "next/image";
 import { Button } from "../ui/button";
 import useTimer from "@/lib/hooks/useTimer";
-import { useState } from "react";
+import { useCart } from "@/lib/contexts/cart-context";
 
 const ProductCard = ({ product }) => {
-  const [added, setAdded] = useState(false);
   const timeLeft = useTimer(product.time);
+  const { addToCart, cart } = useCart();
+
+  // Check if this specific product is already in the cart by its unique ID
+  const isInCart = cart.some(item => item.id === product.id);
+
+  const handleAddToCart = () => {
+    if (!isInCart) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        seller: product.seller,
+        price: product.discountedPrice,
+        mrp: product.originalPrice,
+        image: product.image,
+        weight: product.weight
+      });
+    }
+  };
 
   return (
     <div className="pb-2 group">
@@ -65,13 +83,13 @@ const ProductCard = ({ product }) => {
         </div>
 
         <Button
-          onClick={() => setAdded(!added)}
+          onClick={handleAddToCart}
           variant="outline"
           className={`w-full mt-3 font-bold tracking-wide border-blue-200 ${
-            added ? "text-green-500" : "text-yellow-600"
+            isInCart ? "text-green-500" : "text-yellow-600"
           }`}
         >
-          {added ? "✓ Added" : "ADD TO CART"}
+          {isInCart ? "✓ Added" : "ADD TO CART"}
         </Button>
       </div>
     </div>

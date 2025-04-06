@@ -1,7 +1,7 @@
 export const eventData = {
     "UpcomingEvents": [
         {
-            "id": 1,
+            "id": 601,
             "title": "Satellite Mega Festival - 2023",
             "date": "15 Nov 2023",
             "time": "05:00 PM",
@@ -20,7 +20,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 2,
+            "id": 602,
             "title": "Satellite Mega Festival - 2023",
             "date": "22 Nov 2023",
             "time": "06:30 PM",
@@ -39,7 +39,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 3,
+            "id": 603,
             "title": "Satellite Mega Festival - 2023",
             "date": "15 Nov 2023",
             "time": "05:00 PM",
@@ -58,7 +58,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 4,
+            "id": 604,
             "title": "Satellite Mega Festival - 2023",
             "date": "22 Nov 2023",
             "time": "06:30 PM",
@@ -79,7 +79,7 @@ export const eventData = {
     ],
     "FeaturedEvents": [
         {
-            "id": 1,
+            "id": 605,
             "title": "Satellite Mega Festival - 2023",
             "date": "15 Nov 2023",
             "time": "05:00 PM",
@@ -98,7 +98,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 2,
+            "id": 606,
             "title": "Satellite Mega Festival - 2023",
             "date": "22 Nov 2023",
             "time": "06:30 PM",
@@ -117,7 +117,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 3,
+            "id": 607,
             "title": "Satellite Mega Festival - 2023",
             "date": "15 Nov 2023",
             "time": "05:00 PM",
@@ -136,7 +136,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 4,
+            "id": 608,
             "title": "Satellite Mega Festival - 2023",
             "date": "22 Nov 2023",
             "time": "06:30 PM",
@@ -157,7 +157,7 @@ export const eventData = {
     ],
     "RecommendedEvents": [
         {
-            "id": 1,
+            "id": 609,
             "title": "Satellite Mega Festival - 2023",
             "date": "15 Nov 2023",
             "time": "05:00 PM",
@@ -176,7 +176,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 2,
+            "id": 610,
             "title": "Satellite Mega Festival - 2023",
             "date": "22 Nov 2023",
             "time": "06:30 PM",
@@ -195,7 +195,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 3,
+            "id": 611,
             "title": "Satellite Mega Festival - 2023",
             "date": "15 Nov 2023",
             "time": "05:00 PM",
@@ -214,7 +214,7 @@ export const eventData = {
             ]
         },
         {
-            "id": 4,
+            "id": 612,
             "title": "Satellite Mega Festival - 2023",
             "date": "22 Nov 2023",
             "time": "06:30 PM",

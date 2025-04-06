@@ -8,7 +8,7 @@ const storesData = {
     "sections": ["Fashion", "Apparel"], 
     "products": [
       {
-        "id": 1,
+        "id": 201,
         "name": "Men's Casual Shirt",
         "category": "Fashion",
         "image": "/store/shirt.png",
@@ -39,7 +39,7 @@ const storesData = {
 
       },
       {
-        "id": 2,
+        "id": 202,
         "name": "Women's Saree",
         "category": "Apparel",
         "image": "/store/saree.png",
@@ -77,10 +77,10 @@ const storesData = {
     "logo": "/store/nature-logo.png",
     "distance": "2 km",
     "banner": "/store/natures-basket-banner.png",
-    "sections": ["Farm Fresh Fruits", "Fresh Vegetables"], // Sections for Nature's Basket
+    "sections": ["Farm Fresh Fruits", "Fresh Vegetables"], 
     "products": [
       {
-        "id": 1,
+        "id": 301,
         "name": "Fresh Pear",
         "category": "Farm Fresh Fruits",
         "image": "/store/pear.png",
@@ -110,7 +110,7 @@ const storesData = {
         }
       },
       {
-        "id": 2,
+        "id": 302,
         "name": "Tomato",
         "category": "Fresh Vegetables",
         "image": "/store/tomato.png",
@@ -148,10 +148,10 @@ const storesData = {
     "logo": "/store/metro-logo.png",
     "distance": "3 km",
     "banner": "/store/metro-banner.png",
-    "sections": ["Beverages", "Oils & Spices"], // Sections for Metro
+    "sections": ["Beverages", "Oils & Spices"], 
     "products": [
       {
-        "id": 1,
+        "id": 401,
         "name": "Aquafina",
         "category": "Beverages",
         "image": "/store/aquafina.png",
@@ -181,7 +181,7 @@ const storesData = {
         }
       },
       {
-        "id": 2,
+        "id": 402,
         "name": "Cooking Oil",
         "category": "Oils & Spices",
         "image": "/store/oil.png",

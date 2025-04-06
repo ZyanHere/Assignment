@@ -1,13 +1,29 @@
 "use client";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useState } from "react";
 import useTimer from "@/lib/hooks/useTimer";
+import { useCart } from "@/lib/contexts/cart-context";
 
-
-const CategoryCard = ({ image, name, weight, store, discount, mrp, price, time }) => {
-  const [added, setAdded] = useState(false);
+const CategoryCard = ({ image, name, weight, store, discount, mrp, price, time, id }) => {
   const timeLeft = useTimer(time);
+  const { addToCart, cart } = useCart();
+
+  // Check if this specific product is already in the cart by its unique ID
+  const isInCart = cart.some(item => item.id === id);
+
+  const handleAddToCart = () => {
+    if (!isInCart) {
+      addToCart({
+        id,
+        name,
+        brand: store,
+        price,
+        mrp,
+        image,
+        weight
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col items-start gap-3 w-[230px] h-[390px] border rounded-2xl shadow-sm p-4 hover:shadow-md transition-shadow">
@@ -22,10 +38,10 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price, time }
         />
 
         <Button
-          onClick={() => setAdded(!added)}
+          onClick={handleAddToCart}
           className="absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border border-blue-400 text-blue-400 font-medium rounded-md hover:bg-blue-100 transition bg-white shadow-md"
         >
-          {added ? "✓" : "ADD"}
+          {isInCart ? "✓" : "ADD"}
         </Button>
 
         {discount && (

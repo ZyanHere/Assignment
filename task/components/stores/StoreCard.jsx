@@ -2,18 +2,39 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import useTimer from "@/lib/hooks/useTimer";
+import { useCart } from "@/lib/contexts/cart-context";
 
 const StoreCard = ({ product, storeName }) => {
-  const [added, setAdded] = useState(false);
   const [endTime, setEndTime] = useState(null);
+  const { addToCart, cart } = useCart();
 
   useEffect(() => {
     setEndTime(Date.now() + (3 * 60 * 60 + 1 * 60 + 23) * 1000);
   }, []);
 
   const timeLeft = useTimer(endTime);
+  
+  // Check if this specific product is already in the cart by its unique ID
+  const isInCart = cart.some(item => item.id === product.id);
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isInCart) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        brand: storeName,
+        price: product.price,
+        mrp: product.mrp,
+        image: product.image,
+        category: product.category
+      });
+    }
+  };
 
   return (
     <Link 
@@ -32,17 +53,13 @@ const StoreCard = ({ product, storeName }) => {
 
           {/* Add to Cart Button */}
           <Button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setAdded(!added);
-            }}
+            onClick={handleAddToCart}
             className={`absolute bottom-2 right-2 w-[63px] h-[33px] border font-medium rounded-md ${
-              added ? "bg-green-100 border-green-400 text-green-600" 
+              isInCart ? "bg-green-100 border-green-400 text-green-600" 
               : "bg-white border-blue-400 text-blue-500 hover:bg-blue-50"
             }`}
           >
-            {added ? "✓" : "ADD"}
+            {isInCart ? "✓" : "ADD"}
           </Button>
         </div>
 

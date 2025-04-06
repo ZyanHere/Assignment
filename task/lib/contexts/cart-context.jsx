@@ -1,45 +1,136 @@
+// lib/context/CartContext.js
 "use client";
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useReducer } from "react";
 
-const CartContext = createContext();
+// Initial state
+const initialState = {
+  items: [],
+  itemCount: 0,
+};
 
-export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+// Actions
+export const ADD_TO_CART = "ADD_TO_CART";
+export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
+export const UPDATE_QUANTITY = "UPDATE_QUANTITY";
+export const CLEAR_CART = "CLEAR_CART";
 
-  const generateCartId = (product) => {
-    return `${product.id}-${product.price}-${product.name}`.replace(/\s+/g, '-');
-  };
+// Reducer function
+function cartReducer(state, action) {
+  switch (action.type) {
+    case ADD_TO_CART: {
+      const existingItemIndex = state.items.findIndex(
+        (item) => item.id === action.payload.id
+      );
 
-  const addToCart = (product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.cartId === generateCartId(product));
-      if (existing) return prev;
+      if (existingItemIndex > -1) {
+        // Item already exists, update quantity
+        const updatedItems = [...state.items];
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + 1,
+        };
+        
+        return {
+          ...state,
+          items: updatedItems,
+          itemCount: state.itemCount + 1,
+        };
+      } else {
+        // Add new item
+        return {
+          ...state,
+          items: [...state.items, { ...action.payload, quantity: 1 }],
+          itemCount: state.itemCount + 1,
+        };
+      }
+    }
+    
+    case REMOVE_FROM_CART: {
+      const itemToRemove = state.items.find(item => item.id === action.payload);
+      const quantity = itemToRemove ? itemToRemove.quantity : 0;
       
-      return [...prev, {
-        ...product,
-        cartId: generateCartId(product),
-        quantity: 1
-      }];
-    });
-  };
-
-  const updateQuantity = (cartId, amount) => {
-    setCart(prev => prev.map(item => 
-      item.cartId === cartId
-        ? { ...item, quantity: Math.max(1, item.quantity + amount) }
-        : item
-    ));
-  };
-
-  const removeItem = (cartId) => {
-    setCart(prev => prev.filter(item => item.cartId !== cartId));
-  };
-
-  return (
-    <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeItem }}>
-      {children}
-    </CartContext.Provider>
-  );
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== action.payload),
+        itemCount: state.itemCount - quantity,
+      };
+    }
+    
+    case UPDATE_QUANTITY: {
+      const { id, amount } = action.payload;
+      const itemIndex = state.items.findIndex(item => item.id === id);
+      
+      if (itemIndex === -1) return state;
+      
+      const item = state.items[itemIndex];
+      const newQuantity = Math.max(1, item.quantity + amount);
+      const quantityDiff = newQuantity - item.quantity;
+      
+      const updatedItems = [...state.items];
+      updatedItems[itemIndex] = {
+        ...item,
+        quantity: newQuantity,
+      };
+      
+      return {
+        ...state,
+        items: updatedItems,
+        itemCount: state.itemCount + quantityDiff,
+      };
+    }
+    
+    case CLEAR_CART:
+      return initialState;
+      
+    default:
+      return state;
+  }
 }
 
-export const useCart = () => useContext(CartContext);
+// Create context
+const CartContext = createContext(null);
+
+// Provider component
+export function CartProvider({ children }) {
+  const [state, dispatch] = useReducer(cartReducer, initialState);
+  
+  // Actions
+  const addToCart = (product) => {
+    dispatch({ type: ADD_TO_CART, payload: product });
+  };
+  
+  const removeFromCart = (productId) => {
+    dispatch({ type: REMOVE_FROM_CART, payload: productId });
+  };
+  
+  const updateQuantity = (productId, amount) => {
+    dispatch({ 
+      type: UPDATE_QUANTITY, 
+      payload: { id: productId, amount } 
+    });
+  };
+  
+  const clearCart = () => {
+    dispatch({ type: CLEAR_CART });
+  };
+  
+  const value = {
+    cart: state.items,
+    itemCount: state.itemCount,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+  };
+  
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
+
+// Custom hook for using the cart context
+export function useCart() {
+  const context = useContext(CartContext);
+  if (context === null) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  return context;
+}

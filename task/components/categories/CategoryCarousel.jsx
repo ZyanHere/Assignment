@@ -13,7 +13,7 @@ import CategoryCard from "./CategoryCard";
 // Sample category products
 const categoryProducts = [
   {
-    id: 1,
+    id: 801,
     name: "Fresh Pear",
     weight: "100 g",
     store: "Nature's Basket",
@@ -24,7 +24,7 @@ const categoryProducts = [
     image: "/categories/pear.png",
   },
   {
-    id: 2,
+    id: 802,
     name: "Gooseberry",
     weight: "100 g",
     store: "Nature's Basket",
@@ -35,7 +35,7 @@ const categoryProducts = [
     image: "/categories/gooseberry.png",
   },
   {
-    id: 3,
+    id: 803,
     name: "Beetroot",
     weight: "100 g",
     store: "Nature's Basket",
@@ -46,7 +46,7 @@ const categoryProducts = [
     image: "/categories/beetroot.png",
   },
   {
-    id: 4,
+    id: 804,
     name: "Exotic Brinjal",
     weight: "100 g",
     store: "Nature's Basket",
@@ -57,7 +57,7 @@ const categoryProducts = [
     image: "/categories/brinjal.png",
   },
   {
-    id: 5,
+    id: 805,
     name: "Custard Apple",
     weight: "100 g",
     store: "Nature's Basket",
@@ -68,7 +68,7 @@ const categoryProducts = [
     image: "/categories/custardapple.png",
   },
   {
-    id: 6,
+    id: 806,
     name: "Mango",
     weight: "100 g",
     store: "Nature's Basket",
