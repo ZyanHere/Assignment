@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { CartProvider } from "@/lib/contexts/cart-context";
+import { AddressProvider } from "@/lib/contexts/address-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,9 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <CartProvider>
-            {children}
+            <AddressProvider> 
+              {children}
+            </AddressProvider>
           </CartProvider>
         </Providers>
       </body>

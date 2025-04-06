@@ -20,12 +20,15 @@ import {
   Mic,
   PhoneOff,
   BellOff,
+  Edit,
 } from "lucide-react";
 import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/contexts/cart-context";
+import AddressSection from "@/app/components/address/AddressSection";
+
 
 const addresses = [
   {
@@ -105,18 +108,12 @@ const BillItem = memo(({ itemKey, item }) => (
       {itemKey === "subTotal" ? (
         <>
           <span className="font-semibold">₹{item.amount}</span>{" "}
-          <span className="text-gray-500 line-through">
-            MRP ₹{item.mrp}
-          </span>
+          <span className="text-gray-500 line-through">MRP ₹{item.mrp}</span>
         </>
       ) : itemKey === "deliveryFee" ? (
         <>
-          <span className="text-gray-500 line-through">
-            ₹{item.original}
-          </span>{" "}
-          <span className="text-green-500 font-medium">
-            Free
-          </span>
+          <span className="text-gray-500 line-through">₹{item.original}</span>{" "}
+          <span className="text-green-500 font-medium">Free</span>
         </>
       ) : (
         <span className="text-black">{`₹${item.amount}`}</span>
@@ -131,7 +128,11 @@ export default function CartPage() {
   const [selectedAddress, setSelectedAddress] = useState(1);
   const [activeInstruction, setActiveInstruction] = useState("soundbite");
   const [isLoading, setIsLoading] = useState(false);
-  
+
+  const [primaryAddress, setPrimaryAddress] = useState("");
+  const [secondaryAddress, setSecondaryAddress] = useState("");
+  const [editingAddressType, setEditingAddressType] = useState(null);
+
   // Memoize bill details calculation
   const billDetails = useMemo(() => {
     if (cart.length === 0) {
@@ -143,37 +144,61 @@ export default function CartPage() {
           original: 0,
           icon: <Truck />,
         },
-        transactionFee: { label: "Transaction fee", amount: 0, icon: <Wallet /> },
+        transactionFee: {
+          label: "Transaction fee",
+          amount: 0,
+          icon: <Wallet />,
+        },
         savings: { label: "Total savings", amount: 0, icon: <HandCoins /> },
-        grandTotal: { label: "Grand Total", amount: 0 }
+        grandTotal: { label: "Grand Total", amount: 0 },
       };
     }
 
-    const mrpTotal = cart.reduce((total, item) => total + (item.mrp || item.price) * item.quantity, 0);
-    const priceTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    const mrpTotal = cart.reduce(
+      (total, item) => total + (item.mrp || item.price) * item.quantity,
+      0
+    );
+    const priceTotal = cart.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
     const savings = mrpTotal - priceTotal;
-    
+
     const transactionFee = priceTotal > 0 ? 20 : 0;
     const deliveryFeeOriginal = priceTotal > 0 ? 165 : 0;
-    
+
     const billDetails = {
-      subTotal: { label: "Sub total", amount: priceTotal, mrp: mrpTotal, icon: <Receipt /> },
+      subTotal: {
+        label: "Sub total",
+        amount: priceTotal,
+        mrp: mrpTotal,
+        icon: <Receipt />,
+      },
       deliveryFee: {
         label: "Delivery fee",
         amount: 0,
         original: deliveryFeeOriginal,
         icon: <Truck />,
       },
-      transactionFee: { label: "Transaction fee", amount: transactionFee, icon: <Wallet /> },
-      savings: { label: "Total savings", amount: savings + deliveryFeeOriginal, icon: <HandCoins /> },
+      transactionFee: {
+        label: "Transaction fee",
+        amount: transactionFee,
+        icon: <Wallet />,
+      },
+      savings: {
+        label: "Total savings",
+        amount: savings + deliveryFeeOriginal,
+        icon: <HandCoins />,
+      },
     };
 
-    const grandTotal = billDetails.subTotal.amount + 
-                       billDetails.deliveryFee.amount + 
-                       billDetails.transactionFee.amount;
+    const grandTotal =
+      billDetails.subTotal.amount +
+      billDetails.deliveryFee.amount +
+      billDetails.transactionFee.amount;
 
     billDetails.grandTotal = { label: "Grand Total", amount: grandTotal };
-    
+
     return billDetails;
   }, [cart]);
 
@@ -202,7 +227,6 @@ export default function CartPage() {
       <div className="hidden md:block">
         <Sidebar />
       </div>
-
       <div className="flex-1">
         <Header />
 
@@ -218,7 +242,9 @@ export default function CartPage() {
           <div className="bg-white shadow-md rounded-lg p-2 md:p-4">
             {cart.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-xl font-medium text-gray-500">Your cart is empty</p>
+                <p className="text-xl font-medium text-gray-500">
+                  Your cart is empty
+                </p>
                 <Link href="/">
                   <Button className="mt-4 bg-blue-500 hover:bg-blue-600">
                     Continue Shopping
@@ -230,7 +256,10 @@ export default function CartPage() {
                 {/* Mobile view for cart items */}
                 <div className="md:hidden space-y-4">
                   {cart.map((item) => (
-                    <div key={item.id} className="border rounded-lg p-3 shadow-sm">
+                    <div
+                      key={item.id}
+                      className="border rounded-lg p-3 shadow-sm"
+                    >
                       <div className="flex items-center space-x-3 mb-2">
                         <Image
                           src={item.image}
@@ -296,7 +325,7 @@ export default function CartPage() {
                     </TableHeader>
                     <TableBody>
                       {cart.map((item) => (
-                        <CartItem 
+                        <CartItem
                           key={item.id}
                           item={item}
                           updateQuantity={handleUpdateQuantity}
@@ -313,7 +342,10 @@ export default function CartPage() {
             {/* Checkout Button */}
             {cart.length > 0 && (
               <div className="flex justify-end mt-4">
-                <Button className="bg-green-500 text-white" disabled={isLoading}>
+                <Button
+                  className="bg-green-500 text-white"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Processing..." : "+ Let's Go"}
                 </Button>
               </div>
@@ -326,11 +358,15 @@ export default function CartPage() {
               {/* Purchase Mode & Address Section */}
               <div className="p-3 md:p-6 bg-white shadow-md rounded-lg mt-6">
                 {/* Purchase Mode Selection */}
-                <h2 className="text-lg font-semibold mb-3">Select purchase mode</h2>
+                <h2 className="text-lg font-semibold mb-3">
+                  Select purchase mode
+                </h2>
 
                 <div className="flex flex-col md:flex-row gap-4 pr-0 md:pr-4">
                   <Button
-                    variant={purchaseMode === "storePickup" ? "default" : "outline"}
+                    variant={
+                      purchaseMode === "storePickup" ? "default" : "outline"
+                    }
                     onClick={() => setPurchaseMode("storePickup")}
                     className="flex flex-col items-center gap-2 px-4 md:px-6 py-4 md:py-6 w-full md:w-1/2 text-lg justify-center h-auto md:h-[120px]"
                     disabled={isLoading}
@@ -365,22 +401,7 @@ export default function CartPage() {
                 </div>
 
                 {/* Address Selection */}
-                <h2 className="text-lg font-semibold mt-6 mb-3">Address</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {addresses.map((address) => (
-                    <div
-                      key={address.id}
-                      onClick={() => !isLoading && setSelectedAddress(address.id)}
-                      className={`p-4 border rounded-lg cursor-pointer ${
-                        selectedAddress === address.id
-                          ? "bg-gray-200 border-black"
-                          : "border-gray-300"
-                      } ${isLoading ? "opacity-50" : ""}`}
-                    >
-                      {address.text}
-                    </div>
-                  ))}
-                </div>
+                <AddressSection/>
               </div>
 
               {/* Bill Details Section */}
@@ -424,7 +445,11 @@ export default function CartPage() {
                       icon: <PhoneOff />,
                       key: "avoidCalling",
                     },
-                    { label: "No Ringing", icon: <BellOff />, key: "noRinging" },
+                    {
+                      label: "No Ringing",
+                      icon: <BellOff />,
+                      key: "noRinging",
+                    },
                   ].map((item) => (
                     <div
                       key={item.key}
@@ -434,12 +459,16 @@ export default function CartPage() {
                     ? "bg-yellow-100 text-yellow-600 border border-yellow-400"
                     : "bg-white text-gray-700 border border-gray-300"
                 } ${isLoading ? "opacity-50" : ""}`}
-                      onClick={() => !isLoading && setActiveInstruction(item.key)}
+                      onClick={() =>
+                        !isLoading && setActiveInstruction(item.key)
+                      }
                     >
                       <div className="w-[30px] h-[30px] md:w-[43.744px] md:h-[39.766px] flex items-center justify-center">
                         {item.icon}
                       </div>
-                      <span className="font-medium mt-2 text-sm md:text-base">{item.label}</span>
+                      <span className="font-medium mt-2 text-sm md:text-base">
+                        {item.label}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -448,7 +477,7 @@ export default function CartPage() {
               {/* Click to Pay Button */}
               <div className="px-2 md:px-40">
                 <Link href="/payment-mode">
-                  <button 
+                  <button
                     className="mt-6 w-full py-3 md:py-4 text-lg font-semibold text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-md cursor-pointer disabled:opacity-50"
                     disabled={isLoading}
                   >
@@ -457,9 +486,10 @@ export default function CartPage() {
                 </Link>
               </div>
             </>
-          )}
+        )}         
         </div>
       </div>
+      
     </div>
   );
 }
