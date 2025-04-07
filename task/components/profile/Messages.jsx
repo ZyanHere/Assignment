@@ -1,92 +1,140 @@
 "use client";
-
-import Image from "next/image";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Mail, Phone, MessageSquare } from "lucide-react";
 
 export default function Messages() {
   return (
-    <div className="flex flex-col md:flex-row gap-6 p-6">
-      {/* Left Column: Contact Info */}
-      <div className="md:w-1/3 bg-white p-6 rounded-md shadow-md">
-        {/* Call To Us */}
-        <div className="flex items-center gap-2 mb-2">
-          <Image
-            src="/profile/phone.svg"
-            alt="Phone Icon"
-            width={37}
-            height={37}
-          />
-          <h2 className="text-lg font-semibold">Call To Us</h2>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="max-w-6xl mx-auto"
+    >
+      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+        {/* Header */}
+        <div className="border-b p-6 bg-gradient-to-r from-gray-50 to-gray-100">
+          <h1 className="text-2xl font-bold flex items-center gap-3">
+            <MessageSquare className="w-6 h-6 text-blue-500" />
+            Contact Us
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Have questions? Send us a message and we'll respond within 24 hours.
+          </p>
         </div>
-        <p className="text-gray-700">We are available 24/7, 7 days a week.</p>
-        <p className="text-gray-700 font-medium mt-1">Phone: +8801112222</p>
 
-        {/* Write To Us */}
-        <div className="flex items-center gap-2 mt-6 mb-2">
-          <Image
-            src="/profile/write.svg"
-            alt="Write Icon"
-            width={37}
-            height={37}
-          />
-          <h2 className="text-lg font-semibold">Write To Us</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+          {/* Contact Info Sidebar */}
+          <div className="bg-gray-50 p-6 lg:p-8 border-r">
+            <div className="space-y-8">
+              {/* Call Us */}
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg">
+                  <Phone className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-lg">Call Us</h3>
+                  <p className="text-muted-foreground mt-1">
+                    Available 24/7 for customer support
+                  </p>
+                  <p className="font-medium mt-2 text-blue-600">
+                    +1 (555) 123-4567
+                  </p>
+                </div>
+              </div>
+
+              {/* Email Us */}
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg">
+                  <Mail className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-lg">Email Us</h3>
+                  <p className="text-muted-foreground mt-1">
+                    We'll respond within 24 hours
+                  </p>
+                  <p className="font-medium mt-2 text-blue-600">
+                    support@example.com
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="lg:col-span-2 p-6 lg:p-8">
+            <form className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Your Name
+                  </label>
+                  <Input
+                    id="name"
+                    placeholder="John Doe"
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-medium">
+                    Your Email
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="phone" className="text-sm font-medium">
+                    Phone Number
+                  </label>
+                  <Input
+                    id="phone"
+                    placeholder="+1 (555) 123-4567"
+                    className="h-12"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="subject" className="text-sm font-medium">
+                    Subject
+                  </label>
+                  <Input
+                    id="subject"
+                    placeholder="How can we help?"
+                    className="h-12"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="message" className="text-sm font-medium">
+                  Your Message
+                </label>
+                <Textarea
+                  id="message"
+                  placeholder="Tell us about your inquiry..."
+                  className="min-h-[150px]"
+                />
+              </div>
+
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  className="h-12 px-8 text-base bg-blue-600 hover:bg-blue-700"
+                >
+                  Send Message
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
-        <p className="text-gray-700">
-          Fill out our form and we will contact you within 24 hours.
-        </p>
-        <p className="text-gray-700 font-medium mt-2">Emails:</p>
-        <p className="text-gray-700">customer@exlusive.com</p>
-        <p className="text-gray-700">support@exlusive.com</p>
       </div>
-
-      {/* Right Column: Form */}
-      <div className="flex-1 bg-white p-6 rounded-md shadow-md">
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Your Name *
-            </label>
-            <Input type="text" placeholder="Enter your name" />
-          </div>
-
-      
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Your Email *
-            </label>
-            <Input type="email" placeholder="Enter your email" />
-          </div>
-
-         
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Your Phone *
-            </label>
-            <Input type="text" placeholder="Enter your phone number" />
-          </div>
-
-  
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Your Message
-            </label>
-            <Textarea
-              placeholder="Write your message here..."
-              className="min-h-[120px]"
-            />
-          </div>
-
-
-          <div className="md:col-span-4 flex justify-end">
-            <Button className="bg-[#DB4444] hover:bg-red-600 text-white font-medium px-6 py-2 rounded-none">
-              Send Message
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+    </motion.div>
   );
 }

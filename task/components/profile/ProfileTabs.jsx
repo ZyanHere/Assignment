@@ -1,34 +1,89 @@
-import React from "react";
+"use client";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { LogOut, Bell, MessageSquare, CreditCard, Heart, ShoppingBag, User } from "lucide-react";
+import { 
+  User, 
+  ShoppingBag, 
+  Heart, 
+  CreditCard, 
+  MessageSquare,
+  Bell,
+  LogOut
+} from "lucide-react";
 
 const ProfileTabs = ({ selectedTab, setSelectedTab }) => {
   const tabs = [
-    { key: "about", name: "About Me", icon: <User size={18} /> },
-    { key: "orders", name: "My Orders", icon: <ShoppingBag size={18} /> },
-    { key: "saved", name: "Saved Deal", icon: <Heart size={18} /> },
-    { key: "payment", name: "Payment Methods", icon: <CreditCard size={18} /> },
-    { key: "messages", name: "Message", icon: <MessageSquare size={18} /> },
-    { key: "notifications", name: "Notifications", icon: <Bell size={18} /> },
-    // { key: "logout", name: "Log Out", icon: <LogOut size={18} />, action: () => console.log("Logging out...") },
-    { key: "logout", name: "Log Out", icon: <LogOut size={18} />}
+    { 
+      key: "about", 
+      name: "About Me", 
+      icon: <User className="w-5 h-5" />,
+      color: "text-blue-500"
+    },
+    { 
+      key: "orders", 
+      name: "My Orders", 
+      icon: <ShoppingBag className="w-5 h-5" />,
+      color: "text-orange-500"
+    },
+    { 
+      key: "saved", 
+      name: "Saved Items", 
+      icon: <Heart className="w-5 h-5" />,
+      color: "text-red-500"
+    },
+    { 
+      key: "payment", 
+      name: "Payments", 
+      icon: <CreditCard className="w-5 h-5" />,
+      color: "text-emerald-500"
+    },
+    { 
+      key: "messages", 
+      name: "Messages", 
+      icon: <MessageSquare className="w-5 h-5" />,
+      color: "text-purple-500"
+    },
+    { 
+      key: "notifications", 
+      name: "Notifications", 
+      icon: <Bell className="w-5 h-5" />,
+      color: "text-yellow-500"
+    },
+    { 
+      key: "logout", 
+      name: "Log Out", 
+      icon: <LogOut className="w-5 h-5" />,
+      color: "text-gray-500"
+    }
   ];
 
   return (
-    <div className="w-full px-16 lg:px-28 mt-10">
-      <div className="grid grid-cols-7  border-b pb-2">
+    <div className="w-full overflow-x-auto scrollbar-hide">
+      <div className="flex border-b">
         {tabs.map((tab) => (
-          <Button
+          <div
             key={tab.key}
-            className={`flex justify-center items-center gap-2 w-full py-3 text-sm font-medium rounded-none border transition-all ${
-              selectedTab === tab.key
-                ? "bg-gradient-to-t from-yellow-400 to-yellow-200 text-black shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-yellow-300"
-            }`}
-            onClick={() => (tab.action ? tab.action() : setSelectedTab(tab.key))}
+            className="flex-1 min-w-[120px]"
           >
-            {tab.icon} {tab.name}
-          </Button>
+            <Button
+              variant="ghost"
+              className={cn(
+                "flex flex-col gap-2 w-full h-full py-4 rounded-none",
+                "transition-all duration-200 hover:scale-[1.02]",
+                selectedTab === tab.key
+                  ? "bg-gradient-to-b from-primary/10 to-transparent border-b-2 border-primary text-primary"
+                  : "text-muted-foreground hover:text-primary"
+              )}
+              onClick={() => setSelectedTab(tab.key)}
+            >
+              <span className={cn(tab.color, selectedTab === tab.key ? "opacity-150" : "opacity-100")}>
+                {tab.icon}
+              </span>
+              <span className="text-xs sm:text-sm font-medium">
+                {tab.name}
+              </span>
+            </Button>
+          </div>
         ))}
       </div>
     </div>

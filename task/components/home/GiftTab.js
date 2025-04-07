@@ -17,7 +17,7 @@ const GiftTabContent = () => {
 
             <div className=" w-full mt-16">
                 <h3 className="text-3xl font-bold mb-3">Flowers & Bouquets</h3>
-                <section className="bg-white shadow-sm w-full ">
+                <section className=" w-full ">
                     <div className="w-full max-w-[1500px] mx-auto">
                         <GiftCarousel category="Flowers" />
                     </div>
@@ -26,7 +26,7 @@ const GiftTabContent = () => {
 
             <div className=" w-full mt-16">
                 <h3 className="text-3xl font-bold mb-3">Personalized Gifts</h3>
-                <section className="bg-white shadow-sm w-full ">
+                <section className=" w-full ">
                     <div className="w-full max-w-[1500px] mx-auto">
                         <GiftCarousel category="PersonalizedGifts" />
                     </div>
@@ -43,7 +43,7 @@ const GiftTabContent = () => {
 
             <div className=" w-full mt-16">
                 <h3 className="text-3xl font-bold mb-3">Personalized Gifts</h3>
-                <section className="bg-white shadow-sm w-full ">
+                <section className=" w-full ">
                     <div className="w-full max-w-[1500px] mx-auto">
                         <GiftCarousel category="Gifts" />
                     </div>

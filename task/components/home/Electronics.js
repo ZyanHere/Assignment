@@ -9,7 +9,7 @@ const ElectronicTabContent = () => {
 
       <div className=" w-full mt-16">
         <h3 className="text-3xl font-bold text-gray-800 mb-3">Most Popular</h3>
-        <section className="bg-white shadow-sm w-full ">
+        <section className=" w-full ">
           <div className="w-full max-w-[1500px] mx-auto">
           <ElectronicsCarousel category="MostPopular" />
           </div>
@@ -18,7 +18,7 @@ const ElectronicTabContent = () => {
 
       <div className=" w-full mt-16">
         <h3 className="text-3xl font-bold text-gray-800 mb-3">Just For You</h3>
-        <section className="bg-white shadow-sm w-full ">
+        <section className=" w-full ">
           <div className="w-full max-w-[1500px] mx-auto">
           <ElectronicsCarousel category="ForYou" />
           </div>
@@ -26,7 +26,7 @@ const ElectronicTabContent = () => {
       </div>
 
       <div className=" w-full mt-16">
-        <section className="bg-white shadow-sm w-full ">
+        <section className=" w-full ">
           <div className="w-full max-w-[1500px] mx-auto">
           <ElectronicsCarousel category="ForYou" reverse/>
           </div>

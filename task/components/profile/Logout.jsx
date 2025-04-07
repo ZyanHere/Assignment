@@ -1,79 +1,93 @@
 "use client";
-
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { LogOut, X } from "lucide-react";
+import Image from "next/image";
 
 export default function Logout() {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Clear user session or authentication data here
-    localStorage.removeItem("userToken"); // Example: Removing authentication token
-    sessionStorage.clear(); // Clearing session storage
-    console.log("User logged out");
-
-    // Redirect to homepage or login page
-    router.push("/login"); // Redirecting to the login page
+    localStorage.removeItem("userToken");
+    sessionStorage.clear();
+    router.push("/login");
   };
 
   return (
-    <div className="flex justify-between items-center max-w-5xl mx-auto p-10">
-      {/* Left Side: Image Grid */}
-      <div className="grid grid-cols-2 gap-2">
-        <Image
-          src="/profile/store.png"
-          alt="Store"
-          width={200}
-          height={200}
-          className="rounded-lg"
-        />
-        <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex justify-center items-start pt-12 pb-8 px-4" // Changed to items-start and added pt-12
+    >
+      <div className="flex flex-col md:flex-row items-center gap-8 max-w-4xl w-full bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        {/* Left Side: Image Grid (original layout) */}
+        <div className="grid grid-cols-2 gap-2 w-full md:w-1/2">
           <Image
-            src="/profile/farmer.png"
-            alt="Farmer"
+            src="/profile/store.png"
+            alt="Store"
             width={200}
             height={200}
-            className="rounded-lg"
+            className="rounded-lg w-full h-auto"
           />
-          <Image
-            src="/profile/garden.png"
-            alt="Garden"
-            width={200}
-            height={200}
-            className="rounded-lg col-span-2 mt-2"
-          />
-        </div>
-      </div>
-
-      {/* Right Side: Logout Confirmation (Directly on Page) */}
-      <div className="flex flex-col items-center p-8 border border-gray-300 rounded-lg shadow-lg ">
-        {/* Question Mark Icon */}
-        <div className="w-16 h-16 flex items-center justify-center rounded-full ">
-          <Image
-            src="/profile/question-icon.svg"
-            alt="Question"
-            width={45}
-            height={45}
-          />
+          <div className="space-y-2">
+            <Image
+              src="/profile/farmer.png"
+              alt="Farmer"
+              width={200}
+              height={200}
+              className="rounded-lg w-full h-auto"
+            />
+            <Image
+              src="/profile/garden.png"
+              alt="Garden"
+              width={200}
+              height={200}
+              className="rounded-lg w-full h-auto"
+            />
+          </div>
         </div>
 
-        {/* Confirmation Text */}
-        <h2 className="text-xl font-semibold mt-4">Are You Sure?</h2>
-        <p className="text-gray-500">Do you want to log out?</p>
-
-        {/* Buttons */}
-        <div className="flex justify-center gap-4 mt-6">
-          <Button
-            variant="outline"
-            className="border-[#FFA922] text-[#FFA922] px-6 py-3"
-            onClick={handleLogout}
+        {/* Right Side: Confirmation */}
+        <div className="w-full md:w-1/2 flex flex-col items-center p-4">
+          <motion.div 
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            className="text-center"
           >
-            Log Out
-          </Button>
-          <Button className="bg-black px-6 py-3">Cancel</Button>
+            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gray-100 mx-auto mb-4">
+              <Image
+                src="/profile/question-icon.svg"
+                alt="Question"
+                width={45}
+                height={45}
+              />
+            </div>
+            
+            <h2 className="text-xl font-semibold mb-2">Are You Sure?</h2>
+            <p className="text-gray-500 mb-6">Do you want to log out?</p>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <Button
+                variant="outline"
+                className="border-[#FFA922] text-[#FFA922] hover:bg-amber-50 gap-2"
+                onClick={handleLogout}
+              >
+                <LogOut className="w-4 h-4" />
+                Log Out
+              </Button>
+              <Button 
+                variant="default" 
+                className="gap-2"
+                onClick={() => router.back()}
+              >
+                <X className="w-4 h-4" />
+                Cancel
+              </Button>
+            </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
