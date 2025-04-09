@@ -10,23 +10,31 @@ const FourSec = () => {
   ];
 
   return (
-<div className="flex flex-wrap gap-6 justify-center ">
-  {items.map((item, index) => (
-    <Link key={index} href={item.link} passHref legacyBehavior>
-      <div className="w-[340px] h-[220px] bg-gradient-to-br from-blue-200 to-yellow-50 flex flex-col items-center justify-center rounded-2xl shadow-lg cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5">
-        <div className="relative w-60 h-32 mb-4">
-          <Image
-            src={item.img}
-            alt={item.label}
-            fill
-            className="object-contain drop-shadow-md"
-          />
-        </div>
-        <span className="font-bold text-lg text-gray-800">{item.label}</span>
-      </div>
-    </Link>
-  ))}
-</div>
+    <div className="flex flex-wrap justify-center gap-6">
+      {items.map((item, index) => (
+        <Link key={index} href={item.link} passHref legacyBehavior>
+          <div className="w-[350px] rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5">
+            
+            {/* Image section */}
+            <div className="relative w-full h-[180px]">
+              <Image
+                src={item.img}
+                alt={item.label}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Label */}
+            <div className="p-4">
+              <span className="font-semibold text-md text-gray-800 block text-center">
+                {item.label}
+              </span>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
   );
 };
 

@@ -2,16 +2,14 @@
 
 import { useState } from "react";
 
-import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
-import CategoryTabs from "@/components/home/CategoryTabs";
 import Footer from "@/components/home/footer";
+import LocationBanner from "@/components/home/LocationBanner"; // ✅ Add this
 import GroceryTabContent from "@/components/home/GroceryTab";
 import FashionTabContent from "@/components/home/FashionTab";
 import AllTabContent from "@/components/home/AllTab";
 import GiftTabContent from "@/components/home/GiftTab";
 import ElectronicTabContent from "@/components/home/Electronics";
-
 
 const Home = () => {
   const [selectedTab, setSelectedTab] = useState("all");
@@ -31,23 +29,18 @@ const Home = () => {
       default:
         return <AllTabContent />;
     }
-  }
+  };
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <Sidebar />
-
-      <div className="flex-1 bg-gray-100">
-        {/* Header */}
-        <Header />
-
-        {/* this is state management */}
-        <CategoryTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab}/> 
-        <div className="p-6 ">{renderTab()}</div>
-        
+    <div className="flex-1 bg-gray-100 min-h-screen">
+      <Header />
+      <div className="mx-auto px-4 md:px-8 lg:px-16 xl:px-14">
+        {/* Location and Promo Banner */}
+        <LocationBanner selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+        <div className="p-6">{renderTab()}</div>
         <Footer />
       </div>
+
     </div>
   );
 };
