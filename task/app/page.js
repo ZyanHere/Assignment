@@ -4,12 +4,12 @@ import { useState } from "react";
 
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/footer";
-import LocationBanner from "@/components/home/LocationBanner"; // ✅ Add this
 import GroceryTabContent from "@/components/home/GroceryTab";
 import FashionTabContent from "@/components/home/FashionTab";
 import AllTabContent from "@/components/home/AllTab";
 import GiftTabContent from "@/components/home/GiftTab";
 import ElectronicTabContent from "@/components/home/Electronics";
+import LocationBanner from "@/components/home/banners/LocationBanner";
 
 const Home = () => {
   const [selectedTab, setSelectedTab] = useState("all");

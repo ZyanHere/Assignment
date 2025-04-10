@@ -4,8 +4,7 @@ import FourSec from "@/components/home/FourSec";
 import BrandCarousel from "@/components/home/BrandCarousel";
 import Essentials from "@/components/home/Essentials";
 import NearbyStores from "@/components/home/NearbyStores";
-import LocationBanner from "./LocationBanner";
-import CategoryTabs from "./CategoryTabs";
+
 
 const AllTabContent = () => {
   return (

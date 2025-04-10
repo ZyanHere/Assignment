@@ -14,7 +14,7 @@ const categories = [
       icon: "/home/assets/electronics_logo.png",
     },
   { key: "Personal Care", label: "Personal Care", icon: "/home/assets/gift_logo.png" },
-  { key: "Apprels", label: "Apprels", icon: "/icons/furniture.png" },
+  { key: "Apprels", label: "Apprels", icon: "/home/assets/fashion_logo.png" },
   { key: "Fruits and Vegetables", label: "Fruits and Vegetables", icon: "/home/assets/grocery_logo.png" },
   
 ];
@@ -22,7 +22,7 @@ const categories = [
 const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
   return (
     <div className="mt-6 overflow-x-auto no-scrollbar px-4">
-      <div className="flex gap-4 w-max">
+      <div className="flex justify-between gap-4">
         {categories.map((category) => {
           const isActive = selectedTab === category.key;
           return (
@@ -31,8 +31,8 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
               onClick={() => setSelectedTab(category.key)}
               className={`flex items-center gap-3 px-5 py-3 rounded-xl min-w-[180px] transition-all duration-200
                 ${isActive
-                  ? "bg-gray-200 shadow-lg text-black border border-black border-b-3 "
-                  : "bg-gray-100 "
+                  ? "bg-gray-50 shadow-lg text-black border border-black border-b-3 "
+                  : "bg-gray-200 "
                 }`}
             >
               <div className="w-8 h-8 relative">

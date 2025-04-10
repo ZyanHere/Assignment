@@ -4,18 +4,9 @@ const GiftTabContent = () => {
 
     return (
         <div className="p-3 lg:px-16">
-            <div className="mb-8">
-                <Image
-                    src="/home/banners/GiftBanner.png"
-                    alt="Gift Banner"
-                    width={1088}
-                    height={100}
-                    className="w-full rounded-sm"
-                    priority
-                />
-            </div>
+            
 
-            <div className=" w-full mt-16">
+            <div className=" w-full ">
                 <h3 className="text-3xl font-bold mb-3">Flowers & Bouquets</h3>
                 <section className=" w-full ">
                     <div className="w-full max-w-[1500px] mx-auto">

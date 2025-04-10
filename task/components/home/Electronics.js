@@ -5,9 +5,7 @@ const ElectronicTabContent = () => {
 
   return (
     <div className="p-6">
-      <ElecHeroBanner />
-
-      <div className=" w-full mt-16">
+      <div className=" w-full ">
         <h3 className="text-3xl font-bold text-gray-800 mb-3">Most Popular</h3>
         <section className=" w-full ">
           <div className="w-full max-w-[1500px] mx-auto">

@@ -5,9 +5,8 @@ const FashionTabContent = () => {
 
   return (
     <div className="p-6 lg:px-16">
-      <HeroBanner />
 
-      <div className=" w-full mt-16">
+      <div className=" w-full ">
         <h3 className="text-3xl font-bold mb-3">Most Popular</h3>
         <section className=" w-full ">
           <div className="w-full max-w-[1500px] mx-auto">
