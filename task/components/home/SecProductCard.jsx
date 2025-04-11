@@ -1,11 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import { Button } from "../ui/button";
+import { useCart } from "@/lib/contexts/cart-context"; 
 
-const ProCard = ({ imageSrc, name, price, stockStatus }) => {
-  const [added, setAdded] = useState(false);
+const ProCard = ({ id, imageSrc, name, price, stockStatus }) => {
+  const { addToCart, cart } = useCart();
+
+  // Check if item is already in cart
+  const isInCart = cart.some(item => item.id === id);
+
+  const handleAddToCart = () => {
+    if (!isInCart) {
+      addToCart({
+        id,
+        name,
+        price,
+        image: imageSrc,
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col items-left justify-left gap-3 w-[230px] h-[388px] border rounded-2xl shadow-sm p-4">
@@ -16,15 +30,15 @@ const ProCard = ({ imageSrc, name, price, stockStatus }) => {
           width={148}
           height={90}
           className="w-[148px] h-[90px] object-contain"
-         
         />
 
         <Button
-          onClick={() => setAdded(!added)}
-         className="absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border border-blue-400 text-blue-400 font-medium rounded-md hover:bg-blue-100 transition bg-white shadow-md"
-          aria-label={added ? "Remove from cart" : "Add to cart"}
+          onClick={handleAddToCart}
+          className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
+            ${isInCart ? "bg-green-50 text-green-500 border-green-400" : "bg-white text-blue-400 border-blue-400"}`}
+          aria-label={isInCart ? "Added to cart" : "Add to cart"}
         >
-          {added ? "✓" : "ADD"}
+          {isInCart ? "✓" : "ADD"}
         </Button>
       </div>
 
