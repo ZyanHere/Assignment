@@ -1,82 +1,51 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+
 import Image from "next/image";
-import { BannerHeader } from "./BannerHeader";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 
 const images = [
-  "/home/fashion/fashion-banner.jpg",
-  "/home/fashion/fashion-banner2.jpg",
-  "/home/fashion/fashion-banner3.jpg",
-  "/home/fashion/fashion-banner5.jpg",
-  "/home/fashion/fashion-banner6.jpg",
+  "/home/electronics/Electronics 1.png",
+  "/home/electronics/Electronics 2.png",
+  "/home/electronics/Electronics 3.png",
+  "/home/electronics/Electronics 4.png",
+  "/home/electronics/Electronics 5.png",
 ];
 
 const ElectronicBanner = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+  const plugin = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: false })
+  );
 
   return (
-    <div className="banner-container">
-      <BannerHeader />
-      <div className="banner-content h-[180px] md:h-[200px]">
-        {/* Existing carousel code */}
-
-        <div
-          className="w-full flex flex-col items-center"
-          role="region"
-          aria-label="Main carousel"
-        >
-          <div className="relative w-full h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden rounded-2xl">
-            <div
-              className="flex w-full h-full transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+    <div className="w-full px-4">
+      <Carousel
+        plugins={[plugin.current]}
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        className="w-full max-w-[1700px] mx-auto"
+      >
+        <CarouselContent className="-ml-4">
+          {images.map((src, index) => (
+            <CarouselItem
+              key={index}
+              className="pl-4 basis-[85%] md:basis-[75%] lg:basis-[55%]"
             >
-              {images.map((src, index) => (
-                <div
-                  key={src}
-                  className="w-full h-full flex-shrink-0 relative"
-                  aria-hidden={index !== currentIndex}
-                >
-                  <Image
-                    src={src}
-                    alt={`Fashion collection ${index + 1}`}
-                    className="w-full h-full object-fill rounded-2xl"
-                    fill={false}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    priority={index === 0}
-                    placeholder="empty"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex space-x-4 mt-6" aria-label="Carousel navigation">
-            {images.map((_, index) => (
-              <motion.button
-                key={index}
-                className={`h-2 rounded-full transition-colors ${
-                  currentIndex === index
-                    ? "w-30 h-3 bg-blue-500 rounded-full"
-                    : "w-10 h-3 bg-gray-400 rounded-full"
-                }`}
-                onClick={() => setCurrentIndex(index)}
-                aria-label={`Go to slide ${index + 1}`}
-                whileHover={{ scale: 1.2 }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+              <div className="relative h-[240px] md:h-[300px] lg:h-[360px] rounded-2xl overflow-hidden shadow">
+                <Image
+                  src={src}
+                  alt={`Electronic ${index + 1}`}
+                  fill
+                  className="object-cover rounded-2xl"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
     </div>
   );
 };

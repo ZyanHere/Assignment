@@ -5,7 +5,7 @@ export const GiftBanner = () => {
   return (
     <div className="banner-container">
       <BannerHeader />
-      <div className="relative w-full h-[180px] md:h-[200px] overflow-hidden rounded-xl">
+      <div className="relative w-full h-[280px] md:h-[300px] overflow-hidden rounded-xl">
         <Image
           src="/home/banners/GiftBanner.png"
           alt="Gift Banner"

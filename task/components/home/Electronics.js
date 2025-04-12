@@ -31,9 +31,9 @@ const ElectronicTabContent = () => {
         </section>
       </div>
 
-      <div className="mt-30">
+      {/* <div className="mt-30">
         <ElecBanner/>
-      </div>
+      </div> */}
       
     </div>
   );

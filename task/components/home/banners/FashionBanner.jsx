@@ -5,11 +5,11 @@ import Image from "next/image";
 import { BannerHeader } from "./BannerHeader";
 
 const images = [
-  "/home/fashion/fashion-banner.jpg",
-  "/home/fashion/fashion-banner2.jpg",
+  "/home/fashion/fashion-banner.png",
+  "/home/fashion/fashion-banner2.png",
   "/home/fashion/fashion-banner3.jpg",
   "/home/fashion/fashion-banner5.jpg",
-  "/home/fashion/fashion-banner6.jpg",
+  "/home/fashion/fashion-banner6.avif",
 ];
 
 const FashionBanner = () => {
@@ -25,7 +25,7 @@ const FashionBanner = () => {
   return (
     <div className="banner-container">
       <BannerHeader />
-      <div className="banner-content h-[180px] md:h-[200px]">
+      <div className="banner-content h-[220px] md:h-[250px]">
         <div
           className="w-full flex flex-col items-center"
           role="region"
@@ -45,7 +45,7 @@ const FashionBanner = () => {
                   <Image
                     src={src}
                     alt={`Fashion collection ${index + 1}`}
-                    className="w-full h-full object-fill rounded-2xl"
+                    className="w-full h-full  rounded-2xl"
                     fill={false}
                     width={0}
                     height={0}

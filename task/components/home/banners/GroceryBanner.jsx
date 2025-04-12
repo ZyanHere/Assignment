@@ -5,7 +5,7 @@ export const GroceryBanner = () => {
   return (
     <div className="banner-container">
       <BannerHeader />
-      <div className="relative w-full h-[180px] md:h-[200px] overflow-hidden rounded-xl">
+      <div className="relative w-full h-[220px] md:h-[240px] overflow-hidden rounded-xl">
         <Image
           src="/home/grocery/grocery-banner.png"
           alt="Fresh Groceries Banner"
