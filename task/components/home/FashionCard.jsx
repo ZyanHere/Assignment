@@ -29,10 +29,10 @@ const FashionCard = ({ imageSrc, name, price, stockStatus, gender }) => {
       </div>
 
       <p className={`text-sm ${
-        stockStatus.toLowerCase().includes("few") ? "text-red-500" :
-        stockStatus.toLowerCase().includes("fresh") ? "text-green-500" : "text-orange-500"
+        stockStatus?.toLowerCase().includes("few") ? "text-red-500" :
+        stockStatus?.toLowerCase().includes("fresh") ? "text-green-500" : "text-orange-500"
       }`}>
-        {stockStatus}
+        {stockStatus || "Unavailable"}
       </p>
 
       <div className="w-full">

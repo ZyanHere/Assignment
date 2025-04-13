@@ -1,5 +1,3 @@
-
-
 const categoryData = {
   "all": {
     name: "All",

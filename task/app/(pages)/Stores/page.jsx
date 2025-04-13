@@ -10,14 +10,12 @@
  
  const StoresPage = () => {
    return (
-     <div className="flex">
-       {/* Sidebar */}
-       <Sidebar />
+   
 
        <div className="flex-1 flex flex-col">
         <Header />
 
-         <main className="p-6 mx-auto w-full">
+         <main className="p-6 mx-auto w-full max-w-[1700px]">
            {/* Breadcrumb - Default "Stores" */}
            <nav className="mb-4 text-black text-4xl">
              <Link href="/stores" className="hover:underline font-medium">
@@ -57,7 +55,6 @@
           </section>
          </main>
        </div>
-     </div>
    );
  };
  

@@ -224,13 +224,11 @@ export default function CartPage() {
   return (
     <div className="flex flex-col md:flex-row">
       {/* Sidebar - hidden on mobile */}
-      <div className="hidden md:block">
-        <Sidebar />
-      </div>
+      
       <div className="flex-1">
         <Header />
 
-        <div className="p-3 md:p-6">
+        <div className="p-3 md:p-6 w-full max-w-[1700px] mx-auto">
           {/* Breadcrumb */}
           <nav className="mb-4 text-black text-2xl md:text-4xl">
             <Link href="/cart" className="hover:underline font-medium">

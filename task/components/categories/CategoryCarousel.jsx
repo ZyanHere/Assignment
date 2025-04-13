@@ -78,18 +78,29 @@ const categoryProducts = [
     time: Date.now() + 12 * 60 * 60 * 1000, 
     image: "/categories/mangoes.png",
   },
+  {
+    id: 807,
+    name: "Exotic Brinjal",
+    weight: "100 g",
+    store: "Nature's Basket",
+    discount: "20",
+    mrp: "165",
+    price: "100",
+    time: Date.now() + 12 * 60 * 60 * 1000, 
+    image: "/categories/brinjal.png",
+  },
 ];
 
 const CategoryCarousel = () => {
   return (
     <div className="py-6">
       <Carousel className="w-full mx-auto">
-        <CarouselContent className="-ml-4">
+      <CarouselContent className="-ml-4 pr-[12%]">
           {categoryProducts.map((product) => (
             <CarouselItem
-              key={product.id}
-              className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/5 flex-shrink-0"
-            >
+            key={product.id}
+            className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-[16.66%] flex-shrink-0"
+          >
               <div className="p-1">
                 <CategoryCard
                   image={product.image}

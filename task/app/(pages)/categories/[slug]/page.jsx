@@ -8,6 +8,7 @@ import Header from "@/components/home/Header";
 import categoryData from "@/data/categoryData";
 import CategoryCarousel from "@/components/categories/CategoryCarousel";
 import { FilterButton } from "../page";
+import Footer from "@/components/home/footer";
 
 const CategorySlugPage = () => {
   const { slug } = useParams();
@@ -26,13 +27,10 @@ const CategorySlugPage = () => {
   }
 
   return (
-    <div className="flex">
-      <Sidebar />
-
-      <div className="flex-1">
+      <div className="flex-1 ">
         <Header />
 
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-2 md:px-6 py-1">
             {/* breadcrumb */}
             <nav className="mb-4 text-2xl">
@@ -58,15 +56,15 @@ const CategorySlugPage = () => {
               <SubcategoryItem key={sub.slug} slug={slug} sub={sub} />
             ))}
           </div>
-          <div className="p-8">
+          <div className="mt-8">
             <CategoryCarousel />
           </div>
-          <div className="p-8">
+          <div className="">
             <CategoryCarousel />
           </div>
         </div>
+        <Footer/>
       </div>
-    </div>
   );
 };
 

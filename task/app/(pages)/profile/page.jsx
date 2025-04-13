@@ -10,7 +10,12 @@ import Messages from "@/components/profile/Messages";
 import Notifications from "@/components/profile/Notifications";
 import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import Logout from "@/components/profile/Logout";
 import { Button } from "@/components/ui/button";
 import { Pencil, Upload } from "lucide-react";
@@ -44,25 +49,32 @@ const ProfilePage = () => {
 
   const renderTabContent = () => {
     switch (selectedTab) {
-      case "about": return <AboutMe />;
-      case "orders": return <MyOrders />;
-      case "saved": return <SavedDeal />;
-      case "payment": return <PaymentMethods />;
-      case "messages": return <Messages />;
-      case "notifications": return <Notifications />;
-      case "logout": return <Logout />;
-      default: return <AboutMe />;
+      case "about":
+        return <AboutMe />;
+      case "orders":
+        return <MyOrders />;
+      case "saved":
+        return <SavedDeal />;
+      case "payment":
+        return <PaymentMethods />;
+      case "messages":
+        return <Messages />;
+      case "notifications":
+        return <Notifications />;
+      case "logout":
+        return <Logout />;
+      default:
+        return <AboutMe />;
     }
   };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      
+
       <div className="flex-1 flex flex-col">
         <Header />
-        
-        <main className="flex-1 p-6">
+
+        <main className="flex-1 p-6 mx-auto w-full max-w-[1700px]">
           <div className=" mx-auto">
             {/* Profile Header */}
             <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
@@ -81,56 +93,56 @@ const ProfilePage = () => {
                         className="rounded-full border-4 border-white shadow-lg w-24 h-24 object-cover"
                       />
                       <Dialog>
-  <DialogTrigger asChild>
-    <Button 
-      variant="secondary" 
-      size="icon"
-      className="absolute bottom-0 right-0 rounded-full w-8 h-8"
-    >
-      <Pencil className="w-4 h-4" />
-    </Button>
-  </DialogTrigger>
-  <DialogContent className="max-w-md">
-    <div className="space-y-4">
-      
-      {/* ✅ Fix: Use DialogTitle instead of plain h3 */}
-      <DialogTitle className="text-lg font-semibold">
-        Update Profile Picture
-      </DialogTitle>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="secondary"
+                            size="icon"
+                            className="absolute bottom-0 right-0 rounded-full w-8 h-8"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-md">
+                          <div className="space-y-4">
+                            {/* ✅ Fix: Use DialogTitle instead of plain h3 */}
+                            <DialogTitle className="text-lg font-semibold">
+                              Update Profile Picture
+                            </DialogTitle>
 
-      {newProfilePic && (
-        <div className="flex justify-center">
-          <Image
-            src={newProfilePic}
-            alt="Preview"
-            width={160}
-            height={160}
-            className="rounded-full w-40 h-40 object-cover"
-          />
-        </div>
-      )}
+                            {newProfilePic && (
+                              <div className="flex justify-center">
+                                <Image
+                                  src={newProfilePic}
+                                  alt="Preview"
+                                  width={160}
+                                  height={160}
+                                  className="rounded-full w-40 h-40 object-cover"
+                                />
+                              </div>
+                            )}
 
-      <div className="flex flex-col gap-2">
-        <label className="flex items-center justify-center w-full px-4 py-2 border border-dashed rounded-lg cursor-pointer">
-          <Upload className="w-5 h-5 mr-2" />
-          Upload New Photo
-          <input 
-            type="file" 
-            className="hidden" 
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </label>
-      </div>
+                            <div className="flex flex-col gap-2">
+                              <label className="flex items-center justify-center w-full px-4 py-2 border border-dashed rounded-lg cursor-pointer">
+                                <Upload className="w-5 h-5 mr-2" />
+                                Upload New Photo
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept="image/*"
+                                  onChange={handleImageChange}
+                                />
+                              </label>
+                            </div>
 
-      <div className="flex justify-end gap-2">
-        <Button variant="outline">Cancel</Button>
-        <Button onClick={handleSaveProfilePic}>Save Changes</Button>
-      </div>
-    </div>
-  </DialogContent>
-</Dialog>
-
+                            <div className="flex justify-end gap-2">
+                              <Button variant="outline">Cancel</Button>
+                              <Button onClick={handleSaveProfilePic}>
+                                Save Changes
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </>
                   )}
                 </div>
@@ -157,8 +169,11 @@ const ProfilePage = () => {
 
             {/* Profile Content */}
             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-              <ProfileTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-              
+              <ProfileTabs
+                selectedTab={selectedTab}
+                setSelectedTab={setSelectedTab}
+              />
+
               <div className="p-6">
                 {isLoading ? (
                   <div className="space-y-4">
@@ -179,10 +194,6 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-
-
-
 
 // "use client";
 // import { useState, useEffect } from "react";
@@ -260,7 +271,7 @@ export default ProfilePage;
 //         // In a real app, you would upload the image to your server here
 //         // const uploadedUrl = await uploadImage(newProfilePic);
 //         // await updateProfilePicture(uploadedUrl);
-        
+
 //         setProfileData(prev => ({
 //           ...prev,
 //           profilePic: newProfilePic
@@ -317,10 +328,10 @@ export default ProfilePage;
 //   return (
 //     <div className="flex min-h-screen bg-gray-50">
 //       <Sidebar />
-      
+
 //       <div className="flex-1 flex flex-col">
 //         <Header />
-        
+
 //         <main className="flex-1 p-6">
 //           <div className="max-w-7xl mx-auto">
 //             {/* Profile Header */}
@@ -342,8 +353,8 @@ export default ProfilePage;
 //                       />
 //                       <Dialog>
 //                         <DialogTrigger asChild>
-//                           <Button 
-//                             variant="secondary" 
+//                           <Button
+//                             variant="secondary"
 //                             size="icon"
 //                             className="absolute bottom-0 right-0 rounded-full w-8 h-8"
 //                           >
@@ -373,9 +384,9 @@ export default ProfilePage;
 //                               <label className="flex items-center justify-center w-full px-4 py-2 border border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
 //                                 <Upload className="w-5 h-5 mr-2" />
 //                                 {newProfilePic ? "Change Photo" : "Upload New Photo"}
-//                                 <input 
-//                                   type="file" 
-//                                   className="hidden" 
+//                                 <input
+//                                   type="file"
+//                                   className="hidden"
 //                                   accept="image/*"
 //                                   onChange={handleImageChange}
 //                                 />
@@ -383,7 +394,7 @@ export default ProfilePage;
 //                             </div>
 //                             <div className="flex justify-end gap-2">
 //                               <Button variant="outline" disabled={isSaving}>Cancel</Button>
-//                               <Button 
+//                               <Button
 //                                 onClick={handleSaveProfilePic}
 //                                 disabled={!newProfilePic || isSaving}
 //                               >
@@ -417,7 +428,7 @@ export default ProfilePage;
 //                       />
 //                       <p className="text-gray-600">{profileData.email}</p>
 //                       <div className="flex gap-2 mt-4">
-//                         <Button 
+//                         <Button
 //                           onClick={saveProfileChanges}
 //                           disabled={isSaving}
 //                         >
@@ -425,8 +436,8 @@ export default ProfilePage;
 //                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
 //                           ) : "Save"}
 //                         </Button>
-//                         <Button 
-//                           variant="outline" 
+//                         <Button
+//                           variant="outline"
 //                           onClick={() => setEditMode(false)}
 //                           disabled={isSaving}
 //                         >
@@ -438,9 +449,9 @@ export default ProfilePage;
 //                     <div className="space-y-1">
 //                       <div className="flex items-center gap-3">
 //                         <h1 className="text-2xl font-bold">{profileData.name}</h1>
-//                         <Button 
-//                           variant="ghost" 
-//                           size="icon" 
+//                         <Button
+//                           variant="ghost"
+//                           size="icon"
 //                           onClick={() => setEditMode(true)}
 //                           className="w-8 h-8"
 //                         >
@@ -460,7 +471,7 @@ export default ProfilePage;
 //             {/* Profile Content */}
 //             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
 //               <ProfileTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-              
+
 //               <div className="p-6">
 //                 {renderTabContent()}
 //               </div>
