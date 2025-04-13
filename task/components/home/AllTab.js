@@ -4,6 +4,8 @@ import FourSec from "@/components/home/FourSec";
 import BrandCarousel from "@/components/home/BrandCarousel";
 import Essentials from "@/components/home/Essentials";
 import NearbyStores from "@/components/home/NearbyStores";
+import OffersBanner from "./OffersBanner";
+import FestBanner from "./FestBanner";
 
 
 const AllTabContent = () => {
@@ -25,7 +27,8 @@ const AllTabContent = () => {
           </div>
         </section>
       </div>
-
+      
+      <OffersBanner/>
       <Essentials />
 
       <div className="pl-6 w-full">
@@ -35,13 +38,10 @@ const AllTabContent = () => {
         </section>
       </div>
 
-      <div className=" mt-15 flex justify-center gap-8 ">
-        <Image src="/home/banners/banner1.png" alt="Banner1" width={450} height={200} />
-        <Image src="/home/banners/banner2.png" alt="Banner2" width={450} height={200} />
-        <Image src="/home/banners/banner3.png" alt="Banner3" width={450} height={200} />
-      </div>
+      
+      <FestBanner/>
 
-      <div className="pl-6 w-full mt-5">
+      <div className="pl-6 w-full mt-16">
         <section className=" w-full ">
           <h2 className="text-lg font-bold mb-3 text-black">Few minutes left ...</h2>
           <div className="w-full max-w-[1500px] mx-auto">
