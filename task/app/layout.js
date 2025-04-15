@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { CartProvider } from "@/lib/contexts/cart-context";
 import { AddressProvider } from "@/lib/contexts/address-context";
+import { SelectedItemsProvider } from "@/lib/contexts/selected-items-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <CartProvider>
             <AddressProvider> 
-              {children}
+              <SelectedItemsProvider>{children}</SelectedItemsProvider>
             </AddressProvider>
           </CartProvider>
         </Providers>
