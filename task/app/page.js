@@ -10,6 +10,7 @@ import AllTabContent from "@/components/home/AllTab";
 import GiftTabContent from "@/components/home/GiftTab";
 import ElectronicTabContent from "@/components/home/Electronics";
 import LocationBanner from "@/components/home/banners/LocationBanner";
+import CareTabContent from "@/components/home/Care";
 
 const Home = () => {
   const [selectedTab, setSelectedTab] = useState("all");
@@ -26,6 +27,8 @@ const Home = () => {
         return <GiftTabContent />;
       case "electronics":
         return <ElectronicTabContent />;
+      case "Personal Care":
+        return <CareTabContent />;
       default:
         return <AllTabContent />;
     }

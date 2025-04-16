@@ -1,4 +1,3 @@
-import HeroBanner from "@/app/components/CustomComponents/HeroBannerCarousel";
 import Banner from "@/app/components/CustomComponents/Banner";
 import FashionCarousel from "./FashionCarousel";
 const FashionTabContent = () => {

@@ -31,11 +31,11 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
               onClick={() => setSelectedTab(category.key)}
               className={`flex items-center gap-3 px-5 py-3 rounded-xl min-w-[180px] transition-all duration-200
                 ${isActive
-                  ? "bg-gray-50 shadow-lg text-black border border-black border-b-3 "
+                  ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4 "
                   : "bg-gray-200 "
                 }`}
             >
-              <div className="w-8 h-8 relative">
+              <div className="w-8 h-8 relative ">
                 <Image
                   src={category.icon}
                   alt={category.label}

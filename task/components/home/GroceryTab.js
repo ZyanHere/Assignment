@@ -7,8 +7,6 @@ const GroceryTabContent = () => {
   return (
     <div className="p-4 lg:px-16">
 
-      
-
       {/* Vegetables Section */}
       <div className="w-full ">
         <h2 className="text-3xl font-bold  ">Vegetables</h2>
