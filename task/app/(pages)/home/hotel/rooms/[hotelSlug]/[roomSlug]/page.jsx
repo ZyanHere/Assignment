@@ -39,11 +39,9 @@ const RoomDetailsPage = () => {
   const facilitiesData = room.facilities[0] || {};
 
   return (
-    <div className="flex">
-      <Sidebar />
       <div className="flex-1">
         <Header />
-        <div className="relative p-6">
+        <div className="relative p-6 w-full max-w-[1700px] mx-auto">
           {/* Breadcrumb */}
           <nav className="text-2xl mb-6">
             <Link href="/" className="hover:text-black">
@@ -189,7 +187,6 @@ const RoomDetailsPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

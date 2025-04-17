@@ -6,11 +6,10 @@ import RecommendedEvents from "@/components/home/foursec/event/RecommendedEvents
 
 const EventPage = () => {
   return (
-    <div className="flex">
-      <Sidebar />
+
       <div className="flex-1">
         <Header />
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           <nav className="text-2xl text-gray-600 mb-6">
             Home &gt; <span className="text-yellow-500 font-semibold">Events</span>
           </nav>
@@ -21,7 +20,6 @@ const EventPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

@@ -25,15 +25,12 @@ const HotelSlugPage = () => {
   }
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <Sidebar />
 
       <div className="flex-1">
         {/* Header */}
         <Header />
 
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           {/* Breadcrumb */}
           <nav className="text-2xl mb-12">
             <Link href="/" className="text-black">
@@ -53,7 +50,6 @@ const HotelSlugPage = () => {
           <MoreHotels hotels={hotels} />
         </div>
       </div>
-    </div>
   );
 };
 

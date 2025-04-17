@@ -24,8 +24,6 @@ const MovieDetailPage = () => {
   const movieDetails = movie.desc[0];
 
   return (
-    <div className="flex">
-      <Sidebar />
       <div className="flex-1">
         <Header />
         <div className="p-6">
@@ -114,7 +112,6 @@ const MovieDetailPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

@@ -6,11 +6,9 @@ import RecommendedHotels from "@/components/home/foursec/RecommandedHotel";
 
 export default function HotelsPage() {
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1">
+      <div className="flex-1 ">
         <Header />
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           {/* Breadcrumb */}
           <nav className="text-2xl mb-4">
             <Link href="/" className="text-black">
@@ -23,6 +21,5 @@ export default function HotelsPage() {
           <RecommendedHotels />
         </div>
       </div>
-    </div>
   );
 }

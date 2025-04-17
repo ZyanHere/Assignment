@@ -7,8 +7,6 @@ import Recommended from "@/components/home/foursec/movie/RecommandedMovies";
 
 const MoviePage = () => {
   return (
-    <div className="flex">
-      <Sidebar />
       <div className="flex-1">
         <Header />
         <div className="p-6">
@@ -22,7 +20,6 @@ const MoviePage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

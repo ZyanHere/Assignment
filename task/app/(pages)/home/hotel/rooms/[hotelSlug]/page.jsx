@@ -24,13 +24,11 @@ const HotelRoomPage = () => {
   }
 
   return (
-    <div className="flex">
-      <Sidebar />
 
       <div className="flex-1">
         <Header />
 
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           {/* Breadcrumb */}
           <nav className="text-2xl mb-8">
             <Link href="/" className="text-black">Home</Link> &gt;{" "}
@@ -47,7 +45,7 @@ const HotelRoomPage = () => {
           <RoomList hotelSlug={hotelSlug} rooms={hotel.rooms} />
         </div>
       </div>
-    </div>
+
   );
 };
 

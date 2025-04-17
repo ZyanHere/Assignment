@@ -24,11 +24,9 @@ const EventDetailPage = () => {
   const eventDetails = event.desc[0];
 
   return (
-    <div className="flex">
-      <Sidebar />
       <div className="flex-1">
         <Header />
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           <nav className="text-2xl mb-6 ">
             Home &gt; Events &gt;{" "}
             <span className="text-yellow-500 font-semibold">{event.title}</span>
@@ -106,7 +104,6 @@ const EventDetailPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

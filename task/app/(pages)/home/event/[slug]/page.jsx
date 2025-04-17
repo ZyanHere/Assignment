@@ -29,11 +29,9 @@ const EventSectionPage = () => {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
       <div className="flex-1">
         <Header />
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           <nav className="text-2xl mb-6">
             <Link href="/" className="text-gray-500">Home</Link> &gt;
             <Link href="/home/event" className="text-gray-500"> Events </Link> &gt;
@@ -102,7 +100,6 @@ const EventSectionPage = () => {
           )}
         </div>
       </div>
-    </div>
   );
 };
 

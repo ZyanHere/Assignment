@@ -60,15 +60,11 @@ const RestaurantDetailPage = () => {
   }
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <Sidebar />
 
-      {/* Main Content */}
       <div className="flex-1">
         <Header />
 
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           <div className="px-6 md:px-12">
             {/* Breadcrumb */}
             <nav className="mb-4 text-2xl">
@@ -99,7 +95,7 @@ const RestaurantDetailPage = () => {
             <MainDishSection
               restaurantData={restaurantData}
               favorites={favorites}
-              restaurantIndex={restaurantData.id} // Ensure this exists
+              restaurantIndex={restaurantData.id} 
               toggleFavorite={toggleFavorite}
             />
 
@@ -118,7 +114,6 @@ const RestaurantDetailPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

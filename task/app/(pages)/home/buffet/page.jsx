@@ -11,11 +11,9 @@ import Link from "next/link";
 const BuffetPage = () => {
 
   return (
-    <div className="flex">
-      <Sidebar />
       <div className="flex-1">
         <Header />
-        <div className="p-6">
+        <div className="p-6 w-full max-w-[1700px] mx-auto">
           <div className="px-6 md:px-12">
             
             {/* Breadcrumb */}
@@ -48,7 +46,6 @@ const BuffetPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
