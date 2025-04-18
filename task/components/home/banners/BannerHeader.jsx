@@ -1,67 +1,60 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useDispatch, useSelector } from "react-redux";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { setLocation } from "@/lib/redux/modalLocation/modalLocationSlice";
 
 export const BannerHeader = () => {
-  const [location, setLocation] = useState("");
+  const dispatch = useDispatch();
+  const location = useSelector((state) => state.modalLocation.location);
+
   const [inputValue, setInputValue] = useState("");
+  const [open, setOpen] = useState(false);
 
   const handleSave = () => {
     if (inputValue.trim()) {
-      setLocation(inputValue.trim());
+      dispatch(setLocation(inputValue.trim()));
+      setOpen(false); 
+      setInputValue(""); 
     }
   };
 
   return (
-    <Dialog>
-      <div className="flex items-center gap-2 text-base font-semibold mb-4">
-        <span className="text-black">
-          {location || "Select delivery location"}
-        </span>
-        <DialogTitle></DialogTitle>
+    <div className="flex items-center gap-2 text-base font-semibold mb-4">
+      <span className="text-black">
+        {location || "Select delivery location"}
+      </span>
+
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button>
-            <Image
-              src="/home/assets/Down.svg"
-              alt="Down Arrow"
-              width={20}
-              height={20}
-              className="object-contain"
-            />
-          </button>
-        </DialogTrigger>
-      </div>
-
-      <DialogContent className="max-w-sm rounded-xl p-6">
-        <div className="flex justify-center mb-4">
-          <button className="bg-white p-2 rounded-sm shadow-md">
-            X
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          <p className="text-base font-medium">Select delivery location</p>
-          <Input
-            placeholder="Enter location"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+          <Image
+            src="/home/assets/Down.svg"
+            alt="Down Arrow"
+            width={20}
+            height={20}
+            className="object-contain cursor-pointer"
           />
-          <DialogTrigger asChild>
-            <Button
-              className="w-full bg-yellow-400 text-black hover:bg-yellow-500"
-              onClick={handleSave}
-            >
-              Save
-            </Button>
-          </DialogTrigger>
+        </DialogTrigger>
 
-          
-        </div>
-      </DialogContent>
-    </Dialog>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Enter your delivery address</DialogTitle>
+          </DialogHeader>
+
+          <div className="flex flex-col gap-3">
+            <Input
+              placeholder="Type your city or town"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <Button onClick={handleSave}>Save</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
