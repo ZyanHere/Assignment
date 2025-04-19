@@ -4,6 +4,8 @@ import { Providers } from "@/lib/providers";
 import { CartProvider } from "@/lib/contexts/cart-context";
 import { AddressProvider } from "@/lib/contexts/address-context";
 import { SelectedItemsProvider } from "@/lib/contexts/selected-items-context";
+import AuthProvider from "./components/AuthProvider";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +29,15 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <CartProvider>
-            <AddressProvider> 
-              <SelectedItemsProvider>{children}</SelectedItemsProvider>
-            </AddressProvider>
-          </CartProvider>
+          <AuthProvider> 
+            <CartProvider>
+              <AddressProvider>
+                <SelectedItemsProvider>
+                  {children}
+                </SelectedItemsProvider>
+              </AddressProvider>
+            </CartProvider>
+          </AuthProvider>
         </Providers>
       </body>
     </html>
