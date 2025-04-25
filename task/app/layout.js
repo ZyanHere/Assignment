@@ -4,7 +4,9 @@ import { Providers } from "@/lib/providers";
 import { CartProvider } from "@/lib/contexts/cart-context";
 import { AddressProvider } from "@/lib/contexts/address-context";
 import { SelectedItemsProvider } from "@/lib/contexts/selected-items-context";
-import AuthProvider from "./components/AuthProvider";
+// import AuthProvider from "./components/AuthProvider";
+import { SessionProvider } from "next-auth/react"
+
 
 
 const geistSans = Geist({
@@ -29,15 +31,16 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <AuthProvider> 
-            <CartProvider>
-              <AddressProvider>
-                <SelectedItemsProvider>
-                  {children}
-                </SelectedItemsProvider>
-              </AddressProvider>
-            </CartProvider>
-          </AuthProvider>
+          <SessionProvider>
+              <CartProvider>
+                <AddressProvider>
+                  <SelectedItemsProvider>
+                    {children}
+                  </SelectedItemsProvider>
+                </AddressProvider>
+              </CartProvider>
+          </SessionProvider>
+            
         </Providers>
       </body>
     </html>
