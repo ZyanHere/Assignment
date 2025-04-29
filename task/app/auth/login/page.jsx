@@ -11,6 +11,7 @@ import { loginStart } from "@/lib/redux/user/userSlice";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import axios from "axios";
 import { loginSchema } from "@/lib/validators/auth";
+import { signIn } from "next-auth/react";
 
 
 
@@ -27,21 +28,42 @@ export default function Login() {
   });
 
   const onSubmit = async (data) => {
-    try {
-      dispatch(loginStart());
-      const response = await axios.post('/api/v1/login', data);
 
-      if(response.data.success) {
+    const res = await signIn("credentials", {
+      redirect: false,
+      phone: data.phone,
+      password: data.password,
+    });
+
+    if(res.ok && !res.error) {
+      try {
+        await axios.get("/lmd/api/v1/csrf-token", {
+          withCredentials: true,
+        });
         toast.success("Login successful!");
-        router.push('/');
+        router.push("/");
+      }catch (error) {
+        console.error("Error fetching CSRF token:", error);
+        toast.error("Login failed. Try again later.");
       }
-      
-    } catch (error) {
-      const errorMessage = error.response?.status === 401 
-        ? "Invalid credentials" 
-        : "Login failed. Try again later.";
-      toast.error(errorMessage);
+    }else{
+      toast.error("Invalid credentials. Please try again.");
     }
+    // try {
+    //   dispatch(loginStart());
+    //   const response = await axios.post('/api/v1/login', data);
+
+    //   if(response.data.success) {
+    //     toast.success("Login successful!");
+    //     router.push('/');
+    //   }
+      
+    // } catch (error) {
+    //   const errorMessage = error.response?.status === 401 
+    //     ? "Invalid credentials" 
+    //     : "Login failed. Try again later.";
+    //   toast.error(errorMessage);
+    // }
   }
 
  
