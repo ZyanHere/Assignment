@@ -39,7 +39,14 @@ export default function Signup() {
       //handle success
       if (response.data.success) {
         //toast.success("Account created successfully!");
-        localStorage.setItem("signup-number", formData.phone)
+        localStorage.setItem("signup-number", formData.phone);
+        dispatch(
+          signUpSuccess({
+            user: response.data.user || null, 
+            phone: signupData.phone,
+            password: signupData.password,
+          })
+        );
         router.push("/verification");
       }
     } catch (error) {
