@@ -39,6 +39,56 @@ export default function Location() {
         }
       }
     );
+
+    // navigator.geolocation.getCurrentPosition(
+    //   async (position) => {
+    //     const { latitude, longitude } = position.coords;
+
+    //     try {
+    //       const apiKey = 'YOUR_OPENCAGE_API_KEY'; // Replace with real key
+    //       const response = await fetch(
+    //         `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`
+    //       );
+
+    //       const data = await response.json();
+    //       const result = data.results[0];
+    //       const comp = result.components;
+
+    //       const city =
+    //         comp.city || comp.town || comp.village || 'Unknown';
+
+    //       const fullAddress =
+    //         result.formatted ||
+    //         `${comp.suburb || ''}, ${comp.city || comp.town || comp.village || ''}`;
+
+    //       const locationData = {
+    //         coordinates: {
+    //           lat: latitude,
+    //           lng: longitude,
+    //         },
+    //         address: fullAddress,
+    //         city: city,
+    //       };
+
+    //       dispatch(setAutoLocationSuccess(locationData));
+    //       router.push('/loc-info');
+    //     } catch (error) {
+    //       dispatch(setLocationFailure('Failed to get location details'));
+    //       toast.error('Could not resolve location from coordinates');
+    //     }
+    //   },
+    //   (error) => {
+    //     const errorMessage =
+    //       error.code === error.PERMISSION_DENIED
+    //         ? 'Location access denied'
+    //         : 'Error getting location';
+    //     dispatch(setLocationFailure(errorMessage));
+    //     toast.error(errorMessage);
+    //     if (error.code === error.PERMISSION_DENIED) {
+    //       router.push('/manual-location');
+    //     }
+    //   }
+    // );
   };
 
   return (
@@ -47,10 +97,12 @@ export default function Location() {
       <div className="w-1/2 flex flex-col justify-center items-center max-w-[458px] mx-auto h-screen">
         {/* Location Icon */}
         <div className="w-[152px] h-[152px] bg-yellow-100 rounded-full flex items-center justify-center">
-          <img
+          <Image
             src="/auth-asset/location-1.svg"
             alt="Location Icon"
-            className="w-[71px] h-[102px]"
+            width={71}
+            height={102}
+            // className="w-[71px] h-[102px]"
           />
         </div>
 

@@ -21,8 +21,8 @@ const categories = [
 
 const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
   return (
-    <div className="mt-6 overflow-x-auto no-scrollbar px-4">
-      <div className="flex justify-between gap-4">
+    <div className="mt-6 overflow-x-auto no-scrollbar px-4 ">
+      <div className="flex justify-between gap-4 ">
         {categories.map((category) => {
           const isActive = selectedTab === category.key;
           return (
@@ -32,7 +32,7 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
               className={`flex items-center gap-3 px-5 py-3 rounded-xl min-w-[180px] transition-all duration-200
                 ${isActive
                   ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4 "
-                  : "bg-gray-200 "
+                  : "bg-gray-200 bg-gradient-to-r from-yellow-50 to-yellow-200 shadow-sm border-b border-yellow-500"
                 }`}
             >
               <div className="w-8 h-8 relative ">

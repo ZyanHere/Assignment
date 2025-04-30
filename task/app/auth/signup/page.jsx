@@ -27,39 +27,25 @@ export default function Signup() {
   });
 
   const onSubmit = async (formData) => {
-   try {
-    dispatch(signUpStart());
+    try {
+      dispatch(signUpStart());
 
-    const {confirmPassword, ...signupData} = formData;
+      //remove confirmPassword before sending to api
+      const { confirmPassword, ...signupData } = formData;
 
-    const response = await axios.post("/lmd/api/v1/signup", signupData);
+      //api call
+      const response = await axios.post("/api/auth/signup", signupData);
 
-
-    if(response.data.success) {
-      toast.success("Account created successfully!");
-
-      //auto login (nextauth)
-      const loginRes = await signIn("credentials", {
-        redirect: false,
-        phone: signupData.phone,
-        password: signupData.password,
-      });
-
-      if(loginRes.ok && !loginRes.error) {
-        await axios.get("/lmd/api/v1/csrf-token", {
-          withCredentials: true,
-        });
-
-        router.push("/");
+      //handle success
+      if (response.data.success) {
+        //toast.success("Account created successfully!");
+        localStorage.setItem("signup-number", formData.phone)
+        router.push("/verification");
       }
-      else{
-        toast.error("Login failed. Please try again.");
-      }
-    }
-   } catch (error) {
+    } catch (error) {
       const errorMessage = error.response?.data?.message || "An error occurred";
       toast.error(errorMessage);
-   }
+    }
   };
 
   return (

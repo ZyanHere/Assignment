@@ -16,7 +16,7 @@ export default function Success() {
       },1000);
       return () => clearInterval(timer);
     } else{
-      router.push("auth/location")
+      router.push("/auth/location");
     }
   },[countdown, router]);
 
@@ -83,7 +83,7 @@ export default function Success() {
               Redirecting...
             </span>
           ) : (
-            `CONTINUE NOW (${countdown})`
+            `CONTINUE NOW`
           )}
         </button>
       </div>

@@ -1,21 +1,29 @@
 "use client";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Verification() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [timer, setTimer] = useState(30);
   const [resendDisabled, setResendDisabled] = useState(true);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const [rawPhone, setRawPhone] = useState("");
 
-  // Get phone number from URL parameters
-  const phoneParam = searchParams.get("phone");
-  const rawPhone = phoneParam ? decodeURIComponent(phoneParam) : "";
+
+  useEffect(() => {
+    const storedPhone = localStorage.getItem("signup-phone");
+    if(!storedPhone) {
+      toast.error("Phone number not found. Signup again.");
+      router.push("/auth/signup");
+    }else {
+      setRawPhone(storedPhone);
+    }
+  }, [])
+
   const formattedPhone = rawPhone.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
 
   const handleVerify = async () => {
@@ -33,6 +41,9 @@ export default function Verification() {
       });
 
       if (!response.ok) throw new Error("Invalid OTP");
+
+      localStorage.removeItem("signup-phone");
+
       router.push("/auth/success");
     } catch (error) {
       alert(error.message);
@@ -131,8 +142,11 @@ export default function Verification() {
         </p>
 
         {/* Continue Button */}
-        <button className="bg-yellow-400 font-medium text-[16px] w-[470px] py-3 mt-6 rounded-md hover:bg-yellow-500">
-          VERIFY
+        <button 
+         onClick={handleVerify}
+         disabled={isVerifying}
+        className="bg-yellow-400 font-medium text-[16px] w-[470px] py-3 mt-6 rounded-md hover:bg-yellow-500">
+          {isVerifying ? "Verifying..." : "VERIFY"}
         </button>
 
         {/* Resend Code */}

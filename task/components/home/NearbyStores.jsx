@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState } from "react";
 
 const stores = [
@@ -43,7 +44,7 @@ const NearbyStores = () => {
       </h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         {stores.map((store, index) => (
-          <div key={index} className="w-full rounded-lg shadow-md overflow-hidden">
+          <div key={index} className="w-full rounded-lg shadow-md overflow-hidden bg-gradient-to-r from-yellow-50 to-yellow-200 border-b border-yellow-500">
             <div className="relative ">
               <img
                 src={store.img}
@@ -51,9 +52,11 @@ const NearbyStores = () => {
                 className="w-full h-[200px] object-cover rounded-t-lg"
               />
               <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/50 text-white px-2 py-1 rounded-full">
-                <img
+                <Image
                   src="/home/shops/star.svg"
                   alt="Star"
+                  width={16}
+                  height={16}
                   className="w-4 h-4"
                 />
                 <span className="text-sm font-semibold">{store.rating}</span>

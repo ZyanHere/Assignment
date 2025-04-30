@@ -28,7 +28,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="pb-2 group">
-      <div className="w-full p-3 border border-blue-100 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 bg-white">
+      <div className="w-full p-3 border rounded-xl  hover:shadow-lg transition-all duration-300 bg-white shadow-sm border-b border-yellow-500">
         <div className="relative bg-blue-50 p-2 rounded-xl h-[120px] overflow-hidden">
           <Image
             src={product.image}

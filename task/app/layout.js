@@ -1,12 +1,11 @@
+// app/layout.jsx
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { CartProvider } from "@/lib/contexts/cart-context";
 import { AddressProvider } from "@/lib/contexts/address-context";
 import { SelectedItemsProvider } from "@/lib/contexts/selected-items-context";
-// import AuthProvider from "./components/AuthProvider";
-import { SessionProvider } from "next-auth/react"
-
+import SessionProviderWrapper from "@/lib/NextAuthProvider/SessionProviderWrapper";
 
 
 const geistSans = Geist({
@@ -31,16 +30,15 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <SessionProvider>
-              <CartProvider>
-                <AddressProvider>
-                  <SelectedItemsProvider>
-                    {children}
-                  </SelectedItemsProvider>
-                </AddressProvider>
-              </CartProvider>
-          </SessionProvider>
-            
+          <SessionProviderWrapper>
+            <CartProvider>
+              <AddressProvider>
+                <SelectedItemsProvider>
+                  {children}
+                </SelectedItemsProvider>
+              </AddressProvider>
+            </CartProvider>
+          </SessionProviderWrapper>
         </Providers>
       </body>
     </html>

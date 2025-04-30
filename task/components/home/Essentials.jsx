@@ -36,7 +36,7 @@ const Essentials = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-4 ">
         {categories.map((item, index) => (
           <div key={index} className="flex flex-col items-center text-center p-1 ">
-            <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-lg  w-full aspect-square flex items-center justify-center shadow-lg cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5">
+            <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-lg  w-full aspect-square flex items-center justify-center shadow-lg cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5  border-b-2 border-yellow-500">
             <Image
                 src={item.img}
                 alt={item.label}
