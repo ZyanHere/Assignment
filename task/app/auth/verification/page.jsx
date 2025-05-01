@@ -12,9 +12,11 @@ export default function Verification() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [rawPhone, setRawPhone] = useState("");
+  const [isClient, setIsClient] = useState(false);
 
 
   useEffect(() => {
+    setIsClient(true); // Mark client-side mount
     const storedPhone = localStorage.getItem("signup-phone");
     if(!storedPhone) {
       toast.error("Phone number not found. Signup again.");
@@ -99,6 +101,8 @@ export default function Verification() {
       setResendDisabled(false);
     }
   }, [timer]);
+
+  if (!isClient) return null; // Prevent server mismatch
 
   return (
     <div className="flex min-h-screen bg-white">

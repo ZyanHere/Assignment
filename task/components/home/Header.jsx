@@ -2,12 +2,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavLinks from "@/app/components/header/NavLinks";
 import UserActions from "@/app/components/header/UserActions";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const {data: session} = useSession();
+  const isLoggedIn = !!session?.user;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // Wait for client-side mount
 
   return (
     <nav className="bg-gradient-to-r from-yellow-50 to-yellow-200 shadow-sm border-b border-yellow-500">
@@ -56,7 +66,24 @@ const Header = () => {
               <Search className="h-6 w-6 text-gray-700" />
             </button>
 
-            <UserActions />
+            {isLoggedIn ? (
+              <UserActions/>
+            ) : (
+              <div className="flex gap-2">
+                <Link
+                  href="/auth/signup"
+                  className="px-4 py-2 bg-yellow-400 shadow-2xl  rounded-lg font-medium hover:bg-yellow-50 transition"
+                >
+                  Register
+                </Link>
+                <Link
+                  href="/auth/login"
+                  className="px-4 py-2 border border-yellow-500 shadow-2xl  rounded-lg font-medium hover:bg-yellow-50 transition"
+                >
+                  Log In
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 

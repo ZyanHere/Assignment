@@ -9,10 +9,17 @@ import { signIn } from "next-auth/react";
 
 
 export default function LocationInfo() {
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const {coordinates, address, city, phone, password} = useSelector((state) => state.user);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
   
   useEffect(() => {
     if (!coordinates?.lat || !coordinates?.lng) {

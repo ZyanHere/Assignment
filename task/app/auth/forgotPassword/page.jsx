@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import toast from 'react-hot-toast';
 
 export default function ForgotPassword() {
   const [phoneNumber, setPhoneNumber] = useState("");

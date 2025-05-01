@@ -3,11 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { loginStart } from "@/lib/redux/user/userSlice";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import axios from "axios";
 import { loginSchema } from "@/lib/validators/auth";
@@ -17,53 +15,52 @@ import { signIn } from "next-auth/react";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const { loading, error } = useSelector((state) => state.user);
+  const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
   const router = useRouter();
-  const dispatch = useDispatch();
 
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema)
   });
 
+  const toggleLoginMethod = () => {
+    setLoginMethod(prev => prev === "email" ? "phone" : "email");
+    reset();
+  }
+
   const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      const credentials = {
+        password: data.password,
+        [loginMethod]: loginMethod === "email" ? data.email : data.phone
+      };
 
-    const res = await signIn("credentials", {
-      redirect: false,
-      phone: data.phone,
-      password: data.password,
-    });
+      const res = await signIn("credentials", {
+        redirect: false,
+        ...credentials,
+        callbackUrl: "/",
+      });
 
-    if(res.ok && !res.error) {
-      try {
-        await axios.get("/lmd/api/v1/csrf-token", {
-          withCredentials: true,
-        });
-        toast.success("Login successful!");
-        router.push("/");
-      }catch (error) {
-        console.error("Error fetching CSRF token:", error);
-        toast.error("Login failed. Try again later.");
+      if (res?.error) {
+        throw new Error(res.error);
       }
-    }else{
-      toast.error("Invalid credentials. Please try again.");
-    }
-    // try {
-    //   dispatch(loginStart());
-    //   const response = await axios.post('/api/v1/login', data);
 
-    //   if(response.data.success) {
-    //     toast.success("Login successful!");
-    //     router.push('/');
-    //   }
-      
-    // } catch (error) {
-    //   const errorMessage = error.response?.status === 401 
-    //     ? "Invalid credentials" 
-    //     : "Login failed. Try again later.";
-    //   toast.error(errorMessage);
-    // }
+      if (res?.url) {
+        toast.success("Login successful!");
+        router.push(res.url);
+      }
+    } catch (error) {
+      toast.error(
+        error.message === "CredentialsSignin"
+          ? "Invalid credentials. Please try again."
+          : "Login failed. Please try again later."
+      );
+    }finally {
+      setIsLoading(false);
+    }
   }
 
  
@@ -88,17 +85,49 @@ export default function Login() {
 
           <form className="w-full max-w-md mt-[70px]" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
-            <label className="block text-sm font-medium text-black">Mobile Number</label>
-              <input
-                {...register("phone")}
-                type="tel"
-                className={`w-full p-3 border rounded-lg ${
-                  errors.phone ? 'border-red-500' : 'border-[#D9D9D9]'
-                } focus:ring-2 focus:ring-yellow-500`}
-                placeholder="0300123456"
-              />
-              {errors.phone && (
-                <span className="text-red-500 text-sm">{errors.phone.message}</span>
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-medium text-black">
+                  {loginMethod === "email" ? "Email Address" : "Mobile Number"}
+                </label>
+                <button
+                  type="button"
+                  onClick={toggleLoginMethod}
+                  className="text-[#FFC107] text-xs hover:underline"
+                >
+                  {loginMethod === "email" 
+                    ? "Use phone instead" 
+                    : "Use email instead"}
+                </button>
+              </div>
+              
+              {loginMethod === "email" ? (
+                <>
+                  <input
+                    {...register("email")}
+                    type="email"
+                    className={`w-full p-3 border rounded-lg ${
+                      errors.email ? 'border-red-500' : 'border-[#D9D9D9]'
+                    } focus:ring-2 focus:ring-yellow-500`}
+                    placeholder="example@mail.com"
+                  />
+                  {errors.email && (
+                    <span className="text-red-500 text-sm">{errors.email.message}</span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <input
+                    {...register("phone")}
+                    type="tel"
+                    className={`w-full p-3 border rounded-lg ${
+                      errors.phone ? 'border-red-500' : 'border-[#D9D9D9]'
+                    } focus:ring-2 focus:ring-yellow-500`}
+                    placeholder="0300123456"
+                  />
+                  {errors.phone && (
+                    <span className="text-red-500 text-sm">{errors.phone.message}</span>
+                  )}
+                </>
               )}
             </div>
 
@@ -148,7 +177,7 @@ export default function Login() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className={`w-full py-3 mt-6 bg-[#FFC107] text-white rounded-lg font-semibold 
                         hover:bg-yellow-600 transition-colors
                         ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
