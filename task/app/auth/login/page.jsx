@@ -7,31 +7,30 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import axios from "axios";
 import { loginSchema } from "@/lib/validators/auth";
 import { signIn } from "next-auth/react";
-
-
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
+  const [loginMethod, setLoginMethod] = useState("email");
+  const [error, setError] = useState("");
   const router = useRouter();
 
-
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(loginSchema)
   });
 
   const toggleLoginMethod = () => {
     setLoginMethod(prev => prev === "email" ? "phone" : "email");
     reset();
-  }
+  };
 
   const onSubmit = async (data) => {
     setIsLoading(true);
+    setError("");
+    
     try {
       const credentials = {
         password: data.password,
@@ -53,17 +52,20 @@ export default function Login() {
         router.push(res.url);
       }
     } catch (error) {
-      toast.error(
+      setError(
         error.message === "CredentialsSignin"
           ? "Invalid credentials. Please try again."
-          : "Login failed. Please try again later."
+          : error.message || "Login failed. Please try again later."
       );
-    }finally {
+      toast.error(error.message === "CredentialsSignin"
+        ? "Invalid credentials. Please try again."
+        : error.message || "Login failed. Please try again later."
+      );
+    } finally {
       setIsLoading(false);
     }
-  }
+  };
 
- 
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left Side - Login Form */}
@@ -180,9 +182,9 @@ export default function Login() {
               disabled={isLoading}
               className={`w-full py-3 mt-6 bg-[#FFC107] text-white rounded-lg font-semibold 
                         hover:bg-yellow-600 transition-colors
-                        ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
 
             {/* Error Message */}
@@ -234,7 +236,7 @@ export default function Login() {
           </div>
 
           <div className="mt-4 text-sm text-black w-full flex justify-center items-center">
-            Don’t have an account?
+            Don't have an account?
             <Link
               href="/signup"
               className="text-[#FFC107] font-medium hover:underline ml-1"

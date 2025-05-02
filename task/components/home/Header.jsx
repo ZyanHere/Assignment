@@ -9,15 +9,18 @@ import { useSession } from "next-auth/react";
 
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const {data: session} = useSession();
-  const isLoggedIn = !!session?.user;
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === 'authenticated' && !!session?.user;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null; // Wait for client-side mount
+  // Don't render anything during SSR or while loading session
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <nav className="bg-gradient-to-r from-yellow-50 to-yellow-200 shadow-sm border-b border-yellow-500">
@@ -67,18 +70,18 @@ const Header = () => {
             </button>
 
             {isLoggedIn ? (
-              <UserActions/>
+              <UserActions />
             ) : (
               <div className="flex gap-2">
                 <Link
                   href="/auth/signup"
-                  className="px-4 py-2 bg-yellow-400 shadow-2xl  rounded-lg font-medium hover:bg-yellow-50 transition"
+                  className="px-4 py-2 bg-yellow-400 shadow-2xl rounded-lg font-medium hover:bg-yellow-50 transition"
                 >
                   Register
                 </Link>
                 <Link
                   href="/auth/login"
-                  className="px-4 py-2 border border-yellow-500 shadow-2xl  rounded-lg font-medium hover:bg-yellow-50 transition"
+                  className="px-4 py-2 border border-yellow-500 shadow-2xl rounded-lg font-medium hover:bg-yellow-50 transition"
                 >
                   Log In
                 </Link>

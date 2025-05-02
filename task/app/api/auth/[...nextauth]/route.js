@@ -26,7 +26,7 @@ const handler = NextAuth({
                         role: "admin"
                     };
                 }
-
+                
                 if (!credentials.email && !credentials.phone) {
                     throw new Error("Email or phone is required");
                 }
@@ -37,7 +37,7 @@ const handler = NextAuth({
                 try {
                     const csrfResponse = await axios.get(
                         "http://localhost:4000/lmd/api/v1/auth/csrf-token"
-                    )
+                    );
 
                     const csrfToken = csrfResponse.data.token;
 
@@ -47,7 +47,7 @@ const handler = NextAuth({
                     };
                     if (credentials.email) {
                         loginPayload.email = credentials.email;
-                    }else {
+                    } else {
                         loginPayload.phone = credentials.phone;
                     }
 
@@ -59,24 +59,22 @@ const handler = NextAuth({
                                 "Content-Type": "application/json",
                                 "X-CSRF-Token": csrfToken,
                             },
-                            // withCredentials: true,
                         }
                     );
 
-                    const user = res.data.user;
-
-                    // if (res.data?.success && user) {
-                    //     return user;
-                    // }
-                    // return null;
-                    return loginResponse.data.user || null;
+                    // Return the user data if login was successful
+                    if (res.data?.success && res.data.user) {
+                        return res.data.user;
+                    }
+                    
+                    // Return null if login failed
+                    return null;
                 }
                 catch (error) {
                     console.error("Error during authorization:", error);
                     return null;
                 }
             }
-
         })
     ],
     session: {
@@ -92,7 +90,7 @@ const handler = NextAuth({
                     email: user.email,
                     phone: user.phone,
                     role: user.role
-                  };
+                };
             }
             return token;
         },

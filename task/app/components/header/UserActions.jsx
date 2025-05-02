@@ -1,19 +1,49 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 const UserActions = () => {
+  //user from redux and next-auth
+  const { currentUser } = useSelector((state) => state.user);
+  const { data: session } = useSession();
+  const dispatch = useDispatch();
+  const [firstName, setFirstName] = useState("Guest");
 
-    let cartItems = 3;
-    let notifications = 5;
+  useEffect(() => {
+    // First priority: Check Redux store (for immediate state after login/signup)
+    // Second priority: Check Next-Auth session (for persistence across page refreshes)
+    if (currentUser) {
+      setFirstName(currentUser.name.split(" ")[0]);
+    } else if (session?.user?.name) {
+      setFirstName(session.user.name.split(" ")[0]);
+      // Optionally sync session data to Redux if needed
+      // dispatch(setCurrentUser(session.user));
+    }
+  }, [currentUser, session]);
+
+  let cartItems = 3;
+  let notifications = 5;
   return (
     <div className="flex items-center gap-2 sm:gap-3">
       {/* Cart */}
       <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
         <span className="sr-only">Cart</span>
-        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="w-6 h-6 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -31,7 +61,12 @@ const UserActions = () => {
       {/* Notifications */}
       <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
         <span className="sr-only">Notifications</span>
-        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="w-6 h-6 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -48,7 +83,7 @@ const UserActions = () => {
 
       {/* Profile Dropdown */}
       <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center gap-2 p-1 rounded-lg transition hover:bg-gray-50 group">
+        <DropdownMenuTrigger className="flex items-center gap-2 p-3 rounded-lg transition hover:bg-gray-50 group">
           <div className="relative">
             <Image
               src="/home/header/profile.png"
@@ -60,8 +95,8 @@ const UserActions = () => {
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
           </div>
           <span className="text-gray-700 font-medium hidden lg:inline-block text-sm">
-            Zyan
-            <span className="block text-xs text-gray-500 font-normal">Premium Member</span>
+            {firstName}
+            {/* {currentUser?.premium && <span className="block text-xs text-gray-500 font-normal">Premium Member</span>} */}
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -73,7 +108,12 @@ const UserActions = () => {
               href="/profile"
               className="flex items-center gap-2 px-3 py-2.5 text-gray-700 hover:bg-yellow-50 rounded-lg font-medium cursor-pointer transition"
             >
-              <Image src="/home/header/profile.png" alt="Profile" width={18} height={18} />
+              <Image
+                src="/home/header/profile.png"
+                alt="Profile"
+                width={18}
+                height={18}
+              />
               Profile
             </Link>
           </DropdownMenuItem>
