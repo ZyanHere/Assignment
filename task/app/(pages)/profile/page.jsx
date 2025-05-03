@@ -19,12 +19,44 @@ import {
 import Logout from "@/components/profile/Logout";
 import { Button } from "@/components/ui/button";
 import { Pencil, Upload } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useSelector } from "react-redux";
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("about");
-  const [profilePic, setProfilePic] = useState("/profile/profile-pic.jpg");
+  const [profilePic, setProfilePic] = useState("");
   const [newProfilePic, setNewProfilePic] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userInitial, setUserInitial] = useState("");
+
+  const { data: session } = useSession();
+  const { currentUser } = useSelector((state) => state.user);
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    joinDate: "",
+  });
+
+  useEffect(() => {
+    const user = currentUser || session?.user;
+    if (user) {
+      setUserData({
+        name: user.name || "User",
+        email: user.email || "",
+        joinDate: new Date(user.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+        }),
+      });
+      if (user.profilePic) {
+        setProfilePic(user.profilePic);
+      } else {
+        const initial = user.name ? user.name.charAt(0).toUpperCase() : "U";
+        setUserInitial(initial);
+      }
+      setIsLoading(false);
+    }
+  }, [currentUser, session]);
 
   // Simulate data loading
   useEffect(() => {
@@ -34,6 +66,11 @@ const ProfilePage = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    // Basic validation
+    if (!file.type.match("image.*")) {
+      toast.error("Please select an image file");
+      return;
+    }
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setNewProfilePic(imageUrl);
@@ -70,7 +107,6 @@ const ProfilePage = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-
       <div className="flex-1 flex flex-col">
         <Header />
 
@@ -85,13 +121,19 @@ const ProfilePage = () => {
                     <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse" />
                   ) : (
                     <>
-                      <Image
-                        src={profilePic}
-                        alt="Profile"
-                        width={96}
-                        height={96}
-                        className="rounded-full border-4 border-white shadow-lg w-24 h-24 object-cover"
-                      />
+                      {profilePic ? (
+                        <Image
+                          src={profilePic}
+                          alt="Profile"
+                          width={96}
+                          height={96}
+                          className="rounded-full border-4 border-white shadow-lg w-24 h-24 object-cover"
+                        />
+                      ) : (
+                        <div className="rounded-full border-4 border-white shadow-lg w-24 h-24 flex items-center justify-center bg-amber-500 text-white text-4xl font-bold">
+                          {userInitial}
+                        </div>
+                      )}
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button
@@ -156,10 +198,10 @@ const ProfilePage = () => {
                     </div>
                   ) : (
                     <>
-                      <h1 className="text-2xl font-bold">Zyan Baishya</h1>
-                      <p className="text-gray-600">ABC@gmail.com</p>
+                      <h1 className="text-2xl font-bold">{userData.name}</h1>
+                      <p className="text-gray-600">{userData.email}</p>
                       <p className="text-sm text-gray-500 mt-2">
-                        Member since June 2022
+                        Member since {userData.joinDate}
                       </p>
                     </>
                   )}
