@@ -23,7 +23,7 @@ const Header = () => {
   }
 
   return (
-    <nav className="bg-gradient-to-r from-yellow-50 to-yellow-200 shadow-sm border-b border-yellow-500">
+    <nav className="bg-gradient-to-r from-yellow-500 to-yellow-200 shadow-sm border-b border-yellow-500">
       <div className="mx-auto px-4 sm:px-16 lg:px-20">
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center gap-6 md:gap-12">
@@ -75,13 +75,13 @@ const Header = () => {
               <div className="flex gap-2">
                 <Link
                   href="/auth/signup"
-                  className="px-4 py-2 bg-yellow-400 shadow-2xl rounded-lg font-medium hover:bg-yellow-50 transition"
+                  className="px-4 py-2 bg-yellow-500 shadow-2xl rounded-lg font-medium text-white hover:bg-yellow-50 hover:text-black transition"
                 >
                   Register
                 </Link>
                 <Link
                   href="/auth/login"
-                  className="px-4 py-2 border border-yellow-500 shadow-2xl rounded-lg font-medium hover:bg-yellow-50 transition"
+                  className="px-4 py-2 border bg-white border-yellow-500 shadow-2xl rounded-lg font-medium hover:bg-white hover:text-orange-400 transition"
                 >
                   Log In
                 </Link>

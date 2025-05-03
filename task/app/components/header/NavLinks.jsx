@@ -28,14 +28,14 @@ const NavLinks = ({ isMobile = false }) => {
             href={item.path}
             className={clsx(
               "relative px-2 py-1 text-lg font-medium group",
-              isActive ? "text-yellow-500" : "text-gray-900 hover:text-yellow-500"
+              isActive ? "text-white" : "text-gray-900 hover:text-yellow-500"
             )}
           >
             <span
               className={clsx(
                 "absolute inset-x-0 -bottom-1 h-0.5 transition-transform duration-300",
                 isActive
-                  ? "bg-yellow-500 scale-x-100"
+                  ? "bg-white scale-x-100"
                   : "bg-yellow-400 origin-left scale-x-0 group-hover:scale-x-100"
               )}
             ></span>

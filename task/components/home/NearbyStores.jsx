@@ -44,7 +44,7 @@ const NearbyStores = () => {
       </h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         {stores.map((store, index) => (
-          <div key={index} className="w-full rounded-lg shadow-md overflow-hidden bg-gradient-to-r from-yellow-50 to-yellow-200 border-b border-yellow-500">
+          <div key={index} className="w-full rounded-lg shadow-md overflow-hidden bg-gradient-to-r from-yellow-200 to-yellow-50 border-b border-yellow-500">
             <div className="relative ">
               <img
                 src={store.img}

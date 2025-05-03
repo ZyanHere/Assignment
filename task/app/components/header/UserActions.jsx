@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 const UserActions = () => {
   //user from redux and next-auth
@@ -30,6 +30,55 @@ const UserActions = () => {
       // dispatch(setCurrentUser(session.user));
     }
   }, [currentUser, session]);
+
+  const handleLogout = async () => {
+    try {
+        // Step 1: Get CSRF token from backend
+        const csrfResponse = await axios.get(
+            'http://localhost:4000/lmd/api/v1/auth/csrf-token',
+            { withCredentials: true }
+        );
+        const csrfToken = csrfResponse.data.token;
+        
+        // Step 2: Call backend logout endpoint with CSRF token
+        await axios.post(
+            'http://localhost:4000/lmd/api/v1/auth/user/logout',
+            {},
+            {
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                withCredentials: true,
+            }
+        );
+        
+        // Step 3: Sign out from NextAuth
+        await signOut({
+            redirect: false,
+            callbackUrl: '/'
+        });
+        
+        // Step 4: Optional - Clear client-side cache/storage
+        if (typeof window !== 'undefined') {
+            localStorage.clear();
+            sessionStorage.clear();
+        }
+        
+        // Step 5: Redirect to home page
+        window.location.href = '/';
+        toast.success('Logged out successfully');
+    } catch (error) {
+        console.error('Logout failed:', error);
+        toast.error('Logout failed. Please try again.');
+        
+        // Force sign out even if backend logout fails
+        await signOut({
+            redirect: false,
+            callbackUrl: '/'
+        });
+        window.location.href = '/';
+    }
+};
 
   let cartItems = 3;
   let notifications = 5;
@@ -118,7 +167,7 @@ const UserActions = () => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => console.log("Logout")}
+            onClick={handleLogout}
             className="flex items-center gap-2 px-3 py-2.5 text-red-500 hover:bg-red-50 rounded-lg font-medium cursor-pointer transition"
           >
             <LogOut size={16} />
