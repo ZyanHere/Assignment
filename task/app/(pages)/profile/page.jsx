@@ -8,7 +8,6 @@ import SavedDeal from "@/components/profile/SavedDeal";
 import PaymentMethods from "@/components/profile/PaymentMethods";
 import Messages from "@/components/profile/Messages";
 import Notifications from "@/components/profile/Notifications";
-import Sidebar from "@/components/home/sidebar";
 import Header from "@/components/home/Header";
 import {
   Dialog,
@@ -20,7 +19,10 @@ import Logout from "@/components/profile/Logout";
 import { Button } from "@/components/ui/button";
 import { Pencil, Upload } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfilePic } from "@/lib/redux/user/userSlice";
+import toast from "react-hot-toast";
+
 
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("about");
@@ -28,6 +30,7 @@ const ProfilePage = () => {
   const [newProfilePic, setNewProfilePic] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userInitial, setUserInitial] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data: session } = useSession();
   const { currentUser } = useSelector((state) => state.user);
@@ -36,6 +39,8 @@ const ProfilePage = () => {
     email: "",
     joinDate: "",
   });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const user = currentUser || session?.user;
@@ -79,8 +84,11 @@ const ProfilePage = () => {
 
   const handleSaveProfilePic = () => {
     if (newProfilePic) {
+      dispatch(updateProfilePic(newProfilePic));
       setProfilePic(newProfilePic);
       setNewProfilePic(null);
+      setIsDialogOpen(false);
+      toast.success("Profile picture updated !!");
     }
   };
 
@@ -134,12 +142,16 @@ const ProfilePage = () => {
                           {userInitial}
                         </div>
                       )}
-                      <Dialog>
+                      <Dialog
+                        open={isDialogOpen}
+                        onOpenChange={setIsDialogOpen}
+                      >
                         <DialogTrigger asChild>
                           <Button
                             variant="secondary"
                             size="icon"
                             className="absolute bottom-0 right-0 rounded-full w-8 h-8"
+                            onClick={() => setIsDialogOpen(true)}
                           >
                             <Pencil className="w-4 h-4" />
                           </Button>
@@ -172,13 +184,26 @@ const ProfilePage = () => {
                                   className="hidden"
                                   accept="image/*"
                                   onChange={handleImageChange}
+                                  onClick={(e) => (e.target.value = null)}
+                                  id="profile-upload"
                                 />
                               </label>
                             </div>
 
                             <div className="flex justify-end gap-2">
-                              <Button variant="outline">Cancel</Button>
-                              <Button onClick={handleSaveProfilePic}>
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  setIsDialogOpen(false);
+                                  setNewProfilePic(null);
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={handleSaveProfilePic}
+                                disabled={!newProfilePic}
+                              >
                                 Save Changes
                               </Button>
                             </div>

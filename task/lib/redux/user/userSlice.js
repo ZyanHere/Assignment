@@ -5,6 +5,7 @@ const initialState = {
   phone: null,
   password: null, // temp for auto-login
   loading: false,
+  profilePic: null,
   error: null
 };
 
@@ -51,6 +52,13 @@ const userSlice = createSlice({
       state.error = null;
     },
 
+    updateProfilePic: (state, action) => {
+      state.profilePic = action.payload;
+      if (state.user) {
+        state.user.profilePic = action.payload; 
+      }
+    },
+
     // Logout
     logout: (state) => {
       state.user = null;
@@ -68,6 +76,7 @@ export const {
   loginSuccess,
   loginFailure,
   setUser,
+  updateProfilePic,
   logout
 } = userSlice.actions;
 

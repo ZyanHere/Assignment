@@ -11,18 +11,22 @@ import { LogOut } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const UserActions = () => {
   //user from redux and next-auth
-  const { currentUser } = useSelector((state) => state.user);
+  const userState = useSelector((state) => state.user);
+  const currentUser = userState?.user || null;
+  const profilePic = userState?.profilePic || null;
   const { data: session } = useSession();
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("Guest");
+  
 
   useEffect(() => {
     // First priority: Check Redux store (for immediate state after login/signup)
     // Second priority: Check Next-Auth session (for persistence across page refreshes)
-    if (currentUser) {
+    if (currentUser?.name) {
       setFirstName(currentUser.name.split(" ")[0]);
     } else if (session?.user?.name) {
       setFirstName(session.user.name.split(" ")[0]);
@@ -30,6 +34,8 @@ const UserActions = () => {
       // dispatch(setCurrentUser(session.user));
     }
   }, [currentUser, session]);
+
+  
 
   const handleLogout = async () => {
     try {
@@ -80,8 +86,15 @@ const UserActions = () => {
     }
 };
 
+const getUserInitial = () => {
+  const name = currentUser?.name || session?.user?.name;
+  return name ? name.charAt(0).toUpperCase() : "User";
+};
+
   let cartItems = 3;
   let notifications = 5;
+
+
   return (
     <div className="flex items-center gap-2 sm:gap-3">
       {/* Cart */}
@@ -134,13 +147,22 @@ const UserActions = () => {
       <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center gap-2 p-3 rounded-lg transition hover:bg-gray-50 group">
           <div className="relative">
-            <Image
-              src="/home/header/profile.png"
-              alt="Profile"
-              width={40}
-              height={40}
-              className="rounded-full border-2 border-yellow-400"
-            />
+            {profilePic ? (
+              <Image
+                src={profilePic}
+                alt="Profile"
+                width={40}
+                height={40}
+                className="rounded-full border-2 border-yellow-400"
+                onError={(e) => {
+                  e.currentTarget.src = '/default-avatar.png';
+                }}
+              />
+            ) : (
+              <div className="rounded-full border-2 border-yellow-400 w-10 h-10 flex items-center justify-center bg-amber-500 text-white text-lg font-bold">
+                {getUserInitial()}
+              </div>
+            )}
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
           </div>
           <span className="text-gray-700 font-medium hidden lg:inline-block text-sm">
