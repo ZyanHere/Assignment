@@ -13,6 +13,7 @@ import { signIn } from "next-auth/react";
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loginMethod, setLoginMethod] = useState("email");
   const [error, setError] = useState("");
@@ -63,6 +64,18 @@ export default function Login() {
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleOAuthSignIn = async (provider) => {
+    try {
+      setOauthLoading(provider);
+      await signIn(provider, { callbackUrl: "/" });
+    } catch (error) {
+      toast.error(`Failed to sign in with ${provider}. Please try again.`);
+      console.error(`${provider} sign-in error:`, error);
+    } finally {
+      setOauthLoading("");
     }
   };
 
@@ -199,9 +212,12 @@ export default function Login() {
 
           <div className="w-full flex justify-between mt-4 ">
             {/* Google Sign-In */}
-            <div >
+            <div>
               <button
-                className=" flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
+                type="button"
+                onClick={() => handleOAuthSignIn('google')}
+                disabled={oauthLoading !== ""}
+                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
                      hover:bg-gray-100 transition duration-200"
               >
                 <Image
@@ -211,25 +227,31 @@ export default function Login() {
                   height={20}
                 />
                 <span className="ml-2 text-black text-sm font-medium">
-                  Sign in with Google
+                  {oauthLoading === 'google' ? 'Connecting...' : 'Sign in with Google'}
                 </span>
               </button>
             </div>
 
-            {/* Apple Sign-In */}
+            {/* Facebook Sign-In (replacing Apple) */}
             <div>
               <button
-                className=" flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
+                type="button"
+                onClick={() => handleOAuthSignIn('facebook')}
+                disabled={oauthLoading !== ""}
+                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
                      hover:bg-gray-100 transition duration-200"
               >
-                <Image
-                  src="/auth-asset/apple-logo.svg"
-                  alt="Apple"
-                  width={20}
-                  height={20}
-                />
+                {/* You'll need to add a Facebook logo to your assets */}
+                <svg 
+                  className="w-5 h-5 text-blue-600"
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 320 512"
+                  fill="currentColor"
+                >
+                  <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/>
+                </svg>
                 <span className="ml-2 text-black text-sm font-medium">
-                  Sign in with Apple
+                  {oauthLoading === 'facebook' ? 'Connecting...' : 'Sign in with Facebook'}
                 </span>
               </button>
             </div>
