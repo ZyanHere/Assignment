@@ -4,6 +4,21 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 const handler = NextAuth({
     providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            authorization: {
+                params: {
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
+                }
+            }
+        }),
+        FacebookProvider({
+            clientId: process.env.FACEBOOK_CLIENT_ID,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET
+        }),
         CredentialsProvider({
             name: "Credentials",
             credentials: {
@@ -82,14 +97,18 @@ const handler = NextAuth({
         // maxAge: 90 * 24 * 60 * 60, 
     },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
+            //store provider account info in token
+            if (account) {
+                token.provider = account.provider;
+            }
             if (user) {
                 token.user = {
                     id: user.id,
                     name: user.name,
                     email: user.email,
                     phone: user.phone,
-                    role: user.role
+                    role: user.role || "user",
                 };
             }
             return token;
@@ -100,6 +119,45 @@ const handler = NextAuth({
             }
             return session;
         }
+    },
+
+    async signIn({account, profile}) {
+        if(account.provider === "google") {
+            try {
+                const response = await axios.get(
+                    "http://localhost:4000/lmd/api/v1/auth/google/callback",
+                    {
+                        params: {
+                            code: account.id_token,
+                            email: profile.email,
+                        }
+                    }
+                );
+                return true;
+            } catch (error) {
+                console.error("Error during Google sign-in:", error);
+                return false;
+            }
+        }
+        if(account.provider === "facebook") {
+            try {
+                const response = await axios.get(
+                    "http://localhost:4000/lmd/api/v1/auth/facebook/callback",
+                    {
+                        params: {
+                            code: account.id_token,
+                            email: profile.email,
+                        }
+                    }
+                );
+                return true;
+            } catch (error) {
+                console.error("Error during Google sign-in:", error);
+                return false;
+            }
+        }
+        
+
     },
     pages: {
         signIn: "/auth/signin",
