@@ -70,12 +70,17 @@ export default function Login() {
   const handleOAuthSignIn = async (provider) => {
     try {
       setOauthLoading(provider);
+      // Use the direct approach without catching errors here
+      // NextAuth will handle redirects and error states internally
       await signIn(provider, { callbackUrl: "/" });
     } catch (error) {
+      // This catch block will likely not run as signIn handles redirects
       toast.error(`Failed to sign in with ${provider}. Please try again.`);
       console.error(`${provider} sign-in error:`, error);
-    } finally {
       setOauthLoading("");
+    // } finally {
+    //   setOauthLoading("");
+    // }
     }
   };
 
