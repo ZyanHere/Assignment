@@ -7,11 +7,11 @@ const categoryData = {
     name: "Fruits & Vegetables",
     image: "/categories/fruits-vegetables.png",
     subcategories: [
-      { name: "Farm Fresh Fruits",image: "/categories/subcat/fresh fruit.png", slug: "farm-fresh-fruits" },
-      { name: "Fresh Vegetables",image: "/categories/subcat/fresh veg.png", slug: "fresh-vegetables" },
-      { name: "Organic Picks",image: "/categories/subcat/exotic veg.png", slug: "organic-picks" },
-      { name: "Exotic Veggies",image: "/categories/subcat/org pick.png", slug: "exotic-veggies" },
-      { name: "Quick Prep Veggies",image: "/categories/subcat/quick veg.png", slug: "quick-prep-veggies" },
+      { name: "Farm Fresh Fruits", image: "/categories/subcat/fresh fruit.png", slug: "farm-fresh-fruits" },
+      { name: "Fresh Vegetables", image: "/categories/subcat/fresh veg.png", slug: "fresh-vegetables" },
+      { name: "Organic Picks", image: "/categories/subcat/exotic veg.png", slug: "organic-picks" },
+      { name: "Exotic Veggies", image: "/categories/subcat/org pick.png", slug: "exotic-veggies" },
+      { name: "Quick Prep Veggies", image: "/categories/subcat/quick veg.png", slug: "quick-prep-veggies" },
     ],
   },
   "bakery-dairy": {
@@ -30,6 +30,17 @@ const categoryData = {
       { name: "Soft Drinks", slug: "soft-drinks" },
       { name: "Juices & Nectars", slug: "juices-nectars" },
       { name: "Tea & Coffee", slug: "tea-coffee" },
+      { name: "Coffee Essentials", slug: "coffee-essentials" },
+    ],
+  },
+  "pulses-grains": {
+    name: "Pulses & Grains",
+    image: "/home/essentials/Pulses & Grains.png",
+    subcategories: [
+      { name: "Rice & Rice Products", slug: "rice-products" },
+      { name: "Dals & Pulses", slug: "dals-pulses" },
+      { name: "Whole Grains", slug: "whole-grains" },
+      { name: "Flours & Meals", slug: "flours-meals" },
     ],
   },
   "gourmet-global": {
@@ -61,6 +72,7 @@ const categoryData = {
       { name: "Chips & Crackers", slug: "chips-crackers" },
       { name: "Chocolates & Candies", slug: "chocolates-candies" },
       { name: "Energy Bars", slug: "energy-bars" },
+      { name: "Instant Noodles", slug: "instant-noodles" },
     ],
   },
   "desserts": {
@@ -71,12 +83,39 @@ const categoryData = {
       { name: "Traditional Sweets", slug: "traditional-sweets" },
     ],
   },
+  "frozen-food": {
+    name: "Frozen Food",
+    image: "/home/essentials/Frozen Food.png",
+    subcategories: [
+      { name: "Frozen Vegetables", slug: "frozen-vegetables" },
+      { name: "Frozen Meals", slug: "frozen-meals" },
+      { name: "Frozen Snacks", slug: "frozen-snacks" },
+    ],
+  },
   "frozen-desserts": {
     name: "Frozen Desserts",
     image: "/categories/frozen-desserts.png",
     subcategories: [
       { name: "Ice Cream", slug: "ice-cream" },
       { name: "Frozen Yogurt", slug: "frozen-yogurt" },
+    ],
+  },
+  "personal-care": {
+    name: "Personal Care",
+    image: "/home/essentials/Personal Care.png",
+    subcategories: [
+      { name: "Skin Care", slug: "skin-care" },
+      { name: "Hair Care", slug: "hair-care" },
+      { name: "Body Care", slug: "body-care" },
+    ],
+  },
+  "oils-spices": {
+    name: "Oils & Spices",
+    image: "/home/essentials/Oils & Spices.png",
+    subcategories: [
+      { name: "Cooking Oils", slug: "cooking-oils" },
+      { name: "Spices & Masalas", slug: "spices-masalas" },
+      { name: "Herbs & Seasonings", slug: "herbs-seasonings" },
     ],
   },
   "home-care-hygiene": {
@@ -136,6 +175,44 @@ const categoryData = {
       { name: "Cookware", slug: "cookware" },
       { name: "Kitchen Tools", slug: "kitchen-tools" },
       { name: "Small Appliances", slug: "small-appliances" },
+    ],
+  },
+  "fashion": {
+    name: "Fashion",
+    image: "/home/essentials/Fashion.png",
+    subcategories: [
+      { name: "Men's Fashion", slug: "mens-fashion" },
+      { name: "Women's Fashion", slug: "womens-fashion" },
+      { name: "Kids Fashion", slug: "kids-fashion" },
+    ],
+  },
+  "apparel": {
+    name: "Apparel",
+    image: "/home/essentials/Apparel.png",
+    subcategories: [
+      { name: "Casual Wear", slug: "casual-wear" },
+      { name: "Formal Wear", slug: "formal-wear" },
+      { name: "Sports Wear", slug: "sports-wear" },
+    ],
+  },
+  "electronics": {
+    name: "Electronics",
+    image: "/home/essentials/Electronics.png",
+    subcategories: [
+      { name: "Smartphones", slug: "smartphones" },
+      { name: "Laptops", slug: "laptops" },
+      { name: "Audio Devices", slug: "audio-devices" },
+      { name: "Smart Home", slug: "smart-home" },
+    ],
+  },
+  "furniture": {
+    name: "Furniture",
+    image: "/home/essentials/Furniture.png",
+    subcategories: [
+      { name: "Living Room", slug: "living-room" },
+      { name: "Bedroom", slug: "bedroom" },
+      { name: "Kitchen & Dining", slug: "kitchen-dining" },
+      { name: "Home Office", slug: "home-office" },
     ],
   },
 };
