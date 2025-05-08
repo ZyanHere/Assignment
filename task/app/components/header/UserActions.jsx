@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const UserActions = () => {
   //user from redux and next-auth

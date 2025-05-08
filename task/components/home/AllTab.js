@@ -12,7 +12,7 @@ const AllTabContent = () => {
   return (
     <main className="space-y-6 md:space-y-8"> 
     
-      <section className="mx-4 md:mx-6 p-4 md:p-6">
+      <section className="p-4 md:p-6">
         <h2 className="text-lg md:text-xl font-semibold mb-4 text-black">
           Few minutes left...
         </h2>

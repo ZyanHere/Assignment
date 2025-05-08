@@ -41,8 +41,8 @@ const Home = () => {
         {/* Location and Promo Banner */}
         <LocationBanner selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         <div className="p-6">{renderTab()}</div>
-        <Footer />
       </div>
+      <Footer />
 
     </div>
   );

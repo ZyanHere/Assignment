@@ -27,7 +27,9 @@ const stores = [
 ];
 
 const NearbyStores = () => {
-  const [favorites, setFavorites] = useState(Array(stores.length).fill(false));
+  const [favorites, setFavorites] = useState(() =>
+    stores.reduce((acc, store) => ({ ...acc, [store.id]: false }), {})
+  );
 
   const toggleFavorite = (index) => {
     setFavorites((prevFavorites) => {
@@ -44,13 +46,19 @@ const NearbyStores = () => {
       </h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         {stores.map((store, index) => (
-          <div key={index} className="w-full rounded-lg shadow-md overflow-hidden bg-gradient-to-r from-yellow-200 to-yellow-50 border-b border-yellow-500">
+          <div
+            key={index}
+            className="w-full rounded-lg shadow-md overflow-hidden bg-gradient-to-r from-yellow-200 to-yellow-50 border-b border-yellow-500"
+          >
             <div className="relative ">
-              <img
+              <Image
                 src={store.img}
                 alt={store.name}
+                width={400}
+                height={200}
                 className="w-full h-[200px] object-cover rounded-t-lg"
               />
+
               <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/50 text-white px-2 py-1 rounded-full">
                 <Image
                   src="/home/shops/star.svg"
@@ -65,13 +73,15 @@ const NearbyStores = () => {
                 onClick={() => toggleFavorite(index)}
                 className="absolute top-3 right-3"
               >
-                <img
+                <Image
                   src={
                     favorites[index]
                       ? "/home/shops/Heart-red.svg"
                       : "/home/shops/Heart.svg"
                   }
                   alt="Favorite"
+                  width={32}
+                  height={32}
                   className="w-8 h-8"
                 />
               </button>
