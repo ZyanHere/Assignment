@@ -56,13 +56,13 @@ import {
 import ProCard from "./SecProductCard";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
+import { fetcher } from "@/lib/api";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const SecondCarousel = ({ category }) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const url = `${baseUrl}/lmd/api/v1/products/retail?category=${category}`;
-  const { data: products, error, isLoading, mutate } = useSWR(url, fetcher);
+  const { data: products, error, isLoading, mutate } = useSWR(
+    `/lmd/api/v1/products/retail?category=${category}`,
+     fetcher);
 
    if (isLoading) {
     return (
@@ -75,6 +75,7 @@ const SecondCarousel = ({ category }) => {
   }
 
     if (error) {
+      console.error("Failed to fetch products:", error);
     return (
       <div className="text-center py-10">
         <p className="text-red-500 mb-4">Failed to load {category} products.</p>

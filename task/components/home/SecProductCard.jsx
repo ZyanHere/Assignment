@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useCart } from "@/lib/contexts/cart-context"; 
+import { useCart } from "@/lib/contexts/cart-context";
 
 const ProCard = ({
   id,
@@ -11,11 +11,10 @@ const ProCard = ({
   price = "N/A",
   stockStatus = "Unavailable",
 }) => {
-  
   const { addToCart, cart } = useCart();
 
   // Check if item is already in cart
-  const isInCart = id ? cart.some(item => item.id === id): false;
+  const isInCart = id ? cart.some((item) => item.id === id) : false;
 
   const handleAddToCart = () => {
     if (!isInCart && id) {
@@ -84,6 +83,5 @@ const ProCard = ({
     </div>
   );
 };
-
 
 export default ProCard;

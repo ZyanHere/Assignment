@@ -1,26 +1,25 @@
-// // Simulated API calls with localStorage
-// const mockAPI = {
-//     login: (credentials) => new Promise((resolve) => {
-//       setTimeout(() => {
-//         localStorage.setItem('authToken', 'demo-token');
-//         resolve({ success: true });
-//       }, 1500);
-//     }),
-  
-//     signup: (data) => new Promise((resolve) => {
-//       setTimeout(() => {
-//         localStorage.setItem('tempUser', JSON.stringify(data));
-//         resolve({ success: true });
-//       }, 1500);
-//     }),
-  
-//     verifyOTP: (code) => new Promise((resolve, reject) => {
-//       setTimeout(() => {
-//         code === '1234' 
-//           ? resolve({ success: true }) 
-//           : reject({ error: 'Invalid code' });
-//       }, 1000);
-//     }),
-//   };
-  
-//   export default mockAPI;
+export const fetcher = async (url) => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  if (!baseUrl) {
+    throw new Error("API base URL is not defined in environment variables");
+  }
+
+  const fullUrl = `${baseUrl}${url}`;
+
+  const res = await fetch(fullUrl, {
+    credentials: "include", // Optional: if using cookie auth
+    headers: {
+      "Content-Type": "application/json",
+      // Authorization: `Bearer ${token}`, // Optional: if using JWT
+    },
+  });
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
