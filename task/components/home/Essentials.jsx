@@ -41,7 +41,7 @@ const Essentials = () => {
             key={index} 
             className="flex flex-col items-center text-center p-1"
           >
-            <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-lg w-full aspect-square flex items-center justify-center shadow-lg cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5 border-b-2 border-yellow-500">
+            <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-lg w-full aspect-square flex items-center justify-center shadow-lg cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5 ">
               <Image
                 src={item.img}
                 alt={item.label}

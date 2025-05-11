@@ -31,12 +31,12 @@ const AllTabContent = () => {
       <OffersBanner/>
       <Essentials />
 
-      <div className="pl-6 w-full">
+      {/* <div className="pl-6 w-full">
         <section className=" w-full p-5">
           <h2 className="text-lg font-semibold mb-8 text-black">Let's step out</h2>
           <FourSec />
         </section>
-      </div>
+      </div> */}
 
       
       <FestBanner/>

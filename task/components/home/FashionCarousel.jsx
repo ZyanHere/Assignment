@@ -54,7 +54,7 @@ import {
 import FashionCard from "./FashionCard";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
-import { fetcher } from "@/lib/api"; // ✅ use shared fetcher
+import { fetcher } from "@/lib/api"; 
 
 const FashionCarousel = ({ category }) => {
   const { data: products, error, isLoading, mutate } = useSWR(

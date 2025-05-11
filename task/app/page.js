@@ -35,7 +35,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex-1 bg-gray-100 min-h-screen">
+    <div className="flex-1 bg-white min-h-screen">
       <Header />
       <div className="mx-auto px-4 md:px-8 lg:px-16 xl:px-14">
         {/* Location and Promo Banner */}

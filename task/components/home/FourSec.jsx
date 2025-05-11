@@ -13,7 +13,7 @@ const FourSec = () => {
     <div className="flex flex-wrap justify-center gap-6">
       {items.map((item, index) => (
         <Link key={index} href={item.link} passHref legacyBehavior>
-          <div className="w-[350px] rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5  border-b border-yellow-500">
+          <div className="w-[400px] rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5  border-b border-yellow-500">
             
             {/* Image section */}
             <div className="relative w-full h-[180px]">

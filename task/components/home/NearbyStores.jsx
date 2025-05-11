@@ -48,7 +48,7 @@ const NearbyStores = () => {
         {stores.map((store, index) => (
           <div
             key={index}
-            className="w-full rounded-lg shadow-md overflow-hidden bg-gradient-to-r from-yellow-200 to-yellow-50 border-b border-yellow-500"
+            className="w-full rounded-lg shadow-md overflow-hidden  "
           >
             <div className="relative ">
               <Image
