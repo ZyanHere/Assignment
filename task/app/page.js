@@ -11,6 +11,8 @@ import GiftTabContent from "@/components/home/GiftTab";
 import ElectronicTabContent from "@/components/home/Electronics";
 import LocationBanner from "@/components/home/banners/LocationBanner";
 import CareTabContent from "@/components/home/Care";
+import ApparelsTabContent from "@/components/home/Apparels";
+import FruitsTabContent from "@/components/home/Fruits";
 
 const Home = () => {
   const [selectedTab, setSelectedTab] = useState("all");
@@ -29,6 +31,10 @@ const Home = () => {
         return <ElectronicTabContent />;
       case "Personal Care":
         return <CareTabContent />;
+      case "Apparels":
+        return <ApparelsTabContent />;
+      case "Fruits and Vegetables":
+        return <FruitsTabContent />;
       default:
         return <AllTabContent />;
     }

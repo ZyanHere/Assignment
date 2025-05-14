@@ -14,7 +14,7 @@ const categories = [
       icon: "/home/assets/electronics_logo.png",
     },
   { key: "Personal Care", label: "Personal Care", icon: "/home/assets/gift_logo.png" },
-  { key: "Apprels", label: "Apprels", icon: "/home/assets/fashion_logo.png" },
+  { key: "Apparels", label: "Apparels", icon: "/home/assets/fashion_logo.png" },
   { key: "Fruits and Vegetables", label: "Fruits and Vegetables", icon: "/home/assets/grocery_logo.png" },
   
 ];
