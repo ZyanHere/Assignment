@@ -1,35 +1,59 @@
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import React from "react";
 import { BannerHeader } from "./BannerHeader";
 
+const images = [
+  "/home/all/all-banner3.png",
+  "/home/all/all-banner2.png",
+  "/home/all/all-banner1.png",
+];
 
-export const AllTabBanner = () => {
+const AllTabBanner = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="banner-container">
+    <div className="w-full">
       <BannerHeader />
-      
-      <div className="banner-content h-[180px] md:h-[200px]">
-      <div
-        className="w-full bg-green-600 rounded-3xl relative overflow-hidden p-6 flex items-center justify-between text-white"
-        style={{ backgroundImage: "url('/home/assets/home-bg.png')" }}
-      >
-        <div className="ml-[77px]">
-          <h2 className="text-2xl md:text-3xl font-bold mb-1 max-w-[420px]">
-            Grab our amazing daily deals before they're gone!
-          </h2>
-          <p className="text-sm md:text-base mt-5">
-            Save up to 60% off on your first order
-          </p>
+      <div className=" mx-auto px-4"> {/* Added container constraint */}
+        <div className="flex flex-col items-center" role="region" aria-label="All tab carousel">
+          <div className="relative w-full h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden rounded-2xl">
+            <div
+              className="flex h-full transition-transform duration-500 ease-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {images.map((src, index) => (
+                <div
+                  key={src}
+                  className="w-full h-full flex-shrink-0 relative"
+                  aria-hidden={index !== currentIndex}
+                >
+                  <Image
+                    src={src}
+                    alt={`All collection ${index + 1}`}
+                    fill
+                    className="object-contain" // Changed from object-cover to contain
+                    priority={index === 0}
+                    sizes="(max-width: 768px) 90vw, (max-width: 1500px) 80vw, 70vw"
+                  />
+                </div>
+              ))}
+            </div>
+            
+          
+           
+          </div>
         </div>
-        <Image
-          src="/home/assets/veggies.png"
-          alt="Banner Right Veggies"
-          width={180}
-          height={180}
-          className="hidden md:block object-contain mr-[75px]"
-        />
-      </div>
       </div>
     </div>
   );
 };
+
+export default AllTabBanner;

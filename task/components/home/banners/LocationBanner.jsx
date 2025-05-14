@@ -4,7 +4,6 @@ import React from "react";
 import Image from "next/image";
 
 import CategoryTabs from "../CategoryTabs";
-import { AllTabBanner } from "./AllTabBanner";
 import { GroceryBanner } from "./GroceryBanner";
 import FashionBanner from "./FashionBanner";
 import { GiftBanner } from "./GiftBanner";
@@ -12,6 +11,7 @@ import ElectronicBanner from "./ElectronicBanner";
 import { CareBanner } from "./CareBanner";
 import { ApprelsBanner } from "./ApprelsBanner";
 import FruitsBanner from "./FruitsBanner";
+import AllTabBanner from "./AllTabBanner";
 
 const bannerComponents = {
   all: AllTabBanner,

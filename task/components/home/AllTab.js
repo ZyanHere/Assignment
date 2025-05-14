@@ -21,8 +21,8 @@ const AllTabContent = () => {
 
       <div className="pl-6 w-full mt-5">
         <section className="w-full ">
-          <h2 className="text-lg font-bold mb-3 text-black">Top brands last minutes deal</h2>
-          <div className="w-full max-w-[1500px] mx-auto">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">Top brands last minutes deal</h2>
+          <div className="w-full max-w-[1600px] mx-auto">
             <BrandCarousel />
           </div>
         </section>
@@ -43,8 +43,8 @@ const AllTabContent = () => {
 
       <div className="pl-6 w-full mt-16">
         <section className=" w-full ">
-          <h2 className="text-lg font-bold mb-3 text-black">Few minutes left ...</h2>
-          <div className="w-full max-w-[1500px] mx-auto">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">Few minutes left ...</h2>
+          <div className="w-full max-w-[1600px] mx-auto">
             <BrandCarousel />
           </div>
         </section>
