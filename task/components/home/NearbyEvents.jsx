@@ -4,29 +4,29 @@ import { useState } from "react";
 
 const stores = [
   {
-    img: "/home/shops/pantaloons.png",
-    name: "Pantaloons",
+    img: "/home/shops/events1.jpg",
+    name: "Tonight's show by PVR",
     distance: "1 Km",
     location: "Pimple Saudagar",
     rating: "4.9",
   },
   {
-    img: "/home/shops/basket.png",
-    name: "Nature's Basket",
+    img: "/home/shops/events3.jpg",
+    name: "Rock It",
     distance: "1 Km",
     location: "Pimple Saudagar",
     rating: "4.9",
   },
   {
-    img: "/home/shops/metro.png",
-    name: "Metro",
+    img: "/home/shops/events4.jpg",
+    name: "The Local Train",
     distance: "2 Km",
     location: "Pimple Saudagar",
     rating: "4.9",
   },
 ];
 
-const NearbyStores = () => {
+const NearbyEvents = () => {
   const [favorites, setFavorites] = useState(() =>
     stores.reduce((acc, store) => ({ ...acc, [store.id]: false }), {})
   );
@@ -42,7 +42,7 @@ const NearbyStores = () => {
   return (
     <section className="p-4 md:p-6 mt-4">
       <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-black">
-        Shops from nearby stores
+        Events near you
       </h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         {stores.map((store, index) => (
@@ -99,4 +99,4 @@ const NearbyStores = () => {
   );
 };
 
-export default NearbyStores;
+export default NearbyEvents;

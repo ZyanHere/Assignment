@@ -6,14 +6,15 @@ import Essentials from "@/components/home/Essentials";
 import NearbyStores from "@/components/home/NearbyStores";
 import OffersBanner from "./OffersBanner";
 import FestBanner from "./FestBanner";
+import NearbyEvents from "./NearbyEvents";
 
 
 const AllTabContent = () => {
   return (
     <main className="space-y-6 md:space-y-8"> 
     
-      <section className="p-4 md:p-6">
-        <h2 className="text-lg md:text-xl font-semibold mb-4 text-black">
+      <section className="p-4 md:p-2">
+        <h2 className="text-lg md:text-xl font-semibold mb-4 text-black ml-5">
           Few minutes left...
         </h2>
         <FourSec />
@@ -51,6 +52,7 @@ const AllTabContent = () => {
       </div>
 
       <NearbyStores />
+      <NearbyEvents />
     </main>
   );
 };
