@@ -23,7 +23,11 @@ const PaymentMode = () => {
       title: "Card",
       methods: [
         { name: "Visa", slug: "visa", src: "/payment/visa.png" },
-        { name: "MasterCard", slug: "mastercard", src: "/payment/mastercard.png" },
+        {
+          name: "MasterCard",
+          slug: "mastercard",
+          src: "/payment/mastercard.png",
+        },
         { name: "RuPay", slug: "rupay", src: "/payment/rupay.png" },
       ],
     },
@@ -47,7 +51,9 @@ const PaymentMode = () => {
               Cart
             </Link>
             <span className="mx-2 text-gray-400">&gt;</span>
-            <span className="font-semibold text-yellow-500">Select Payment Mode</span>
+            <span className="font-semibold text-yellow-500">
+              Select Payment Mode
+            </span>
           </nav>
 
           <div className="mx-auto p-10">
@@ -62,11 +68,18 @@ const PaymentMode = () => {
                     <div
                       key={method.slug}
                       className={`flex flex-col items-center cursor-pointer relative w-full ${
-                        selectedMethod === method.slug ? "border-2 border-orange-500 p-2 rounded-lg" : ""
+                        selectedMethod === method.slug
+                          ? "border-2 border-orange-500 p-2 rounded-lg"
+                          : ""
                       }`}
                       onClick={() => setSelectedMethod(method.slug)}
                     >
-                      <Image src={method.src} alt={method.name} width={100} height={100} />
+                      <Image
+                        src={method.src}
+                        alt={method.name}
+                        width={100}
+                        height={100}
+                      />
                       <p className="mt-2 text-lg">{method.name}</p>
                       <input
                         type="radio"
@@ -84,12 +97,19 @@ const PaymentMode = () => {
             {/* Net Banking Option */}
             <div
               className={`bg-white py-10 px-20 m-8 rounded-lg shadow-md flex items-center justify-between cursor-pointer relative ${
-                selectedMethod === "net-banking" ? "border-2 border-orange-500" : ""
+                selectedMethod === "net-banking"
+                  ? "border-2 border-orange-500"
+                  : ""
               }`}
               onClick={() => setSelectedMethod("net-banking")}
             >
               <div className="flex items-center gap-4">
-                <Image src="/payment/netbanking.png" alt="Net Banking" width={100} height={100} />
+                <Image
+                  src="/payment/netbanking.png"
+                  alt="Net Banking"
+                  width={100}
+                  height={100}
+                />
                 <p className="text-lg">Net Banking</p>
               </div>
               <input
@@ -101,13 +121,40 @@ const PaymentMode = () => {
               />
             </div>
 
+            {/* COD */}
+            <div
+              className={`bg-white py-10 px-20 m-8 rounded-lg shadow-md flex items-center justify-between cursor-pointer relative ${
+                selectedMethod === "cod" ? "border-2 border-orange-500" : ""
+              }`}
+              onClick={() => setSelectedMethod("cod")}
+            >
+              <div className="flex items-center gap-4">
+                <Image
+                  src="/payment/cod.png"
+                  alt="Cash on Delivery"
+                  width={100}
+                  height={100}
+                />
+                <p className="text-lg">Cash on Delivery</p>
+              </div>
+              <input
+                type="radio"
+                name="paymentMethod"
+                checked={selectedMethod === "cod"}
+                onChange={() => setSelectedMethod("cod")}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6"
+              />
+            </div>
+
             {/* Next Button */}
             <div className="flex justify-end mt-8">
               <button
                 onClick={handleNext}
                 disabled={!selectedMethod}
                 className={`flex items-center gap-2 bg-yellow-500 text-white px-6 py-3 rounded-lg text-lg font-medium transition-all ${
-                  !selectedMethod ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-600"
+                  !selectedMethod
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-orange-600"
                 }`}
               >
                 Next <span className="text-xl">➡️</span>
