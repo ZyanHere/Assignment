@@ -2,23 +2,54 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 export default function Success() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(3); // Auto-redirect timer
+  const [countdown, setCountdown] = useState(5); // Auto-redirect timer
+  const { phone, password} = useSelector((state) => state.user);
+
+  const handleSkip = async () => {
+  if (!phone || !password) {
+    toast.error("Missing credentials");
+    return;
+  }
+
+  try {
+    const loginRes = await signIn("credentials", {
+      redirect: false,
+      phone,
+      password,
+    });
+
+    if (loginRes.ok && !loginRes.error) {
+      await axios.get("/lmd/api/v1/csrf-token", {
+        withCredentials: true,
+      });
+      toast.success("Login successful!");
+      router.push("/");
+    } else {
+      toast.error("Login failed");
+    }
+  } catch (error) {
+    toast.error("Something went wrong during login.");
+    console.error(error);
+  }
+};
+
 
   // auto redirect
   useEffect(() => {
-    if (countdown>0){
+    if (countdown > 0) {
       const timer = setInterval(() => {
         setCountdown((prev) => prev - 1);
-      },1000);
+      }, 1000);
       return () => clearInterval(timer);
-    } else{
+    } else {
       router.push("/auth/location");
     }
-  },[countdown, router]);
+  }, [countdown, router]);
 
   const handleContinue = () => {
     setIsLoading(true);
@@ -85,6 +116,13 @@ export default function Success() {
           ) : (
             `CONTINUE NOW`
           )}
+        </button>
+        {/* Skip Button */}
+        <button
+          onClick={handleSkip}
+          className=" text-blue-500 font-medium cursor-pointer pt-20"
+        >
+          Skip to Homepage 
         </button>
       </div>
 

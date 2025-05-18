@@ -2,7 +2,6 @@
  
  import Link from "next/link";
  import Header from "@/components/home/Header";
- import Sidebar from "@/components/home/sidebar";
  import StoreBanner from "@/components/stores/StoreBanner";
  import StoreCarousel from "@/components/stores/StoreCarousel";
  import storesData from "@/data/storeData";
