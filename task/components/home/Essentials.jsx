@@ -30,18 +30,19 @@ const Essentials = () => {
   ];
 
   return (
-    <section className="p-4 md:p-6">
-      <h2 className="text-2xl font-semibold mb-6 text-black pl-4">
+    <section className="px-4 sm:px-6 py-6">
+      <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-black pl-2 sm:pl-4">
         Daily Essentials
       </h2>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-4">
+
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4">
         {categories.map((item, index) => (
           <Link
-            href={`/categories/${item.slug}`}
             key={index}
-            className="flex flex-col items-center text-center p-1"
+            href={`/categories/${item.slug}`}
+            className="flex flex-col items-center text-center p-1 min-w-0"
           >
-            <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-lg w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] flex items-center justify-center shadow-md cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1">
+            <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-lg w-full max-w-[110px] h-[100px] sm:h-[110px] flex items-center justify-center shadow-md cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1">
               <Image
                 src={item.img}
                 alt={item.label}
@@ -50,7 +51,7 @@ const Essentials = () => {
                 className="object-contain"
               />
             </div>
-            <span className="mt-2 text-sm md:text-base font-medium text-black text-center leading-snug line-clamp-2">
+            <span className="mt-2 text-xs sm:text-sm md:text-base font-medium text-black text-center leading-snug line-clamp-2">
               {item.label}
             </span>
           </Link>

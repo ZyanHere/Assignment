@@ -4,6 +4,7 @@ import { useState } from "react";
 
 const stores = [
   {
+    id: "pvr-tonight",
     img: "/home/shops/events1.jpg",
     name: "Tonight's show by PVR",
     distance: "1 Km",
@@ -11,6 +12,7 @@ const stores = [
     rating: "4.9",
   },
   {
+    id: "rock-it",
     img: "/home/shops/events3.jpg",
     name: "Rock It",
     distance: "1 Km",
@@ -18,6 +20,7 @@ const stores = [
     rating: "4.9",
   },
   {
+    id: "the-local-train",
     img: "/home/shops/events4.jpg",
     name: "The Local Train",
     distance: "2 Km",
@@ -31,13 +34,12 @@ const NearbyEvents = () => {
     stores.reduce((acc, store) => ({ ...acc, [store.id]: false }), {})
   );
 
-  const toggleFavorite = (index) => {
-  setFavorites((prevFavorites) => ({
-    ...prevFavorites,
-    [index]: !prevFavorites[index],
-  }));
-};
-
+  const toggleFavorite = (id) => {
+    setFavorites((prevFavorites) => ({
+      ...prevFavorites,
+      [id]: !prevFavorites[id],
+    }));
+  };
 
   return (
     <section className="p-4 md:p-6 mt-4">
@@ -45,12 +47,12 @@ const NearbyEvents = () => {
         Events near you
       </h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
-        {stores.map((store, index) => (
+        {stores.map((store) => (
           <div
-            key={index}
-            className="w-full rounded-lg shadow-md overflow-hidden  "
+            key={store.id}
+            className="w-full rounded-lg shadow-md overflow-hidden"
           >
-            <div className="relative ">
+            <div className="relative">
               <Image
                 src={store.img}
                 alt={store.name}
@@ -58,7 +60,6 @@ const NearbyEvents = () => {
                 height={200}
                 className="w-full h-[200px] object-cover rounded-t-lg"
               />
-
               <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/50 text-white px-2 py-1 rounded-full">
                 <Image
                   src="/home/shops/star.svg"
@@ -70,12 +71,12 @@ const NearbyEvents = () => {
                 <span className="text-sm font-semibold">{store.rating}</span>
               </div>
               <button
-                onClick={() => toggleFavorite(index)}
+                onClick={() => toggleFavorite(store.id)}
                 className="absolute top-3 right-3"
               >
                 <Image
                   src={
-                    favorites[index]
+                    favorites[store.id]
                       ? "/home/shops/Heart-red.svg"
                       : "/home/shops/Heart.svg"
                   }

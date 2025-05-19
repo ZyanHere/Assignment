@@ -10,10 +10,10 @@ const FourSec = () => {
   ];
 
   return (
-    <div className="flex flex-wrap justify-center gap-6">
+    <div className="flex flex-wrap justify-center gap-4 sm:gap-6 px-4">
       {items.map((item, index) => (
         <Link key={index} href={item.link} passHref legacyBehavior>
-          <div className="w-[400px] rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5  border-b border-yellow-500">
+          <div className="w-full sm:w-[48%] md:w-[45%] lg:w-[30%] xl:w-[400px] rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5 border-b border-yellow-500">
             
             {/* Image section */}
             <div className="relative w-full h-[180px]">

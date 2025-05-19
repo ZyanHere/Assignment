@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Menu, Search, X } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import NavLinks from "@/app/components/header/NavLinks";
 import UserActions from "@/app/components/header/UserActions";
 import { useSession } from "next-auth/react";
@@ -12,10 +12,33 @@ const Header = () => {
   const { data: session, status } = useSession();
   const isLoggedIn = status === 'authenticated' && !!session?.user;
   const [mounted, setMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const mobileMenuRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    
+    // Handle scroll event for header styling
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    // Handle clicks outside mobile menu to close it
+    const handleClickOutside = (event) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target) && isMobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
 
   // Don't render anything during SSR or while loading session
   if (!mounted) {
@@ -23,16 +46,23 @@ const Header = () => {
   }
 
   return (
-    <nav className=" shadow-sm border-b border-yellow-500">
+    <nav className={`sticky top-0 z-50 bg-white transition-all duration-300 ${
+      isScrolled ? "shadow-md" : "shadow-sm"
+    } border-b border-yellow-500`}>
       <div className="mx-auto px-4 sm:px-16 lg:px-20">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <div className="flex items-center gap-6 md:gap-12">
+        <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
+          <div className="flex items-center gap-3 sm:gap-6 md:gap-12">
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-yellow-300/40 rounded-lg"
+              className="md:hidden p-2 hover:bg-yellow-300/40 rounded-lg transition-colors"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
-              <Menu className="h-6 w-6 text-gray-700" />
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6 text-gray-700" />
+              ) : (
+                <Menu className="h-6 w-6 text-gray-700" />
+              )}
             </button>
 
             {/* Logo */}
@@ -43,11 +73,14 @@ const Header = () => {
                 width={82}
                 height={68}
                 className="hover:scale-105 transition-transform"
+                priority
               />
             </Link>
 
             {/* Desktop Navigation */}
-            <NavLinks />
+            <div className="hidden md:block">
+              <NavLinks />
+            </div>
           </div>
 
           {/* Search Bar - Centered on desktop */}
@@ -63,25 +96,25 @@ const Header = () => {
           </form>
 
           {/* Right Section - Icons and Profile */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
             {/* Mobile Search Icon */}
-            <button className="md:hidden p-2 hover:bg-yellow-300/40 rounded-lg">
+            <button className="md:hidden p-2 hover:bg-yellow-300/40 rounded-lg transition-colors" aria-label="Search">
               <Search className="h-6 w-6 text-gray-700" />
             </button>
 
             {isLoggedIn ? (
               <UserActions />
             ) : (
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 sm:gap-2">
                 <Link
                   href="/auth/signup"
-                  className="px-4 py-2 bg-yellow-500 shadow-2xl rounded-lg font-medium text-white hover:bg-yellow-50 hover:text-black transition"
+                  className="px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm md:text-base bg-yellow-500 shadow-2xl rounded-lg font-medium text-white hover:bg-yellow-50 hover:text-black transition"
                 >
                   Register
                 </Link>
                 <Link
                   href="/auth/login"
-                  className="px-4 py-2 border bg-white border-yellow-500 shadow-2xl rounded-lg font-medium hover:bg-white hover:text-orange-400 transition"
+                  className="px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm md:text-base border bg-white border-yellow-500 shadow-2xl rounded-lg font-medium hover:bg-white hover:text-orange-400 transition"
                 >
                   Log In
                 </Link>
@@ -104,7 +137,14 @@ const Header = () => {
       </div>
 
       {/* Mobile Navigation */}
-      {isMobileMenuOpen && <NavLinks isMobile />}
+      {isMobileMenuOpen && (
+        <div 
+          ref={mobileMenuRef}
+          className="md:hidden absolute top-full left-0 w-full bg-white border-b border-yellow-500 shadow-lg py-2 animate-in slide-in-from-top duration-300"
+        >
+          <NavLinks isMobile />
+        </div>
+      )}
     </nav>
   );
 };
