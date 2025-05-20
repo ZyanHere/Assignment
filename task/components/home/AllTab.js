@@ -11,8 +11,8 @@ import NearbyEvents from "./NearbyEvents";
 
 const AllTabContent = () => {
   return (
-    <main className="space-y-6 md:space-y-8"> 
-    
+    <main className="space-y-6 md:space-y-8">
+
       <section className="p-4 md:p-2">
         <h2 className="text-lg md:text-xl font-semibold mb-4 text-black ml-5">
           Few minutes left...
@@ -21,15 +21,17 @@ const AllTabContent = () => {
       </section>
 
       <div className="pl-6 w-full mt-5">
-        <section className="w-full ">
-          <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">Top brands last minutes deal</h2>
+        <section className="w-full">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">
+            Top brands last minutes deal
+          </h2>
           <div className="w-full max-w-[1600px] mx-auto">
             <BrandCarousel />
           </div>
         </section>
       </div>
-      
-      <OffersBanner/>
+
+      <OffersBanner />
       <Essentials />
 
       {/* <div className="pl-6 w-full">
@@ -39,12 +41,14 @@ const AllTabContent = () => {
         </section>
       </div> */}
 
-      
-      <FestBanner/>
 
-      <div className="pl-6 w-full mt-16">
-        <section className=" w-full ">
-          <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">Few minutes left ...</h2>
+      <FestBanner />
+
+      <div className="pl-6 w-full mt-5">
+        <section className="w-full">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">
+            Top brands last minutes deal
+          </h2>
           <div className="w-full max-w-[1600px] mx-auto">
             <BrandCarousel />
           </div>
