@@ -1,0 +1,44 @@
+- Introduction
+- Roles and Responsibilities
+- React 18 Features
+- Higher Order Components
+- Context API VS Redux
+- How to setup a redux store in React
+- react-router-dom
+- Authentication
+- How to protect the routes
+- Error Boundaries in React
+- How to handle the errors in React
+- What is tsconfig.json
+- React Router Dom version
+- ESLint
+- How to manage the source code [GitLab, GitHub]
+- Which version of ECMA is used, ES5 or ES6 Features?
+- BOM and DOM
+- Window VS document
+- CSS2 vs CSS3 - What are the differences?
+- How to identify screen resolution using JavaScript?
+- Shadow rendering in testing
+- What is Cascading?
+- What do CSS pre-processors do?
+- LESS vs SASS
+- What is content selector?
+- When does DOM reflow occur?
+- Union in TypeScript
+- Material UI vs Bootstrap
+- Do you have any knowledge of any backend framework?
+- Node.js - How to handle CORS?
+- How to Connect with Database in Node.js
+- SQL unions
+- createElement vs cloneElement
+- Syntax of createElement
+- Have you implemented internationalization?
+- Describe the test report that was generated when the tests were executed.
+- Which modules are used for bundles?
+- If a page reloads - what happens to state in Redux?
+- Which testing framework did you use to write test cases?
+- How to identify the client browser?
+- Interceptors and types of API calls.
+- What happens if you do an API call outside useEffect?
+- Counter example with parent and child (with code).
+- How to pass props to child apart from prop drilling?
