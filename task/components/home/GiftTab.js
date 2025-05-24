@@ -47,7 +47,7 @@
 // export default GiftTabContent;
 
 
-import Image from 'next.js';
+import Image from 'next/image';
 import GiftCarousel from './GiftCarousel';
 
 const GiftTabContent = () => {
