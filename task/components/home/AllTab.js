@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import FourSec from "@/components/home/FourSec";
 import BrandCarousel from "@/components/home/BrandCarousel";
 import Essentials from "@/components/home/Essentials";
@@ -6,30 +8,31 @@ import NearbyStores from "@/components/home/NearbyStores";
 import OffersBanner from "./OffersBanner";
 import FestBanner from "./FestBanner";
 import NearbyEvents from "./NearbyEvents";
+import { Skeleton } from "@/components/ui/skeleton";
+import { fetchHomeData } from "@/lib/api/homeApi";
 
-async function fetchHomeData() {
-  try {
-    const res = await fetch("http://13.232.240.0:4000/lmd/api/v1/home", {
-      cache: "no-store", // ensures fresh data each request
-    });
+const AllTabContent = () => {
+  const [loading, setLoading] = useState(true);
+  const [flashDeals, setFlashDeals] = useState([]);
+  const [products, setProducts] = useState([]);
 
-    const json = await res.json();
-    const data = json?.data || {};
-    return {
-      flashDeals: data.flashDeals?.items || [],
-      products: data.products?.items || [],
-    };
-  } catch (error) {
-    console.error("Home fetch failed", error);
-    return {
-      flashDeals: [],
-      products: [],
-    };
+  useEffect(() => {
+  async function load() {
+    try {
+      const { flashDeals, products } = await fetchHomeData();
+      console.log("Fetched flashDeals:", flashDeals);
+      setFlashDeals(flashDeals);
+      setProducts(products);
+    } catch (error) {
+      console.error("Data fetch failed:", error.message);
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
-const AllTabContent = async () => {
-  const { flashDeals, products } = await fetchHomeData();
+  load();
+}, []);
+
 
   return (
     <main className="space-y-6 md:space-y-8">
@@ -47,7 +50,7 @@ const AllTabContent = async () => {
             Top brands last minutes deal
           </h2>
           <div className="w-full max-w-[1600px] mx-auto">
-            <BrandCarousel data={flashDeals} loading={false} />
+            <BrandCarousel data={flashDeals} loading={loading} />
           </div>
         </section>
       </div>
@@ -63,7 +66,7 @@ const AllTabContent = async () => {
             Products
           </h2>
           <div className="w-full max-w-[1600px] mx-auto">
-            <BrandCarousel data={products} loading={false} />
+            <BrandCarousel data={products} loading={loading} />
           </div>
         </section>
       </div>

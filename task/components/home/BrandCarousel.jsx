@@ -13,18 +13,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const BrandCarousel = ({ data = [], loading = false }) => {
   const mappedProducts = data.map((item) => {
-    const p = item.productId || item; // flashDeals use `productId`, products are flat
+    const p = item.productId || item;
+
+    const mrp = p.mrp || 0;
+    const sellingPrice = p.sellingPrice || 0;
+    const discount =
+      mrp && sellingPrice ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
+
     return {
-      id: p._id,
-      name: p.productName,
-      brand: p.brand,
-      seller: p.storeLocation,
-      discountedPrice: p.sellingPrice,
-      originalPrice: p.mrp,
-      image: p.images?.[0] || "/fallback.png",
-      weight: "1 unit",
-      time: item.dealEndTime,
-      discount: Math.round(((p.mrp - p.sellingPrice) / p.mrp) * 100),
+      id: p._id || "",
+      name: p.productName || "Unnamed Product",
+      brand: p.brand || "Unknown Brand",
+      seller: p.storeLocation || "Unknown Seller",
+      discountedPrice: sellingPrice,
+      originalPrice: mrp,
+      image:
+        Array.isArray(p.images) && p.images.length > 0
+          ? p.images[0]
+          : "/fallback.png",
+      weight: p.weight || "1 unit",
+      time: item.dealEndTime || null,
+      discount: discount,
     };
   });
 
