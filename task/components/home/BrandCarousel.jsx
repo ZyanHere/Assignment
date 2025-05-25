@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import {
   Carousel,
   CarouselContent,
@@ -9,12 +9,38 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import ProductCard from "./ProductCard";
-import { products } from "@/data/productData";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const BrandCarousel = () => {
+const BrandCarousel = ({ data = [], loading = false }) => {
+  const mappedProducts = data.map((item) => {
+    const p = item.productId || item; // flashDeals use `productId`, products are flat
+    return {
+      id: p._id,
+      name: p.productName,
+      brand: p.brand,
+      seller: p.storeLocation,
+      discountedPrice: p.sellingPrice,
+      originalPrice: p.mrp,
+      image: p.images?.[0] || "/fallback.png",
+      weight: "1 unit",
+      time: item.dealEndTime,
+      discount: Math.round(((p.mrp - p.sellingPrice) / p.mrp) * 100),
+    };
+  });
+
+  if (loading) {
+    return (
+      <div className="flex gap-4 py-4">
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <Skeleton key={idx} className="h-[260px] w-[180px] rounded-xl" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="py-4 md:py-6 w-full">
-      <Carousel 
+      <Carousel
         className="w-full mx-auto"
         opts={{
           align: "start",
@@ -23,11 +49,9 @@ const BrandCarousel = () => {
         }}
       >
         <CarouselContent className="-ml-1">
-          {products.map((product) => (
-            <CarouselItem 
+          {mappedProducts.map((product) => (
+            <CarouselItem
               key={product.id}
-              // Preserve the original design for laptop/desktop screens
-              // Make adjustments for tablet and mobile screens
               className="pl-2 basis-full xs:basis-1/2 sm:basis-1/3 md:basis-[20%] lg:basis-[16.666%] xl:basis-[12.5%]"
             >
               <div className="p-1">
@@ -36,8 +60,8 @@ const BrandCarousel = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="hidden sm:flex left-0 " />
-        <CarouselNext className="hidden sm:flex right-0 " />
+        <CarouselPrevious className="hidden sm:flex left-0" />
+        <CarouselNext className="hidden sm:flex right-0" />
       </Carousel>
     </div>
   );
