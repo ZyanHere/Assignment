@@ -1,10 +1,8 @@
 export async function fetchHomeData() {
   try {
-    const res = await fetch("http://13.232.240.0:4000/lmd/api/v1/home", {
-      cache: "no-store",
-    });
+    const res = await fetch("/api/home", { cache: "no-store" });
 
-    if (!res.ok) throw new Error("Failed to fetch home data");
+    if (!res.ok) throw new Error("Failed to fetch");
 
     const json = await res.json();
     const data = json?.data || {};

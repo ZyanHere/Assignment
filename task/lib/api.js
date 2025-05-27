@@ -8,10 +8,9 @@ export const fetcher = async (url) => {
   const fullUrl = `${baseUrl}${url}`;
 
   const res = await fetch(fullUrl, {
-    credentials: "include", // Optional: if using cookie auth
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      // Authorization: `Bearer ${token}`, // Optional: if using JWT
     },
   });
 
