@@ -1,38 +1,48 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const stores = [
-  {
-    id: "pantaloons",
-    img: "/home/shops/pantaloons.png",
-    name: "Pantaloons",
-    distance: "1 Km",
-    location: "Pimple Saudagar",
-    rating: "4.9",
-  },
-  {
-    id: "natures-basket",
-    img: "/home/shops/basket.png",
-    name: "Nature's Basket",
-    distance: "1 Km",
-    location: "Pimple Saudagar",
-    rating: "4.9",
-  },
-  {
-    id: "metro",
-    img: "/home/shops/metro.png",
-    name: "Metro",
-    distance: "2 Km",
-    location: "Pimple Saudagar",
-    rating: "4.9",
-  },
-];
+// const stores = [
+//   {
+//     id: "pantaloons",
+//     img: "/home/shops/pantaloons.png",
+//     name: "Pantaloons",
+//     distance: "1 Km",
+//     location: "Pimple Saudagar",
+//     rating: "4.9",
+//   },
+//   {
+//     id: "natures-basket",
+//     img: "/home/shops/basket.png",
+//     name: "Nature's Basket",
+//     distance: "1 Km",
+//     location: "Pimple Saudagar",
+//     rating: "4.9",
+//   },
+//   {
+//     id: "metro",
+//     img: "/home/shops/metro.png",
+//     name: "Metro",
+//     distance: "2 Km",
+//     location: "Pimple Saudagar",
+//     rating: "4.9",
+//   },
+// ];
 
-const NearbyStores = () => {
-  const [favorites, setFavorites] = useState(() =>
-    stores.reduce((acc, store) => ({ ...acc, [store.id]: false }), {})
-  );
+const NearbyStores = ({stores = []}) => {
+  // const [favorites, setFavorites] = useState(() =>
+  //   stores.reduce((acc, store) => ({ ...acc, [store.id]: false }), {})
+  // );
+
+  const [favorites, setFavorites] = useState({});
+
+  useEffect(() => {
+    const initialFavorites = stores.reduce((acc, store) => {
+      acc[store._id] = false;
+      return acc;
+    }, {});
+    setFavorites(initialFavorites);
+  }, [stores]);
 
   const toggleFavorite = (id) => {
     setFavorites((prevFavorites) => ({
@@ -41,20 +51,22 @@ const NearbyStores = () => {
     }));
   };
 
+  if (!stores.length) return null;
+
   return (
     <section className="p-4 md:p-6 mt-4">
       <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-black">
         Shops from nearby stores
       </h2>
-      <div className="flex flex-col md:flex-row gap-6 justify-center">
+      <div className="flex flex-col md:flex-row gap-6 justify-center flex-wrap">
         {stores.map((store) => (
           <div
-            key={store.id}
-            className="w-full rounded-lg shadow-md overflow-hidden"
+            key={store._id}
+            className="w-full md:w-[300px] rounded-lg shadow-md overflow-hidden"
           >
             <div className="relative">
               <Image
-                src={store.img}
+                src={store.images?.[0] || "/fallback.png"}
                 alt={store.name}
                 width={400}
                 height={200}
@@ -68,15 +80,15 @@ const NearbyStores = () => {
                   height={16}
                   className="w-4 h-4"
                 />
-                <span className="text-sm font-semibold">{store.rating}</span>
+                <span className="text-sm font-semibold">4.9</span>
               </div>
               <button
-                onClick={() => toggleFavorite(store.id)}
+                onClick={() => toggleFavorite(store._id)}
                 className="absolute top-3 right-3"
               >
                 <Image
                   src={
-                    favorites[store.id]
+                    favorites[store._id]
                       ? "/home/shops/Heart-red.svg"
                       : "/home/shops/Heart.svg"
                   }
@@ -89,9 +101,7 @@ const NearbyStores = () => {
             </div>
             <div className="p-4">
               <h3 className="text-lg font-semibold text-black">{store.name}</h3>
-              <p className="text-gray-600 text-sm">
-                {store.distance} • {store.location}
-              </p>
+              <p className="text-gray-600 text-sm">{store.location}</p>
             </div>
           </div>
         ))}
