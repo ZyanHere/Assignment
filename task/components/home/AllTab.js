@@ -17,6 +17,7 @@ const AllTabContent = () => {
   const flashDeals = data?.data?.flashDeals?.items || [];
   const products = data?.data?.products?.items || [];
   const stores = data?.data?.stores?.items || [];
+  const events = data?.data?.events?.items || [];
 
   return (
     <main className="space-y-6 md:space-y-8">
@@ -50,7 +51,7 @@ const AllTabContent = () => {
       </div>
 
       <NearbyStores stores={stores} />
-      <NearbyEvents />
+      <NearbyEvents events={events}/>
     </main>
   );
 };

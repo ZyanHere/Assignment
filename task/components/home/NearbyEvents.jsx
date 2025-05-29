@@ -2,37 +2,47 @@
 import Image from "next/image";
 import { useState } from "react";
 
-const stores = [
-  {
-    id: "pvr-tonight",
-    img: "/home/shops/events1.jpg",
-    name: "Tonight's show by PVR",
-    distance: "1 Km",
-    location: "Pimple Saudagar",
-    rating: "4.9",
-  },
-  {
-    id: "rock-it",
-    img: "/home/shops/events3.jpg",
-    name: "Rock It",
-    distance: "1 Km",
-    location: "Pimple Saudagar",
-    rating: "4.9",
-  },
-  {
-    id: "the-local-train",
-    img: "/home/shops/events4.jpg",
-    name: "The Local Train",
-    distance: "2 Km",
-    location: "Pimple Saudagar",
-    rating: "4.9",
-  },
-];
+// const events = [
+//   {
+//     id: "pvr-tonight",
+//     img: "/home/shops/events1.jpg",
+//     name: "Tonight's show by PVR",
+//     distance: "1 Km",
+//     location: "Pimple Saudagar",
+//     rating: "4.9",
+//   },
+//   {
+//     id: "rock-it",
+//     img: "/home/shops/events3.jpg",
+//     name: "Rock It",
+//     distance: "1 Km",
+//     location: "Pimple Saudagar",
+//     rating: "4.9",
+//   },
+//   {
+//     id: "the-local-train",
+//     img: "/home/shops/events4.jpg",
+//     name: "The Local Train",
+//     distance: "2 Km",
+//     location: "Pimple Saudagar",
+//     rating: "4.9",
+//   },
+// ];
 
-const NearbyEvents = () => {
-  const [favorites, setFavorites] = useState(() =>
-    stores.reduce((acc, store) => ({ ...acc, [store.id]: false }), {})
-  );
+const NearbyEvents = ({events = []}) => {
+  // const [favorites, setFavorites] = useState(() =>
+  //   events.reduce((acc, event) => ({ ...acc, [event.id]: false }), {})
+  // );
+
+  const [favorites, setFavorites] = useState({});
+  
+    useEffect(() => {
+      const initialFavorites = events.reduce((acc, event) => {
+        acc[event._id] = false;
+        return acc;
+      }, {});
+      setFavorites(initialFavorites);
+    }, [events]);
 
   const toggleFavorite = (id) => {
     setFavorites((prevFavorites) => ({
@@ -41,21 +51,23 @@ const NearbyEvents = () => {
     }));
   };
 
+  if(!events.length) return null;
+
   return (
     <section className="p-4 md:p-6 mt-4">
       <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-black">
         Events near you
       </h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
-        {stores.map((store) => (
+        {events.map((event) => (
           <div
-            key={store.id}
+            key={event.id}
             className="w-full rounded-lg shadow-md overflow-hidden"
           >
             <div className="relative">
               <Image
-                src={store.img}
-                alt={store.name}
+                src={event.img}
+                alt={event.name}
                 width={400}
                 height={200}
                 className="w-full h-[200px] object-cover rounded-t-lg"
@@ -68,15 +80,15 @@ const NearbyEvents = () => {
                   height={16}
                   className="w-4 h-4"
                 />
-                <span className="text-sm font-semibold">{store.rating}</span>
+                <span className="text-sm font-semibold">{event.rating}</span>
               </div>
               <button
-                onClick={() => toggleFavorite(store.id)}
+                onClick={() => toggleFavorite(event.id)}
                 className="absolute top-3 right-3"
               >
                 <Image
                   src={
-                    favorites[store.id]
+                    favorites[event.id]
                       ? "/home/shops/Heart-red.svg"
                       : "/home/shops/Heart.svg"
                   }
@@ -88,9 +100,9 @@ const NearbyEvents = () => {
               </button>
             </div>
             <div className="p-4">
-              <h3 className="text-lg font-semibold text-black">{store.name}</h3>
+              <h3 className="text-lg font-semibold text-black">{event.name}</h3>
               <p className="text-gray-600 text-sm">
-                {store.distance} • {store.location}
+                {event.distance} • {event.location}
               </p>
             </div>
           </div>
