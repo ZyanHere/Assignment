@@ -5,10 +5,17 @@ import CategoryFooter from "@/components/categories/CategoryFooter";
 import Footer from "@/components/home/footer";
 import Header from "@/components/home/Header";
 import categoryData from "@/data/categoryData";
+import { fetcher } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
+import useSWR from "swr";
 
 const CategoryPage = () => {
+  const { data, error, isLoading } = useSWR("/api/categories", fetcher);
+
+  const catProduct1 = data?.data?.catProduct1?.items || [];
+  const catProduct2 = data?.data?.catProduct2?.items || [];
+
   return (
     <main className="space-y-6 md:space-y-8">
       <Header />
@@ -42,12 +49,12 @@ const CategoryPage = () => {
 
       {/* Carousels */}
       <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 space-y-6">
-        <CategoryCarousel />
-        <CategoryCarousel />
+        <CategoryCarousel data={catProduct1} loading={isLoading} />
+        <CategoryCarousel data={catProduct2} loading={isLoading} />
       </section>
 
       <CategoryFooter />
-      <Footer/>
+      <Footer />
     </main>
   );
 };

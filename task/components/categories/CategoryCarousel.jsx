@@ -7,102 +7,129 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+import { Skeleton } from "../ui/skeleton";
 import CategoryCard from "./CategoryCard";
 
-
 // Sample category products
-const categoryProducts = [
-  {
-    id: 801,
-    name: "Fresh Pear",
-    weight: "100 g",
-    store: "Nature's Basket",
-    discount: "20",
-    mrp: "165",
-    price: "100",
-    time: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
-    image: "/categories/pear.png",
-  },
-  {
-    id: 802,
-    name: "Gooseberry",
-    weight: "100 g",
-    store: "Nature's Basket",
-    discount: "20",
-    mrp: "165",
-    price: "100",
-    time: Date.now() + 12 * 60 * 60 * 1000,  
-    image: "/categories/gooseberry.png",
-  },
-  {
-    id: 803,
-    name: "Beetroot",
-    weight: "100 g",
-    store: "Nature's Basket",
-    discount: "20",
-    mrp: "165",
-    price: "100",
-    time: Date.now() + 12 * 60 * 60 * 1000,  
-    image: "/categories/beetroot.png",
-  },
-  {
-    id: 804,
-    name: "Exotic Brinjal",
-    weight: "100 g",
-    store: "Nature's Basket",
-    discount: "20",
-    mrp: "165",
-    price: "100",
-    time: Date.now() + 12 * 60 * 60 * 1000, 
-    image: "/categories/brinjal.png",
-  },
-  {
-    id: 805,
-    name: "Custard Apple",
-    weight: "100 g",
-    store: "Nature's Basket",
-    discount: "20",
-    mrp: "165",
-    price: "100",
-    time: Date.now() + 12 * 60 * 60 * 1000, 
-    image: "/categories/custardapple.png",
-  },
-  {
-    id: 806,
-    name: "Mango",
-    weight: "100 g",
-    store: "Nature's Basket",
-    discount: "20",
-    mrp: "165",
-    price: "100",
-    time: Date.now() + 12 * 60 * 60 * 1000, 
-    image: "/categories/mangoes.png",
-  },
-  {
-    id: 807,
-    name: "Exotic Brinjal",
-    weight: "100 g",
-    store: "Nature's Basket",
-    discount: "20",
-    mrp: "165",
-    price: "100",
-    time: Date.now() + 12 * 60 * 60 * 1000, 
-    image: "/categories/brinjal.png",
-  },
-];
+// const categoryProducts = [
+//   {
+//     id: 801,
+//     name: "Fresh Pear",
+//     weight: "100 g",
+//     store: "Nature's Basket",
+//     discount: "20",
+//     mrp: "165",
+//     price: "100",
+//     time: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
+//     image: "/categories/pear.png",
+//   },
+//   {
+//     id: 802,
+//     name: "Gooseberry",
+//     weight: "100 g",
+//     store: "Nature's Basket",
+//     discount: "20",
+//     mrp: "165",
+//     price: "100",
+//     time: Date.now() + 12 * 60 * 60 * 1000,
+//     image: "/categories/gooseberry.png",
+//   },
+//   {
+//     id: 803,
+//     name: "Beetroot",
+//     weight: "100 g",
+//     store: "Nature's Basket",
+//     discount: "20",
+//     mrp: "165",
+//     price: "100",
+//     time: Date.now() + 12 * 60 * 60 * 1000,
+//     image: "/categories/beetroot.png",
+//   },
+//   {
+//     id: 804,
+//     name: "Exotic Brinjal",
+//     weight: "100 g",
+//     store: "Nature's Basket",
+//     discount: "20",
+//     mrp: "165",
+//     price: "100",
+//     time: Date.now() + 12 * 60 * 60 * 1000,
+//     image: "/categories/brinjal.png",
+//   },
+//   {
+//     id: 805,
+//     name: "Custard Apple",
+//     weight: "100 g",
+//     store: "Nature's Basket",
+//     discount: "20",
+//     mrp: "165",
+//     price: "100",
+//     time: Date.now() + 12 * 60 * 60 * 1000,
+//     image: "/categories/custardapple.png",
+//   },
+//   {
+//     id: 806,
+//     name: "Mango",
+//     weight: "100 g",
+//     store: "Nature's Basket",
+//     discount: "20",
+//     mrp: "165",
+//     price: "100",
+//     time: Date.now() + 12 * 60 * 60 * 1000,
+//     image: "/categories/mangoes.png",
+//   },
+//   {
+//     id: 807,
+//     name: "Exotic Brinjal",
+//     weight: "100 g",
+//     store: "Nature's Basket",
+//     discount: "20",
+//     mrp: "165",
+//     price: "100",
+//     time: Date.now() + 12 * 60 * 60 * 1000,
+//     image: "/categories/brinjal.png",
+//   },
+// ];
 
-const CategoryCarousel = () => {
+const CategoryCarousel = ({ data = [], loading = false }) => {
+  if (loading) {
+    return (
+      <div className="flex gap-4 px-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="w-[230px] h-[390px] rounded-2xl" />
+        ))}
+      </div>
+    );
+  }
+
+  const mappedProducts = data.map((p) => {
+    const mrp = p.mrp || 0;
+    const sp = p.sellingPrice || 0;
+
+    return {
+      id: p._id,
+      name: p.productName || "Unnamed",
+      weight: p.weight || "1 unit",
+      store: p.brand || "Unknown",
+      discount: mrp && sp ? Math.round(((mrp - sp) / mrp) * 100) : 0,
+      mrp: mrp,
+      price: sp,
+      image: p.images?.[0] || "/fallback.png",
+      time: p.dealEndTime || null,
+    };
+  });
+
   return (
     <div className="py-6">
       <Carousel className="w-full mx-auto">
-      <CarouselContent className="-ml-4 pr-[12%]">
-          {categoryProducts.map((product) => (
+        <CarouselContent className="-ml-4 pr-[12%]">
+          {mappedProducts.map((product) => (
             <CarouselItem
-            key={product.id}
-            className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-[16.66%] flex-shrink-0"
-          >
+              key={product.id}
+              className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-[16.66%] flex-shrink-0"
+            >
               <div className="p-1">
-                <CategoryCard
+                {/* <CategoryCard
                   image={product.image}
                   name={product.name}
                   weight={product.weight}
@@ -111,7 +138,9 @@ const CategoryCarousel = () => {
                   mrp={product.mrp}
                   price={product.price}
                   time={product.time}
-                />
+                /> */}
+
+                <CategoryCard {...product} />
               </div>
             </CarouselItem>
           ))}
@@ -124,9 +153,6 @@ const CategoryCarousel = () => {
 };
 
 export default CategoryCarousel;
-
-
-
 
 // "use client";
 
