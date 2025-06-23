@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+
+import { useState, useEffect } from "react";
+
 
 // const events = [
 //   {
