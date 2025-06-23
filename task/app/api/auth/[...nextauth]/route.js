@@ -30,8 +30,8 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text", optional: true },
-        phone: { label: "Phone", type: "text", optional: true },
+        // email: { label: "Email", type: "text", optional: true },
+        phone: { label: "Phone", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
@@ -56,42 +56,19 @@ const handler = NextAuth({
           throw new Error("Use either email or phone, not both");
         }
 
+        
         try {
-          const csrfResponse = await axios.get(
-            "http://localhost:4000/lmd/api/v1/auth/csrf-token"
-          );
-
-          const csrfToken = csrfResponse.data.token;
-
-          // Prepare the login payload based on what was provided
-          const loginPayload = {
-            password: credentials.password,
-          };
-          if (credentials.email) {
-            loginPayload.email = credentials.email;
-          } else {
-            loginPayload.phone = credentials.phone;
-          }
-
           const res = await axios.post(
-            "http://localhost:4000/lmd/api/v1/auth/user/login",
-            loginPayload,
+            "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/login",
             {
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken,
-              },
-            }
+              phone: credentials.phone,
+              password: credentials.password,
+            },
+            { withCredentials: true }
           );
-          // Return the user data if login was successful
-          if (res.data?.success && res.data.user) {
-            return res.data.user;
-          }
-          // Return null if login failed
-          return null;
-        }
-        catch (error) {
-          console.error("Error during authorization:", error);
+          return res.data.user ?? null;
+        } catch (err) {
+          console.error("Login failed:", err.response?.data || err.message);
           return null;
         }
       }

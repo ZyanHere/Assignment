@@ -9,13 +9,14 @@ import toast from "react-hot-toast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { loginSchema } from "@/lib/validators/auth";
 import { signIn } from "next-auth/react";
+import { Phone } from 'lucide-react';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [loginMethod, setLoginMethod] = useState("email");
+  // const [loginMethod, setLoginMethod] = useState("email");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -23,10 +24,10 @@ export default function Login() {
     resolver: zodResolver(loginSchema)
   });
 
-  const toggleLoginMethod = () => {
-    setLoginMethod(prev => prev === "email" ? "phone" : "email");
-    reset();
-  };
+  // const toggleLoginMethod = () => {
+  //   setLoginMethod(prev => prev === "email" ? "phone" : "email");
+  //   reset();
+  // };
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -35,7 +36,7 @@ export default function Login() {
     try {
       const credentials = {
         password: data.password,
-        [loginMethod]: loginMethod === "email" ? data.email : data.phone
+        phone: data.phone
       };
 
       const res = await signIn("credentials", {
@@ -107,9 +108,10 @@ export default function Login() {
             <div className="mb-4">
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm font-medium text-black">
-                  {loginMethod === "email" ? "Email Address" : "Mobile Number"}
+                  {/* {loginMethod === "email" ? "Email Address" : "Mobile Number"} */}
+                  Phone Number
                 </label>
-                <button
+                {/* <button
                   type="button"
                   onClick={toggleLoginMethod}
                   className="text-[#FFC107] text-xs hover:underline"
@@ -117,10 +119,10 @@ export default function Login() {
                   {loginMethod === "email" 
                     ? "Use phone instead" 
                     : "Use email instead"}
-                </button>
+                </button> */}
               </div>
               
-              {loginMethod === "email" ? (
+              {/* {loginMethod === "email" ? (
                 <>
                   <input
                     {...register("email")}
@@ -135,7 +137,7 @@ export default function Login() {
                   )}
                 </>
               ) : (
-                <>
+                <> */}
                   <input
                     {...register("phone")}
                     type="tel"
@@ -147,8 +149,8 @@ export default function Login() {
                   {errors.phone && (
                     <span className="text-red-500 text-sm">{errors.phone.message}</span>
                   )}
-                </>
-              )}
+                {/* </> */}
+              {/* )} */}
             </div>
 
             <div className="mb-4 relative">
