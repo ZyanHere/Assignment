@@ -144,7 +144,7 @@ export default function Login() {
                     className={`w-full p-3 border rounded-lg ${
                       errors.phone ? 'border-red-500' : 'border-[#D9D9D9]'
                     } focus:ring-2 focus:ring-yellow-500`}
-                    placeholder="0300123456"
+                    placeholder="3001234567"
                   />
                   {errors.phone && (
                     <span className="text-red-500 text-sm">{errors.phone.message}</span>

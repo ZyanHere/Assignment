@@ -1,5 +1,5 @@
 "use client";
-import { signUpStart } from "@/lib/redux/user/userSlice";
+import { signUpStart, signUpSuccess } from "@/lib/redux/user/userSlice";
 import { signupSchema } from "@/lib/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -31,13 +31,24 @@ export default function Signup() {
       dispatch(signUpStart());
 
       //remove confirmPassword before sending to api
-      const { confirmPassword, ...signupData } = formData;
+      // const { confirmPassword, ...signupData } = formData;
+      const signupData = {
+        userName: formData.name,
+        email: formData.email,
+        phone: `+91${formData.phone}`,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+      }
 
       //api call
-      const response = await axios.post("/api/auth/signup", signupData);
+      const response = await axios.post(
+      "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/signup",
+      signupData,
+      { withCredentials: true }
+    );
 
       //handle success
-      if (response.data.success) {
+      if (response.data?.success) {
         //toast.success("Account created successfully!");
         localStorage.setItem("signup-number", formData.phone);
         dispatch(
@@ -47,7 +58,7 @@ export default function Signup() {
             password: signupData.password,
           })
         );
-        router.push("/verification");
+        router.push("/auth/verification");
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "An error occurred";
@@ -109,7 +120,7 @@ export default function Signup() {
                 className={`w-full p-3 border rounded-lg ${
                   errors.phone ? "border-red-500" : "border-[#D9D9D9]"
                 } focus:ring-2 focus:ring-yellow-500`}
-                placeholder="03001234567"
+                placeholder="3001234567"
               />
               {errors.phone && (
                 <span className="text-red-500 text-sm">
@@ -294,7 +305,7 @@ export default function Signup() {
           <div className="mt-4 text-sm text-black w-full flex justify-center items-center">
             Already have an account?
             <Link
-              href="/login"
+              href="/auth/login"
               className="text-[#FFC107] font-medium hover:underline ml-1"
             >
               Sign In
