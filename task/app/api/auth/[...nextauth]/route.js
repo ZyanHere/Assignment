@@ -30,46 +30,80 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        // email: { label: "Email", type: "text", optional: true },
-        phone: { label: "Phone", type: "text" },
-        password: { label: "Password", type: "password" }
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+        rememberMe: { label: "Remember Me", type: "checkbox" }
       },
       async authorize(credentials) {
+        console.log("Authorization attempt with credentials:", credentials);
         // Hardcoded user for development
-        if (
-          credentials.phone === "6001234567" &&
-          credentials.password === "zyanhere"
-        ) {
-          return {
-            id: "dev-user",
-            name: "Zyan",
-            phone: "6001234567",
-            email: "zyan@local.com",
-            role: "admin"
-          };
-        }
+        // if (
+        //   credentials.username === "zyanhere" &&
+        //   credentials.password === "zyanhere"
+        // ) {
+        //   return {
+        //     id: "dev-user",
+        //     name: "Zyan",
+        //     // phone: "6001234567",
+        //     email: "zyan@local.com",
+        //     role: "admin"
+        //   };
+        // }
         
-        if (!credentials.email && !credentials.phone) {
-          throw new Error("Email or phone is required");
-        }
-        if (credentials.email && credentials.phone) {
-          throw new Error("Use either email or phone, not both");
-        }
+        // if (!credentials.email && !credentials.phone) {
+        //   throw new Error("Email or phone is required");
+        // }
+        // if (credentials.email && credentials.phone) {
+        //   throw new Error("Use either email or phone, not both");
+        // }
 
         
         try {
           const res = await axios.post(
             "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/login",
             {
-              phone: credentials.phone,
+              // phone: credentials.phone,
+              userName: credentials.username,
               password: credentials.password,
             },
+            
             { withCredentials: true }
           );
+          console.log("Response from login API:", res.data);
+          // // return res.data.user ?? null;
+          // if (res.data.status === "success") {
+          //   const user = {
+          //     id: res.data.data.user._id,
+          //     name: res.data.data.user.userName,
+          //     email: res.data.data.user.email,
+          //     token: res.data.data.token,
+          //     rememberMe: credentials.rememberMe
+          //   };
+          //   console.log("Authentication successful, returning user:", user);
+          //   return user;
+          // }
+          // // Handle API error responses
+          // const errorMsg = res.data.message || "Login failed";
+          // throw new Error(errorMsg);
+
           return res.data.user ?? null;
-        } catch (err) {
-          console.error("Login failed:", err.response?.data || err.message);
-          return null;
+        } catch (error) {
+          let errorMessage = "Authentication failed";
+          
+          if (error.response) {
+            // Server responded with non-2xx status
+            errorMessage = error.response.data?.message || 
+                         `Server error: ${error.response.status}`;
+          } else if (error.request) {
+            // Request was made but no response
+            errorMessage = "No response from server";
+          } else {
+            // Other errors
+            errorMessage = error.message;
+          }
+          
+          console.error("Authentication error:", errorMessage);
+          throw new Error(errorMessage);
         }
       }
     })
@@ -98,7 +132,8 @@ const handler = NextAuth({
               name: response.data.user.name,
               email: response.data.user.email,
               phone: response.data.user.phone,
-              role: response.data.user.role || "user"
+              role: response.data.user.role || "user",
+              token: response.data.token  // Store token from backend
             };
           }
         } catch (error) {
@@ -111,8 +146,13 @@ const handler = NextAuth({
           name: user.name,
           email: user.email,
           phone: user.phone,
-          role: user.role || "user"
+          role: user.role || "user",
+          token: user.token  // Preserve token
         };
+        // Implement rememberMe functionality
+        if (user.rememberMe) {
+          token.exp = Math.floor(Date.now()/1000) + 30 * 24 * 60 * 60; // 30 days
+        }
       }
       return token;
     },

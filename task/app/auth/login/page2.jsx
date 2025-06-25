@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { loginSchema } from "@/lib/validators/auth";
 import { signIn } from "next-auth/react";
-import { Phone } from 'lucide-react';
+import { Phone } from "lucide-react";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,8 +20,13 @@ export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
-    resolver: zodResolver(loginSchema)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(loginSchema),
   });
 
   // const toggleLoginMethod = () => {
@@ -35,8 +40,9 @@ export default function Login() {
 
     try {
       const credentials = {
+        username: data.username,
         password: data.password,
-        username: data.username
+        // phone: data.phone
       };
 
       const res = await signIn("credentials", {
@@ -59,31 +65,32 @@ export default function Login() {
           ? "Invalid credentials. Please try again."
           : error.message || "Login failed. Please try again later."
       );
-      toast.error(error.message === "CredentialsSignin"
-        ? "Invalid credentials. Please try again."
-        : error.message || "Login failed. Please try again later."
+      toast.error(
+        error.message === "CredentialsSignin"
+          ? "Invalid credentials. Please try again."
+          : error.message || "Login failed. Please try again later."
       );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const handleOAuthSignIn = async (provider) => {
-  //   try {
-  //     setOauthLoading(provider);
-  //     // Use the direct approach without catching errors here
-  //     // NextAuth will handle redirects and error states internally
-  //     await signIn(provider, { callbackUrl: "/" });
-  //   } catch (error) {
-  //     // This catch block will likely not run as signIn handles redirects
-  //     toast.error(`Failed to sign in with ${provider}. Please try again.`);
-  //     console.error(`${provider} sign-in error:`, error);
-  //     setOauthLoading("");
-  //     // } finally {
-  //     //   setOauthLoading("");
-  //     // }
-  //   }
-  // };
+  const handleOAuthSignIn = async (provider) => {
+    try {
+      setOauthLoading(provider);
+      // Use the direct approach without catching errors here
+      // NextAuth will handle redirects and error states internally
+      await signIn(provider, { callbackUrl: "/" });
+    } catch (error) {
+      // This catch block will likely not run as signIn handles redirects
+      toast.error(`Failed to sign in with ${provider}. Please try again.`);
+      console.error(`${provider} sign-in error:`, error);
+      setOauthLoading("");
+      // } finally {
+      //   setOauthLoading("");
+      // }
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -104,7 +111,10 @@ export default function Login() {
             Please login to continue to your account
           </p>
 
-          <form className="w-full max-w-md mt-[70px]" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="w-full max-w-md mt-[70px]"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className="mb-4">
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm font-medium text-black">
@@ -138,28 +148,45 @@ export default function Login() {
                 </>
               ) : (
                 <> */}
+              {/* <input
+                    {...register("phone")}
+                    type="tel"
+                    className={`w-full p-3 border rounded-lg ${
+                      errors.phone ? 'border-red-500' : 'border-[#D9D9D9]'
+                    } focus:ring-2 focus:ring-yellow-500`}
+                    placeholder="3001234567"
+                  />
+                  {errors.phone && (
+                    <span className="text-red-500 text-sm">{errors.phone.message}</span>
+                  )} */}
               <input
                 {...register("username")}
                 type="text"
-                className={`w-full p-3 border rounded-lg ${errors.username ? 'border-red-500' : 'border-[#D9D9D9]'
-                  } focus:ring-2 focus:ring-yellow-500`}
+                className={`w-full p-3 border rounded-lg ${
+                  errors.username ? "border-red-500" : "border-[#D9D9D9]"
+                } focus:ring-2 focus:ring-yellow-500`}
                 placeholder="Enter your username"
               />
               {errors.username && (
-                <span className="text-red-500 text-sm">{errors.username.message}</span>
+                <span className="text-red-500 text-sm">
+                  {errors.username.message}
+                </span>
               )}
               {/* </> */}
               {/* )} */}
             </div>
 
             <div className="mb-4 relative">
-              <label className="block text-sm font-medium text-black">Password</label>
+              <label className="block text-sm font-medium text-black">
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
-                  className={`w-full p-3 border rounded-lg ${errors.password ? 'border-red-500' : 'border-[#D9D9D9]'
-                    } focus:ring-2 focus:ring-yellow-500`}
+                  className={`w-full p-3 border rounded-lg ${
+                    errors.password ? "border-red-500" : "border-[#D9D9D9]"
+                  } focus:ring-2 focus:ring-yellow-500`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -171,12 +198,17 @@ export default function Login() {
                 </button>
               </div>
               {errors.password && (
-                <span className="text-red-500 text-sm">{errors.password.message}</span>
+                <span className="text-red-500 text-sm">
+                  {errors.password.message}
+                </span>
               )}
             </div>
 
             <div className="flex justify-end mt-1">
-              <Link href="/forgot-password" className="text-[#FFC107] text-[12px] font-medium hover:underline">
+              <Link
+                href="/forgot-password"
+                className="text-[#FFC107] text-[12px] font-medium hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -200,27 +232,27 @@ export default function Login() {
               disabled={isLoading}
               className={`w-full py-3 mt-6 bg-[#FFC107] text-white rounded-lg font-semibold 
                         hover:bg-yellow-600 transition-colors
-                        ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        ${isLoading ? "opacity-75 cursor-not-allowed" : ""}`}
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
 
             {/* Error Message */}
             {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
           </form>
 
-          {/* <div className="flex items-center mt-[32px] mb-[40px] w-full max-w-md">
+          <div className="flex items-center mt-[32px] mb-[40px] w-full max-w-md">
             <hr className="flex-grow #F5F5F5" />
             <span className="mx-4 text-black">Or</span>
             <hr className="flex-grow #F5F5F5" />
-          </div> */}
+          </div>
 
-          {/* <div className="w-full flex justify-between mt-4 "> */}
-          {/* Google Sign-In */}
-          {/* <div>
+          <div className="w-full flex justify-between mt-4 ">
+            {/* Google Sign-In */}
+            <div>
               <button
                 type="button"
-                onClick={() => handleOAuthSignIn('google')}
+                onClick={() => handleOAuthSignIn("google")}
                 disabled={oauthLoading !== ""}
                 className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
                      hover:bg-gray-100 transition duration-200"
@@ -232,22 +264,24 @@ export default function Login() {
                   height={20}
                 />
                 <span className="ml-2 text-black text-sm font-medium">
-                  {oauthLoading === 'google' ? 'Connecting...' : 'Sign in with Google'}
+                  {oauthLoading === "google"
+                    ? "Connecting..."
+                    : "Sign in with Google"}
                 </span>
               </button>
-            </div> */}
+            </div>
 
-          {/* Facebook Sign-In (replacing Apple) */}
-          {/* <div>
+            {/* Facebook Sign-In (replacing Apple) */}
+            <div>
               <button
                 type="button"
-                onClick={() => handleOAuthSignIn('facebook')}
+                onClick={() => handleOAuthSignIn("facebook")}
                 disabled={oauthLoading !== ""}
                 className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
                      hover:bg-gray-100 transition duration-200"
               >
                 {/* You'll need to add a Facebook logo to your assets */}
-          {/* <svg
+                <svg
                   className="w-5 h-5 text-blue-600"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 320 512"
@@ -256,11 +290,13 @@ export default function Login() {
                   <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" />
                 </svg>
                 <span className="ml-2 text-black text-sm font-medium">
-                  {oauthLoading === 'facebook' ? 'Connecting...' : 'Sign in with Facebook'}
+                  {oauthLoading === "facebook"
+                    ? "Connecting..."
+                    : "Sign in with Facebook"}
                 </span>
               </button>
-            </div>  */}
-          {/* </div> */}
+            </div>
+          </div>
 
           <div className="mt-4 text-sm text-black w-full flex justify-center items-center">
             Don't have an account?
