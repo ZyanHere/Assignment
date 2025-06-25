@@ -11,7 +11,7 @@ import { loginSchema } from "@/lib/validators/auth";
 import { signIn } from "next-auth/react";
 import { Phone } from "lucide-react";
 
-export default function Login() {
+export default function Login2() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState("");

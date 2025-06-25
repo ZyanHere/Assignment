@@ -1,31 +1,26 @@
 "use client";
+import { signUpStart, signUpSuccess } from "@/lib/redux/user/userSlice";
 import { signupSchema } from "@/lib/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  signUpStart,
-  signUpSuccess,
-  signUpFailure,
-} from "@/lib/redux/user/userSlice";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { FiEyeOff, FiEye } from "react-icons/fi";
 
-const Signup = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { loading, error } = useSelector((state) => state.user);
-
-  // Local UI state
+export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
-  // RHF + Zod setup
+  // Zod form validation setup
   const {
     register,
     handleSubmit,
@@ -34,48 +29,49 @@ const Signup = () => {
     resolver: zodResolver(signupSchema),
   });
 
-
-    // Handle form submission
-    const onSubmit = async (data) => {
-    dispatch(signUpStart());
+  const onSubmit = async (formData) => {
     try {
-      const payload = {
-        userName: data.userName,
-        email: data.email,
-        // prefix country code; adjust if you support multiple countries
-        phone: `+91${data.phone}`,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
+      dispatch(signUpStart());
+
+      //remove confirmPassword before sending to api
+      // const { confirmPassword, ...signupData } = formData;
+      const signupData = {
+        userName: formData.userName,
+        email: formData.email,
+        phone: `+91${formData.phone}`,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
       };
 
-      const res = await axios.post(
+      //api call
+      const response = await axios.post(
         "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/signup",
-        payload
+        signupData,
+        { withCredentials: true }
       );
 
-      // Dispatch success with user + temp credentials for auto-login
-      dispatch(
-        signUpSuccess({
-          user: res.data.data.user,
-          phone: data.phone,
-          password: data.password,
-        })
-      );
-
-      // Optionally persist “remember me” here (e.g. cookie/localStorage)
-
-      // Redirect to next step (e.g. OTP verification)
-      router.push("/auth/verification");
-    } catch (err) {
-      const msg =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message;
-      dispatch(signUpFailure(msg));
+      //handle success
+      if (response.data?.status === "success") {
+        //toast.success("Account created successfully!");
+        localStorage.setItem("signup-number", formData.phone);
+        const { user, token } = response.data.data;
+        dispatch(
+          signUpSuccess({
+            user,
+            token,
+            phone: signupData.phone,
+            password: signupData.password,
+          })
+        );
+        router.push("/auth/verification");
+      } else {
+        toast.error(response.data?.message || "Signup failed");
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "An error occurred";
+      toast.error(errorMessage);
     }
   };
-
-
 
   return (
     <div className="flex min-h-screen ">
@@ -111,6 +107,10 @@ const Signup = () => {
                   errors.userName ? "border-red-500" : "border-[#D9D9D9]"
                 } focus:ring-2 focus:ring-yellow-500`}
                 placeholder="Enter Userame"
+                // className="w-full pl-[10px] pr-[316px] pt-[10px] pb-[13px]
+                //             border border-[#D9D9D9] rounded-[10px]
+                //             focus:outline-none focus:ring-2 focus:ring-yellow-500
+                //           placeholder:text-black placeholder:opacity-20 "
               />
               {errors.userName && (
                 <p className="text-red-500 text-sm mt-1">
@@ -137,6 +137,10 @@ const Signup = () => {
                   {errors.phone.message}
                 </span>
               )}
+              {/* // className="w-full pl-[10px] pr-[256px] pt-[10px] pb-[13px] 
+                //             border border-[#D9D9D9] rounded-[10px] 
+                //             focus:outline-none focus:ring-2 focus:ring-yellow-500
+                //           placeholder:text-black placeholder:opacity-20 " */}
             </div>
             {/* Email */}
             <div>
@@ -157,6 +161,10 @@ const Signup = () => {
                   {errors.email.message}
                 </span>
               )}
+              {/* className="w-full pl-[10px] pr-[287px] pt-[10px] pb-[13px] 
+                            border border-[#D9D9D9] rounded-[10px] 
+                            focus:outline-none focus:ring-2 focus:ring-yellow-500
+                          placeholder:text-black placeholder:opacity-20 " */}
             </div>
             {/* Password */}
             <div className=" relative">
@@ -188,6 +196,12 @@ const Signup = () => {
               )}
             </div>
 
+            {/* 
+            className="w-full pl-[10px] pr-[290px] pt-[10px] pb-[13px]
+                  //             border border-[#D9D9D9] rounded-[10px]
+                  //             focus:outline-none focus:ring-2 focus:ring-yellow-500
+                  //           placeholder:text-black placeholder:opacity-20 " */}
+
             {/* Confirm Password */}
             <div className="relative">
               <label className="block text-sm font-medium text-black mt-[14px]">
@@ -204,6 +218,9 @@ const Signup = () => {
                       : "border-[#D9D9D9]"
                   } focus:ring-2 focus:ring-yellow-500`}
                   placeholder="Re-Enter Password"
+                  // className={`w-full px-[10px] py-[13px] border rounded-[10px] placeholder:text-black placeholder:opacity-20
+                  //   ${passwordsMatch ? "border-[#D9D9D9]" : "border-red-500"}
+                  //   focus:outline-none focus:ring-2 focus:ring-yellow-500`}
                 />
                 <button
                   type="button"
@@ -247,6 +264,9 @@ const Signup = () => {
               type="submit"
               disabled={loading}
               className="w-full py-3 bg-[#FFC107] font-semibold rounded-lg hover:bg-yellow-600 disabled:opacity-75 disabled:cursor-not-allowed transition-colors"
+              // className={`w-full py-[15px] mt-[16px] rounded-[10px] bg-[#FFC107] text-white font-semibold
+              // hover:bg-yellow-600 transition duration-200
+              // ${loading ? "opacity-75 cursor-not-allowed" : ""}`}
             >
               {loading ? "Creating Account..." : "Sign Up"}
             </button>
@@ -322,6 +342,4 @@ const Signup = () => {
       </div>
     </div>
   );
-};
-
-export default Signup;
+}
