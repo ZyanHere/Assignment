@@ -70,23 +70,22 @@ const handler = NextAuth({
             { withCredentials: true }
           );
           console.log("Response from login API:", res.data);
-          // // return res.data.user ?? null;
-          // if (res.data.status === "success") {
-          //   const user = {
-          //     id: res.data.data.user._id,
-          //     name: res.data.data.user.userName,
-          //     email: res.data.data.user.email,
-          //     token: res.data.data.token,
-          //     rememberMe: credentials.rememberMe
-          //   };
-          //   console.log("Authentication successful, returning user:", user);
-          //   return user;
-          // }
-          // // Handle API error responses
-          // const errorMsg = res.data.message || "Login failed";
-          // throw new Error(errorMsg);
+         
+          const { user, expires } = res.data;
+    if (!user || !user.token) {
+      throw new Error("Login failed: no token returned");
+    }
 
-          return res.data.user ?? null;
+    // Return a flat object including the token:
+    return {
+      email:     user.email,
+      phone:     user.phone,
+      role:      user.role,
+      token:     user.token,                     // optional: if you want to use it
+      rememberMe: credentials.rememberMe
+    };
+
+          // return res.data.user ?? null;
         } catch (error) {
           let errorMessage = "Authentication failed";
           
@@ -125,6 +124,7 @@ const handler = NextAuth({
               name: token.name
             }
           );
+          console.log("🔍 [login response] res.data =", JSON.stringify(res.data, null, 2));
 
           if (response.data?.user) {
             token.user = {
