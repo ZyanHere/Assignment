@@ -1,9 +1,9 @@
 "use client";
 
+import { useCart } from "@/lib/contexts/cart-context";
+import useTimer from "@/lib/hooks/useTimer";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import useTimer from "@/lib/hooks/useTimer";
-import { useCart } from "@/lib/contexts/cart-context";
 
 const ApparelsCard = ({ product }) => {
   const {
@@ -22,7 +22,7 @@ const ApparelsCard = ({ product }) => {
   const timeLeft = useTimer(time || 0);
   const { addToCart, cart } = useCart();
 
-  const isInCart = id ? cart.some(item => item.id === id) : false;
+  const isInCart = id ? cart.some((item) => item.id === id) : false;
 
   const handleAddToCart = () => {
     if (!isInCart && id) {
