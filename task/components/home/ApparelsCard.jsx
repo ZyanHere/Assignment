@@ -1,9 +1,10 @@
 "use client";
 
-import { useCart } from "@/lib/contexts/cart-context";
+
 import useTimer from "@/lib/hooks/useTimer";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import { useCart } from "@/lib/contexts/cart-context";
 
 const ApparelsCard = ({ product }) => {
   const {

@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <SessionProviderWrapper>
-            <CartProvider>
+            <CartProvider showCartInHeader={true}>
               <AddressProvider>
                 <SelectedItemsProvider>
                   {children}

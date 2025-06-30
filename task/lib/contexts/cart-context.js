@@ -1,123 +1,125 @@
-"use client";
-import { createContext, useContext, useEffect, useState } from "react";
-import {
-  getCart,
-  updateCartItem,
-  removeCartItem,
-  addCartItem,
-} from "@/lib/api/cart";
+'use client';
 
-const CartContext = createContext();
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
+import * as api from "@/lib/api/cart";
+import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
-export function CartProvider({ children }) {
-  // state: current cart items + loading flag
+const CartContext = createContext(null);
+
+export function CartProvider({ children, showCartInHeader = false }) {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const token = session?.user?.token;
+
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [summary, setSummary] = useState(null);
+  const [fetched, setFetched] = useState(false); // avoid multiple fetches
+  // const [error, setError] = useState(null);
 
-  // on mount: fetch authoritative cart
+  // load on mount
   useEffect(() => {
-    fetchCart();
-  }, []);
+    const shouldFetch = 
+      status === 'authenticated' &&
+      token &&
+      pathname !== '/cart' &&
+      !fetched &&
+      (pathname === '/cart' || showCartInHeader);
 
-  // fetchCart(): Retrieve full cart from server
+      if( shouldFetch ) {
+        fetchCart();
+      }
+  }, [status, token, pathname, showCartInHeader, fetched]);
+
   const fetchCart = async () => {
     try {
-      const cartObj = await getCart();
-      const items = cartObj.items || [];
-      const formatted = items.map((item) => ({
-        id:        item.variantId,
-        productId: item.productId,
-        variantId: item.variantId,
-        name:      item.productName,
-        image:     item.imageUrl,
-        price:     item.price,
-        quantity:  item.quantity,
-        brand:     item.variantName || item.brandName,
-      }));
-      setCart(formatted);
+      setIsLoading(true);
+      const res = await api.fetchCart(token);
+      setCart(res?.data?.items || []);
+      setSummary(res?.data?.cart || {});
+      setFetched(true);
     } catch (err) {
-      console.error("❌ Failed to fetch cart:", err);
+      console.error("❌ Error fetching cart:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // updateQuantity(): optimistic + sync
-  const updateQuantity = async (variantId, delta) => {
-    const item = cart.find((i) => i.variantId === variantId);
-    if (!item) return;
-    const newQty = item.quantity + delta;
-    if (newQty < 1) return;
 
-    // 1) Optimistic UI update
-    setCart((prev) =>
-      prev.map((i) =>
-        i.variantId === variantId ? { ...i, quantity: newQty } : i
-      )
-    );
-
-    // 2) Persist to server
+    const addToCart = async (variantId, quantity = 1) => {
     try {
-      await updateCartItem({
-        productId: item.productId,
-        variantId,
-        quantity: newQty,
-      });
-    } catch (err) {
-      console.error("⚠️ Sync failed, rolling back:", err);
-      await fetchCart();
-    }
-  };
-
-  // removeFromCart(): optimistic removal + rollback
-  const removeFromCart = async (variantId) => {
-    const prev = [...cart];
-    // 1) Optimistically remove
-    setCart((prevState) =>
-      prevState.filter((i) => i.variantId !== variantId)
-    );
-
-    // 2) Persist removal
-    try {
-      const item = prev.find((i) => i.variantId === variantId);
-      await removeCartItem({
-        productId: item.productId,
-        variantId,
-      });
-    } catch (err) {
-      console.error("⚠️ Remove failed, restoring:", err);
-      setCart(prev);
-    }
-  };
-
-  // addItem(): optimistic add + final refetch
-  const addItem = async ({ productId, variantId, quantity = 1 }) => {
-    const prev = [...cart];
-    // 1) Optimistically append placeholder
-    setCart((prevState) => [
-      ...prevState,
-      { id: variantId, productId, variantId, quantity, image: "", name: "", price: 0, brand: "" },
-    ]);
-
-    // 2) Persist addition
-    try {
-      await addCartItem({ productId, variantId, quantity });
+      setIsLoading(true);
+      await api.addToCart(token, variantId, quantity);
       await fetchCart();
     } catch (err) {
-      console.error("⚠️ Add failed, reverting:", err);
-      setCart(prev);
+      console.error("❌ Add to cart failed:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateQuantity = async (cartItemId, quantity) => {
+    try {
+      setIsLoading(true);
+      await api.updateCartItem(token, cartItemId, quantity);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Quantity update failed:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const removeFromCart = async (cartItemId) => {
+    try {
+      setIsLoading(true);
+      await api.removeFromCart(token, cartItemId);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Remove item failed:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const clearCart = async () => {
+    try {
+      setIsLoading(true);
+      await api.clearCart(token);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Clear cart failed:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <CartContext.Provider
-      value={{ cart, isLoading, fetchCart, updateQuantity, removeFromCart, addItem }}
+      value={{
+        cart,
+        summary,
+        isLoading,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+        fetchCart,
+      }}
     >
       {children}
     </CartContext.Provider>
   );
-}
+};
 
 export function useCart() {
   const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart must be inside CartProvider");
+  if (!ctx) throw new Error('useCart must be inside <CartProvider>');
   return ctx;
 }

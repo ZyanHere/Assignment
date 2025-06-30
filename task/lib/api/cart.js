@@ -1,96 +1,91 @@
 // lib/api/cart.js
 import axios from "axios";
-import { getSession } from "next-auth/react";
 
-// 1) Must be set to your production Cart Service base (no trailing /items)
-const BASE_URL = process.env.NEXT_PUBLIC_CART_BASE_URL;
-if (!BASE_URL) {
-  throw new Error("≫ NEXT_PUBLIC_CART_BASE_URL is not defined");
+const BASE_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/cart/me";
+
+function unwrapError(e) {
+  if (e.response?.data?.error) throw new Error(e.response.data.error);
+  throw e;
 }
 
-// Helper: retrieve current session’s token
-async function getToken() {
-  const session = await getSession();
-  if (!session?.user?.token) {
-    throw new Error("≫ No session token found; user must be signed in");
-  }
-  return session.user.token;
-}
-
-// 4.2 Retrieve Cart Contents
-export async function getCart() {
-  const token = await getToken();
-  console.log("🔍 [getCart] URL:", BASE_URL);
-  console.log("🔑 [getCart] token:", token);
-
+/** GET /me */
+export async function fetchCart(token) {
   try {
-    const res = await axios.get(BASE_URL, {
+    const { data } = await axios.get(BASE_URL, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("🛒 [getCart] response:", res.status, res.data);
-    return res.data.data.cart;
-  } catch (err) {
-    console.error("❌ [getCart] failed:", {
-      message: err.message,                   // Network Error, timeout, etc.
-      status:  err.response?.status,          // e.g. 403, 500
-      data:    err.response?.data,            // server’s JSON error payload
-    });
-    throw err;
+
+    const { cart, items } = data.data;
+
+    const mappedItems = items.map((i) => ({
+      id: i.cart_item_id,
+      variantId: i.variant._id,
+      name: i.variant.product.name,
+      brand: i.variant.product.vendor_store_id,
+      seller: i.variant.product.vendor_store_id,
+      price: i.unit_price,
+      mrp: i.variant.price.base_price,
+      image:
+        i.variant.images.find((img) => img.is_primary)?.url ||
+        i.variant.product.images[0]?.url,
+      weight: i.variant.variant_name,
+      quantity: i.quantity,
+    }));
+
+    return { cart, items: mappedItems };
+  } catch (e) {
+    unwrapError(e);
   }
 }
 
-// 4.3 Update Cart Item Quantity
-export async function updateCartItem({ productId, variantId, quantity }) {
-  const token = await getToken();
-  const url = `${BASE_URL}/items`;
-  console.log("✏️ [updateCartItem] URL:", url, { productId, variantId, quantity });
-
+/** POST /me/items */
+export async function addToCart(token, variantId, quantity) {
   try {
-    const res = await axios.put(
-      url,
-      { productId, variantId, quantity },
-      { headers: { Authorization: `Bearer ${token}` } }
+    await axios.post(
+      `${BASE_URL}/items`,
+      { variant_id: variantId, quantity },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
     );
-    return res.data.data.cart;
-  } catch (err) {
-    console.error("❌ [updateCartItem] failed:", err.message, err.response?.data);
-    throw err;
+  } catch (e) {
+    unwrapError(e);
   }
 }
 
-// 4.4 Remove Item from Cart
-export async function removeCartItem({ productId, variantId }) {
-  const token = await getToken();
-  const url = `${BASE_URL}/items`;
-  console.log("🗑️ [removeCartItem] URL:", url, { productId, variantId });
-
+/** PUT /me/items/:itemId */
+export async function updateCartItem(token, itemId, quantity) {
   try {
-    const res = await axios.delete(url, {
+    await axios.put(
+      `${BASE_URL}/items/${itemId}`,
+      { quantity },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (e) {
+    unwrapError(e);
+  }
+}
+
+/** DELETE /me/items/:itemId */
+export async function removeFromCart(token, itemId) {
+  try {
+    await axios.delete(`${BASE_URL}/items/${itemId}`, {
       headers: { Authorization: `Bearer ${token}` },
-      data:    { productId, variantId },
     });
-    return res.data.data.cart;
-  } catch (err) {
-    console.error("❌ [removeCartItem] failed:", err.message, err.response?.data);
-    throw err;
+  } catch (e) {
+    unwrapError(e);
   }
 }
 
-// 4.1 Add Item to Cart
-export async function addCartItem({ productId, variantId, quantity }) {
-  const token = await getToken();
-  const url = `${BASE_URL}/items`;
-  console.log("➕ [addCartItem] URL:", url, { productId, variantId, quantity });
-
+/** DELETE /me */
+export async function clearCart(token) {
   try {
-    const res = await axios.post(
-      url,
-      { productId, variantId, quantity },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    return res.data.data.cart;
-  } catch (err) {
-    console.error("❌ [addCartItem] failed:", err.message, err.response?.data);
-    throw err;
+    await axios.delete(BASE_URL, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (e) {
+    unwrapError(e);
   }
 }

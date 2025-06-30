@@ -1,10 +1,12 @@
-"use client";
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+// app/cart/page.jsx
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -12,32 +14,28 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import Header from "@/components/home/Header";
-import { useCart } from "@/lib/contexts/cart-context";
-import { useSelectedItems } from "@/lib/contexts/selected-items-context";
+} from '@/components/ui/table';
+import Header from '@/components/home/Header';
+import { useCart } from '@/lib/contexts/cart-context';
+import { useSelectedItems } from '@/lib/contexts/selected-items-context';
 
 export default function CartPage() {
-  // pull cart actions & data from context
-  const { cart, isLoading, updateQuantity, removeFromCart } = useCart();
+  const { cart, isLoading, error, updateQuantity, removeFromCart } = useCart();
   const [selected, setSelected] = useState([]);
   const { setSelectedItems } = useSelectedItems();
   const router = useRouter();
 
-  // toggle one item
   const toggleSelection = (id) =>
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
 
-  // select/deselect all
   const selectAll = (checked) =>
     setSelected(checked ? cart.map((i) => i.id) : []);
 
-  // proceed to buy-now
   const handleProceed = () => {
     setSelectedItems(cart.filter((i) => selected.includes(i.id)));
-    router.push("/buy-now");
+    router.push('/buy-now');
   };
 
   return (
@@ -46,14 +44,18 @@ export default function CartPage() {
         <Header />
 
         <div className="p-3 md:p-6 mx-auto max-w-[1700px]">
-          {/* Breadcrumb */}
           <nav className="mb-4 text-2xl md:text-4xl">
             <Link href="/cart" className="font-medium hover:underline">
               Cart
             </Link>
           </nav>
 
-          {/* Cart Table */}
+          {error && (
+            <div className="text-red-600 mb-4">
+              <p>Error: {error}</p>
+            </div>
+          )}
+
           {cart.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-xl text-gray-500">Your cart is empty</p>
@@ -63,7 +65,6 @@ export default function CartPage() {
             </div>
           ) : (
             <>
-              {/* Table wrapper */}
               <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4">
                 {/* Mobile view */}
                 <div className="md:hidden space-y-4">
@@ -88,7 +89,7 @@ export default function CartPage() {
                         <div>
                           <p className="font-medium">{item.name}</p>
                           <p className="text-sm text-gray-500">
-                            By {item.brand || "Unknown"}
+                            By {item.brand || 'Unknown'}
                           </p>
                         </div>
                       </div>
@@ -99,9 +100,7 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              updateQuantity(item.variantId, -1)
-                            }
+                            onClick={() => updateQuantity(item.variantId, -1)}
                             disabled={isLoading}
                           >
                             -
@@ -110,9 +109,7 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              updateQuantity(item.variantId, 1)
-                            }
+                            onClick={() => updateQuantity(item.variantId, 1)}
                             disabled={isLoading}
                           >
                             +
@@ -174,7 +171,7 @@ export default function CartPage() {
                             <div>
                               <p className="font-medium">{item.name}</p>
                               <p className="text-sm text-gray-500">
-                                By {item.brand || "Unknown"}
+                                By {item.brand || 'Unknown'}
                               </p>
                             </div>
                           </TableCell>
@@ -202,7 +199,9 @@ export default function CartPage() {
                               +
                             </Button>
                           </TableCell>
-                          <TableCell>₹{item.price * item.quantity}</TableCell>
+                          <TableCell>
+                            ₹{item.price * item.quantity}
+                          </TableCell>
                           <TableCell>
                             <Button
                               variant="ghost"
@@ -219,7 +218,6 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Proceed button */}
               <div className="flex justify-end mt-4">
                 <Button
                   onClick={handleProceed}
