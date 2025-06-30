@@ -2,11 +2,8 @@
 import { useParams } from "next/navigation";
 import { hotelsData } from "@/data/hotelsData";
 import Header from "@/components/home/Header";
-import Sidebar from "@/components/home/sidebar";
 import Link from "next/link";
 import RoomList from "@/components/home/foursec/RoomList";
-
-
 
 const HotelRoomPage = () => {
   const params = useParams();
@@ -24,28 +21,21 @@ const HotelRoomPage = () => {
   }
 
   return (
-
-      <div className="flex-1">
-        <Header />
-
-        <div className="p-6 w-full max-w-[1700px] mx-auto">
-          {/* Breadcrumb */}
-          <nav className="text-2xl mb-8">
-            <Link href="/" className="text-black">Home</Link> &gt;{" "}
-            <Link href="/home/hotel" className="text-black">Hotels</Link> &gt;{" "}
-            <span className="font-semibold text-yellow-500">{hotel.name}</span>
-          </nav>
-
-          <div>
-            <h1 className="text-3xl font-bold">{hotel.name}</h1>
-            <p className="text-gray-600 text-lg">📍 {hotel.location}</p>
-          </div>
-
-  
-          <RoomList hotelSlug={hotelSlug} rooms={hotel.rooms} />
+    <div className="flex-1">
+      <Header />
+      <div className="p-6 w-full max-w-[1700px] mx-auto">
+        <nav className="text-2xl mb-8">
+          <Link href="/" className="text-black">Home</Link> &gt;{" "}
+          <Link href="/home/hotel" className="text-black">Hotels</Link> &gt;{" "}
+          <span className="font-semibold text-yellow-500">{hotel.name}</span>
+        </nav>
+        <div>
+          <h1 className="text-3xl font-bold">{hotel.name}</h1>
+          <p className="text-gray-600 text-lg">📍 {hotel.location}</p>
         </div>
+        <RoomList hotelSlug={hotelSlug} rooms={hotel.rooms} />
       </div>
-
+    </div>
   );
 };
 
