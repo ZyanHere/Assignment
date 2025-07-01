@@ -1,23 +1,17 @@
 // lib/api/cart.js
-import axios from "axios";
-
-const BASE_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/cart/me";
+import { api } from './axios';
 
 function unwrapError(e) {
-  if (e.response?.data?.error) throw new Error(e.response.data.error);
+  if (e.response?.data?.message) throw new Error(e.response.data.message);
   throw e;
 }
 
-/** GET /me */
-export async function fetchCart(token) {
+/** GET /me → returns mapped items[] */
+export async function fetchCart() {
   try {
-    const { data } = await axios.get(BASE_URL, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const { cart, items } = data.data;
-
-    const mappedItems = items.map((i) => ({
+    const { data } = await api.get('/');
+    const items = data.data.items;
+    return items.map((i) => ({
       id: i.cart_item_id,
       variantId: i.variant._id,
       name: i.variant.product.name,
@@ -31,60 +25,42 @@ export async function fetchCart(token) {
       weight: i.variant.variant_name,
       quantity: i.quantity,
     }));
-
-    return { cart, items: mappedItems };
   } catch (e) {
     unwrapError(e);
   }
 }
 
 /** POST /me/items */
-export async function addToCart(token, variantId, quantity) {
+export async function addOrUpdateItem(variantId, quantity = 1) {
   try {
-    await axios.post(
-      `${BASE_URL}/items`,
-      { variant_id: variantId, quantity },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    await api.post('/items', { variant_id: variantId, quantity });
   } catch (e) {
     unwrapError(e);
   }
 }
 
 /** PUT /me/items/:itemId */
-export async function updateCartItem(token, itemId, quantity) {
+export async function updateCartItem(itemId, quantity) {
   try {
-    await axios.put(
-      `${BASE_URL}/items/${itemId}`,
-      { quantity },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    await api.put(`/items/${itemId}`, { quantity });
   } catch (e) {
     unwrapError(e);
   }
 }
 
 /** DELETE /me/items/:itemId */
-export async function removeFromCart(token, itemId) {
+export async function removeItem(itemId) {
   try {
-    await axios.delete(`${BASE_URL}/items/${itemId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await api.delete(`/items/${itemId}`);
   } catch (e) {
     unwrapError(e);
   }
 }
 
 /** DELETE /me */
-export async function clearCart(token) {
+export async function clearCart() {
   try {
-    await axios.delete(BASE_URL, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await api.delete('/');
   } catch (e) {
     unwrapError(e);
   }

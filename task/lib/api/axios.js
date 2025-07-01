@@ -4,12 +4,10 @@ import { getSession } from 'next-auth/react';
 
 export const api = axios.create({
   baseURL: 'https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/cart/me',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach token on every request
+// Automatically attach Bearer token on every request
 api.interceptors.request.use(async (config) => {
   const session = await getSession();
   if (session?.user?.token) {

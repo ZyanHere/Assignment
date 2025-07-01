@@ -1,7 +1,7 @@
 // app/cart/page.jsx
 'use client';
 
-import { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
@@ -20,8 +20,13 @@ import { useCart } from '@/lib/contexts/cart-context';
 import { useSelectedItems } from '@/lib/contexts/selected-items-context';
 
 export default function CartPage() {
-  const { cart, isLoading, error, updateQuantity, removeFromCart } = useCart();
-  const [selected, setSelected] = useState([]);
+  const {
+    cart,
+    isLoading,
+    updateQuantity,
+    removeFromCart,
+  } = useCart();
+  const [selected, setSelected] = React.useState([]);
   const { setSelectedItems } = useSelectedItems();
   const router = useRouter();
 
@@ -42,19 +47,12 @@ export default function CartPage() {
     <div className="flex flex-col md:flex-row">
       <div className="flex-1">
         <Header />
-
         <div className="p-3 md:p-6 mx-auto max-w-[1700px]">
           <nav className="mb-4 text-2xl md:text-4xl">
             <Link href="/cart" className="font-medium hover:underline">
               Cart
             </Link>
           </nav>
-
-          {error && (
-            <div className="text-red-600 mb-4">
-              <p>Error: {error}</p>
-            </div>
-          )}
 
           {cart.length === 0 ? (
             <div className="text-center py-8">
@@ -89,18 +87,19 @@ export default function CartPage() {
                         <div>
                           <p className="font-medium">{item.name}</p>
                           <p className="text-sm text-gray-500">
-                            By {item.brand || 'Unknown'}
+                            By {item.brand}
                           </p>
                         </div>
                       </div>
-
                       <div className="flex justify-between items-center mt-2">
                         <div>MRP ₹{item.price}</div>
                         <div className="flex items-center">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.variantId, -1)}
+                            onClick={() =>
+                              updateQuantity(item.variantId, -1)
+                            }
                             disabled={isLoading}
                           >
                             -
@@ -109,14 +108,15 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.variantId, 1)}
+                            onClick={() =>
+                              updateQuantity(item.variantId, 1)
+                            }
                             disabled={isLoading}
                           >
                             +
                           </Button>
                         </div>
                       </div>
-
                       <div className="flex justify-between items-center mt-2">
                         <div>Total: ₹{item.price * item.quantity}</div>
                         <Button
@@ -145,7 +145,9 @@ export default function CartPage() {
                         </TableHead>
                         <TableHead>Product</TableHead>
                         <TableHead>Price</TableHead>
-                        <TableHead className="text-center">Quantity</TableHead>
+                        <TableHead className="text-center">
+                          Quantity
+                        </TableHead>
                         <TableHead>Total</TableHead>
                         <TableHead>Action</TableHead>
                       </TableRow>
@@ -171,7 +173,7 @@ export default function CartPage() {
                             <div>
                               <p className="font-medium">{item.name}</p>
                               <p className="text-sm text-gray-500">
-                                By {item.brand || 'Unknown'}
+                                By {item.brand}
                               </p>
                             </div>
                           </TableCell>
