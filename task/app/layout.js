@@ -1,11 +1,11 @@
 // app/layout.jsx
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Providers } from "@/lib/providers";
-import { CartProvider } from "@/lib/contexts/cart-context";
 import { AddressProvider } from "@/lib/contexts/address-context";
+import { CartProvider } from "@/lib/contexts/cart-context";
 import { SelectedItemsProvider } from "@/lib/contexts/selected-items-context";
 import SessionProviderWrapper from "@/lib/NextAuthProvider/SessionProviderWrapper";
+import { Providers } from "@/lib/providers";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
 
 
 const geistSans = Geist({
@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <SessionProviderWrapper>
-            <CartProvider>
+            <CartProvider showCartInHeader={true}>
               <AddressProvider>
                 <SelectedItemsProvider>
                   {children}

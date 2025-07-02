@@ -1,15 +1,25 @@
 "use client";
+import { useCart } from "@/lib/contexts/cart-context";
+import useTimer from "@/lib/hooks/useTimer";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import useTimer from "@/lib/hooks/useTimer";
-import { useCart } from "@/lib/contexts/cart-context";
 
-const CategoryCard = ({ image, name, weight, store, discount, mrp, price, time, id }) => {
+const CategoryCard = ({
+  image,
+  name,
+  weight,
+  store,
+  discount,
+  mrp,
+  price,
+  time,
+  id,
+}) => {
   const timeLeft = useTimer(time);
   const { addToCart, cart } = useCart();
 
   // Check if this specific product is already in the cart by its unique ID
-  const isInCart = cart.some(item => item.id === id);
+  const isInCart = cart.some((item) => item.id === id);
 
   const handleAddToCart = () => {
     if (!isInCart) {
@@ -20,7 +30,7 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price, time, 
         price,
         mrp,
         image,
-        weight
+        weight,
       });
     }
   };
@@ -65,21 +75,21 @@ const CategoryCard = ({ image, name, weight, store, discount, mrp, price, time, 
           <div className="flex justify-center gap-3 text-sm bg-gray-100 p-2 rounded">
             <div className="flex flex-col items-center">
               <span className="font-bold text-lg">
-                {String(timeLeft.hours).padStart(2, '0')}
+                {String(timeLeft.hours).padStart(2, "0")}
               </span>
               <span className="text-xs text-gray-500">hours</span>
             </div>
             <span className="text-lg">:</span>
             <div className="flex flex-col items-center">
               <span className="font-bold text-lg">
-                {String(timeLeft.minutes).padStart(2, '0')}
+                {String(timeLeft.minutes).padStart(2, "0")}
               </span>
               <span className="text-xs text-gray-500">minutes</span>
             </div>
             <span className="text-lg">:</span>
             <div className="flex flex-col items-center">
               <span className="font-bold text-lg">
-                {String(timeLeft.seconds).padStart(2, '0')}
+                {String(timeLeft.seconds).padStart(2, "0")}
               </span>
               <span className="text-xs text-gray-500">seconds</span>
             </div>

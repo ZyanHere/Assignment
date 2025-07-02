@@ -1,8 +1,8 @@
 "use client";
 
+import { useCart } from "@/lib/contexts/cart-context";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useCart } from "@/lib/contexts/cart-context";
 
 const ProCard = ({
   id,
@@ -57,16 +57,18 @@ const ProCard = ({
           onClick={handleAddToCart}
           disabled={!id}
           className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
-            ${isInCart ? "bg-green-50 text-green-500 border-green-400" : "bg-white text-blue-400 border-blue-400"}`}
+            ${
+              isInCart
+                ? "bg-green-50 text-green-500 border-green-400"
+                : "bg-white text-blue-400 border-blue-400"
+            }`}
           aria-label={isInCart ? "Item added to cart" : "Add item to cart"}
         >
           {isInCart ? "✓" : "ADD"}
         </Button>
       </div>
 
-      <p className={`text-sm ${getStockColor()}`}>
-        {stockStatus}
-      </p>
+      <p className={`text-sm ${getStockColor()}`}>{stockStatus}</p>
 
       <div className="w-full">
         <h3 className="text-lg font-bold truncate">{name}</h3>

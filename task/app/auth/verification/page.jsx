@@ -15,16 +15,16 @@ export default function Verification() {
   const [isClient, setIsClient] = useState(false);
 
 
-  useEffect(() => {
-    setIsClient(true); // Mark client-side mount
-    const storedPhone = localStorage.getItem("signup-phone");
-    if(!storedPhone) {
-      toast.error("Phone number not found. Signup again.");
-      router.push("/auth/signup");
-    }else {
-      setRawPhone(storedPhone);
-    }
-  }, [])
+  // useEffect(() => {
+  //   setIsClient(true); // Mark client-side mount
+  //   const storedPhone = localStorage.getItem("signup-phone");
+  //   if(!storedPhone) {
+  //     toast.error("Phone number not found. Signup again.");
+  //     router.push("/auth/signup");
+  //   }else {
+  //     setRawPhone(storedPhone);
+  //   }
+  // }, [])
 
   const formattedPhone = rawPhone.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
 
@@ -44,7 +44,7 @@ export default function Verification() {
 
       if (!response.ok) throw new Error("Invalid OTP");
 
-      localStorage.removeItem("signup-phone");
+      // localStorage.removeItem("signup-phone");
 
       router.push("/auth/success");
     } catch (error) {
@@ -102,7 +102,7 @@ export default function Verification() {
     }
   }, [timer]);
 
-  if (!isClient) return null; // Prevent server mismatch
+  // if (!isClient) return null; // Prevent server mismatch
 
   return (
     <div className="flex min-h-screen bg-white">

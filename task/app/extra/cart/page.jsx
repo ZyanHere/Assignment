@@ -1,12 +1,6 @@
-// app/cart/page.jsx
-'use client';
-
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+"use client";
+import Header from "@/components/home/Header";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -14,57 +8,87 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import Header from '@/components/home/Header';
-import { useCart } from '@/lib/contexts/cart-context';
-import { useSelectedItems } from '@/lib/contexts/selected-items-context';
+} from "@/components/ui/table";
+import { useCart } from "@/lib/contexts/cart-context";
+import { useSelectedItems } from "@/lib/contexts/selected-items-context";
+import { Trash2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function CartPage() {
-  const {
-    cart,
-    isLoading,
-    updateQuantity,
-    removeFromCart,
-  } = useCart();
-  const [selected, setSelected] = React.useState([]);
+  const { cart, updateQuantity, removeFromCart } = useCart();
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
   const { setSelectedItems } = useSelectedItems();
   const router = useRouter();
 
-  const toggleSelection = (id) =>
-    setSelected((prev) =>
+  const isSelected = (id) => selectedItemIds.includes(id);
+
+  const toggleSelection = (id) => {
+    setSelectedItemIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
+  };
 
-  const selectAll = (checked) =>
-    setSelected(checked ? cart.map((i) => i.id) : []);
+  const handleSelectAll = (checked) => {
+    setSelectedItemIds(checked ? cart.map((item) => item.id) : []);
+  };
+
+  const handleUpdateQuantity = async (id, amount) => {
+    setIsLoading(true);
+    try {
+      await updateQuantity(id, amount);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemoveFromCart = async (id) => {
+    setIsLoading(true);
+    try {
+      await removeFromCart(id);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleProceed = () => {
-    setSelectedItems(cart.filter((i) => selected.includes(i.id)));
-    router.push('/buy-now');
+    const selected = cart.filter((item) => selectedItemIds.includes(item.id));
+    setSelectedItems(selected);
+    router.push("/buy-now");
   };
 
   return (
     <div className="flex flex-col md:flex-row">
       <div className="flex-1">
         <Header />
-        <div className="p-3 md:p-6 mx-auto max-w-[1700px]">
-          <nav className="mb-4 text-2xl md:text-4xl">
-            <Link href="/cart" className="font-medium hover:underline">
+
+        <div className="p-3 md:p-6 w-full max-w-[1700px] mx-auto">
+          {/* Breadcrumb */}
+          <nav className="mb-4 text-black text-2xl md:text-4xl">
+            <Link href="/cart" className="hover:underline font-medium">
               Cart
             </Link>
           </nav>
 
-          {cart.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-xl text-gray-500">Your cart is empty</p>
-              <Link href="/">
-                <Button className="mt-4">Continue Shopping</Button>
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4">
-                {/* Mobile view */}
+          {/* Cart Table */}
+          <div className="bg-white shadow-md rounded-lg p-2 md:p-4">
+            {cart.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-xl font-medium text-gray-500">
+                  Your cart is empty
+                </p>
+                <Link href="/">
+                  <Button className="mt-4 bg-blue-500 hover:bg-blue-600">
+                    Continue Shopping
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                {/* Mobile View */}
                 <div className="md:hidden space-y-4">
                   {cart.map((item) => (
                     <div
@@ -74,7 +98,7 @@ export default function CartPage() {
                       <div className="flex items-center space-x-3 mb-2">
                         <input
                           type="checkbox"
-                          checked={selected.includes(item.id)}
+                          checked={isSelected(item.id)}
                           onChange={() => toggleSelection(item.id)}
                         />
                         <Image
@@ -87,7 +111,7 @@ export default function CartPage() {
                         <div>
                           <p className="font-medium">{item.name}</p>
                           <p className="text-sm text-gray-500">
-                            By {item.brand}
+                            By {item.brand || item.seller || "Unknown"}
                           </p>
                         </div>
                       </div>
@@ -97,9 +121,7 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              updateQuantity(item.variantId, -1)
-                            }
+                            onClick={() => handleUpdateQuantity(item.id, -1)}
                             disabled={isLoading}
                           >
                             -
@@ -108,9 +130,7 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              updateQuantity(item.variantId, 1)
-                            }
+                            onClick={() => handleUpdateQuantity(item.id, 1)}
                             disabled={isLoading}
                           >
                             +
@@ -121,7 +141,7 @@ export default function CartPage() {
                         <div>Total: ₹{item.price * item.quantity}</div>
                         <Button
                           variant="ghost"
-                          onClick={() => removeFromCart(item.variantId)}
+                          onClick={() => handleRemoveFromCart(item.id)}
                           disabled={isLoading}
                         >
                           <Trash2 size={18} />
@@ -131,7 +151,7 @@ export default function CartPage() {
                   ))}
                 </div>
 
-                {/* Desktop view */}
+                {/* Desktop Table View */}
                 <div className="hidden md:block">
                   <Table>
                     <TableHeader>
@@ -139,15 +159,13 @@ export default function CartPage() {
                         <TableHead>
                           <input
                             type="checkbox"
-                            checked={selected.length === cart.length}
-                            onChange={(e) => selectAll(e.target.checked)}
+                            checked={selectedItemIds.length === cart.length}
+                            onChange={(e) => handleSelectAll(e.target.checked)}
                           />
                         </TableHead>
-                        <TableHead>Product</TableHead>
+                        <TableHead className="w-[300px]">Product</TableHead>
                         <TableHead>Price</TableHead>
-                        <TableHead className="text-center">
-                          Quantity
-                        </TableHead>
+                        <TableHead className="text-center">Quantity</TableHead>
                         <TableHead>Total</TableHead>
                         <TableHead>Action</TableHead>
                       </TableRow>
@@ -158,7 +176,7 @@ export default function CartPage() {
                           <TableCell>
                             <input
                               type="checkbox"
-                              checked={selected.includes(item.id)}
+                              checked={isSelected(item.id)}
                               onChange={() => toggleSelection(item.id)}
                             />
                           </TableCell>
@@ -173,18 +191,16 @@ export default function CartPage() {
                             <div>
                               <p className="font-medium">{item.name}</p>
                               <p className="text-sm text-gray-500">
-                                By {item.brand}
+                                By {item.brand || item.seller || "Unknown"}
                               </p>
                             </div>
                           </TableCell>
-                          <TableCell>₹{item.price}</TableCell>
-                          <TableCell className="flex justify-center items-center">
+                          <TableCell>MRP ₹{item.price}</TableCell>
+                          <TableCell className="text-center flex justify-center items-center">
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() =>
-                                updateQuantity(item.variantId, -1)
-                              }
+                              onClick={() => handleUpdateQuantity(item.id, -1)}
                               disabled={isLoading}
                             >
                               -
@@ -193,21 +209,17 @@ export default function CartPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() =>
-                                updateQuantity(item.variantId, 1)
-                              }
+                              onClick={() => handleUpdateQuantity(item.id, 1)}
                               disabled={isLoading}
                             >
                               +
                             </Button>
                           </TableCell>
-                          <TableCell>
-                            ₹{item.price * item.quantity}
-                          </TableCell>
+                          <TableCell>₹{item.price * item.quantity}</TableCell>
                           <TableCell>
                             <Button
                               variant="ghost"
-                              onClick={() => removeFromCart(item.variantId)}
+                              onClick={() => handleRemoveFromCart(item.id)}
                               disabled={isLoading}
                             >
                               <Trash2 size={18} />
@@ -219,17 +231,21 @@ export default function CartPage() {
                   </Table>
                 </div>
               </div>
+            )}
 
+            {/* Checkout Button */}
+            {cart.length > 0 && (
               <div className="flex justify-end mt-4">
                 <Button
+                  className="bg-green-500 text-white"
+                  disabled={isLoading || selectedItemIds.length === 0}
                   onClick={handleProceed}
-                  disabled={isLoading || selected.length === 0}
                 >
-                  + Let’s Go
+                  {isLoading ? "Processing..." : "+ Let's Go"}
                 </Button>
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,14 +1,14 @@
 "use client";
+import { useCart } from "@/lib/contexts/cart-context";
+import useTimer from "@/lib/hooks/useTimer";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import useTimer from "@/lib/hooks/useTimer";
-import { useCart } from "@/lib/contexts/cart-context";
 
 const ProductCard = ({ product }) => {
   const timeLeft = useTimer(product.time);
   const { addToCart, cart } = useCart();
 
-   // Check if this specific product is already in the cart by its unique ID
+  // Check if this specific product is already in the cart by its unique ID
   const isInCart = cart.some((item) => item.id === product.id);
 
   const handleAddToCart = () => {
@@ -46,7 +46,11 @@ const ProductCard = ({ product }) => {
             onClick={handleAddToCart}
             disabled={!product.id}
             className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
-              ${isInCart ? "bg-green-50 text-green-500 border-green-400" : "bg-white text-blue-400 border-blue-400"}`}
+              ${
+                isInCart
+                  ? "bg-green-50 text-green-500 border-green-400"
+                  : "bg-white text-blue-400 border-blue-400"
+              }`}
             aria-label={isInCart ? "Item added to cart" : "Add item to cart"}
           >
             {isInCart ? "✓" : "ADD"}
@@ -56,7 +60,9 @@ const ProductCard = ({ product }) => {
         <h3 className="font-bold text-sm mt-2 line-clamp-1">{product.name}</h3>
         <p className="text-xs text-gray-500 line-clamp-1">({product.brand})</p>
         <p className="text-xs text-gray-500">{product.weight || "1 unit"}</p>
-        <p className="text-xs text-gray-500 line-clamp-1">By {product.seller}</p>
+        <p className="text-xs text-gray-500 line-clamp-1">
+          By {product.seller}
+        </p>
 
         {/* ⏳ Deal Countdown - Only if time is present */}
         {product.time && (
@@ -84,7 +90,6 @@ const ProductCard = ({ product }) => {
           </div>
         )}
 
-        
         <div className="mt-2">
           <p className="text-sm text-blue-700 font-semibold">
             {product.discount}% OFF
