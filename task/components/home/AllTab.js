@@ -50,8 +50,8 @@ const AllTabContent = () => {
         </section>
       </div>
 
-      <NearbyStores stores={stores} />
-      <NearbyEvents events={events}/>
+      <NearbyStores />
+      <NearbyEvents events={events} />
     </main>
   );
 };

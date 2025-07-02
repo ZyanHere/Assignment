@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
+
+
     domains: [
       // allow S3 bucket images
       'lastminutedeal.s3.ap-southeast-2.amazonaws.com',
@@ -17,7 +19,8 @@ const nextConfig = {
     //   },
     // ],
   },
-    ignoreBuildErrors: true,
+//     ignoreBuildErrors: true,
+
 };
 
 export default nextConfig;
