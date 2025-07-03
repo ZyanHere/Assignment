@@ -1,64 +1,48 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import { signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function Success() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(5); // Auto-redirect timer
-  const { phone, password} = useSelector((state) => state.user);
+  const { phone, password } = useSelector((state) => state.user);
 
-  const handleSkip = async () => {
-  if (!phone || !password) {
-    toast.error("Missing credentials");
-    return;
-  }
-
-  try {
-    const loginRes = await signIn("credentials", {
-      redirect: false,
-      phone,
-      password,
-    });
-
-    if (loginRes.ok && !loginRes.error) {
-      await axios.get("/lmd/api/v1/csrf-token", {
-        withCredentials: true,
-      });
-      toast.success("Login successful!");
-      router.push("/");
-    } else {
-      toast.error("Login failed");
+  const handleContinue = async () => {
+    if (!phone?.trim() || !password?.trim()) {
+      toast.error("Missing credentials. Please log in manually.");
+      return;
     }
-  } catch (error) {
-    toast.error("Something went wrong during login.");
-    console.error(error);
-  }
-};
 
-
-  // auto redirect
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(timer);
-    } else {
-      router.push("/auth/location");
-    }
-  }, [countdown, router]);
-
-  const handleContinue = () => {
     setIsLoading(true);
-    router.push("/auth/location");
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        phone,
+        password,
+      });
+
+      if (res?.ok && !res?.error) {
+        toast.success("Login successful!");
+        router.push("/");
+      } else {
+        toast.error(res?.error || "Login failed. Please try again.");
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("Something went wrong during login.");
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Left Side Content */}
+      {/* Left Side */}
       <div className="w-1/2 flex flex-col justify-center items-center max-w-[537px] mx-auto h-screen">
         {/* Success Icon */}
         <div
@@ -74,66 +58,43 @@ export default function Success() {
             stroke="currentColor"
             className="w-24 h-24 text-yellow-400"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 13l4 4L19 7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
 
         {/* Success Message */}
-        <h2 className="text-[45px] font-medium text-black mt-8">
-          Successfully
-        </h2>
-        {/* <p className="text-[#828282] text-[16px] mt-8 text-center">
-          Your account has been created
-        </p> */}
+        <h2 className="text-[45px] font-medium text-black mt-8">Successfully</h2>
         <p className="text-gray-600 mt-4 text-center">
-          Redirecting to location setup in {countdown} seconds...
+          Your account has been created.
         </p>
 
         {/* Continue Button */}
         <button
           onClick={handleContinue}
           disabled={isLoading}
-          className={`bg-yellow-400 text-white w-full max-w-[300px] py-4 mt-8 rounded-lg hover:bg-yellow-500 transition-colors ${
-            isLoading ? "opacity-75 cursor-not-allowed" : ""
-          }`}
-          aria-label="Continue to location setup"
+          className={`w-full max-w-[300px] py-4 mt-8 text-white font-semibold rounded-lg transition-colors
+            ${isLoading ? "bg-yellow-300 cursor-not-allowed" : "bg-yellow-400 hover:bg-yellow-500"}`}
+          aria-label="Continue to homepage"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
-              <svg
-                className="animate-spin h-5 w-5 mr-3"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                {/* Loading spinner */}
-              </svg>
-              Redirecting...
+              <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24" />
+              Logging in...
             </span>
           ) : (
-            `CONTINUE NOW`
+            "CONTINUE NOW"
           )}
-        </button>
-        {/* Skip Button */}
-        <button
-          onClick={handleSkip}
-          className=" text-blue-500 font-medium cursor-pointer pt-20"
-        >
-          Skip to Homepage 
         </button>
       </div>
 
       {/* Right Side Image */}
-      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative">
+      <div className="hidden md:block w-1/2 shrink-0 relative">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
           fill
           priority
-          className="rounded-l-[40px] object-cover"
+          className="object-cover rounded-l-[40px]"
         />
       </div>
     </div>

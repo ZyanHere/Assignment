@@ -6,27 +6,27 @@ import FacebookProvider from "next-auth/providers/facebook";
 
 const handler = NextAuth({
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-          redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/google"
-        }
-      }
-    }),
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      authorization: {
-        params: {
-          redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/facebook"
-        }
-      }
-    }),
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    //   authorization: {
+    //     params: {
+    //       prompt: "consent",
+    //       access_type: "offline",
+    //       response_type: "code",
+    //       redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/google"
+    //     }
+    //   }
+    // }),
+    // FacebookProvider({
+    //   clientId: process.env.FACEBOOK_CLIENT_ID,
+    //   clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    //   authorization: {
+    //     params: {
+    //       redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/facebook"
+    //     }
+    //   }
+    // }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
