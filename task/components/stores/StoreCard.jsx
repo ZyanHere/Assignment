@@ -39,17 +39,19 @@ const StoreCard = ({ product, storeName }) => {
       href={`/products/${product.id}`}
       className="block hover:shadow-lg transition-all"
     >
-      <div className="p-7 border rounded-lg shadow-md bg-white max-w-[250px] cursor-pointer">
-        <div className="relative h-[192px] bg-blue-50 rounded-xl p-4 mb-4">
+      <div className="p-7 border rounded-lg shadow-md bg-white w-full h-full cursor-pointer">
+
+        <div className="relative h-[192px] bg-blue-50 rounded-xl p-4 mb-4 w-full">
+
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-contain"
+            className="cursor-pointer object-contain rounded-lg"
           />
           <Button
             onClick={handleAddToCart}
-            className={`absolute bottom-2 right-2 w-[63px] h-[33px] border font-medium rounded-md ${
+            className={`absolute bottom-2 right-2 w-[40px] h-[23px] border font-medium rounded-md ${
               isInCart
                 ? "bg-green-100 border-green-400 text-green-600"
                 : "bg-white border-blue-400 text-blue-500 hover:bg-blue-50"
@@ -84,3 +86,4 @@ const StoreCard = ({ product, storeName }) => {
 };
 
 export default StoreCard;
+

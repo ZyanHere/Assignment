@@ -26,8 +26,7 @@ const PopularNow = () => {
         </Link>
       </div>
 
-      {/* Fixed: Better responsive grid with tabl optimization */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-4">
         {movies.map((movie) => {
           const movieSlug = generateSlug(movie.title);
           return (
@@ -36,22 +35,21 @@ const PopularNow = () => {
               href={`/home/movie/popular-now/${movieSlug}`}
               className="relative block"
             >
-              <div className="relative bg-white shadow-md rounded-lg overflow-hidden h-full">
-                {/* Fixed: Reduced height and better object-fit */}
+              <div className="relative bg-white shadow-md rounded-lg overflow-hidden h-full ">
                 <Image
                   src={movie.image}
                   alt={movie.title}
                   width={500}
-                  height={150}
-                  className="w-full max-h-[200px] object-cover rounded-t-md"
-                />
+                  height={300}
+                  className=" sm:h-78  md:h-54 lg:h-50  xl:h-65 object-cover rounded-t-md"
 
+
+                />
 
                 <div className="p-3">
                   <h3 className="font-semibold text-sm sm:text-base truncate">{movie.title}</h3>
                   <p className="text-xs sm:text-sm">{movie.date}</p>
                   <p className="text-xs sm:text-sm">{movie.time}</p>
-
                   <div className="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <p className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">📍 {movie.location}</p>
                     <span className="bg-yellow-400 text-black text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
