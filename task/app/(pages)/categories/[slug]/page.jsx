@@ -70,8 +70,11 @@ const CategorySlugPage = () => {
 
 
 const SubcategoryItem = ({ slug, sub }) => (
-  <Link href={`/categories/${slug}/${sub.slug}`} className="group">
-    <div className="flex flex-col items-center p-3 hover:bg-gray-50 rounded-xl transition-all">
+  <Link
+    href={`/categories/${slug}/${sub.slug}`}
+    className="block w-full"
+  >
+    <div className="flex flex-col items-center p-3 hover:bg-gray-50 rounded-xl transition-all w-full">
       <div className="relative w-20 h-20 md:w-24 md:h-24">
         <Image
           src={sub.image || "/categories/default.png"}
@@ -86,5 +89,6 @@ const SubcategoryItem = ({ slug, sub }) => (
     </div>
   </Link>
 );
+
 
 export default CategorySlugPage;
