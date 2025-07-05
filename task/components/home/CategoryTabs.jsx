@@ -2,15 +2,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useSWR from "swr";
+import { fetcher } from "@/lib/categoryFetcher/fetcher";
 
-const fetcher = (url) => fetch(url, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': process.env.AUTH_TOKEN
-  },
-}
-).then((res) => res.json()).then((json) => json.data);
+// const categories = [
+//   { key: "all", label: "All", icon: "/home/assets/all_logo.svg" },
+//   { key: "grocery", label: "Grocery", icon: "/home/assets/grocery_logo.png" },
+//   { key: "fashion", label: "Fashion", icon: "/home/assets/fashion_logo.png" },
+//   { key: "gift", label: "Gift", icon: "/home/assets/gift_logo.png" },
+//   {
+//     key: "electronics",
+//     label: "Electronics",
+//     icon: "/home/assets/electronics_logo.png",
+//   },
+//   { key: "Personal Care", label: "Personal Care", icon: "/home/assets/gift_logo.png" },
+//   { key: "Apparels", label: "Apparels", icon: "/home/assets/fashion_logo.png" },
+//   { key: "Fruits and Vegetables", label: "Fruits and Vegetables", icon: "/home/assets/grocery_logo.png" },
+// ];
+
+
 
 const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
   // Reference to scroll container for mobile scrolling via buttons

@@ -3,15 +3,7 @@
 import useSWR from "swr";
 import Image from "next/image";
 import SubProduct from "../subcategoryProduct/SubProduct";
-
-const fetcher = (url) => fetch(url, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': process.env.AUTH_TOKEN
-    },
-}
-).then((res) => res.json()).then((json) => json.data);
+import { fetcher } from "@/lib/categoryFetcher/fetcher";
 
 export default function SubCategories({ categoryId }) {
 
