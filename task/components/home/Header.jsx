@@ -1,3 +1,4 @@
+
 "use client";
 import Image from "next/image";
 import Link from "next/link";
@@ -108,17 +109,29 @@ const Header = () => {
               <div className="flex gap-1.5 sm:gap-2">
                 <Link
                   href="/auth/signup"
-                  className="px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm md:text-base bg-yellow-500 shadow-2xl rounded-lg font-medium text-white hover:bg-yellow-50 hover:text-black transition"
+                  className="flex items-center justify-center text-center 
+                    px-2 sm:px-2.5 md:px-2.5 lg:px-3 
+                    py-1 sm:py-1 md:py-1 lg:py-1.5 
+                    text-[10px] sm:text-xs md:text-xs lg:text-sm 
+                    bg-yellow-500 shadow-2xl rounded-lg font-medium 
+                    text-white hover:bg-yellow-50 hover:text-black transition"
                 >
                   Register
                 </Link>
                 <Link
                   href="/auth/login"
-                  className="px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm md:text-base border bg-white border-yellow-500 shadow-2xl rounded-lg font-medium hover:bg-white hover:text-orange-400 transition"
+                  className="flex items-center justify-center text-center 
+                    px-2 sm:px-2.5 md:px-2.5 lg:px-3 
+                    py-1 sm:py-1 md:py-1 lg:py-1.5 
+                    text-[10px] sm:text-xs md:text-xs lg:text-sm 
+                    bg-white border border-yellow-500 shadow-2xl rounded-lg font-medium 
+                    hover:text-orange-400 transition"
                 >
                   Log In
                 </Link>
               </div>
+
+
             )}
           </div>
         </div>
