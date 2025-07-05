@@ -15,7 +15,7 @@ const MoreHotels = ({ hotels }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {hotels.map((hotel) => (
         <Link key={hotel.id} href={`/home/hotel/rooms/${hotel.slug}`}>
           <div className="bg-white rounded-lg shadow-lg p-4">

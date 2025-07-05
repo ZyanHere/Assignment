@@ -3,6 +3,7 @@ import Header from "@/components/home/Header";
 import Sidebar from "@/components/home/sidebar";
 import HotelCard from "@/components/home/foursec/HotelCard";
 import RecommendedHotels from "@/components/home/foursec/RecommandedHotel";
+import Footer from "@/components/home/footer";
 
 export default function HotelsPage() {
   return (
@@ -19,7 +20,9 @@ export default function HotelsPage() {
 
           <HotelCard />
           <RecommendedHotels />
+          
         </div>
+        <Footer />
       </div>
   );
 }

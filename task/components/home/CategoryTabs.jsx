@@ -97,9 +97,9 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
       {/* Scrollable container */}
       <div
         ref={scrollContainerRef}
-        className="overflow-x-auto no-scrollbar px-4"
+        className="overflow-x-auto no-scrollbar px-4 w-full"
       >
-        <div className="flex justify-between gap-4">
+        <div className="flex gap-4 whitespace-nowrap min-w-fit">
           {finalCategories?.map((category) => {
             const isActive = selectedTab === category._id;
             return (
@@ -112,8 +112,8 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
                     : "bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200 shadow-sm border-b border-yellow-500"
                   }
                   ${isMobile
-                    ? "gap-2 px-3 py-2 min-w-0"
-                    : "gap-3 px-5 py-3 min-w-[180px]"
+                    ? "gap-2 px-3 py-2 w-[140px] flex-shrink-0"
+                    : "gap-3 px-5 py-3 w-[180px] flex-shrink-0"
                   }`}
               >
                 <div className={`relative ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}>
