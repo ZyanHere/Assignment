@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useSWR from "swr";
-
+import { fetcher } from "@/lib/categoryFetcher/fetcher";
 
 // const categories = [
 //   { key: "all", label: "All", icon: "/home/assets/all_logo.svg" },
@@ -19,14 +19,7 @@ import useSWR from "swr";
 //   { key: "Fruits and Vegetables", label: "Fruits and Vegetables", icon: "/home/assets/grocery_logo.png" },
 // ];
 
-const fetcher = (url) => fetch(url, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': process.env.AUTH_TOKEN
-  },
-}
-).then((res) => res.json()).then((json) => json.data);
+
 
 const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
   // Reference to scroll container for mobile scrolling via buttons

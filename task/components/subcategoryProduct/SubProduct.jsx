@@ -1,14 +1,7 @@
 import useSWR from "swr";
 import ProductCard from "./ProductCard";
+import { fetcher } from "@/lib/categoryFetcher/fetcher";
 
-const fetcher = (url) => fetch(url, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': process.env.AUTH_TOKEN
-    },
-}
-).then((res) => res.json()).then((json) => json.data);
 
 export default function SubProduct({ subCategoryId }) {
 

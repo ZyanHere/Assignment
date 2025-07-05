@@ -1,8 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from 'lucide-react';
 import { Button } from "../home/ui2/button";
+import { useCart } from "@/lib/contexts/cart-context";
 
 export default function ProductCard({ product }) {
+
+    const { addToCart } = useCart();
 
     return (
         <Card className="w-full max-w-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -13,7 +16,11 @@ export default function ProductCard({ product }) {
                         alt={product.name}
                         className="w-full h-48 object-cover rounded-xl"
                     />
-                    <Button className='absolute -bottom-10 right-2 text-xs bg-amber-200 w-20 h-10'>ADD</Button>
+                    <Button
+                        className='absolute -bottom-10 right-2 text-xs bg-amber-200 w-20 h-10'
+                        onClick={() => addToCart(product)}>
+                        ADD
+                    </Button>
                 </div>
 
             </CardHeader>
