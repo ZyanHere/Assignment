@@ -50,8 +50,9 @@ export const authOptions = {
         }
 
         try {
-          const res = await axios.post(
-            "http://localhost:4000/lmd/api/v1/auth/customer/login",
+          const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+        const res = await axios.post(
+            `${backendUrl}/lmd/api/v1/auth/customer/login`,
             {
               email: credentials.email,
               password: credentials.password,

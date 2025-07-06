@@ -43,7 +43,8 @@ export async function POST(request) {
     console.log('📞 Calling backend API...');
     
     // Call backend to process payment
-    const response = await fetch('http://localhost:4000/lmd/api/v1/payments/process', {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    const response = await fetch(`${backendUrl}/lmd/api/v1/payments/process`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

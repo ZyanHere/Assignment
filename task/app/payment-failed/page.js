@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { XCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
-export default function PaymentFailedPage() {
+function PaymentFailedContent() {
   const searchParams = useSearchParams();
   const [errorDetails, setErrorDetails] = useState(null);
 
@@ -41,7 +41,7 @@ export default function PaymentFailedPage() {
           </h1>
           
           <p className="mt-2 text-gray-600">
-            We're sorry, but your payment could not be processed. Please try again or contact support if the problem persists.
+            We are sorry, but your payment could not be processed. Please try again or contact support if the problem persists.
           </p>
 
           {errorDetails && (
@@ -92,5 +92,28 @@ export default function PaymentFailedPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function PaymentFailedLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading error details...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main component with Suspense wrapper
+export default function PaymentFailedPage() {
+  return (
+    <Suspense fallback={<PaymentFailedLoading />}>
+      <PaymentFailedContent />
+    </Suspense>
   );
 } 

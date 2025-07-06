@@ -9,7 +9,7 @@ function unwrapError(e) {
 /** GET /retail/cart/me → returns mapped items[] */
 export async function fetchCart() {
   try {
-    const { data } = await api.get('/retail/cart/me');
+    const { data } = await api.get('/lmd/api/v1/retail/cart/me');
     const items = data.data.items;
     return items.map((i) => ({
       id: i.cart_item_id,
@@ -35,7 +35,7 @@ export async function fetchCart() {
 /** POST /retail/cart/me/items */
 export async function addOrUpdateItem(variantId, quantity = 1) {
   try {
-    await api.post('/retail/cart/me/items', { variant_id: variantId, quantity });
+    await api.post('/lmd/api/v1/retail/cart/me/items', { variant_id: variantId, quantity });
   } catch (e) {
     unwrapError(e);
   }
@@ -44,7 +44,7 @@ export async function addOrUpdateItem(variantId, quantity = 1) {
 /** PUT /retail/cart/me/items/:itemId */
 export async function updateCartItem(itemId, quantity) {
   try {
-    await api.put(`/retail/cart/me/items/${itemId}`, { quantity });
+    await api.put(`/lmd/api/v1/retail/cart/me/items/${itemId}`, { quantity });
   } catch (e) {
     unwrapError(e);
   }
@@ -53,7 +53,7 @@ export async function updateCartItem(itemId, quantity) {
 /** DELETE /retail/cart/me/items/:itemId */
 export async function removeItem(itemId) {
   try {
-    await api.delete(`/retail/cart/me/items/${itemId}`);
+    await api.delete(`/lmd/api/v1/retail/cart/me/items/${itemId}`);
   } catch (e) {
     unwrapError(e);
   }
@@ -62,7 +62,7 @@ export async function removeItem(itemId) {
 /** DELETE /retail/cart/me */
 export async function clearCart() {
   try {
-    await api.delete('/retail/cart/me');
+    await api.delete('/lmd/api/v1/retail/cart/me');
   } catch (e) {
     unwrapError(e);
   }

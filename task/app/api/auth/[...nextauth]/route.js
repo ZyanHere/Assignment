@@ -60,7 +60,7 @@ const handler = NextAuth({
 
         try {
           const res = await axios.post(
-            "http://localhost:4000/lmd/api/v1/auth/customer/login",
+            "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/login", 
             {
               // phone: credentials.phone,
               email: credentials.email,

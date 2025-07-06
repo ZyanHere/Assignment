@@ -40,16 +40,18 @@ const UserActions = () => {
 
   const handleLogout = async () => {
     try {
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+        
         // Step 1: Get CSRF token from backend
         const csrfResponse = await axios.get(
-            'http://localhost:4000/lmd/api/v1/auth/csrf-token',
+            `${backendUrl}/lmd/api/v1/auth/csrf-token`,   
             { withCredentials: true }
         );
         const csrfToken = csrfResponse.data.token;
         
         // Step 2: Call backend logout endpoint with CSRF token
         await axios.post(
-            'http://localhost:4000/lmd/api/v1/auth/user/logout',
+            `${backendUrl}/lmd/api/v1/auth/user/logout`, 
             {},
             {
                 headers: {

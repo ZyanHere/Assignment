@@ -9,7 +9,7 @@ function unwrapError(e) {
 /** GET /lmd/api/v1/auth/customer/:id → returns user profile data */
 export async function fetchUserProfile() {
   try {
-    const { data } = await api.get('/auth/customer/profile');
+    const { data } = await api.get('/lmd/api/v1/auth/customer/profile');
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -19,7 +19,7 @@ export async function fetchUserProfile() {
 /** PUT /lmd/api/v1/auth/customer/:id → updates user profile */
 export async function updateUserProfile(profileData) {
   try {
-    const { data } = await api.put('/auth/customer/profile',  profileData);
+    const { data } = await api.put('/lmd/api/v1/auth/customer/profile',  profileData);
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -29,7 +29,7 @@ export async function updateUserProfile(profileData) {
 /** GET /lmd/api/v1/addresses → returns user addresses */
 export async function fetchUserAddresses() {
   try {
-    const { data } = await api.get('/addresses');
+    const { data } = await api.get('/lmd/api/v1/addresses');
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -39,7 +39,7 @@ export async function fetchUserAddresses() {
 /** GET /lmd/api/v1/addresses/primary → returns primary address */
 export async function fetchPrimaryAddress() {
   try {
-    const { data } = await api.get('/addresses/primary');
+    const { data } = await api.get('/lmd/api/v1/addresses/primary');
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -49,7 +49,7 @@ export async function fetchPrimaryAddress() {
 /** POST /lmd/api/v1/addresses → creates new address */
 export async function createAddress(addressData) {
   try {
-    const { data } = await api.post('/addresses', addressData);
+    const { data } = await api.post('/lmd/api/v1/addresses', addressData);
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -59,7 +59,7 @@ export async function createAddress(addressData) {
 /** PUT /lmd/api/v1/addresses/:addressId → updates address */
 export async function updateAddress(addressId, addressData) {
   try {
-    const { data } = await api.put(`/addresses/${addressId}`, addressData);
+    const { data } = await api.put(`/lmd/api/v1/addresses/${addressId}`, addressData);
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -69,7 +69,7 @@ export async function updateAddress(addressId, addressData) {
 /** DELETE /lmd/api/v1/addresses/:addressId → deletes address */
 export async function deleteAddress(addressId) {
   try {
-    const { data } = await api.delete(`/addresses/${addressId}`);
+    const { data } = await api.delete(`/lmd/api/v1/addresses/${addressId}`);
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -79,7 +79,7 @@ export async function deleteAddress(addressId) {
 /** PATCH /lmd/api/v1/addresses/:addressId/primary → sets address as primary */
 export async function setPrimaryAddress(addressId) {
   try {
-        const { data } = await api.patch(`/addresses/${addressId}/primary`);
+        const { data } = await api.patch(`/lmd/api/v1/addresses/${addressId}/primary`);
     return data.data || data;
   } catch (e) {
     unwrapError(e);
@@ -89,7 +89,7 @@ export async function setPrimaryAddress(addressId) {
 /** GET /customer/wishlist → returns user saved items */
 export async function fetchUserWishlist() {
   try {
-    const { data } = await api.get('/customer/wishlist');
+    const { data } = await api.get('/lmd/api/v1/customer/wishlist');
     return data.data;
   } catch (e) {
     unwrapError(e);
@@ -99,7 +99,7 @@ export async function fetchUserWishlist() {
 /** GET /customer/notifications → returns user notifications */
 export async function fetchUserNotifications() {
   try {
-    const { data } = await api.get('/customer/notifications');
+    const { data } = await api.get('/lmd/api/v1/customer/notifications');
     return data.data;
   } catch (e) {
     unwrapError(e);
@@ -109,7 +109,7 @@ export async function fetchUserNotifications() {
 /** GET /customer/messages → returns user messages */
 export async function fetchUserMessages() {
   try {
-    const { data } = await api.get('/customer/messages');
+    const { data } = await api.get('/lmd/api/v1/customer/messages');
     return data.data;
   } catch (e) {
     unwrapError(e);
