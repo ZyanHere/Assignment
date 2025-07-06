@@ -150,7 +150,7 @@ const ApparelsTabContent = () => {
             No Products Found
           </h3>
           <p className="text-sm sm:text-base text-gray-500">
-            We couldn't find any apparel products at the moment. Check back later!
+            We could not find any apparel products at the moment. Check back later!
           </p>
         </div>
       </div>

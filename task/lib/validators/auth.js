@@ -22,6 +22,7 @@ export const signupSchema = z.object({
 
 export const loginSchema = z.object({
   // phone: z.string().regex(/^[0-9]{10}$/, "Invalid phone number (10 digits required)"),
-  username: z.string().min(1, "Username is required"),
+  // username: z.string().min(1, "Username is required"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required")
 });

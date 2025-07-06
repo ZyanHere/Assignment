@@ -1,71 +1,69 @@
+// lib/api/cart.js
+import { api } from './axios';
 
-import axios from "axios";
-import { getSession } from "next-auth/react";
+function unwrapError(e) {
+  if (e.response?.data?.message) throw new Error(e.response.data.message);
+  throw e;
+}
 
-const BASE_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/cart/me";
-
-// Helper: retrieve current session’s token
-async function getToken() {
-  const session = await getSession();
-  if (!session?.user?.token) {
-    throw new Error("No session found");
+/** GET /retail/cart/me → returns mapped items[] */
+export async function fetchCart() {
+  try {
+    const { data } = await api.get('/lmd/api/v1/retail/cart/me');
+    const items = data.data.items;
+    return items.map((i) => ({
+      id: i.cart_item_id,
+      variantId: i.variant._id,
+      name: i.variant.product.name,
+      brand: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
+      seller: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
+      vendorId: i.variant.product.vendor_store_id?._id || 'default',
+      vendorName: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
+      price: i.unit_price,
+      mrp: i.variant.price.base_price,
+      image:
+        i.variant.images.find((img) => img.is_primary)?.url ||
+        i.variant.product.images[0]?.url,
+      weight: i.variant.variant_name,
+      quantity: i.quantity,
+    }));
+  } catch (e) {
+    unwrapError(e);
   }
-  return session.user.token;
 }
 
-// 1️⃣ Fetch entire cart
-export async function getCart() {
-  const token = await getToken();
-  const res = await axios.get(BASE_URL, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  console.log("🛒 [getCart] raw response:", JSON.stringify(res.data, null, 2));
-  // Assumes response shape: { data: { cart: { items: [...] } } }
-  return res.data.data.cart;
+/** POST /retail/cart/me/items */
+export async function addOrUpdateItem(variantId, quantity = 1) {
+  try {
+    await api.post('/lmd/api/v1/retail/cart/me/items', { variant_id: variantId, quantity });
+  } catch (e) {
+    unwrapError(e);
+  }
 }
 
-// 2️⃣ Update a single item’s quantity
-export async function updateCartItem({ productId, variantId, quantity }) {
-  const token = await getToken();
-  const res = await axios.put(
-    `${BASE_URL}/items`,
-    { productId, variantId, quantity },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return res.data.data.cart;
+/** PUT /retail/cart/me/items/:itemId */
+export async function updateCartItem(itemId, quantity) {
+  try {
+    await api.put(`/lmd/api/v1/retail/cart/me/items/${itemId}`, { quantity });
+  } catch (e) {
+    unwrapError(e);
+  }
 }
 
-// 3️⃣ Remove an item
-export async function removeCartItem({ productId, variantId }) {
-  const token = await getToken();
-  const res = await axios.delete(`${BASE_URL}/items`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    data: { productId, variantId },
-  });
-  return res.data.data.cart;
+/** DELETE /retail/cart/me/items/:itemId */
+export async function removeItem(itemId) {
+  try {
+    await api.delete(`/lmd/api/v1/retail/cart/me/items/${itemId}`);
+  } catch (e) {
+    unwrapError(e);
+  }
 }
 
-// 4️⃣ Add a new item
-export async function addCartItem({ productId, variantId, quantity }) {
-  const token = await getToken();
-  const res = await axios.post(
-    `${BASE_URL}/items`,
-    { productId, variantId, quantity },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return res.data.data.cart;
+/** DELETE /retail/cart/me */
+export async function clearCart() {
+  try {
+    await api.delete('/lmd/api/v1/retail/cart/me');
+  } catch (e) {
+    unwrapError(e);
+  }
 }

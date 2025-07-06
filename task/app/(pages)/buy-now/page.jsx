@@ -12,16 +12,31 @@ import {
   BellOff,
   Store,
   Home,
+  CreditCard,
+  ShoppingCart,
+  AlertCircle,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { createOrderFromCart } from "@/lib/api/order";
+import { initializeRazorpay } from "@/lib/utils/razorpay";
+import { getSession } from 'next-auth/react';
+import { useCart } from '@/lib/contexts/cart-context';
+import { useAddress } from '@/lib/contexts/address-context';
 
 export default function BuyNowPage() {
   const { selectedItems } = useSelectedItems();
+  const { clearCart } = useCart();
+  const { addresses, primaryAddress, getCheckoutAddress } = useAddress();
   const [purchaseMode, setPurchaseMode] = useState("homeDelivery");
   const [activeInstruction, setActiveInstruction] = useState("soundbite");
+  const [loading, setLoading] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [addressError, setAddressError] = useState(null);
+  const router = useRouter();
 
   const billDetails = useMemo(() => {
     if (!selectedItems.length) return null;
@@ -38,7 +53,25 @@ export default function BuyNowPage() {
     const transactionFee = priceTotal > 0 ? 20 : 0;
     const deliveryFeeOriginal = priceTotal > 0 ? 165 : 0;
 
+    // Group items by vendor
+    const vendorGroups = selectedItems.reduce((groups, item) => {
+      const vendorId = item.vendorId || 'default';
+      if (!groups[vendorId]) {
+        groups[vendorId] = {
+          vendorName: item.vendorName || 'Last Minute Deal',
+          items: [],
+          subtotal: 0,
+          itemCount: 0
+        };
+      }
+      groups[vendorId].items.push(item);
+      groups[vendorId].subtotal += item.price * item.quantity;
+      groups[vendorId].itemCount += item.quantity;
+      return groups;
+    }, {});
+
     return {
+      vendorGroups,
       subTotal: {
         label: "Sub total",
         amount: priceTotal,
@@ -68,6 +101,219 @@ export default function BuyNowPage() {
     };
   }, [selectedItems]);
 
+  // Complete checkout process
+  const handleCheckout = async () => {
+    if (selectedItems.length === 0) {
+      alert('No items selected for checkout');
+      return;
+    }
+
+    // Validate address selection for home delivery
+    if (purchaseMode === "homeDelivery") {
+      if (!selectedAddressId && addresses.length === 0) {
+        setAddressError('Please add a delivery address before proceeding');
+        return;
+      }
+      
+      if (!selectedAddressId && addresses.length > 0) {
+        setAddressError('Please select a delivery address');
+        return;
+      }
+    }
+
+    setLoading(true);
+    setAddressError(null);
+    
+    try {
+      // Step 1: Get selected address or primary address
+      let selectedAddress = null;
+      
+      if (purchaseMode === "homeDelivery") {
+        if (selectedAddressId) {
+          selectedAddress = addresses.find(addr => addr._id === selectedAddressId);
+        } else {
+          // Use primary address or first available address
+          selectedAddress = primaryAddress || addresses[0];
+        }
+        
+        if (!selectedAddress) {
+          throw new Error('No delivery address available');
+        }
+      }
+
+      // Step 2: Create order from cart items
+      console.log('Creating order from cart items:', selectedItems);
+      
+      // Get session for user data
+      const userSession = await getSession();
+      const user = userSession?.user;
+      
+      const orderData = {
+        billing_address: purchaseMode === "homeDelivery" ? {
+          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
+          email: user?.email || 'customer@example.com',
+          address_line1: selectedAddress.addressLine1,
+          address_line2: selectedAddress.addressLine2 || '',
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          postal_code: selectedAddress.postalCode,
+          country: selectedAddress.country,
+          phone: user?.phone || '1234567890'
+        } : {
+          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
+          email: user?.email || 'customer@example.com',
+          address_line1: 'Store Pickup',
+          city: 'Store Location',
+          state: 'Store State',
+          postal_code: '000000',
+          country: 'India',
+          phone: user?.phone || '1234567890'
+        },
+        shipping_address: purchaseMode === "homeDelivery" ? {
+          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
+          email: user?.email || 'customer@example.com',
+          address_line1: selectedAddress.addressLine1,
+          address_line2: selectedAddress.addressLine2 || '',
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          postal_code: selectedAddress.postalCode,
+          country: selectedAddress.country,
+          phone: user?.phone || '1234567890'
+        } : {
+          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
+          email: user?.email || 'customer@example.com',
+          address_line1: 'Store Pickup',
+          city: 'Store Location',
+          state: 'Store State',
+          postal_code: '000000',
+          country: 'India',
+          phone: user?.phone || '1234567890'
+        },
+        notes: `Order from buy-now page with ${selectedItems.length} items. Delivery mode: ${purchaseMode}. Delivery instruction: ${activeInstruction}`,
+        coupon_code: null,
+      };
+
+      const orderResult = await createOrderFromCart(orderData);
+      
+      if (orderResult.status !== 'success') {
+        throw new Error(orderResult.message || 'Failed to create order');
+      }
+
+      console.log('Order created successfully:', orderResult.data);
+
+      // Step 2: Create Razorpay order
+      const paymentSession = await getSession();
+      const token = paymentSession?.user?.token || paymentSession?.user?.accessToken;
+      
+      const razorpayResponse = await fetch(`/api/orders/${orderResult.data.order_id}/create-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          payment_method: 'razorpay'
+        }),
+      });
+
+      if (!razorpayResponse.ok) {
+        const errorData = await razorpayResponse.json();
+        throw new Error(errorData.message || 'Failed to create Razorpay order');
+      }
+
+      const razorpayData = await razorpayResponse.json();
+      console.log('Razorpay order created:', razorpayData.data);
+
+      // Step 3: Initialize Razorpay payment
+      const razorpay = await initializeRazorpay();
+      if (!razorpay) {
+        throw new Error('Razorpay failed to load');
+      }
+
+      // Configure payment options
+      const options = {
+        key: razorpayData.data.key_id,
+        amount: Math.round(razorpayData.data.total_amount * 100), // Convert to paise
+        currency: razorpayData.data.currency,
+        name: 'Last Minute Deal',
+        description: `Order ${razorpayData.data.order_number}`,
+        order_id: razorpayData.data.razorpay_order_id,
+        handler: function (response) {
+          console.log('Payment successful:', response);
+          // Process payment on backend
+          processPayment(response, orderResult.data.order_id);
+        },
+        prefill: {
+          name: orderData.billing_address.name,
+          contact: orderData.billing_address.phone,
+        },
+        notes: {
+          order_number: razorpayData.data.order_number,
+          order_id: orderResult.data.order_id,
+        },
+        theme: {
+          color: '#10b981',
+        },
+        modal: {
+          ondismiss: function () {
+            console.log('Payment modal dismissed');
+          },
+        },
+      };
+
+      // Open Razorpay checkout
+      const rzp = new razorpay(options);
+      rzp.open();
+
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      alert(`Checkout error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Process payment after successful Razorpay payment
+  const processPayment = async (paymentResponse, orderId) => {
+    try {
+      const processSession = await getSession();
+      const token = processSession?.user?.token || processSession?.user?.accessToken;
+      
+      const response = await fetch('/api/payments/process', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          razorpay_payment_id: paymentResponse.razorpay_payment_id,
+          razorpay_order_id: paymentResponse.razorpay_order_id,
+          razorpay_signature: paymentResponse.razorpay_signature,
+          order_id: orderId,
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Clear cart after successful payment
+        await clearCart();
+        alert('Payment successful! Your order has been confirmed.');
+        router.push(`/payment-success?order_id=${orderId}&payment_id=${paymentResponse.razorpay_payment_id}`);
+      } else {
+        throw new Error(result.message || 'Payment processing failed');
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert(`Payment processing failed: ${error.message}`);
+    }
+  };
+
+  const handleProceedToPayment = () => {
+    // Navigate to payment mode selection
+    router.push('/payment-mode');
+  };
+
   if (!selectedItems.length) {
     return (
       <div className="p-6 text-center text-gray-500 lg:p-6 ">No items selected.</div>
@@ -82,6 +328,48 @@ export default function BuyNowPage() {
         <div className="p-3 md:p-6 w-full max-w-[1700px] mx-auto">
           {/* Selected Items */}
           <h2 className="text-xl font-semibold mb-4 lg:text-xl ">Your Items</h2>
+          
+          {/* Vendor Breakdown */}
+          {Object.keys(billDetails?.vendorGroups || {}).length > 1 && (
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-3">Order Breakdown by Vendor</h3>
+              <div className="space-y-3">
+                {Object.entries(billDetails.vendorGroups).map(([vendorId, vendor]) => (
+                  <div key={vendorId} className="bg-white rounded-lg p-4 border">
+                    <div className="flex justify-between items-center mb-3">
+                      <h4 className="font-medium text-lg">{vendor.vendorName}</h4>
+                      <span className="text-sm text-gray-500">{vendor.itemCount} item{vendor.itemCount !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div className="space-y-2">
+                      {vendor.items.map((item) => (
+                        <div key={item.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                          <div className="flex items-center space-x-3">
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              width={40}
+                              height={40}
+                              className="rounded-md w-10 h-10 object-cover"
+                            />
+                            <div>
+                              <p className="font-medium text-sm">{item.name}</p>
+                              <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                            </div>
+                          </div>
+                          <p className="font-semibold text-sm">₹{item.price * item.quantity}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-3 pt-3 border-t flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Vendor Subtotal:</span>
+                      <span className="font-semibold">₹{vendor.subtotal}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <div className="space-y-4 lg:space-y-4 ">
             {selectedItems.map((item) => (
               <div
@@ -101,6 +389,9 @@ export default function BuyNowPage() {
                     <p className="text-sm text-gray-500 lg:text-sm ">
                       Qty: {item.quantity}
                     </p>
+                    {item.vendorName && (
+                      <p className="text-xs text-blue-600">From {item.vendorName}</p>
+                    )}
                   </div>
                 </div>
                 <p className="font-semibold lg:text-base text-sm self-end sm:self-auto">₹{item.price * item.quantity}</p>
@@ -147,18 +438,47 @@ export default function BuyNowPage() {
                 <span>Home Delivery</span>
               </Button>
             </div>
-            <div className="mt-4">
-              <AddressSection />
-            </div>
+            {purchaseMode === "homeDelivery" && (
+              <div className="mt-4">
+                {addressError && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-red-500" />
+                    <p className="text-red-600 text-sm">{addressError}</p>
+                  </div>
+                )}
+                <AddressSection 
+                  onAddressSelect={setSelectedAddressId}
+                  selectedAddressId={selectedAddressId}
+                />
+              </div>
+            )}
           </div>
 
           {/* Bill Details */}
           {billDetails && (
             <div className="p-4 bg-white shadow rounded-lg mt-6">
               <h2 className="text-lg font-semibold mb-3">Bill Details</h2>
+              
+              {/* Vendor Summary */}
+              {Object.keys(billDetails.vendorGroups).length > 1 && (
+                <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-blue-800">
+                      Multi-Vendor Order
+                    </span>
+                    <span className="text-xs text-blue-600">
+                      {Object.keys(billDetails.vendorGroups).length} vendor{Object.keys(billDetails.vendorGroups).length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Items will be shipped from different vendors
+                  </p>
+                </div>
+              )}
+              
               <div className="space-y-2">
                 {Object.entries(billDetails).map(([key, item]) =>
-                  key !== "grandTotal" ? (
+                  key !== "grandTotal" && key !== "vendorGroups" ? (
                     <div key={key} className="flex justify-between">
                       <span>{item.label}</span>
                       <span>
@@ -188,9 +508,6 @@ export default function BuyNowPage() {
                 <span>{billDetails.grandTotal.label}</span>
                 <span>₹{billDetails.grandTotal.amount}</span>
               </div>
-              {/* <div className="text-xs text-right text-gray-400 mt-2">
-                * Final pricing will be validated by the server
-              </div> */}
             </div>
           )}
 
@@ -198,42 +515,96 @@ export default function BuyNowPage() {
           <div className="mt-6">
             <h2 className="text-lg font-semibold mb-3">Delivery Instruction</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 lg:flex lg:flex-wrap lg:justify-center lg:gap-4">
-              {[
-                { key: "soundbite", label: "Soundbite", icon: <Mic /> },
-                {
-                  key: "avoidCalling",
-                  label: "Avoid Calling",
-                  icon: <PhoneOff />,
-                },
-                { key: "noRinging", label: "No Ringing", icon: <BellOff /> },
-              ].map((item) => (
-                <div
-                  key={item.key}
-                  className={`flex flex-col items-center border rounded-lg cursor-pointer  text-center lg:flex lg:flex-col lg:items-center lg:p-4 lg:border lg:rounded-lg lg:cursor-pointer lg:w-[120px] lg:text-center p-3 w-auto ${
-                    activeInstruction === item.key
-                      ? "bg-yellow-100 border-yellow-500 text-yellow-600"
-                      : "bg-white border-gray-300"
-                  }`}
-                  onClick={() => setActiveInstruction(item.key)}
-                >
-                  <div className="lg:block">
-                    <Mic className={`${item.key === 'soundbite' ? 'block' : 'hidden'} lg:w-6 lg:h-6 w-5 h-5`} />
-                    <PhoneOff className={`${item.key === 'avoidCalling' ? 'block' : 'hidden'} lg:w-6 lg:h-6 w-5 h-5`} />
-                    <BellOff className={`${item.key === 'noRinging' ? 'block' : 'hidden'} lg:w-6 lg:h-6 w-5 h-5`} />
-                  </div>
-                  <span className="mt-2 text-sm lg:mt-2 lg:text-sm ">{item.label}</span>
-                </div>
-              ))}
+              <Button
+                variant={
+                  activeInstruction === "soundbite"
+                    ? "default"
+                    : "outline"
+                }
+                onClick={() => setActiveInstruction("soundbite")}
+                className="flex items-center gap-2 px-4 py-2 text-sm"
+              >
+                <Mic className="w-4 h-4" />
+                Soundbite
+              </Button>
+              <Button
+                variant={
+                  activeInstruction === "noCall"
+                    ? "default"
+                    : "outline"
+                }
+                onClick={() => setActiveInstruction("noCall")}
+                className="flex items-center gap-2 px-4 py-2 text-sm"
+              >
+                <PhoneOff className="w-4 h-4" />
+                No Call
+              </Button>
+              <Button
+                variant={
+                  activeInstruction === "noRing"
+                    ? "default"
+                    : "outline"
+                }
+                onClick={() => setActiveInstruction("noRing")}
+                className="flex items-center gap-2 px-4 py-2 text-sm"
+              >
+                <BellOff className="w-4 h-4" />
+                No Ring
+              </Button>
             </div>
           </div>
 
-          {/* Pay Button */}
-          <div className="mt-6 lg:block hidden sm:block">
-            <Link href="/payment-mode">
-              <button className="w-full py-4 bg-orange-500 text-white font-semibold text-lg rounded-lg shadow">
-                Click to Pay
-              </button>
-            </Link>
+          {/* Payment Options */}
+          <div className="mt-8 space-y-4">
+            {/* Razorpay Quick Checkout */}
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Quick Checkout with Razorpay</h3>
+              <div className="flex flex-col sm:flex-row gap-4">
+                                  <div className="flex-1">
+                    <Button
+                      onClick={handleCheckout}
+                      disabled={loading}
+                      variant="default"
+                      size="lg"
+                      className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
+                    >
+                      {loading ? (
+                        <>
+                          <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Pay ₹{billDetails?.grandTotal?.amount || 0}
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                <div className="flex-1">
+                  <Button
+                    onClick={handleProceedToPayment}
+                    variant="outline"
+                    size="lg"
+                    className="w-full"
+                  >
+                    Other Payment Methods
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Methods Info */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h4 className="font-medium mb-2">Accepted Payment Methods:</h4>
+              <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+                <span className="bg-white px-2 py-1 rounded">Credit Cards</span>
+                <span className="bg-white px-2 py-1 rounded">Debit Cards</span>
+                <span className="bg-white px-2 py-1 rounded">UPI</span>
+                <span className="bg-white px-2 py-1 rounded">Net Banking</span>
+                <span className="bg-white px-2 py-1 rounded">Wallets</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -249,11 +620,25 @@ export default function BuyNowPage() {
               </span>
             </div>
           )}
-          <Link href="/payment-mode">
-            <button className="w-full py-4 bg-orange-500 text-white font-semibold text-lg rounded-lg shadow">
-              Click to Pay
-            </button>
-          </Link>
+          <Button
+            onClick={handleCheckout}
+            disabled={loading}
+            variant="default"
+            size="lg"
+            className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
+          >
+            {loading ? (
+              <>
+                <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <CreditCard className="w-4 h-4 mr-2" />
+                Pay ₹{billDetails?.grandTotal?.amount || 0}
+              </>
+            )}
+          </Button>
         </div>
       </div>
 

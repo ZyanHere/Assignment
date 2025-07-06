@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { loginSchema } from "@/lib/validators/auth";
 import { signIn } from "next-auth/react";
-import { Phone } from 'lucide-react';
+import { Phone } from "lucide-react";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,8 +20,13 @@ export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
-    resolver: zodResolver(loginSchema)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(loginSchema),
   });
 
   // const toggleLoginMethod = () => {
@@ -30,19 +35,21 @@ export default function Login() {
   // };
 
   const onSubmit = async (data) => {
+    console.log("Form values:", data);
     setIsLoading(true);
     setError("");
 
     try {
-      const credentials = {
-        password: data.password,
-        username: data.username
-      };
+      // const credentials = {
+      //   password: data.password,
+      //   username: data.username,
+      // };
 
       const res = await signIn("credentials", {
         redirect: false,
-        ...credentials,
-        // rememberMe,
+        email: data.email, 
+        password: data.password,
+        rememberMe,
         callbackUrl: "/",
       });
 
@@ -60,9 +67,10 @@ export default function Login() {
           ? "Invalid credentials. Please try again."
           : error.message || "Login failed. Please try again later."
       );
-      toast.error(error.message === "CredentialsSignin"
-        ? "Invalid credentials. Please try again."
-        : error.message || "Login failed. Please try again later."
+      toast.error(
+        error.message === "CredentialsSignin"
+          ? "Invalid credentials. Please try again."
+          : error.message || "Login failed. Please try again later."
       );
     } finally {
       setIsLoading(false);
@@ -105,7 +113,9 @@ export default function Login() {
             Please login to continue to your account
           </p>
 
+
           <form className="w-full max-w-md mt-8 sm:mt-12 lg:mt-[70px]" onSubmit={handleSubmit(onSubmit)}>
+
             <div className="mb-4">
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm font-medium text-black">
@@ -140,27 +150,34 @@ export default function Login() {
               ) : (
                 <> */}
               <input
-                {...register("username")}
+                {...register("email")}
                 type="text"
-                className={`w-full p-3 sm:p-4 border rounded-lg ${errors.username ? 'border-red-500' : 'border-[#D9D9D9]'
-                  } focus:ring-2 focus:ring-yellow-500 text-base`}
-                placeholder="Enter your username"
+
+                placeholder="Enter email or phone"
+                className={`w-full p-3 sm:p-4 border rounded-lg ${
+                  errors.email ? "border-red-500" : "border-[#D9D9D9]"
+                }`}
               />
-              {errors.username && (
-                <span className="text-red-500 text-sm">{errors.username.message}</span>
+              {errors.email && (
+                <span className="text-red-500 text-sm">
+                  {errors.email.message}
+                </span>
               )}
               {/* </> */}
               {/* )} */}
             </div>
 
             <div className="mb-4 relative">
-              <label className="block text-sm font-medium text-black">Password</label>
+              <label className="block text-sm font-medium text-black">
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
-                  className={`w-full p-3 sm:p-4 border rounded-lg ${errors.password ? 'border-red-500' : 'border-[#D9D9D9]'
-                    } focus:ring-2 focus:ring-yellow-500 text-base`}
+                  className={`w-full sm:p-4  border rounded-lg ${
+                    errors.password ? "border-red-500" : "border-[#D9D9D9]"
+                  } focus:ring-2 focus:ring-yellow-500 text-base`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -172,12 +189,18 @@ export default function Login() {
                 </button>
               </div>
               {errors.password && (
-                <span className="text-red-500 text-sm">{errors.password.message}</span>
+                <span className="text-red-500 text-sm">
+                  {errors.password.message}
+                </span>
               )}
             </div>
 
             <div className="flex justify-end mt-1">
-              <Link href="/forgot-password" className="text-[#FFC107] text-sm font-medium hover:underline">
+
+              <Link
+                href="/auth/forgot-password"
+                className="text-[#FFC107] text-[12px] font-medium hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -202,8 +225,9 @@ export default function Login() {
               className={`w-full py-3 sm:py-4 mt-6 bg-[#FFC107] text-white rounded-lg font-semibold 
                         hover:bg-yellow-600 transition-colors text-base
                         ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
 
             {/* Error Message */}

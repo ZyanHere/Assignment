@@ -1,136 +1,135 @@
-// lib/context/CartContext.js
-"use client";
-import { createContext, useContext, useReducer } from "react";
+// lib/contexts/cart-context.js
+'use client';
 
-// Initial state
-const initialState = {
-  items: [],
-  itemCount: 0,
-};
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
+import * as cartAPI from '@/lib/api/cart';
 
-// Actions
-export const ADD_TO_CART = "ADD_TO_CART";
-export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
-export const UPDATE_QUANTITY = "UPDATE_QUANTITY";
-export const CLEAR_CART = "CLEAR_CART";
+const CartContext = createContext();
 
-// Reducer function
-function cartReducer(state, action) {
-  switch (action.type) {
-    case ADD_TO_CART: {
-      const existingItemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
-      );
+export function CartProvider({ children, showCartInHeader = false }) {
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const tokenReady = status === 'authenticated';
 
-      if (existingItemIndex > -1) {
-        // Item already exists, update quantity
-        const updatedItems = [...state.items];
-        updatedItems[existingItemIndex] = {
-          ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + 1,
-        };
-        
-        return {
-          ...state,
-          items: updatedItems,
-          itemCount: state.itemCount + 1,
-        };
-      } else {
-        // Add new item
-        return {
-          ...state,
-          items: [...state.items, { ...action.payload, quantity: 1 }],
-          itemCount: state.itemCount + 1,
-        };
+  const [cart, setCart] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  const [fetched, setFetched] = useState(false);
+
+  const reload = useCallback(async () => {
+    setLoading(true);
+    try {
+      const items = await cartAPI.fetchCart();
+      setCart(items);
+      setFetched(true);
+    } catch (err) {
+      console.error('❌ fetchCart error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Smart initial fetch
+  useEffect(() => {
+    const shouldFetch =
+      tokenReady &&
+      !fetched &&
+      (pathname === '/cart' || showCartInHeader);
+
+    if (shouldFetch) {
+      reload();
+    }
+  }, [tokenReady, pathname, showCartInHeader, fetched, reload]);
+
+  const addToCart = useCallback(
+    async (item) => {
+      setLoading(true);
+      try {
+        await cartAPI.addOrUpdateItem(item.id, 1);
+        await reload();
+      } catch (err) {
+        console.error('❌ addToCart error:', err);
+      } finally {
+        setLoading(false);
       }
+    },
+    [reload]
+  );
+
+  const updateQuantity = useCallback(
+    async (variantId, delta) => {
+      setLoading(true);
+      try {
+        const entry = cart.find((i) => i.variantId === variantId);
+        if (!entry) return;
+        const newQty = entry.quantity + delta;
+        if (newQty < 1) return;
+        await cartAPI.updateCartItem(entry.id, newQty);
+        await reload();
+      } catch (err) {
+        console.error('❌ updateQuantity error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cart, reload]
+  );
+
+  const removeFromCart = useCallback(
+    async (variantId) => {
+      setLoading(true);
+      try {
+        const entry = cart.find((i) => i.variantId === variantId);
+        if (!entry) return;
+        await cartAPI.removeItem(entry.id);
+        await reload();
+      } catch (err) {
+        console.error('❌ removeFromCart error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cart, reload]
+  );
+
+  const clearAll = useCallback(async () => {
+    setLoading(true);
+    try {
+      await cartAPI.clearCart();
+      setCart([]);
+    } catch (err) {
+      console.error('❌ clearCart error:', err);
+    } finally {
+      setLoading(false);
     }
-    
-    case REMOVE_FROM_CART: {
-      const itemToRemove = state.items.find(item => item.id === action.payload);
-      const quantity = itemToRemove ? itemToRemove.quantity : 0;
-      
-      return {
-        ...state,
-        items: state.items.filter(item => item.id !== action.payload),
-        itemCount: state.itemCount - quantity,
-      };
-    }
-    
-    case UPDATE_QUANTITY: {
-      const { id, amount } = action.payload;
-      const itemIndex = state.items.findIndex(item => item.id === id);
-      
-      if (itemIndex === -1) return state;
-      
-      const item = state.items[itemIndex];
-      const newQuantity = Math.max(1, item.quantity + amount);
-      const quantityDiff = newQuantity - item.quantity;
-      
-      const updatedItems = [...state.items];
-      updatedItems[itemIndex] = {
-        ...item,
-        quantity: newQuantity,
-      };
-      
-      return {
-        ...state,
-        items: updatedItems,
-        itemCount: state.itemCount + quantityDiff,
-      };
-    }
-    
-    case CLEAR_CART:
-      return initialState;
-      
-    default:
-      return state;
-  }
+  }, []);
+
+  return (
+    <CartContext.Provider
+      value={{
+        cart,
+        isLoading,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart: clearAll,
+        reload,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 }
 
-// Create context
-const CartContext = createContext(null);
-
-// Provider component
-export function CartProvider({ children }) {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
-  
-  // Actions
-  const addToCart = (product) => {
-    dispatch({ type: ADD_TO_CART, payload: product });
-  };
-  
-  const removeFromCart = (productId) => {
-    dispatch({ type: REMOVE_FROM_CART, payload: productId });
-  };
-  
-  const updateQuantity = (productId, amount) => {
-    dispatch({ 
-      type: UPDATE_QUANTITY, 
-      payload: { id: productId, amount } 
-    });
-  };
-  
-  const clearCart = () => {
-    dispatch({ type: CLEAR_CART });
-  };
-  
-  const value = {
-    cart: state.items,
-    itemCount: state.itemCount,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-  };
-  
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-}
-
-// Custom hook for using the cart context
 export function useCart() {
-  const context = useContext(CartContext);
-  if (context === null) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return context;
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error('useCart must be inside <CartProvider>');
+  return ctx;
 }

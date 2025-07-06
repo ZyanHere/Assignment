@@ -30,12 +30,12 @@ const ProductCarousel = ({ title, products }) => {
         {/* Product Cards */}
         <div
           ref={carouselRef}
-          className="flex overflow-x-auto space-x-6 p-4 scrollbar-hide"
+          className="flex overflow-x-auto space-x-4 p-4 scrollbar-hide"
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="min-w-[250px] p-4 border border-gray-300 rounded-lg bg-white shadow-sm"
+              className="flex-shrink-0 w-[calc(100vw/2-1rem)] sm:w-[calc(100vw/3-1rem)] md:w-[calc(100vw/4-1rem)] lg:w-[calc(100vw/5-1rem)] p-4 border border-gray-300 rounded-lg bg-white shadow-sm"
             >
               <Image
                 src={product.image}
@@ -50,12 +50,21 @@ const ProductCarousel = ({ title, products }) => {
 
               {/* Discount Timer */}
               <div className="text-center my-2 text-blue-600">
-                03 : 01 : 23 <span className="text-xs text-gray-600">hours minutes seconds</span>
+                03 : 01 : 23{" "}
+                <span className="text-xs text-gray-600">
+                  hours minutes seconds
+                </span>
               </div>
 
-              <p className="text-green-500 font-semibold">{product.discount}</p>
+              <p className="text-green-500 font-semibold">
+                {product.discount}
+              </p>
               <p className="text-lg font-bold">
-                MRP: <span className="line-through text-gray-500">₹{product.originalPrice}</span> ₹{product.price}
+                MRP:{" "}
+                <span className="line-through text-gray-500">
+                  ₹{product.originalPrice}
+                </span>{" "}
+                ₹{product.price}
               </p>
 
               <button className="mt-2 w-full border border-blue-500 text-blue-500 font-bold py-1 rounded-md hover:bg-blue-100">
