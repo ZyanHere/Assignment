@@ -95,33 +95,30 @@ export default function Login() {
   // };
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white flex-col lg:flex-row">
       {/* Left Side - Login Form */}
-      <div className="w-1/2">
-        <div className="flex flex-col justify-center items-start max-w-[418px] mx-auto h-screen">
+      <div className="w-full lg:w-1/2 xl:w-2/5">
+        <div className="flex flex-col justify-center items-start max-w-[418px] mx-auto h-screen px-4 sm:px-6 lg:px-8">
           <Image
             src="/auth-asset/logo.png"
             alt="Logo"
             width={75}
             height={62}
-            className="mb-[32px]"
+            className="mb-6 sm:mb-8 lg:mb-[32px]"
           />
 
-          <h1 className="text-black text-[32px] font-medium">Welcome back!</h1>
+          <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-medium text-black">Welcome back!</h1>
 
-          <p className="text-black text-[16px] font-medium">
+          <p className="text-base font-medium text-black mt-2 sm:mt-4">
             Please login to continue to your account
           </p>
 
-          <form
-            className="w-full max-w-md mt-[70px]"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form className="w-full max-w-md mt-8 sm:mt-12 lg:mt-[70px]" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm font-medium text-black">
                   {/* {loginMethod === "email" ? "Email Address" : "Mobile Number"} */}
-                  Username
+                  Email
                 </label>
                 {/* <button
                   type="button"
@@ -154,9 +151,8 @@ export default function Login() {
                 {...register("email")}
                 type="text"
                 placeholder="Enter email or phone"
-                className={`... ${
-                  errors.email ? "border-red-500" : "border-[#D9D9D9]"
-                }`}
+                className={`w-full p-3 sm:p-4 border rounded-lg ${errors.email ? 'border-red-500' : 'border-[#D9D9D9]'
+                  } focus:ring-2 focus:ring-yellow-500 text-base`}
               />
               {errors.email && (
                 <span className="text-red-500 text-sm">
@@ -175,7 +171,7 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
-                  className={`w-full p-3 border rounded-lg ${
+                  className={`w-full sm:p-4 p-3 border rounded-lg ${
                     errors.password ? "border-red-500" : "border-[#D9D9D9]"
                   } focus:ring-2 focus:ring-yellow-500`}
                   placeholder="Enter your password"
@@ -197,7 +193,7 @@ export default function Login() {
 
             <div className="flex justify-end mt-1">
               <Link
-                href="/forgot-password"
+                href="/auth/forgot-password"
                 className="text-[#FFC107] text-[12px] font-medium hover:underline"
               >
                 Forgot password?
@@ -298,7 +294,7 @@ export default function Login() {
       </div>
 
       {/* Right Side - Background Image */}
-      <div className="hidden md:block w-1/2  shrink-0 rounded-l-[40px] relative">
+      <div className="hidden lg:block lg:w-1/2 xl:w-3/5 shrink-0 rounded-l-[40px] relative">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
