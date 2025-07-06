@@ -26,7 +26,7 @@ const PopularNow = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-4">
+      <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 mt-4">
         {movies.map((movie) => {
           const movieSlug = generateSlug(movie.title);
           return (
@@ -39,9 +39,9 @@ const PopularNow = () => {
                 <Image
                   src={movie.image}
                   alt={movie.title}
-                  width={500}
+                  width={250}
                   height={300}
-                  className=" sm:h-78  md:h-54 lg:h-50  xl:h-65 object-cover rounded-t-md"
+                  className=" w-full sm:h-78  md:h-54 lg:h-50  xl:h-65 object-contain rounded-t-md"
 
 
                 />
