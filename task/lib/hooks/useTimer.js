@@ -35,7 +35,7 @@ const useTimer = (endTime) => {
     setTimeLeft(calculateTimeLeft());
 
     return () => clearInterval(timer);
-  }, [endTime]);
+  }, [endTime, timeLeft]);
 
   return timeLeft;
 };

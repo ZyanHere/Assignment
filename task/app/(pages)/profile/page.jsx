@@ -82,13 +82,22 @@ const ProfilePage = () => {
     }
   };
 
-  const handleSaveProfilePic = () => {
+  const handleSaveProfilePic = async () => {
     if (newProfilePic) {
-      dispatch(updateProfilePic(newProfilePic));
-      setProfilePic(newProfilePic);
-      setNewProfilePic(null);
-      setIsDialogOpen(false);
-      toast.success("Profile picture updated !!");
+      try {
+        // In a real implementation, you would upload the file to your server
+        // For now, we'll simulate the upload
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        dispatch(updateProfilePic(newProfilePic));
+        setProfilePic(newProfilePic);
+        setNewProfilePic(null);
+        setIsDialogOpen(false);
+        toast.success("Profile picture updated successfully!");
+      } catch (error) {
+        console.error('Failed to update profile picture:', error);
+        toast.error('Failed to update profile picture. Please try again.');
+      }
     }
   };
 
