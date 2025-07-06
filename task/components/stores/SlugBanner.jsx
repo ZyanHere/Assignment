@@ -16,7 +16,7 @@ const StoreSlugBanner = ({ name, location, banner }) => {
 
   return (
     <div className="relative w-full">
-      {/* ---------- banner image ---------- */}
+     
       <div className="relative w-full overflow-hidden rounded-lg shadow-lg">
         <Image
           src={banner}
@@ -29,7 +29,7 @@ const StoreSlugBanner = ({ name, location, banner }) => {
         <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
       </div>
 
-      {/* ---------- floating timer / deal card ---------- */}
+      
       <div
         className="
           absolute bottom-0
@@ -73,7 +73,7 @@ const StoreSlugBanner = ({ name, location, banner }) => {
             </div>
           )}
 
-          {/* ----- store info + button ----- */}
+          
           <div className="flex items-center justify-between gap-1.5 sm:gap-3">
             <div className="flex-1 min-w-0">
               <h3 className="text-xs sm:text-base md:text-lg lg:text-2xl font-bold text-black truncate">
