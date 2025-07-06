@@ -114,6 +114,7 @@ export default function LocationInfo() {
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
+
           // layout="fill"
           // objectFit="cover"
           fill

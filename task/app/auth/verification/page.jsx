@@ -105,69 +105,72 @@ export default function Verification() {
   // if (!isClient) return null; // Prevent server mismatch
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-white">
       {/* Left Side */}
-      <div className="w-1/2 flex flex-col justify-center items-center bg-white px-10">
-        <h2 className="text-[32px] font-normal text-black">Verification</h2>
-        <p className="text-[#828282] text-lg mt-[30px]">
-          Enter the 4 digit code we sent to{" "}
-          <span className="font-medium">{formattedPhone}</span>
-        </p>
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-white px-4 py-8 md:px-10 md:py-0 mx-auto">
+        <div className="w-full max-w-xs sm:max-w-md md:max-w-[340px] mx-auto flex flex-col items-center">
+          <h2 className="text-2xl md:text-2xl font-normal text-black text-center">Verification</h2>
+          <p className="text-[#828282] text-base md:text-base mt-4 md:mt-6 text-left">
+            Enter the 4 digit code we sent to{' '}
+            <span className="font-medium">{formattedPhone}</span>
+          </p>
 
-        {/* OTP Input Fields */}
-        <div className="flex gap-4 my-8">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              type="text"
-              inputMode="numeric"
-              maxLength="1"
-              value={digit}
-              onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, "");
-                const newOtp = [...otp];
-                newOtp[index] = value;
-                setOtp(newOtp);
-                // Auto-focus to next input
-                if (value && index < 3) {
-                  document.getElementById(`otp-${index + 1}`)?.focus();
-                }
-              }}
-              id={`otp-${index}`}
-              className="w-16 h-16 text-2xl text-center border-2 border-gray-300 rounded-lg focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200"
-              disabled={isVerifying}
-            />
-          ))}
-        </div>
+          {/* OTP Input Fields */}
+          <div className="flex gap-2 md:gap-3 my-6 md:my-6 w-full justify-center">
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                type="text"
+                inputMode="numeric"
+                maxLength="1"
+                value={digit}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
+                  const newOtp = [...otp];
+                  newOtp[index] = value;
+                  setOtp(newOtp);
+                  // Auto-focus to next input
+                  if (value && index < 3) {
+                    document.getElementById(`otp-${index + 1}`)?.focus();
+                  }
+                }}
+                id={`otp-${index}`}
+                className="w-10 h-10 md:w-12 md:h-12 text-xl md:text-xl text-center border-2 border-gray-300 rounded-lg focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200"
+                disabled={isVerifying}
+              />
+            ))}
+          </div>
 
-        {/* Timer */}
-        <p className="text-red-500 text-sm mt-[24px]">
-          {timer > 0 ? `00:${timer < 10 ? `0${timer}` : timer}` : null}
-        </p>
+          {/* Timer */}
+          <p className="text-red-500 text-xs md:text-xs mt-4 md:mt-4 text-center">
+            {timer > 0 ? `00:${timer < 10 ? `0${timer}` : timer}` : null}
+          </p>
 
-        {/* Continue Button */}
-        <button 
-         onClick={handleVerify}
-         disabled={isVerifying}
-        className="bg-yellow-400 font-medium text-[16px] w-[470px] py-3 mt-6 rounded-md hover:bg-yellow-500">
-          {isVerifying ? "Verifying..." : "VERIFY"}
-        </button>
-
-        {/* Resend Code */}
-        <p className="text-gray-500 text-sm mt-[33px]">
-          If you didn’t receive a code!{" "}
+          {/* Continue Button */}
           <button
-            onClick={handleResendOtp}
-            className={`text-yellow-500 font-medium ${
-              resendDisabled || isResending
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:underline"
-            }`}
-            disabled={resendDisabled || isResending}
+            onClick={handleVerify}
+            disabled={isVerifying}
+            className="bg-yellow-400 font-medium text-base md:text-base w-full py-3 mt-6 rounded-md hover:bg-yellow-500 text-center"
           >
-            {isResending ? "Sending..." : "Resend Code"}
+            {isVerifying ? "Verifying..." : "VERIFY"}
           </button>
-        </p>
+
+          {/* Resend Code */}
+          <p className="text-gray-500 text-xs md:text-xs mt-6 md:mt-6 text-center">
+            If you didn't receive a code!{' '}
+            <button
+              onClick={handleResendOtp}
+              className={`text-yellow-500 font-medium ${
+                resendDisabled || isResending
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:underline"
+              }`}
+              disabled={resendDisabled || isResending}
+            >
+              {isResending ? "Sending..." : "Resend Code"}
+            </button>
+          </p>
+        </div>
       </div>
 
       {/* Right Side */}

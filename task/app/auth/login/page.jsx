@@ -113,7 +113,9 @@ export default function Login() {
             Please login to continue to your account
           </p>
 
+
           <form className="w-full max-w-md mt-8 sm:mt-12 lg:mt-[70px]" onSubmit={handleSubmit(onSubmit)}>
+
             <div className="mb-4">
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm font-medium text-black">
@@ -150,9 +152,11 @@ export default function Login() {
               <input
                 {...register("email")}
                 type="text"
+
                 placeholder="Enter email or phone"
                 className={`w-full p-3 sm:p-4 border rounded-lg ${errors.email ? 'border-red-500' : 'border-[#D9D9D9]'
                   } focus:ring-2 focus:ring-yellow-500 text-base`}
+
               />
               {errors.email && (
                 <span className="text-red-500 text-sm">
@@ -171,9 +175,11 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
+
                   className={`w-full sm:p-4 p-3 border rounded-lg ${
+
                     errors.password ? "border-red-500" : "border-[#D9D9D9]"
-                  } focus:ring-2 focus:ring-yellow-500`}
+                  } focus:ring-2 focus:ring-yellow-500 text-base`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -192,6 +198,7 @@ export default function Login() {
             </div>
 
             <div className="flex justify-end mt-1">
+
               <Link
                 href="/auth/forgot-password"
                 className="text-[#FFC107] text-[12px] font-medium hover:underline"
@@ -208,7 +215,7 @@ export default function Login() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="shrink-0 border border-black mr-[6px]"
               />
-              <label htmlFor="remember" className="text-[14px] text-black">
+              <label htmlFor="remember" className="text-sm text-black">
                 Remember
               </label>
             </div>
@@ -217,9 +224,10 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3 mt-6 bg-[#FFC107] text-white rounded-lg font-semibold 
-                        hover:bg-yellow-600 transition-colors
-                        ${isLoading ? "opacity-75 cursor-not-allowed" : ""}`}
+              className={`w-full py-3 sm:py-4 mt-6 bg-[#FFC107] text-white rounded-lg font-semibold 
+                        hover:bg-yellow-600 transition-colors text-base
+                        ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+
             >
               {isLoading ? "Signing In..." : "Sign In"}
             </button>
@@ -298,9 +306,9 @@ export default function Login() {
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
-          layout="fill"
-          objectFit="cover"
-          className="rounded-l-[40px]"
+          fill
+          priority
+          className="rounded-l-[40px] object-cover"
         />
       </div>
     </div>

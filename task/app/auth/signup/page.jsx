@@ -62,7 +62,7 @@ const Signup = () => {
         })
       );
 
-      // Optionally persist “remember me” here (e.g. cookie/localStorage)
+      // Optionally persist "remember me" here (e.g. cookie/localStorage)
 
       // Redirect to next step (e.g. OTP verification)
       router.push("/auth/verification");
@@ -78,25 +78,25 @@ const Signup = () => {
 
 
   return (
-    <div className="flex min-h-screen ">
+    <div className="flex flex-col md:flex-row min-h-screen">
       {/* Left Side - Signup Form */}
-      <div className="w-1/2 mt-20 mb-20">
-        <div className="flex flex-col justify-center items-start max-w-[404px] mx-auto ">
+      <div className="w-full md:w-1/2 mt-6 md:mt-20 mb-6 md:mb-20 px-4 sm:px-8 flex items-center justify-center">
+        <div className="flex flex-col justify-center items-center w-full max-w-xs sm:max-w-md md:max-w-[404px] mx-auto">
           <Image
             src="/auth-asset/logo.png"
             alt="Logo"
             width={81.5}
             height={62}
-            className="mb-[32px]"
+            className="mb-6 md:mb-8"
           />
 
-          <h1 className="text-black text-[32px] font-medium">
+          <h1 className="text-black text-2xl md:text-[32px] font-medium text-center">
             Get Started Now
           </h1>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full max-w-md mt-[70px]"
+            className="w-full max-w-full sm:max-w-md mt-8 md:mt-12"
           >
             {/* Name */}
             <div>
@@ -110,7 +110,7 @@ const Signup = () => {
                 className={`w-full p-3 border rounded-[10px] ${
                   errors.userName ? "border-red-500" : "border-[#D9D9D9]"
                 } focus:ring-2 focus:ring-yellow-500`}
-                placeholder="Enter Userame"
+                placeholder="Enter Username"
               />
               {errors.userName && (
                 <p className="text-red-500 text-sm mt-1">
@@ -120,7 +120,7 @@ const Signup = () => {
             </div>
             {/* Mobile Number */}
             <div>
-              <label className="block text-sm font-medium text-black mt-[14px]">
+              <label className="block text-sm font-medium text-black mt-4">
                 Mobile Number
               </label>
               <input
@@ -140,7 +140,7 @@ const Signup = () => {
             </div>
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-black mt-[14px]">
+              <label className="block text-sm font-medium text-black mt-4">
                 Email Address
               </label>
               <input
@@ -159,7 +159,7 @@ const Signup = () => {
               )}
             </div>
             {/* Password */}
-            <div className=" relative">
+            <div className="relative mt-4">
               <label className="block text-sm font-medium text-black mb-1">
                 Password
               </label>
@@ -189,8 +189,8 @@ const Signup = () => {
             </div>
 
             {/* Confirm Password */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-black mt-[14px]">
+            <div className="relative mt-4">
+              <label className="block text-sm font-medium text-black">
                 Confirm Password
               </label>
               <div className="relative">
@@ -226,76 +226,70 @@ const Signup = () => {
             <div className="flex justify-end mt-1">
               <Link
                 href="/auth/forgotPassword"
-                className="text-[#FFC107] text-[12px] font-medium hover:underline"
+                className="text-[#FFC107] text-xs md:text-[12px] font-medium hover:underline"
               >
                 Forgot password?
               </Link>
             </div>
-            <div className="mt-[5px]">
+            <div className="mt-2 flex justify-center">
               <input
                 type="checkbox"
                 id="remember"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="shrink-0 border border-black mr-[6px]"
+                className="shrink-0 border border-black mr-2"
               />
-              <label htmlFor="remember" className="text-[14px] text-black">
+              <label htmlFor="remember" className="text-sm md:text-[14px] text-black">
                 Remember
               </label>
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#FFC107] font-semibold rounded-lg hover:bg-yellow-600 disabled:opacity-75 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 bg-[#FFC107] font-semibold rounded-lg hover:bg-yellow-600 disabled:opacity-75 disabled:cursor-not-allowed transition-colors mt-4 text-center"
             >
               {loading ? "Creating Account..." : "Sign Up"}
             </button>
-            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+            {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
           </form>
 
           {/* Social Signup Section */}
-          <div className="flex items-center mt-[32px] mb-[40px] w-full max-w-md">
+          <div className="flex items-center mt-6 md:mt-8 mb-8 md:mb-10 w-full max-w-full sm:max-w-md">
             <hr className="flex-grow border-[#F5F5F5]" />
             <span className="mx-4 text-black">Or</span>
             <hr className="flex-grow border-[#F5F5F5]" />
           </div>
 
-          <div className="w-full flex justify-between mt-4">
+          <div className="w-full flex flex-col gap-4 mt-2">
             {/* Google Sign-Up */}
-            <div>
-              <button
-                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
-                     hover:bg-gray-100 transition duration-200"
-              >
-                <Image
-                  src="/auth-asset/google-logo.svg"
-                  alt="Google"
-                  width={20}
-                  height={20}
-                />
-                <span className="ml-2 text-black text-sm font-medium">
-                  Sign up with Google
-                </span>
-              </button>
-            </div>
+            <button
+              className="flex items-center justify-center w-full px-6 py-3 border border-gray-300 rounded-full shadow-sm hover:bg-gray-100 transition duration-200 text-center"
+            >
+              <Image
+                src="/auth-asset/google-logo.svg"
+                alt="Google"
+                width={20}
+                height={20}
+              />
+              <span className="ml-2 text-black text-sm font-medium">
+                Sign up with Google
+              </span>
+            </button>
 
             {/* Apple Sign-Up */}
-            <div>
-              <button
-                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
-                     hover:bg-gray-100 transition duration-200"
-              >
-                <Image
-                  src="/auth-asset/apple-logo.svg"
-                  alt="Apple"
-                  width={20}
-                  height={20}
-                />
-                <span className="ml-2 text-black text-sm font-medium">
-                  Sign up with Apple
-                </span>
-              </button>
-            </div>
+            <button
+              className="flex items-center justify-center w-full px-6 py-3 border border-gray-300 rounded-full shadow-sm hover:bg-gray-100 transition duration-200 text-center"
+            >
+              <Image
+                src="/auth-asset/apple-logo.svg"
+                alt="Apple"
+                width={20}
+                height={20}
+              />
+              <span className="ml-2 text-black text-sm font-medium">
+                Sign up with Apple
+              </span>
+            </button>
           </div>
 
           <div className="mt-4 text-sm text-black w-full flex justify-center items-center">

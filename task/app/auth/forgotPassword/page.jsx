@@ -51,16 +51,19 @@ export default function ForgotPassword() {
     }
   };
   return (
+
     <div className="flex min-h-screen  bg-white flex-col lg:flex-row">
       {/* Left Side - Forgot Password Form */}
        <div className="w-full lg:w-1/2 xl:w-2/5">
+
         <div className="flex flex-col justify-center items-start max-w-[418px] mx-auto h-screen px-4 sm:px-6 lg:px-8">
           <Image
             src="/auth-asset/logo.png"
             alt="Logo"
             width={86}
             height={65}
-                  className="mb-6 sm:mb-8 lg:mb-[32px]"
+            className="mb-6 sm:mb-8 lg:mb-[32px]"
+
           />
 
           <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-medium leading-tight text-black">
@@ -98,8 +101,10 @@ export default function ForgotPassword() {
               {isLoading ? "Sending OTP..." : "CONTINUE"}
             </button>
           </form>
+
         </div>
         <div className="mt-4 sm:mt-6 text-center w-full">
+
             <Link href="/login" className="hover:underline font-medium text-sm sm:text-base">
               ← Back to Login
             </Link>
