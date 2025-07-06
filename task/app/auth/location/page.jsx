@@ -92,31 +92,31 @@ export default function Location() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white flex-col lg:flex-row">
       {/* Left Side */}
-      <div className="w-1/2 flex flex-col justify-center items-center max-w-[458px] mx-auto h-screen">
+      <div className="w-full lg:w-1/2 xl:w-2/5 flex flex-col justify-center items-center max-w-[458px] mx-auto h-screen px-4 sm:px-6 lg:px-8">
         {/* Location Icon */}
-        <div className="w-[152px] h-[152px] bg-yellow-100 rounded-full flex items-center justify-center">
+        <div className="w-24 h-24 sm:w-32 sm:h-32 lg:w-[152px] lg:h-[152px] bg-yellow-100 rounded-full flex items-center justify-center">
           <Image
             src="/auth-asset/location-1.svg"
             alt="Location Icon"
             width={71}
             height={102}
-            // className="w-[71px] h-[102px]"
+            className="w-12 h-16 sm:w-16 sm:h-20 lg:w-[71px] lg:h-[102px]"
           />
         </div>
 
         {/* Location Prompt */}
-        <h2 className="text-4xl font-semibold text-black mt-6">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-black mt-4 sm:mt-6 text-center">
           What is Your Location?
         </h2>
-        <p className="text-[#8A8888] text-[14px] mt-6 text-center">
+        <p className="text-base text-[#8A8888] mt-4 sm:mt-6 text-center max-w-sm">
           We need to know your location in order to suggest nearby services
         </p>
 
         {/* Allow Location Button */}
         <button
-          className="bg-yellow-400 font-medium w-full py-2 mt-[51px] rounded-3xl shadow-2xl hover:bg-yellow-500"
+          className="bg-yellow-400 font-medium w-full py-3 sm:py-4 mt-8 sm:mt-12 lg:mt-[51px] rounded-3xl shadow-2xl hover:bg-yellow-500 transition-colors text-base"
           onClick={handleLocationAccess}
         >
           Allow Location Access
@@ -124,7 +124,7 @@ export default function Location() {
 
         {/* Enter Manually */}
         <p
-          className="text-[#ecbe08] text-[18px] mt-[30px] cursor-pointer hover:underline"
+          className="text-[#ecbe08] text-base mt-6 sm:mt-8 lg:mt-[30px] cursor-pointer hover:underline text-center"
           onClick={() => router.push("/auth/manual-location")}
         >
           Enter Location Manually
@@ -132,13 +132,13 @@ export default function Location() {
       </div>
 
       {/* Right Side */}
-      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative">
+      <div className="hidden lg:block lg:w-1/2 xl:w-3/5 shrink-0 rounded-l-[40px] relative">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
-          layout="fill"
-          objectFit="cover"
-          className="rounded-l-[40px]"
+          fill
+          priority
+          className="rounded-l-[40px] object-cover"
         />
       </div>
     </div>

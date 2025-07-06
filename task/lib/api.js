@@ -1,5 +1,5 @@
 export const fetcher = async (url) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 
   if (!baseUrl) {
     throw new Error("API base URL is not defined in environment variables");

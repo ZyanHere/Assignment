@@ -6,17 +6,19 @@ function unwrapError(e) {
   throw e;
 }
 
-/** GET /me → returns mapped items[] */
+/** GET /retail/cart/me → returns mapped items[] */
 export async function fetchCart() {
   try {
-    const { data } = await api.get('/');
+    const { data } = await api.get('/lmd/api/v1/retail/cart/me');
     const items = data.data.items;
     return items.map((i) => ({
       id: i.cart_item_id,
       variantId: i.variant._id,
       name: i.variant.product.name,
-      brand: i.variant.product.vendor_store_id,
-      seller: i.variant.product.vendor_store_id,
+      brand: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
+      seller: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
+      vendorId: i.variant.product.vendor_store_id?._id || 'default',
+      vendorName: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
       price: i.unit_price,
       mrp: i.variant.price.base_price,
       image:
@@ -30,37 +32,37 @@ export async function fetchCart() {
   }
 }
 
-/** POST /me/items */
+/** POST /retail/cart/me/items */
 export async function addOrUpdateItem(variantId, quantity = 1) {
   try {
-    await api.post('/items', { variant_id: variantId, quantity });
+    await api.post('/lmd/api/v1/retail/cart/me/items', { variant_id: variantId, quantity });
   } catch (e) {
     unwrapError(e);
   }
 }
 
-/** PUT /me/items/:itemId */
+/** PUT /retail/cart/me/items/:itemId */
 export async function updateCartItem(itemId, quantity) {
   try {
-    await api.put(`/items/${itemId}`, { quantity });
+    await api.put(`/lmd/api/v1/retail/cart/me/items/${itemId}`, { quantity });
   } catch (e) {
     unwrapError(e);
   }
 }
 
-/** DELETE /me/items/:itemId */
+/** DELETE /retail/cart/me/items/:itemId */
 export async function removeItem(itemId) {
   try {
-    await api.delete(`/items/${itemId}`);
+    await api.delete(`/lmd/api/v1/retail/cart/me/items/${itemId}`);
   } catch (e) {
     unwrapError(e);
   }
 }
 
-/** DELETE /me */
+/** DELETE /retail/cart/me */
 export async function clearCart() {
   try {
-    await api.delete('/');
+    await api.delete('/lmd/api/v1/retail/cart/me');
   } catch (e) {
     unwrapError(e);
   }

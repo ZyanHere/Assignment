@@ -6,27 +6,27 @@ import FacebookProvider from "next-auth/providers/facebook";
 
 const handler = NextAuth({
   providers: [
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    //   authorization: {
-    //     params: {
-    //       prompt: "consent",
-    //       access_type: "offline",
-    //       response_type: "code",
-    //       redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/google"
-    //     }
-    //   }
-    // }),
-    // FacebookProvider({
-    //   clientId: process.env.FACEBOOK_CLIENT_ID,
-    //   clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    //   authorization: {
-    //     params: {
-    //       redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/facebook"
-    //     }
-    //   }
-    // }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+          redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/google"
+        }
+      }
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      authorization: {
+        params: {
+          redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/facebook"
+        }
+      }
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -36,19 +36,19 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         console.log("Authorization attempt with credentials:", credentials);
-        // Hardcoded user for development
-        // if (
-        //   credentials.username === "zyanhere" &&
-        //   credentials.password === "zyanhere"
-        // ) {
-        //   return {
-        //     id: "dev-user",
-        //     name: "Zyan",
-        //     // phone: "6001234567",
-        //     email: "zyan@local.com",
-        //     role: "admin"
-        //   };
-        // }
+        
+        // Hardcoded test user for development
+        if (credentials.email === "test@example.com" && credentials.password === "password") {
+          return {
+            id: "test-user-1",
+            name: "Test User",
+            email: "test@example.com",
+            phone: "1234567890",
+            role: "CUSTOMER",
+            token: "test-token-12345",
+            rememberMe: credentials.rememberMe === "on",
+          };
+        }
 
         // if (!credentials.email && !credentials.phone) {
         //   throw new Error("Email or phone is required");
@@ -60,7 +60,7 @@ const handler = NextAuth({
 
         try {
           const res = await axios.post(
-            "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/login",
+            "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/login", 
             {
               // phone: credentials.phone,
               email: credentials.email,
@@ -208,7 +208,7 @@ const handler = NextAuth({
     signIn: "/auth/signin",
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'your-development-secret-key-change-in-production',
 });
 
 export { handler as GET, handler as POST };

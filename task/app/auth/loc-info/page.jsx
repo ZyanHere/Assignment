@@ -58,22 +58,22 @@ export default function LocationInfo() {
   }
   
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen flex-col lg:flex-row">
       {/* Left Side */}
-      <div className="w-1/2 flex flex-col items-center justify-center px-10 relative">
+      <div className="w-full lg:w-1/2 xl:w-2/5 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-10 relative">
         {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="absolute left-6 top-6 text-yellow-600 text-2xl"
+          className="absolute left-4 sm:left-6 top-4 sm:top-6 text-yellow-600 text-2xl"
         >
           ←
         </button>
 
         {/* Title */}
-        <h2 className="text-[28px] font-semibold mb-6">Location Information</h2>
+        <h2 className="text-[28px] font-semibold mb-4 sm:mb-6 mt-8 sm:mt-0">Location Information</h2>
 
         {/* Map */}
-        <div className="relative w-[90%] h-[350px] rounded-lg overflow-hidden shadow-md">
+        <div className="relative w-full sm:w-[90%] h-[250px] sm:h-[300px] lg:h-[350px] rounded-lg overflow-hidden shadow-md">
           {coordinates?.lat && coordinates?.lng ? (
             <iframe
               className="w-full h-full"
@@ -96,7 +96,7 @@ export default function LocationInfo() {
         </div>
 
         {/* Address Card */}
-        <div className="w-[90%] bg-white p-4 rounded-xl mt-6 shadow-md border">
+        <div className="w-full sm:w-[90%] bg-white p-4 rounded-xl mt-4 sm:mt-6 shadow-md border">
           <p className="font-bold text-lg">{city}</p>
           <p className="text-gray-600 text-sm mt-1">{address}</p>
           <button
@@ -110,13 +110,13 @@ export default function LocationInfo() {
 
 
       {/* Right Side Background Illustration */}
-      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative">
+      <div className="hidden lg:block lg:w-1/2 xl:w-3/5 shrink-0 rounded-l-[40px] relative">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
-          layout="fill"
-          objectFit="cover"
-          className="rounded-l-[40px]"
+          fill
+          priority
+          className="rounded-l-[40px] object-cover"
         />
       </div>
     </div>
