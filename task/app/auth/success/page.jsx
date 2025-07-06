@@ -41,50 +41,51 @@ export default function Success() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-white">
       {/* Left Side */}
-      <div className="w-1/2 flex flex-col justify-center items-center max-w-[537px] mx-auto h-screen">
-        {/* Success Icon */}
-        <div
-          role="status"
-          aria-label="Account created successfully"
-          className="w-[154px] h-[154px] border-4 border-yellow-400 rounded-full flex items-center justify-center animate-fade-in"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            className="w-24 h-24 text-yellow-400"
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-4 py-8 md:py-0 mx-auto">
+        <div className="w-full max-w-xs sm:max-w-md md:max-w-[340px] mx-auto flex flex-col items-center">
+          {/* Success Icon */}
+          <div
+            role="status"
+            aria-label="Account created successfully"
+            className="w-20 h-20 md:w-24 md:h-24 border-4 border-yellow-400 rounded-full flex items-center justify-center animate-fade-in mx-auto"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="w-12 h-12 md:w-16 md:h-16 text-yellow-400"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+
+          {/* Success Message */}
+          <h2 className="text-2xl md:text-3xl font-medium text-black mt-6 md:mt-6 text-center">Successfully</h2>
+          <p className="text-gray-600 mt-2 md:mt-2 text-left">
+            Your account has been created.
+          </p>
+
+          {/* Continue Button */}
+          <button
+            onClick={handleContinue}
+            disabled={isLoading}
+            className={`w-full max-w-xs sm:max-w-md py-3 md:py-3 mt-6 md:mt-6 text-white font-semibold rounded-lg transition-colors text-center ${isLoading ? "bg-yellow-300 cursor-not-allowed" : "bg-yellow-400 hover:bg-yellow-500"}`}
+            aria-label="Continue to homepage"
+          >
+            {isLoading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24" />
+                Logging in...
+              </span>
+            ) : (
+              "CONTINUE NOW"
+            )}
+          </button>
         </div>
-
-        {/* Success Message */}
-        <h2 className="text-[45px] font-medium text-black mt-8">Successfully</h2>
-        <p className="text-gray-600 mt-4 text-center">
-          Your account has been created.
-        </p>
-
-        {/* Continue Button */}
-        <button
-          onClick={handleContinue}
-          disabled={isLoading}
-          className={`w-full max-w-[300px] py-4 mt-8 text-white font-semibold rounded-lg transition-colors
-            ${isLoading ? "bg-yellow-300 cursor-not-allowed" : "bg-yellow-400 hover:bg-yellow-500"}`}
-          aria-label="Continue to homepage"
-        >
-          {isLoading ? (
-            <span className="flex items-center justify-center">
-              <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24" />
-              Logging in...
-            </span>
-          ) : (
-            "CONTINUE NOW"
-          )}
-        </button>
       </div>
 
       {/* Right Side Image */}
