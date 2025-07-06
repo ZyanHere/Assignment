@@ -42,6 +42,13 @@ export default function SubProduct({ subCategoryId }) {
     }
 
     return (
+
+//         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+//             {data?.map((product) => {
+//                 return (
+//                     <div key={product._id} className="flex">
+//                         <ProductCard product={product} compact />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {data.map((product) => {
                 // Process images to handle S3 URLs with spaces
@@ -58,6 +65,7 @@ export default function SubProduct({ subCategoryId }) {
                 return (
                     <div key={product._id} className="flex gap-4">
                         <ProductCard product={processedProduct} />
+
                     </div>
                 );
             })}
