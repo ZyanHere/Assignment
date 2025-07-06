@@ -15,7 +15,7 @@
         <Header />
 
          <main className="p-6 mx-auto w-full max-w-[1700px]">
-           {/* Breadcrumb - Default "Stores" */}
+           
            <nav className="mb-4 text-black text-4xl">
              <Link href="/stores" className="hover:underline font-medium">
                Stores
@@ -27,7 +27,7 @@
           </div>
 
  
-           <div className="mt-12 bg-white rounded-xl overflow-hidden shadow-lg">
+           <div className="mt-12 bg-white rounded-xl  shadow-lg">
             <Image
               src="/store/store2.png"
               width={1500}
