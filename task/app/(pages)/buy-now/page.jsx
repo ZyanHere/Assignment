@@ -512,7 +512,7 @@ export default function BuyNowPage() {
           )}
 
           {/* Delivery Instructions */}
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <h2 className="text-lg font-semibold mb-3">Delivery Instruction</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 lg:flex lg:flex-wrap lg:justify-center lg:gap-4">
               <Button
@@ -552,7 +552,7 @@ export default function BuyNowPage() {
                 No Ring
               </Button>
             </div>
-          </div>
+          </div> */}
 
           {/* Payment Options */}
           <div className="mt-8 space-y-4">
@@ -581,7 +581,7 @@ export default function BuyNowPage() {
                       )}
                     </Button>
                   </div>
-                <div className="flex-1">
+                {/* <div className="flex-1">
                   <Button
                     onClick={handleProceedToPayment}
                     variant="outline"
@@ -590,7 +590,7 @@ export default function BuyNowPage() {
                   >
                     Other Payment Methods
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
 
