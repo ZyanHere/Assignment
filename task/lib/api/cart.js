@@ -15,8 +15,8 @@ export async function fetchCart() {
       id: i.cart_item_id,
       variantId: i.variant._id,
       name: i.variant.product.name,
-      brand: i.variant.product.vendor_store_id,
-      seller: i.variant.product.vendor_store_id,
+      brand: 'No Brand',
+      seller: i.variant.product.vendor_store_id.store_name,
       price: i.unit_price,
       mrp: i.variant.price.base_price,
       image:

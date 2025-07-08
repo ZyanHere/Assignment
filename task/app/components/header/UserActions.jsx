@@ -22,7 +22,7 @@ const UserActions = () => {
   const { data: session } = useSession();
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("Guest");
-  
+
 
   useEffect(() => {
     // First priority: Check Redux store (for immediate state after login/signup)
@@ -36,61 +36,61 @@ const UserActions = () => {
     }
   }, [currentUser, session]);
 
-  
+
 
   const handleLogout = async () => {
     try {
-        // Step 1: Get CSRF token from backend
-        const csrfResponse = await axios.get(
-            'http://localhost:4000/lmd/api/v1/auth/csrf-token',
-            { withCredentials: true }
-        );
-        const csrfToken = csrfResponse.data.token;
-        
-        // Step 2: Call backend logout endpoint with CSRF token
-        await axios.post(
-            'http://localhost:4000/lmd/api/v1/auth/user/logout',
-            {},
-            {
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                withCredentials: true,
-            }
-        );
-        
-        // Step 3: Sign out from NextAuth
-        await signOut({
-            redirect: false,
-            callbackUrl: '/'
-        });
-        
-        // Step 4: Optional - Clear client-side cache/storage
-        if (typeof window !== 'undefined') {
-            localStorage.clear();
-            sessionStorage.clear();
-        }
-        
-        // Step 5: Redirect to home page
-        window.location.href = '/';
-        toast.success('Logged out successfully');
-    } catch (error) {
-        console.error('Logout failed:', error);
-        toast.error('Logout failed. Please try again.');
-        
-        // Force sign out even if backend logout fails
-        await signOut({
-            redirect: false,
-            callbackUrl: '/'
-        });
-        window.location.href = '/';
-    }
-};
+      // // Step 1: Get CSRF token from backend
+      // const csrfResponse = await axios.get(
+      //   'http://localhost:4000/lmd/api/v1/auth/csrf-token',
+      //   { withCredentials: true }
+      // );
+      // const csrfToken = csrfResponse.data.token;
 
-const getUserInitial = () => {
-  const name = currentUser?.name || session?.user?.name;
-  return name ? name.charAt(0).toUpperCase() : "User";
-};
+      // // Step 2: Call backend logout endpoint with CSRF token
+      // await axios.post(
+      //   'http://localhost:4000/lmd/api/v1/auth/user/logout',
+      //   {},
+      //   {
+      //     headers: {
+      //       'X-CSRF-TOKEN': csrfToken,
+      //     },
+      //     withCredentials: true,
+      //   }
+      // );
+
+      // Step 3: Sign out from NextAuth
+      await signOut({
+        redirect: false,
+        callbackUrl: '/'
+      });
+
+      // Step 4: Optional - Clear client-side cache/storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+
+      // Step 5: Redirect to home page
+      window.location.href = '/';
+      toast.success('Logged out successfully');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      toast.error('Logout failed. Please try again.');
+
+      // Force sign out even if backend logout fails
+      await signOut({
+        redirect: false,
+        callbackUrl: '/'
+      });
+      window.location.href = '/';
+    }
+  };
+
+  const getUserInitial = () => {
+    const name = currentUser?.name || session?.user?.email;
+    return name ? name.charAt(0).toUpperCase() : "User";
+  };
 
   let cartItems = 3;
   let notifications = 5;
