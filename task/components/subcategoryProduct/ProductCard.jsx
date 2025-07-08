@@ -2,12 +2,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from 'lucide-react';
 import { Button } from "../home/ui2/button";
 import { useCart } from "@/lib/contexts/cart-context";
+import { useRouter } from "next/navigation";
+import { useProduct } from "@/lib/contexts/productContext";
 import { useState } from "react";
 
 
 // export default function ProductCard({ product, compact }) {
 export default function ProductCard({ product }) {
     const { addToCart } = useCart();
+    const router = useRouter();
+    const { setSelectedProduct } = useProduct();
+
+    const handleItemClick = (product) => {
+        setSelectedProduct(product);
+        router.push(`/product/${product.id}`);
+    }
+
+   
     const [imageError, setImageError] = useState(false);
 
     // Get the first variant (base variant) data
@@ -93,35 +104,24 @@ export default function ProductCard({ product }) {
     // Check if we can add to cart (has variant and stock)
     const canAddToCart = variantData.variant && variantData.stock > 0;
 
+
     return (
-        // <Card className={`w-full ${compact ? 'max-w-xs rounded-lg py-2' : 'max-w-sm rounded-2xl py-4'} shadow-md hover:shadow-lg transition-shadow duration-300`}>
-        //     <CardHeader className={compact ? 'p-2' : 'p-4'}>
-        <Card className={'w-full max-w-sm rounded-2xl py-4 shadow-md hover:shadow-lg transition-shadow duration-300'}>
-            <CardHeader className={ 'p-4'}>
+        <Card className="w-full max-w-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300" onClick={() => handleItemClick(product)} >
+            <CardHeader className='p-4'>
                 <div className="relative">
                     <img
-
-//                         src={product.images[0].url}
-//                         alt={product.name}
-//                         className={`w-full object-cover rounded-xl ${compact ? 'h-28' : 'h-48'}`}
-//                     />
-//                     <Button className={`absolute -bottom-8 right-2 text-xs bg-amber-200 ${compact ? 'w-14 h-8' : 'w-20 h-10'}`}>ADD</Button>
-
-                        src={imageError ? '/placeholder-image.jpg' : imageUrl}
-                        alt={product.name}
-                        className="w-full h-48 object-cover rounded-xl"
-                        onError={handleImageError}
-                        loading="lazy"
+                        src={product.images[0].url}
+                        alt={product.variants.length > 0 ? product.variants[0].variant_name : product.name}
+                        className="w-full h-48 object-contain rounded-xl"
                     />
                     <Button
-                        className={`absolute -bottom-10 right-2 text-xs w-20 h-10 ${
-                            canAddToCart 
-                                ? 'bg-amber-200 hover:bg-amber-300' 
-                                : 'bg-gray-400 cursor-not-allowed'
-                        }`}
-                        onClick={handleAddToCart}
-                        disabled={!canAddToCart}>
+                        className="absolute -bottom-12 right-2 text-xs bg-amber-200 w-20 h-10"
+                        onClick={() => addToCart(product.variants.length > 0 ? product.variants[0] : product)}
+                    >
                         {canAddToCart ? 'ADD' : 'OUT OF STOCK'}
+
+ 
+       
                     </Button>
 
                 </div>
@@ -135,7 +135,7 @@ export default function ProductCard({ product }) {
                          product.is_featured &&
                         <span className={compact ? 'bg-green-100 text-green-800 text-[10px] font-medium px-2 py-0.5 rounded-lg' : 'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-l */}
             <CardContent className="space-y-1 px-4">
-                <CardTitle className="text-lg font-bold">{product.name}</CardTitle>
+                <CardTitle className="text-lg font-bold">{product.variants.length > 0 ? product.variants[0].variant_name : product.name}</CardTitle>
                 <p className="text-sm text-muted-foreground">{product.brand}</p>
                 <p className="text-sm text-muted-foreground">
                     By {product.vendor_store_id?.store_name || 'Unknown Store'}
@@ -165,6 +165,12 @@ export default function ProductCard({ product }) {
                         {product.rating?.average || 0} ({product.rating?.count || 0})
                     </p>
                 </div>
+
+                <p className="text-lg font-semibold text-primary">
+                    <span className="text-sm text-muted-foreground font-normal">MRP </span>
+                    ₹{product.variants.length > 0 ? product.variants[0].current_price : 100}
+                </p>
+
                 
                 {/* Price Display */}
                 <div className="mt-2">
@@ -180,6 +186,7 @@ export default function ProductCard({ product }) {
                         ₹{displayPrice}
                     </p>
                 </div>
+
 
 
                 {/* Stock Status */}
