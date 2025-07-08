@@ -6,6 +6,7 @@ import SessionProviderWrapper from "@/lib/NextAuthProvider/SessionProviderWrappe
 import { Providers } from "@/lib/providers";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ProductProvider } from "@/lib/contexts/productContext";
 
 
 const geistSans = Geist({
@@ -32,11 +33,13 @@ export default function RootLayout({ children }) {
         <Providers>
           <SessionProviderWrapper>
             <CartProvider showCartInHeader={true}>
-              <AddressProvider>
-                <SelectedItemsProvider>
-                  {children}
-                </SelectedItemsProvider>
-              </AddressProvider>
+              <ProductProvider>
+                <AddressProvider>
+                  <SelectedItemsProvider>
+                    {children}
+                  </SelectedItemsProvider>
+                </AddressProvider>
+              </ProductProvider>
             </CartProvider>
           </SessionProviderWrapper>
         </Providers>
