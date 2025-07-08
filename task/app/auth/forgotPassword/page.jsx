@@ -51,28 +51,31 @@ export default function ForgotPassword() {
     }
   };
   return (
-    <div className="flex min-h-screen  bg-white">
+
+    <div className="flex min-h-screen  bg-white flex-col lg:flex-row">
       {/* Left Side - Forgot Password Form */}
-      <div className="w-1/2">
-        <div className="flex flex-col justify-center items-start max-w-[418px] mx-auto h-screen">
+       <div className="w-full lg:w-1/2 xl:w-2/5">
+
+        <div className="flex flex-col justify-center items-start max-w-[418px] mx-auto h-screen px-4 sm:px-6 lg:px-8">
           <Image
             src="/auth-asset/logo.png"
             alt="Logo"
             width={86}
             height={65}
-            className="mb-[32px]"
+            className="mb-6 sm:mb-8 lg:mb-[32px]"
+
           />
 
-          <h1 className="text-black text-[32px] font-medium height-[52px] width-[257px]">
+          <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-medium leading-tight text-black">
             Forgot password
           </h1>
-          <p className="text-[#828282] text-[20px] font-normal leading-[24px] tracking-[0.15px] mt-[32px]">
+          <p className="text-base sm:text-lg lg:text-[20px] text-[#828282] font-normal leading-relaxed tracking-[0.15px] mt-4 sm:mt-6 lg:mt-[32px]">
             Enter your number for the verification process.
           </p>
 
-          <form className="w-full max-w-md mt-[32px]">
+          <form className="w-full max-w-md mt-6 sm:mt-8 lg:mt-[32px]" onSubmit={handleSubmit}>
             {/* Mobile Number */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <label className="block text-sm font-medium text-black mb-2">
                 Phone Number
               </label>
@@ -81,14 +84,14 @@ export default function ForgotPassword() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder="6002500300"
-                className="w-full p-3 border border-[#D9D9D9] rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
+                className="w-full p-3 sm:p-4 border border-[#D9D9D9] rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-base"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3 bg-yellow-400  font-semibold rounded-lg transition-colors
+              className={`w-full py-3 sm:py-4 bg-yellow-400 font-semibold rounded-lg transition-colors text-base
               ${
                 isLoading
                   ? "opacity-75 cursor-not-allowed"
@@ -98,16 +101,18 @@ export default function ForgotPassword() {
               {isLoading ? "Sending OTP..." : "CONTINUE"}
             </button>
           </form>
+
         </div>
-        <div className="mt-6 text-center w-full">
-          <Link href="/login" className="hover:underline font-medium">
-            ← Back to Login
-          </Link>
-        </div>
+        <div className="mt-4 sm:mt-6 text-center w-full">
+
+            <Link href="/login" className="hover:underline font-medium text-sm sm:text-base">
+              ← Back to Login
+            </Link>
+          </div>
       </div>
 
       {/* Right Side - Background Image */}
-      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative">
+      <div className="hidden lg:block lg:w-1/2 xl:w-3/5 shrink-0 rounded-l-[40px] relative">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Decorative background"

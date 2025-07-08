@@ -5,56 +5,60 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Heart, ShoppingBag, X } from "lucide-react";
+import { Heart, ShoppingBag, X, Loader2 } from "lucide-react";
+import { fetchUserWishlist } from "@/lib/api/profile";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const SavedDeal = () => {
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [savedDeals, setSavedDeals] = useState([]);
+  const [isRemoving, setIsRemoving] = useState(false);
 
-  // Sample saved deals data
-  const SAVED_DEALS = [
-    {
-      id: 1,
-      storeName: "ElectroHub",
-      status: "saved",
-      items: [
-        {
-          product: "Wireless Headphones",
-          productImage: "/products/headphones.jpg",
-          brand: "SoundMaster Pro",
-          quantity: 1,
-          date: "2023-06-15",
-          displayDate: "15/06/2023",
-          price: "129.99",
-          originalPrice: "179.99",
-          status: "Saved",
-          actionLabel: "View"
+  // Fetch wishlist data
+  useEffect(() => {
+    const loadWishlist = async () => {
+      if (session?.user?.token) {
+        try {
+          const wishlistData = await fetchUserWishlist();
+          // Transform wishlist data to match OrderCard format
+          const transformedDeals = wishlistData.map((item, index) => ({
+            id: item._id || index + 1,
+            storeName: item.vendor?.name || "Store",
+            status: "saved",
+            items: [{
+              product: item.product?.name || "Product",
+              productImage: item.product?.images?.[0] || "/products/default.jpg",
+              brand: item.product?.brand || "Brand",
+              quantity: 1,
+              date: item.createdAt || new Date().toISOString(),
+              displayDate: new Date(item.createdAt || new Date()).toLocaleDateString(),
+              price: item.product?.price?.toString() || "0",
+              originalPrice: item.product?.originalPrice?.toString() || item.product?.price?.toString() || "0",
+              status: "Saved",
+              actionLabel: "View",
+              productId: item.product?._id,
+              wishlistId: item._id
+            }]
+          }));
+          setSavedDeals(transformedDeals);
+        } catch (error) {
+          console.error('Failed to fetch wishlist:', error);
+          toast.error('Failed to load saved items');
+        } finally {
+          setLoading(false);
         }
-      ]
-    },
-    {
-      id: 2,
-      storeName: "FashionOutlet",
-      status: "saved",
-      items: [
-        {
-          product: "Denim Jacket",
-          productImage: "/products/jacket.jpg",
-          brand: "UrbanStyle",
-          quantity: 1,
-          date: "2023-06-10",
-          displayDate: "10/06/2023",
-          price: "59.99",
-          originalPrice: "89.99",
-          status: "Saved",
-          actionLabel: "View"
-        }
-      ]
-    }
-  ];
+      } else {
+        setLoading(false);
+      }
+    };
 
-  
-  const sortedDeals = [...SAVED_DEALS].sort((a, b) => 
+    loadWishlist();
+  }, [session]);
+
+  const sortedDeals = [...savedDeals].sort((a, b) => 
     new Date(b.items[0].date) - new Date(a.items[0].date)
   );
 
@@ -63,11 +67,6 @@ const SavedDeal = () => {
     : sortedDeals.filter(deal => deal.status === filter);
 
   const isEmpty = filteredDeals.length === 0;
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="p-4 lg:p-8">
@@ -96,7 +95,7 @@ const SavedDeal = () => {
               <Heart className="w-6 h-6 text-red-500 fill-red-500" />
               <h1 className="text-2xl font-bold">Saved Deals</h1>
               <span className="bg-red-100 text-red-800 px-2.5 py-0.5 rounded-full text-sm">
-                {SAVED_DEALS.length} Items
+                {savedDeals.length} Items
               </span>
             </div>
             
@@ -119,7 +118,7 @@ const SavedDeal = () => {
         {/* Content Area */}
         {loading ? (
           <div className="space-y-6">
-            {SAVED_DEALS.map((_, i) => (
+            {[...Array(3)].map((_, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0 }}

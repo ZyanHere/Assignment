@@ -1,11 +1,90 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MessageSquare } from "lucide-react";
+import { Mail, Phone, MessageSquare, Send, Loader2 } from "lucide-react";
+import { fetchUserMessages } from "@/lib/api/profile";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function Messages() {
+  const { data: session } = useSession();
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
+
+  // Fetch user messages
+  useEffect(() => {
+    const loadMessages = async () => {
+      if (session?.user?.token) {
+        try {
+          const messagesData = await fetchUserMessages();
+          setMessages(messagesData);
+        } catch (error) {
+          console.error('Failed to fetch messages:', error);
+          // Continue with empty messages
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+
+    loadMessages();
+  }, [session]);
+
+  // Pre-fill form with user data
+  useEffect(() => {
+    if (session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: session.user.name || "",
+        email: session.user.email || ""
+      }));
+    }
+  }, [session]);
+
+  const handleInputChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    
+    try {
+      // Here you would typically send the message to your backend
+      // For now, we'll simulate sending
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success('Message sent successfully!');
+      setFormData({
+        name: session?.user?.name || "",
+        email: session?.user?.email || "",
+        phone: "",
+        subject: "",
+        message: ""
+      });
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      toast.error('Failed to send message. Please try again.');
+    } finally {
+      setSending(false);
+    }
+  };
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -64,7 +143,7 @@ export default function Messages() {
 
           {/* Contact Form */}
           <div className="lg:col-span-2 p-6 lg:p-8">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium">
@@ -72,8 +151,12 @@ export default function Messages() {
                   </label>
                   <Input
                     id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
                     placeholder="John Doe"
                     className="h-12"
+                    required
                   />
                 </div>
 
@@ -83,9 +166,13 @@ export default function Messages() {
                   </label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     placeholder="john@example.com"
                     className="h-12"
+                    required
                   />
                 </div>
 
@@ -95,6 +182,9 @@ export default function Messages() {
                   </label>
                   <Input
                     id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
                     placeholder="+1 (555) 123-4567"
                     className="h-12"
                   />
@@ -106,8 +196,12 @@ export default function Messages() {
                   </label>
                   <Input
                     id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
                     placeholder="How can we help?"
                     className="h-12"
+                    required
                   />
                 </div>
               </div>
@@ -118,8 +212,12 @@ export default function Messages() {
                 </label>
                 <Textarea
                   id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
                   placeholder="Tell us about your inquiry..."
                   className="min-h-[150px]"
+                  required
                 />
               </div>
 
@@ -127,8 +225,19 @@ export default function Messages() {
                 <Button
                   type="submit"
                   className="h-12 px-8 text-base bg-blue-600 hover:bg-blue-700"
+                  disabled={sending}
                 >
-                  Send Message
+                  {sending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      Send Message
+                    </>
+                  )}
                 </Button>
               </div>
             </form>

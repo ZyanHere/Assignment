@@ -5,10 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSelectedItems } from "@/lib/contexts/selected-items-context";
 
 const PaymentMode = () => {
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
+  const { selectedItems } = useSelectedItems();
+
+  // Calculate total amount
+  const totalAmount = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 20; // Adding transaction fee
 
   const paymentOptions = [
     {
@@ -35,7 +41,30 @@ const PaymentMode = () => {
 
   const handleNext = () => {
     if (selectedMethod) {
-      router.push(`/payment-mode/${selectedMethod}`);
+      if (selectedMethod === "cod") {
+        handleCODOrder();
+      } else {
+        router.push(`/payment-mode/${selectedMethod}`);
+      }
+    }
+  };
+
+  const handleCODOrder = async () => {
+    setIsProcessing(true);
+    try {
+      // For COD, we would typically create an order without payment
+      // and redirect to success page
+      // This is a simplified implementation
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Redirect to success page with COD details
+      router.push(`/payment-success?payment_id=cod_${Date.now()}&order_id=order_${Date.now()}&amount=${totalAmount}&method=cod`);
+    } catch (error) {
+      console.error("COD order error:", error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -58,6 +87,25 @@ const PaymentMode = () => {
 
           <div className="mx-auto p-10">
             <h2 className="text-xl font-semibold mb-4">Select payment mode</h2>
+
+            {/* Payment Summary */}
+            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <h3 className="font-semibold mb-2">Order Summary</h3>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span>Items Total:</span>
+                  <span>₹{selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Transaction Fee:</span>
+                  <span>₹20</span>
+                </div>
+                <div className="border-t pt-1 flex justify-between font-semibold">
+                  <span>Total Amount:</span>
+                  <span>₹{totalAmount}</span>
+                </div>
+              </div>
+            </div>
 
             {/* Payment Options */}
             {paymentOptions.map((section) => (
@@ -135,7 +183,10 @@ const PaymentMode = () => {
                   width={100}
                   height={100}
                 />
-                <p className="text-lg">Cash on Delivery</p>
+                <div>
+                  <p className="text-lg">Cash on Delivery</p>
+                  <p className="text-sm text-gray-500">Pay when you receive your order</p>
+                </div>
               </div>
               <input
                 type="radio"
@@ -150,14 +201,22 @@ const PaymentMode = () => {
             <div className="flex justify-end mt-8">
               <button
                 onClick={handleNext}
-                disabled={!selectedMethod}
+                disabled={!selectedMethod || isProcessing}
                 className={`flex items-center gap-2 bg-yellow-500 text-white px-6 py-3 rounded-lg text-lg font-medium transition-all ${
-                  !selectedMethod
+                  !selectedMethod || isProcessing
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-orange-600"
                 }`}
               >
-                Next <span className="text-xl">➡️</span>
+                {isProcessing ? (
+                  <>
+                    Processing... <span className="animate-spin">⏳</span>
+                  </>
+                ) : (
+                  <>
+                    {selectedMethod === "cod" ? "Place Order" : "Next"} <span className="text-xl">➡️</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

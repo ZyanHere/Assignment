@@ -26,14 +26,13 @@ const StoreCarousel = ({ slug, name, location, logo, distance, products }) => {
 
       <Carousel className="relative">
         <CarouselPrevious />
-        <CarouselContent className="ml-4">
+        <CarouselContent className="ml-4 flex overflow-x-auto scroll-smooth gap-4">
           {products.map((product, index) => (
             <CarouselItem
               key={index}
-              className={`pl-2 ${
-                index === products.length - 1 ? "basis-[30%]" : "basis-[22%]"
-              }`}
+              className="pl-2 basis-[80%] sm:basis-[50%] md:basis-[33.33%] lg:basis-[25%] xl:basis-[20%]"
             >
+
               <StoreCard product={product} storeName={name} />
             </CarouselItem>
           ))}
