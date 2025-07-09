@@ -59,7 +59,7 @@ const FewMinutesLeft = () => {
                 {/* Price badge wrapper to prevent wrap/overflow */}
                 <div className="shrink-0">
                   <span className="bg-green-100 text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
-                    {movie.price} Rs
+                  Rs {movie.price} 
                   </span>
                 </div>
               </div>
