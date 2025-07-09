@@ -59,11 +59,15 @@ const MovieDetailPage = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span>⏰</span>
-                <span className="font-semibold">{movieDetails.time}</span>
+                <span className="font-semibold">Duration - {movieDetails.duration}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>📍</span>
                 <span className="font-semibold">{movieDetails.location}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>⏰</span>
+                <span className="font-semibold">Show Time - {movie.time}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>💺</span>
@@ -71,7 +75,7 @@ const MovieDetailPage = () => {
                   {movieDetails.seatsLeft} seats left
                 </span>
               </div>
-              <div className="flex items-center gap-2 sm:col-span-2">
+              <div className="flex items-center gap-2 ">
                 <span>🔞</span>
                 <span className="font-semibold">
                   Age Limit - {movieDetails.ageLimit} years
@@ -89,7 +93,63 @@ const MovieDetailPage = () => {
               {movieDetails.description}
             </p>
           </section>
-
+          <section className="mb-8">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">Seat Types & Pricing</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Standard Seat */}
+              <div className="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-lg">Standard</span>
+                  <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-bold">
+                    ₹200
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <span>💺</span>
+                  <span>Seats Left: <span className="font-semibold text-black">30</span></span>
+                </div>
+              </div>
+              {/* Premium Seat */}
+              <div className="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-lg">Premium</span>
+                  <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-bold">
+                    ₹350
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <span>💺</span>
+                  <span>Seats Left: <span className="font-semibold text-black">15</span></span>
+                </div>
+              </div>
+              {/* Recliner Seat */}
+              <div className="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-lg">Recliner</span>
+                  <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-bold">
+                    ₹500
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <span>💺</span>
+                  <span>Seats Left: <span className="font-semibold text-black">8</span></span>
+                </div>
+              </div>
+              {/* Supreme Seat */}
+              <div className="border rounded-lg p-4 flex flex-col bg-white shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-lg">Supreme</span>
+                  <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-bold">
+                    ₹700
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <span>💺</span>
+                  <span>Seats Left: <span className="font-semibold text-black">4</span></span>
+                </div>
+              </div>
+            </div>
+          </section>
           {/* Terms */}
           <div className="p-4 sm:p-6 shadow-lg sm:shadow-2xl rounded-lg sm:rounded-xl mb-6">
             <section>
@@ -114,12 +174,11 @@ const MovieDetailPage = () => {
 
           {/* Button */}
           <button className="w-full py-3 sm:py-4 bg-yellow-400 text-black font-bold rounded-lg sm:rounded-xl hover:bg-yellow-500 transition-colors text-sm sm:text-base lg:text-lg">
-            GRAB DEAL - {movie.price} Rs
+            GRAB DEAL - {movie.price} 
           </button>
         </div>
       </div>
     </div>
   );
 };
-
 export default MovieDetailPage;

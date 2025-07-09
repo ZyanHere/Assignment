@@ -11,10 +11,11 @@ import CategoryCarousel from "@/components/categories/CategoryCarousel";
 import { Button } from "@/components/ui/button";
 
 const API_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/categories";
-//const TOKEN ; // Store securely in .env.local
+const TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // move to .env.local
 
 const fetcher = async (url) => {
   const res = await fetch(url, {
+    headers: { Authorization: TOKEN },
   });
   if (!res.ok) throw new Error("Failed to fetch categories");
   return res.json();
@@ -26,18 +27,37 @@ export default function CategoryPage() {
 
   const scrollRef = useRef(null);
   const [pageIndex, setPageIndex] = useState(0);
-  const itemsPerPage = 16;
+  const [needsScrolling, setNeedsScrolling] = useState(false);
+  const itemsPerPage = 16; // 8 * 2 layout
   const pageCount = Math.ceil(categories.length / itemsPerPage);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const checkScroll = () => {
+      const isScrollable = container.scrollWidth > container.clientWidth;
+      setNeedsScrolling(isScrollable);
+    };
+
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [categories]);
 
   const pages = Array.from({ length: pageCount }, (_, i) =>
     categories.slice(i * itemsPerPage, (i + 1) * itemsPerPage)
   );
 
-  const handleArrow = (dir) => {
+  const scroll = (direction) => {
     const container = scrollRef.current;
     if (!container) return;
     const width = container.offsetWidth;
-    const newIndex = Math.max(0, Math.min(pageIndex + dir, pageCount - 1));
+    const newIndex =
+      direction === "left"
+        ? Math.max(0, pageIndex - 1)
+        : Math.min(pageCount - 1, pageIndex + 1);
+
     container.scrollTo({ left: width * newIndex, behavior: "smooth" });
     setPageIndex(newIndex);
   };
@@ -61,23 +81,31 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* Carousel */}
       <section className="relative px-4 md:px-6">
-        {/* Arrows */}
-        <button
-          className="absolute top-1/2 left-0 z-10 -translate-y-1/2 bg-white border rounded-full shadow p-2"
-          onClick={() => handleArrow(-1)}
-        >
-          ◀️
-        </button>
-        <button
-          className="absolute top-1/2 right-0 z-10 -translate-y-1/2 bg-white border rounded-full shadow p-2"
-          onClick={() => handleArrow(1)}
-        >
-          ▶️
-        </button>
+        {/* Scroll buttons - only visible when scrolling is needed */}
+        {needsScrolling && (
+          <>
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-white"
+              aria-label="Scroll left"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-white"
+              aria-label="Scroll right"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </>
+        )}
 
-        {/* Scrollable container */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
@@ -87,7 +115,7 @@ export default function CategoryPage() {
             {pages.map((page, idx) => (
               <div
                 key={idx}
-                className="w-full shrink-0 snap-start px-2 py-4 grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-4 justify-center"
+                className="w-full shrink-0 snap-start px-2 py-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 justify-center"
               >
                 {page.map((cat) => (
                   <CategoryItem key={cat._id} category={cat} />
@@ -97,7 +125,6 @@ export default function CategoryPage() {
           </div>
         </div>
 
-        {/* Dots */}
         <div className="flex justify-center mt-2 space-x-2">
           {pages.map((_, i) => (
             <span
@@ -110,7 +137,6 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* Banner */}
       <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6">
         <div className="relative aspect-[3.5/1] w-full rounded-xl overflow-hidden">
           <Image
@@ -122,9 +148,7 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* Optional carousels */}
       <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 space-y-6">
-        <CategoryCarousel data={[]} loading={isLoading} />
         <CategoryCarousel data={[]} loading={isLoading} />
       </section>
 
@@ -134,11 +158,10 @@ export default function CategoryPage() {
   );
 }
 
-// Category card
 const CategoryItem = ({ category }) => (
   <Link href={`/categories/${category.slug}`} className="group">
     <div className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-xl transition-all">
-      <div className="relative w-14 h-14 md:w-20 md:h-20 lg:w-20 lg:h-20">
+      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24">
         <Image
           src={category.imageUrl || "/categories/subcat/fallback-category.png"}
           alt={category.name}
@@ -147,14 +170,12 @@ const CategoryItem = ({ category }) => (
           unoptimized
         />
       </div>
-      <p className="text-center mt-2 text-xs md:text-sm font-medium group-hover:text-blue-600">
+      <p className="text-center mt-2 text-sm font-medium group-hover:text-blue-600">
         {category.name}
       </p>
     </div>
   </Link>
 );
-
-// You can remove this if unused
 const FilterButton = ({ children }) => (
   <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100 w-full md:w-auto justify-center">
     <Image src="/categories/icon.svg" alt="icon" width={20} height={20} />

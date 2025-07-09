@@ -61,7 +61,7 @@ const Recommended = () => {
 
                 {/*  EDIT 5:  price badge fits  on all screens */}
                 <span className="bg-green-100 text-black text-xs sm:text-sm px-4 py-2 font-medium rounded-md mt-4 sm:mt-0 self-start sm:self-end whitespace-nowrap">
-                  {movie.price} Rs
+                  Rs {movie.price} 
                 </span>
               </div>
 
