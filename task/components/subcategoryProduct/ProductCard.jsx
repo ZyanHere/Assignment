@@ -11,16 +11,17 @@ import { useState } from "react";
 export default function ProductCard({ product }) {
     const { addToCart } = useCart();
     const router = useRouter();
-    const { setSelectedProduct } = useProduct();
+    const { setSelectedProduct, setSelectedVariant } = useProduct();
     const [imageError, setImageError] = useState(false);
 
     const handleItemClick = () => {
         setSelectedProduct(product);
+        setSelectedVariant(product.variants[0])
         router.push(`/product/${product.id}`);
     }
 
-   
-    
+
+
 
     // Get the first variant (base variant) data
     const getVariantData = () => {
