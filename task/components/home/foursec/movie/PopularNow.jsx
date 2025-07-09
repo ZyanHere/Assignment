@@ -53,7 +53,7 @@ const PopularNow = () => {
                   <div className="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <p className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">📍 {movie.location}</p>
                     <span className="bg-yellow-400 text-black text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
-                      {movie.price} Rs
+                      Rs {movie.price} 
                     </span>
                   </div>
                 </div>
