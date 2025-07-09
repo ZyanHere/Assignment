@@ -1,13 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-
-
+     images: {
     domains: [
-      // allow S3 bucket images
       'lastminutedeal.s3.ap-southeast-2.amazonaws.com',
-      // if you ever host images on your own API domain, add it here too:
-      // 'lmd-user-2ky8.onrender.com',
+      'example.com',
+      // any other hosts you fetch images from…
     ],
     // alternatively, you can use `remotePatterns` for more control:
     // remotePatterns: [
