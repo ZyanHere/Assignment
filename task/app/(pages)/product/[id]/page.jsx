@@ -13,13 +13,17 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/lib/contexts/cart-context";
+import { Star } from 'lucide-react';
 
 export default function DescriptionPage({ params }) {
 
-    const { selectedProduct } = useProduct();
+    const { selectedProduct, selectedVariant, setSelectedVariant } = useProduct();
     const router = useRouter();
+    const { addToCart } = useCart();
     const [activeTab, setActiveTab] = useState("keyinfo");
-
+    const [selectedImage, setSelectedImage] = useState(selectedVariant.images[0].url);
 
     useEffect(() => {
         if (!selectedProduct) {
@@ -31,6 +35,23 @@ export default function DescriptionPage({ params }) {
 
 
     if (!selectedProduct) return null;
+
+    const handleAddToCart = () => {
+
+        if (selectedVariant) {
+            addToCart({
+                id: selectedVariant._id,
+                variant: selectedVariant,
+                selectedVariant,
+                price: selectedVariant.base_price,
+                sale_price: selectedVariant.price.sale_price,
+                stock: selectedVariant.stock.quantity,
+                sku: selectedVariant.sku,
+            });
+        } else {
+            console.warn("No variant available for this product");
+        }
+    };
 
 
     return (
@@ -57,47 +78,54 @@ export default function DescriptionPage({ params }) {
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>
-            <div className="p-14 grid grid-cols-2 gap-4 w-full">
-
-                <div className="flex gap-12">
+            <div className="p-14 flex flex-col gap-8">
+                <div className="flex gap-8">
                     <div className="flex flex-row gap-4">
-                        <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto">
-                            {selectedProduct.images.map((img, idx) => (
-                                <Image
-                                    key={idx}
-                                    src={img.url}
-                                    alt={`${selectedProduct.name} - ${idx}`}
-                                    width={150}
-                                    height={150}
-                                    className="rounded-md border hover:border-cyan-500 cursor-pointer object-contain"
-                                />
+                        <div className="flex flex-col gap-2">
+                            {selectedVariant.images.map((img, idx) => (
+                                <div key={idx} className={`h-20 w-20 relative border ${selectedImage === img.url ? "border-cyan-500" : "border-gray-300"}`} onClick={() => setSelectedImage(img.url)}>
+                                    <Image
+                                        src={img.url}
+                                        alt={`${selectedVariant.variant_name} - ${idx}`}
+                                        fill
+                                        className="border hover:border-cyan-500 cursor-pointer object-cover"
+                                    />
+                                </div>
+
                             ))}
                         </div>
 
-                        <div className="flex items-center justify-center  border rounded-xl">
+                        <div className="h-100 w-100 flex items-center justify-center border border-gray-200 relative">
                             <Image
-                                src={selectedProduct.images[0].url}
-                                alt={selectedProduct.name}
-                                width={800}
-                                height={500}
-                                className="object-contain"
+                                src={selectedImage}
+                                alt={selectedVariant.variant_name}
+                                fill
+                                className="object-cover"
                             />
                         </div>
                     </div>
 
 
                     <div className="flex flex-col gap-2">
-                        <h1 className="text-2xl font-bold">{selectedProduct.variants[0].variant_name}</h1>
+                        <h1 className="text-2xl font-bold">{selectedVariant.variant_name}</h1>
 
-                        <div className="text-sm text-gray-500 line-through">MRP ₹{selectedProduct.variants[0].price.base_price}</div>
-                        <div className="text-lg font-bold text-black">₹ {selectedProduct.variants[0].price.sale_price}</div>
-                        <div className="text-cyan-700 font-medium">{selectedProduct.variants[0].price.discount_percentage}% Off</div>
+                        <div className="text-sm text-gray-500 line-through">MRP ₹{selectedVariant.price.base_price}</div>
+                        <div className="text-lg font-bold text-black">₹ {selectedVariant.price.sale_price}</div>
+                        <div className="text-cyan-700 font-medium">{selectedVariant.price.discount_percentage}% Off</div>
 
 
                         <div className="flex items-center gap-1 text-yellow-500 text-xs mt-1">
-                            {"⭐".repeat(Math.round(selectedProduct.rating.average))}
-                            <span className="text-gray-700 ml-2">{selectedProduct.average}</span>
-                            <span className="text-gray-500 ml-2">{selectedProduct.count} Reviews</span>
+                            {[...Array(5)].map((_, i) => (
+                                <Star
+                                    key={i}
+                                    className={`w-4 h-4 ${i < Math.round(selectedProduct.rating.average)
+                                        ? "fill-yellow-500 text-yellow-500"
+                                        : "text-gray-300"
+                                        }`}
+                                />
+                            ))}
+                            <span className="text-gray-700 ml-2">{selectedProduct.rating.average}</span>
+                            <span className="text-gray-500 ml-2">({selectedProduct.rating.count} Reviews)</span>
                         </div>
 
                         <p className="text-gray-600 mt-1 text-sm">{selectedProduct.description}</p>
@@ -105,20 +133,47 @@ export default function DescriptionPage({ params }) {
                         <div className="mt-4 flex items-center gap-6">
                             <div className="font-bold text-base">
                                 <p>Total:</p>
-                                <p>₹ {selectedProduct.variants[0].price.sale_price}</p>
+                                <p>₹ {selectedVariant.price.sale_price}</p>
                             </div>
 
-                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1.5 rounded text-sm font-semibold">
+                            <Button className="bg-yellow-500 hover:bg-yellow-600 text-white rounded text-sm font-semibold" onClick={handleAddToCart}>
                                 ADD TO CART
-                            </button>
-                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1.5 rounded text-sm font-semibold">GRAB IT NOW</button>
+                            </Button>
+                            <Button className="bg-yellow-500 hover:bg-yellow-600 text-white rounded text-sm font-semibold">GRAB IT NOW</Button>
                         </div>
                     </div>
 
                 </div>
+                <div className="text-sm sm:text-base leading-relaxed">
+                    <div className="flex flex-col gap-4 mb-8">
+                        <h2 className="font-medium text-xl">Product Variants</h2>
+                        <div className="flex flex-wrap gap-6">
+                            {
+                                selectedProduct.variants.map((variant, index) => (
+                                    <div key={index} className="flex flex-col items-center gap-2 w-40">
+                                        <div className={`h-40 w-40 border-3 relative overflow-hidden cursor-pointer 
+        ${selectedVariant === variant ? "border-cyan-500" : "border-gray-300"}`} onClick={() => {
+                                                setSelectedVariant(variant)
+                                                setSelectedImage(variant.images[0].url)
+                                            }
 
+                                            }>
+                                            <Image
+                                                src={variant.images[0].url}
+                                                alt={variant.variant_name}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                        <span className="text-sm text-center break-words w-full">
+                                            {variant.variant_name}
+                                        </span>
+                                    </div>
+                                ))
+                            }
+                        </div>
 
-                <div className="col-span-2 mt-6 border-t pt-4 text-sm sm:text-base leading-relaxed">
+                    </div>
                     <div className="flex gap-5 pb-2 text-sm sm:text-base">
                         <button
                             onClick={() => setActiveTab("keyinfo")}
@@ -172,7 +227,7 @@ export default function DescriptionPage({ params }) {
 
                         {activeTab === "attributes" && (
                             <div>
-                                {selectedProduct.attributes?.map((attr, idx) => (
+                                {selectedVariant.attributes?.map((attr, idx) => (
                                     <div key={idx} className="mb-2">
                                         <span className="font-semibold">{attr.name}:</span> {attr.value}
                                     </div>
@@ -192,8 +247,10 @@ export default function DescriptionPage({ params }) {
                     </div>
 
                 </div>
-
             </div>
+
+
+
         </>
 
     );
