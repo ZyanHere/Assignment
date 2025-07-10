@@ -85,11 +85,11 @@ export default function StoreCard({ product, storeName }) {
         </CardTitle>
 
         {/* Category & Rating */}
-        <div className="flex items-center gap-2">
+        <div className=" items-center gap-2">
           <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
             {product.category}
           </span>
-          <div className="flex items-center">
+          <div className="flex items-center mt-2">
             <Star className="text-yellow-300 fill-current" size={16} />
             <span className="text-sm text-gray-600 ml-1">
               {product.rating?.average ?? 0} ({product.rating?.count ?? 0})

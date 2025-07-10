@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/carousel";
 import StoreCard from "./StoreCard";
 
-const StoreCarousel = ({ slug, name, location, logo, distance, products }) => {
+const StoreCarousel = ({ vendorId, name, location, logo, distance, products }) => {
   return (
     <div className="w-full max-w-[1500px] mx-auto mt-6 mb-15">
       <div className="flex items-center justify-between mb-8">
-        <Link href={`/stores/${slug}`} className="flex items-center gap-3">
+        <Link href={`/stores/${vendorId}`} className="flex items-center gap-3">
           <img src={logo} alt={`${name} Logo`} className="w-24 h-24 cursor-pointer" />
           <div>
             <p className="text-4xl font-semibold cursor-pointer">{name}</p>

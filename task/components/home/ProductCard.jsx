@@ -64,31 +64,7 @@ const ProductCard = ({ product }) => {
           By {product.seller}
         </p>
 
-        {/* ⏳ Deal Countdown - Only if time is present */}
-        {product.time && (
-          <div className="mt-2">
-            {timeLeft.expired ? (
-              <div className="text-center text-red-500 text-xs font-medium py-2">
-                Offer Expired
-              </div>
-            ) : (
-              <div className="flex flex-col items-center bg-gray-100 rounded p-1">
-                <div className="flex items-center justify-center gap-1 text-blue-700 text-sm font-medium">
-                  <span>{String(timeLeft.hours).padStart(2, "0")}</span>
-                  <span>:</span>
-                  <span>{String(timeLeft.minutes).padStart(2, "0")}</span>
-                  <span>:</span>
-                  <span>{String(timeLeft.seconds).padStart(2, "0")}</span>
-                </div>
-                <div className="flex items-center justify-center gap-4 text-gray-500 text-[10px] mt-1">
-                  <span className="w-6 text-center">hours</span>
-                  <span className="w-6 text-center">min</span>
-                  <span className="w-6 text-center">sec</span>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+        
 
         <div className="mt-2">
           <p className="text-sm text-blue-700 font-semibold">
