@@ -9,15 +9,14 @@ import Essentials from "./Essentials";
 import NearbyStores from "./NearbyStores";
 import OffersBanner from "./OffersBanner";
 import FestBanner from "./FestBanner";
-import NearbyEvents from "./NearbyEvents";
+
 
 const AllTabContent = () => {
-  const { data, error, isLoading } = useSWR("/api/home", fetcher);
+  const { data: featuredData, isLoading: featuredLoading } = useSWR("/lmd/api/v1/retail/products/featured", fetcher);
+  const { data: bestSellersData, isLoading: bestSellersLoading } = useSWR("/lmd/api/v1/retail/products/best-sellers", fetcher);
 
-  const flashDeals = data?.data?.flashDeals?.items || [];
-  const products = data?.data?.products?.items || [];
-  const stores = data?.data?.stores?.items || [];
-  const events = data?.data?.events?.items || [];
+  const featuredProducts = featuredData?.data || [];
+  const bestSellerProducts = bestSellersData?.data || [];
 
   return (
     <main className="space-y-6 md:space-y-8">
@@ -33,7 +32,7 @@ const AllTabContent = () => {
           <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">
             Top brands last minutes deal
           </h2>
-          <BrandCarousel data={flashDeals} loading={isLoading} />
+          <BrandCarousel data={featuredProducts} loading={featuredLoading} />
         </section>
       </div>
 
@@ -46,12 +45,12 @@ const AllTabContent = () => {
           <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">
             Products
           </h2>
-          <BrandCarousel data={products} loading={isLoading} />
+          <BrandCarousel data={bestSellerProducts} loading={bestSellersLoading} />
         </section>
       </div>
 
       <NearbyStores />
-      <NearbyEvents events={events} />
+      {/* <NearbyEvents events={events} /> */}
     </main>
   );
 };

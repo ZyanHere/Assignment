@@ -21,22 +21,27 @@ const BrandCarousel = ({ data = [], loading = false }) => {
     );
   }
 
-  const mappedProducts = data.map((item) => {
-    const p = item.productId || item;
-    const mrp = p.mrp || 0;
-    const sp = p.sellingPrice || 0;
+  const mappedProducts = data.map((p) => {
+    const variant = p.variants?.[0] || {};
+    const basePrice = variant?.price?.base_price || 0;
+    const salePrice = variant?.price?.sale_price || basePrice;
 
     return {
       id: p._id,
-      name: p.productName || "Unnamed Product",
-      brand: p.brand || "Unknown",
-      seller: p.storeLocation || "N/A",
-      discountedPrice: sp,
-      originalPrice: mrp,
-      image: p.images?.[0] || "/fallback.png",
-      weight: p.weight || "1 unit",
-      time: item.dealEndTime || null,
-      discount: mrp && sp ? Math.round(((mrp - sp) / mrp) * 100) : 0,
+      name: p.name,
+      brand: p.brand,
+      seller: p.vendor_store_id?.store_name || "Unknown Seller",
+      discountedPrice: salePrice,
+      originalPrice: basePrice,
+      image: variant?.images?.[0]?.url || p.images?.[0]?.url || "/fallback.png",
+      weight:
+        p.attributes?.find((attr) => attr.name?.toLowerCase() === "weight")
+          ?.value || "1 unit",
+      time: p.timing?.end_date || null,
+      discount:
+        basePrice && salePrice
+          ? Math.round(((basePrice - salePrice) / basePrice) * 100)
+          : 0,
     };
   });
 
