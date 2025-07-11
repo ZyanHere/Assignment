@@ -9,7 +9,7 @@ import Footer from "@/components/home/footer";
 import CategoryCarousel from "@/components/categories/CategoryCarousel";
 import { FilterButton } from "../page";
 import SubProduct from "@/components/subcategoryProduct/SubProduct";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetcher } from "@/lib/api";
 
 export default function CategorySlugPage() {
@@ -22,9 +22,10 @@ export default function CategorySlugPage() {
     error: categoriesError,
     isLoading: loadingCategories,
   } = useSWR("/lmd/api/v1/retail/categories", fetcher);
-
+  console.log(categoriesData);
+  console.log(categoriesError);
   const category = categoriesData?.data?.find((cat) => cat.slug === slug);
-
+  console.log(category);
   // Fetch subcategories of the matched category
   const {
     data: subcategoriesData,
@@ -34,6 +35,15 @@ export default function CategorySlugPage() {
     category ? `/lmd/api/v1/retail/categories/${category._id}/subcategories` : null,
     fetcher
   );
+
+  useEffect(() => {
+    if (
+      subcategoriesData?.data?.length > 0 &&
+      !selectedSubcategory
+    ) {
+      setSelectedSubcategory(subcategoriesData.data[0]._id);
+    }
+  }, [subcategoriesData, selectedSubcategory]);
 
   if (loadingCategories || loadingSubcategories) {
     return (
@@ -46,7 +56,7 @@ export default function CategorySlugPage() {
   if (!category || categoriesError) {
     return (
       <div className="flex h-screen items-center justify-center text-red-500 text-2xl">
-        Category not found
+        Subcategory not found
       </div>
     );
   }
