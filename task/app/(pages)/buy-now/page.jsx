@@ -21,14 +21,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { createOrderFromCart } from "@/lib/api/order";
+import { createOrderFromCart, createOrderFromSingleItem } from "@/lib/api/order";
 import { initializeRazorpay } from "@/lib/utils/razorpay";
 import { getSession } from 'next-auth/react';
 import { useCart } from '@/lib/contexts/cart-context';
 import { useAddress } from '@/lib/contexts/address-context';
 
 export default function BuyNowPage() {
-  const { selectedItems } = useSelectedItems();
+  const { selectedItems, singleItem } = useSelectedItems();
   const { clearCart } = useCart();
   const { addresses, primaryAddress, getCheckoutAddress } = useAddress();
   const [purchaseMode, setPurchaseMode] = useState("homeDelivery");
@@ -38,6 +38,10 @@ export default function BuyNowPage() {
   const [addressError, setAddressError] = useState(null);
   const router = useRouter();
 
+  //console.log(selectedItems);
+
+  //const selectedItems = singleItem ? [singleItem] : selectedItems
+  //console.log(selectedItems);
   const billDetails = useMemo(() => {
     if (!selectedItems.length) return null;
 
@@ -114,7 +118,7 @@ export default function BuyNowPage() {
         setAddressError('Please add a delivery address before proceeding');
         return;
       }
-      
+
       if (!selectedAddressId && addresses.length > 0) {
         setAddressError('Please select a delivery address');
         return;
@@ -123,11 +127,11 @@ export default function BuyNowPage() {
 
     setLoading(true);
     setAddressError(null);
-    
+
     try {
       // Step 1: Get selected address or primary address
       let selectedAddress = null;
-      
+
       if (purchaseMode === "homeDelivery") {
         if (selectedAddressId) {
           selectedAddress = addresses.find(addr => addr._id === selectedAddressId);
@@ -135,7 +139,7 @@ export default function BuyNowPage() {
           // Use primary address or first available address
           selectedAddress = primaryAddress || addresses[0];
         }
-        
+
         if (!selectedAddress) {
           throw new Error('No delivery address available');
         }
@@ -143,11 +147,11 @@ export default function BuyNowPage() {
 
       // Step 2: Create order from cart items
       console.log('Creating order from cart items:', selectedItems);
-      
+
       // Get session for user data
       const userSession = await getSession();
       const user = userSession?.user;
-      
+
       const orderData = {
         billing_address: purchaseMode === "homeDelivery" ? {
           name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
@@ -193,8 +197,8 @@ export default function BuyNowPage() {
         coupon_code: null,
       };
 
-      const orderResult = await createOrderFromCart(orderData);
-      
+      const orderResult = singleItem ? await createOrderFromSingleItem(orderData) : await createOrderFromCart(orderData);
+
       if (orderResult.status !== 'success') {
         throw new Error(orderResult.message || 'Failed to create order');
       }
@@ -204,7 +208,7 @@ export default function BuyNowPage() {
       // Step 2: Create Razorpay order
       const paymentSession = await getSession();
       const token = paymentSession?.user?.token || paymentSession?.user?.accessToken;
-      
+
       const razorpayResponse = await fetch(`/api/orders/${orderResult.data.order_id}/create-payment`, {
         method: 'POST',
         headers: {
@@ -278,7 +282,7 @@ export default function BuyNowPage() {
     try {
       const processSession = await getSession();
       const token = processSession?.user?.token || processSession?.user?.accessToken;
-      
+
       const response = await fetch('/api/payments/process', {
         method: 'POST',
         headers: {
@@ -294,7 +298,7 @@ export default function BuyNowPage() {
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
         // Clear cart after successful payment
         await clearCart();
@@ -328,7 +332,7 @@ export default function BuyNowPage() {
         <div className="p-3 md:p-6 w-full max-w-[1700px] mx-auto">
           {/* Selected Items */}
           <h2 className="text-xl font-semibold mb-4 lg:text-xl ">Your Items</h2>
-          
+
           {/* Vendor Breakdown */}
           {Object.keys(billDetails?.vendorGroups || {}).length > 1 && (
             <div className="mb-6 p-4 bg-gray-50 rounded-lg">
@@ -369,7 +373,7 @@ export default function BuyNowPage() {
               </div>
             </div>
           )}
-          
+
           <div className="space-y-4 lg:space-y-4 ">
             {selectedItems.map((item) => (
               <div
@@ -446,7 +450,7 @@ export default function BuyNowPage() {
                     <p className="text-red-600 text-sm">{addressError}</p>
                   </div>
                 )}
-                <AddressSection 
+                <AddressSection
                   onAddressSelect={setSelectedAddressId}
                   selectedAddressId={selectedAddressId}
                 />
@@ -458,7 +462,7 @@ export default function BuyNowPage() {
           {billDetails && (
             <div className="p-4 bg-white shadow rounded-lg mt-6">
               <h2 className="text-lg font-semibold mb-3">Bill Details</h2>
-              
+
               {/* Vendor Summary */}
               {Object.keys(billDetails.vendorGroups).length > 1 && (
                 <div className="mb-4 p-3 bg-blue-50 rounded-lg">
@@ -475,7 +479,7 @@ export default function BuyNowPage() {
                   </p>
                 </div>
               )}
-              
+
               <div className="space-y-2">
                 {Object.entries(billDetails).map(([key, item]) =>
                   key !== "grandTotal" && key !== "vendorGroups" ? (
@@ -560,27 +564,27 @@ export default function BuyNowPage() {
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Quick Checkout with Razorpay</h3>
               <div className="flex flex-col sm:flex-row gap-4">
-                                  <div className="flex-1">
-                    <Button
-                      onClick={handleCheckout}
-                      disabled={loading}
-                      variant="default"
-                      size="lg"
-                      className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
-                    >
-                      {loading ? (
-                        <>
-                          <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          <CreditCard className="w-4 h-4 mr-2" />
-                          Pay ₹{billDetails?.grandTotal?.amount || 0}
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                <div className="flex-1">
+                  <Button
+                    onClick={handleCheckout}
+                    disabled={loading}
+                    variant="default"
+                    size="lg"
+                    className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
+                  >
+                    {loading ? (
+                      <>
+                        <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Pay ₹{billDetails?.grandTotal?.amount || 0}
+                      </>
+                    )}
+                  </Button>
+                </div>
                 {/* <div className="flex-1">
                   <Button
                     onClick={handleProceedToPayment}

@@ -16,6 +16,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/contexts/cart-context";
 import { Star } from 'lucide-react';
+import { useSelectedItems } from "@/lib/contexts/selected-items-context";
+import toast from "react-hot-toast";
+import { Toaster } from 'react-hot-toast';
 
 export default function DescriptionPage({ params }) {
 
@@ -23,7 +26,8 @@ export default function DescriptionPage({ params }) {
     const router = useRouter();
     const { addToCart } = useCart();
     const [activeTab, setActiveTab] = useState("keyinfo");
-    const [selectedImage, setSelectedImage] = useState(selectedVariant.images[0].url);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const { setSingleItem, setSelectedItems } = useSelectedItems();
 
     useEffect(() => {
         if (!selectedProduct) {
@@ -31,10 +35,14 @@ export default function DescriptionPage({ params }) {
         } else {
             window.scrollTo(0, 0);
         }
-    }, [selectedProduct]);
+
+        if (selectedVariant) {
+            setSelectedImage(selectedVariant.images[0].url);
+        }
+    }, [selectedProduct, selectedVariant]);
 
 
-    if (!selectedProduct) return null;
+    if (!selectedProduct || !selectedVariant || !selectedImage) return null;
 
     const handleAddToCart = () => {
 
@@ -48,15 +56,43 @@ export default function DescriptionPage({ params }) {
                 stock: selectedVariant.stock.quantity,
                 sku: selectedVariant.sku,
             });
+            toast.success('Added to Cart successfully')
         } else {
             console.warn("No variant available for this product");
         }
     };
 
+    const handleGrab = () => {
+        if (selectedVariant) {
+            const singleData = [{
+                id: selectedVariant._id,
+                variantId: selectedVariant._id,
+                name: selectedVariant.variant_name,
+                brand: selectedProduct?.brand || 'Last Minute Deal',
+                seller: selectedProduct.vendor_store_id?.store_name || 'Last Minute Deal',
+                vendorId: selectedProduct.vendor_store_id?._id || 'default',
+                vendorName: selectedProduct.vendor_store_id?.store_name || 'Last Minute Deal',
+                price: selectedVariant.price.sale_price,
+                mrp: selectedVariant.price.base_price,
+                image:
+                    selectedVariant.images.find((img) => img.is_primary)?.url ||
+                    selectedProduct.images[0]?.url,
+                weight: selectedVariant.variant_name,
+                quantity: 1,
+            }]
+            setSelectedItems(singleData);
+            setSingleItem(true);
+            //console.log(selectedItems);
+            // console.log(singleItem);
+            router.push('/buy-now');
+        }
+
+    }
 
     return (
         <>
             <Header />
+            <Toaster />
             <div className="pl-14 mt-12 font-medium">
                 <Breadcrumb>
                     <BreadcrumbList className='text-lg text-black'>
@@ -68,10 +104,15 @@ export default function DescriptionPage({ params }) {
                             <BreadcrumbLink href={`/categories/${selectedProduct.category.slug}`}>{selectedProduct.category.name}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href={`/categories/${selectedProduct.category.slug}/${selectedProduct.subcategory.slug}`}>{selectedProduct.subcategory.name}</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
+                        {
+                            selectedProduct.subcategory && <>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href={`/categories/${selectedProduct.category.slug}/${selectedProduct.subcategory.slug}`}>{selectedProduct.subcategory.name}</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                            </>
+                        }
+
                         <BreadcrumbItem>
                             <BreadcrumbPage className='text-yellow-500'>{selectedProduct.name}</BreadcrumbPage>
                         </BreadcrumbItem>
@@ -96,12 +137,12 @@ export default function DescriptionPage({ params }) {
                         </div>
 
                         <div className="h-100 w-100 flex items-center justify-center border border-gray-200 relative">
-                            <Image
+                            {selectedImage && <Image
                                 src={selectedImage}
                                 alt={selectedVariant.variant_name}
                                 fill
                                 className="object-cover"
-                            />
+                            />}
                         </div>
                     </div>
 
@@ -118,14 +159,14 @@ export default function DescriptionPage({ params }) {
                             {[...Array(5)].map((_, i) => (
                                 <Star
                                     key={i}
-                                    className={`w-4 h-4 ${i < Math.round(selectedProduct.rating.average)
+                                    className={`w-4 h-4 ${i < Math.round(selectedProduct.rating?.average)
                                         ? "fill-yellow-500 text-yellow-500"
                                         : "text-gray-300"
                                         }`}
                                 />
                             ))}
-                            <span className="text-gray-700 ml-2">{selectedProduct.rating.average}</span>
-                            <span className="text-gray-500 ml-2">({selectedProduct.rating.count} Reviews)</span>
+                            <span className="text-gray-700 ml-2">{selectedProduct.rating?.average}</span>
+                            <span className="text-gray-500 ml-2">({selectedProduct.rating?.count} Reviews)</span>
                         </div>
 
                         <p className="text-gray-600 mt-1 text-sm">{selectedProduct.description}</p>
@@ -139,7 +180,11 @@ export default function DescriptionPage({ params }) {
                             <Button className="bg-yellow-500 hover:bg-yellow-600 text-white rounded text-sm font-semibold" onClick={handleAddToCart}>
                                 ADD TO CART
                             </Button>
-                            <Button className="bg-yellow-500 hover:bg-yellow-600 text-white rounded text-sm font-semibold">GRAB IT NOW</Button>
+                            <Button className="bg-yellow-500 hover:bg-yellow-600 text-white rounded text-sm font-semibold"
+                                onClick={handleGrab}
+                            >
+                                GRAB IT NOW
+                            </Button>
                         </div>
                     </div>
 
@@ -218,30 +263,37 @@ export default function DescriptionPage({ params }) {
                                     <span className="font-semibold text-base">Brand: </span>
                                     {selectedProduct.brand}
                                 </div>
-                                <div className="mb-2">
-                                    <span className="font-semibold text-base">Warranty: </span>
-                                    {selectedProduct.warranty}
-                                </div>
+                                {
+                                    selectedProduct.warranty &&
+                                    <div className="mb-2">
+                                        <span className="font-semibold text-base">Warranty: </span>
+                                        {selectedProduct.warranty}
+                                    </div>
+
+                                }
+
                             </div>
                         )}
 
                         {activeTab === "attributes" && (
                             <div>
-                                {selectedVariant.attributes?.map((attr, idx) => (
+                                {selectedVariant.attributes?.length > 0 ? (selectedVariant.attributes?.map((attr, idx) => (
                                     <div key={idx} className="mb-2">
                                         <span className="font-semibold">{attr.name}:</span> {attr.value}
                                     </div>
-                                ))}
+                                ))) : (<div>No attributes</div>)
+                                }
                             </div>
                         )}
 
                         {activeTab === "specifications" && (
                             <div>
-                                {selectedProduct.specifications?.map((spec, idx) => (
+                                {selectedProduct.specifications?.length > 0 ? (selectedProduct.specifications?.map((spec, idx) => (
                                     <div key={idx} className="mb-2">
                                         <span className="font-semibold">{spec.name}:</span> {spec.value}
                                     </div>
-                                ))}
+                                ))) : (<div>No specifications</div>)
+                                }
                             </div>
                         )}
                     </div>
