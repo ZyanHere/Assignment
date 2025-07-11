@@ -42,6 +42,9 @@ const BrandCarousel = ({ data = [], loading = false }) => {
         basePrice && salePrice
           ? Math.round(((basePrice - salePrice) / basePrice) * 100)
           : 0,
+      variants: p.variants,
+      category: p.category,
+      subcategory: p.subcategory
     };
   });
 

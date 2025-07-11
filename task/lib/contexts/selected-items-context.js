@@ -5,13 +5,14 @@ const SelectedItemsContext = createContext();
 
 export const SelectedItemsProvider = ({ children }) => {
   const [selectedItems, setSelectedItems] = useState([]);
+  const [singleItem, setSingleItem] = useState(false);
 
   const addToCart = (item) => {
     setSelectedItems(prev => {
       const existingItem = prev.find(i => i.id === item.id);
       if (existingItem) {
-        return prev.map(i => 
-          i.id === item.id 
+        return prev.map(i =>
+          i.id === item.id
             ? { ...i, quantity: i.quantity + (item.quantity || 1) }
             : i
         );
@@ -29,9 +30,9 @@ export const SelectedItemsProvider = ({ children }) => {
       removeFromCart(itemId);
       return;
     }
-    setSelectedItems(prev => 
-      prev.map(item => 
-        item.id === itemId 
+    setSelectedItems(prev =>
+      prev.map(item =>
+        item.id === itemId
           ? { ...item, quantity }
           : item
       )
@@ -51,15 +52,17 @@ export const SelectedItemsProvider = ({ children }) => {
   };
 
   return (
-    <SelectedItemsContext.Provider value={{ 
-      selectedItems, 
+    <SelectedItemsContext.Provider value={{
+      selectedItems,
       setSelectedItems,
       addToCart,
       removeFromCart,
       updateQuantity,
       clearCart,
       getCartTotal,
-      getCartCount
+      getCartCount,
+      singleItem,
+      setSingleItem
     }}>
       {children}
     </SelectedItemsContext.Provider>

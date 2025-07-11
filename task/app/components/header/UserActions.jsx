@@ -13,6 +13,8 @@ import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useCart } from "@/lib/contexts/cart-context";
+import { useRouter } from "next/navigation";
 
 const UserActions = () => {
   //user from redux and next-auth
@@ -22,7 +24,8 @@ const UserActions = () => {
   const { data: session } = useSession();
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("Guest");
-
+  const { cart } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     // First priority: Check Redux store (for immediate state after login/signup)
@@ -76,14 +79,14 @@ const UserActions = () => {
     return name ? name.charAt(0).toUpperCase() : "User";
   };
 
-  let cartItems = 3;
+  let cartItems = cart.length;
   let notifications = 5;
 
 
   return (
     <div className="flex items-center gap-2 sm:gap-3">
       {/* Cart */}
-      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
+      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform" onClick={() => router.push('/cart')}>
         <span className="sr-only">Cart</span>
         <svg
           className="w-6 h-6 text-gray-700"
