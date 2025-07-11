@@ -121,6 +121,7 @@ export function CartProvider({ children, showCartInHeader = false }) {
         removeFromCart,
         clearCart: clearAll,
         reload,
+        cartItems:cart.reduce((sum, item) => sum + item.quantity, 0),
       }}
     >
       {children}

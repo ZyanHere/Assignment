@@ -14,7 +14,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useCart } from "@/lib/contexts/cart-context";
+
 import { useRouter } from "next/navigation";
+
 
 const UserActions = () => {
   //user from redux and next-auth
@@ -79,7 +81,9 @@ const UserActions = () => {
     return name ? name.charAt(0).toUpperCase() : "User";
   };
 
-  let cartItems = cart.length;
+  const{cartItems}=useCart();
+//   let cartItems = cart.length;
+
   let notifications = 5;
 
 
