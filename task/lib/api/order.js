@@ -11,6 +11,17 @@ export const createOrderFromCart = async (orderData) => {
   }
 };
 
+// create order from single item
+export const createOrderFromSingleItem = async (orderData) => {
+  try {
+    const response = await api.post('/lmd/api/v1/retail/orders/single-item', orderData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating order from cart:', error);
+    throw error;
+  }
+}
+
 // Get order details
 export const getOrderDetails = async (orderId) => {
   try {
