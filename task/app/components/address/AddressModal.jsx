@@ -16,6 +16,8 @@ import { useAddress } from '@/lib/contexts/address-context';
 
 export default function AddressModal({ isOpen, onClose, address = null, isEdit = false }) {
   const { createAddress, updateAddress, validateAddress } = useAddress();
+  const [location, setLocation] = useState(null);
+  const [locationError, setLocationError] = useState(null);
 
   const [formData, setFormData] = useState({
     addressLine1: '',
@@ -179,6 +181,26 @@ export default function AddressModal({ isOpen, onClose, address = null, isEdit =
     if (!loading) {
       onClose();
     }
+  };
+
+  
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation({ latitude, longitude });
+        setLocationError(null);
+      },
+      (err) => {
+        setLocationError(`Error: ${err.message}`);
+        setLocation(null);
+      }
+    );
   };
 
   return (
@@ -348,6 +370,20 @@ export default function AddressModal({ isOpen, onClose, address = null, isEdit =
             <Label htmlFor="isDefault">Set as primary address</Label>
           </div>
 
+          {/* Get Current Location Button */}
+          <div className="w-full flex items-center">
+            <Button
+              type="button"
+              onClick={handleGetLocation}
+              disabled={loading}
+              variant="outline"
+              className='w-full cursor-pointer'
+            >
+              Get Current Location
+            </Button>
+            </div>
+
+
           {/* Longitude and Latitude */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -356,7 +392,8 @@ export default function AddressModal({ isOpen, onClose, address = null, isEdit =
                 id="longitude"
                 type="number"
                 step="any"
-                value={formData.longitude}
+                disabled
+                value={location?.longitude}
                 onChange={e => handleChange('longitude', e.target.value)}
                 placeholder="Longitude (e.g. 77.5946)"
               />
@@ -367,7 +404,8 @@ export default function AddressModal({ isOpen, onClose, address = null, isEdit =
                 id="latitude"
                 type="number"
                 step="any"
-                value={formData.latitude}
+                disabled
+                value={location?.latitude}
                 onChange={e => handleChange('latitude', e.target.value)}
                 placeholder="Latitude (e.g. 12.9716)"
               />
