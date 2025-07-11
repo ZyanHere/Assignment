@@ -87,7 +87,7 @@ export default function Success() {
           <h2 className="text-2xl md:text-3xl font-medium text-black mt-6 text-center">
             Successfully
           </h2>
-          <p className="text-gray-600 mt-2 text-left text-center">
+          <p className="text-gray-600 mt-2  text-center">
             Your account has been created.
           </p>
 

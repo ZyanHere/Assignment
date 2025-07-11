@@ -1,89 +1,126 @@
-// components/StoreCard.jsx
 "use client";
+
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Star } from 'lucide-react';
+import { Button } from "../home/ui2/button";
 import { useCart } from "@/lib/contexts/cart-context";
-import useTimer from "@/lib/hooks/useTimer";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { useProduct } from "@/lib/contexts/productContext";
+import { useState } from "react";
 
-const StoreCard = ({ product, storeName }) => {
-  const [endTime, setEndTime] = useState(null);
+export default function StoreCard({ product, storeName }) {
   const { addToCart, cart } = useCart();
-  const timeLeft = useTimer(endTime);
+  const router = useRouter();
+  const { setSelectedProduct } = useProduct();
+  const [imageError, setImageError] = useState(false);
 
-  useEffect(() => {
-    setEndTime(Date.now() + (3 * 60 * 60 + 1 * 60 + 23) * 1000);
-  }, []);
+  // Navigate into product detail
+  const handleItemClick = () => {
+    setSelectedProduct(product);
+    router.push(`/product/${product.id}`);
+  };
 
+  // Pricing & discount
+  const price    = product.price  ?? 0;
+  const original = product.mrp    ?? 0;
+  const discount = original > price
+    ? Math.round((original - price) / original * 100)
+    : 0;
+
+  // Stock & cart
+  const stockQty = product.stock ?? null;
   const isInCart = cart.some((item) => item.id === product.id);
+  const canAdd   = stockQty == null || stockQty > 0;
+
+  // Image fallback
+  const imgSrc   = !imageError && product.image
+    ? product.image
+    : "/placeholder-image.jpg";
+
+  const handleImgError = () => setImageError(true);
+
+  // Button text
+  let btnText = "ADD";
+  if (!canAdd) btnText = "OUT OF STOCK";
+  else if (isInCart) btnText = "✓";
 
   const handleAddToCart = (e) => {
-    e.preventDefault();
     e.stopPropagation();
-    if (!isInCart) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        brand: storeName,
-        price: product.price,
-        mrp: product.mrp,
-        image: product.image,
-        category: product.category,
-      });
-    }
+    if (!canAdd || isInCart) return;
+    addToCart({
+      id:       product.id,
+      name:     product.name,
+      brand:    storeName,
+      price,
+      mrp:      original,
+      image:    product.image,
+      category: product.category
+    });
   };
 
   return (
-    <Link
-      href={`/products/${product.id}`}
-      className="block hover:shadow-lg transition-all"
+    <Card
+      className="w-full max-w-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300"
+      onClick={handleItemClick}
     >
-      <div className="p-7 border rounded-lg shadow-md bg-white w-full h-full cursor-pointer">
+      <CardHeader className="p-4 relative">
+        <img
+          src={imgSrc}
+          alt={product.name}
+          onError={handleImgError}
+          className="w-full h-48 object-contain rounded-xl"
+        />
+        <Button
+          className="absolute -bottom-12 right-2 text-xs"
+          onClick={handleAddToCart}
+          disabled={!canAdd}
+        >
+          {btnText}
+        </Button>
+      </CardHeader>
 
-        <div className="relative h-[192px] bg-blue-50 rounded-xl p-4 mb-4 w-full">
+      <CardContent className="space-y-2 px-4 pb-4">
+        <CardTitle className="text-lg font-bold truncate">
+          {product.name}
+        </CardTitle>
 
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="cursor-pointer object-contain rounded-lg"
-          />
-          <Button
-            onClick={handleAddToCart}
-            className={`absolute bottom-2 right-2 w-[40px] h-[23px] border font-medium rounded-md ${
-              isInCart
-                ? "bg-green-100 border-green-400 text-green-600"
-                : "bg-white border-blue-400 text-blue-500 hover:bg-blue-50"
-            }`}
-          >
-            {isInCart ? "✓" : "ADD"}
-          </Button>
-        </div>
-        <div className="space-y-2">
-          <p className="text-lg font-semibold truncate">{product.name}</p>
-          <p className="text-sm text-gray-600">{product.category}</p>
-          <p className="text-xs text-gray-500">By {storeName}</p>
-          {timeLeft && !timeLeft.expired && (
-            <div className="pt-2 flex justify-between text-lg font-bold">
-              <span>{String(timeLeft.hours).padStart(2, "0")}</span>
-              <span>:</span>
-              <span>{String(timeLeft.minutes).padStart(2, "0")}</span>
-              <span>:</span>
-              <span>{String(timeLeft.seconds).padStart(2, "0")}</span>
-            </div>
-          )}
-          <div className="pt-2 flex items-center gap-2">
-            <p className="text-lg font-bold">₹{product.price}</p>
-            <p className="text-gray-500 text-sm line-through">
-              ₹{product.mrp}
-            </p>
+        {/* Category & Rating */}
+        <div className=" items-center gap-2">
+          <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
+            {product.category}
+          </span>
+          <div className="flex items-center mt-2">
+            <Star className="text-yellow-300 fill-current" size={16} />
+            <span className="text-sm text-gray-600 ml-1">
+              {product.rating?.average ?? 0} ({product.rating?.count ?? 0})
+            </span>
           </div>
         </div>
-      </div>
-    </Link>
+
+        <p className="text-xs text-muted-foreground">By {storeName}</p>
+
+        {/* Pricing & Discount */}
+        <div className="mt-2 flex items-baseline gap-2">
+          {original > price && (
+            <p className="text-sm text-muted-foreground line-through">
+              ₹{original}
+            </p>
+          )}
+          <p className="text-lg font-semibold">₹{price}</p>
+          {discount > 0 && (
+            <span className="text-sm text-red-600 font-bold">
+              {discount}% OFF
+            </span>
+          )}
+        </div>
+
+        {/* Stock */}
+        {stockQty != null && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            Stock: {stockQty > 0 ? `${stockQty} available` : "Out of Stock"}
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
-};
-
-export default StoreCard;
-
+}

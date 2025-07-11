@@ -13,6 +13,8 @@ import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useCart } from "@/lib/contexts/cart-context";
+import { useRouter } from "next/navigation";
 
 const UserActions = () => {
   //user from redux and next-auth
@@ -22,7 +24,8 @@ const UserActions = () => {
   const { data: session } = useSession();
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("Guest");
-  
+  const { cart } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     // First priority: Check Redux store (for immediate state after login/signup)
@@ -36,72 +39,54 @@ const UserActions = () => {
     }
   }, [currentUser, session]);
 
-  
+
 
   const handleLogout = async () => {
     try {
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
-        
-        // Step 1: Get CSRF token from backend
-        const csrfResponse = await axios.get(
-            `${backendUrl}/lmd/api/v1/auth/csrf-token`,   
-            { withCredentials: true }
-        );
-        const csrfToken = csrfResponse.data.token;
-        
-        // Step 2: Call backend logout endpoint with CSRF token
-        await axios.post(
-            `${backendUrl}/lmd/api/v1/auth/user/logout`, 
-            {},
-            {
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                withCredentials: true,
-            }
-        );
-        
-        // Step 3: Sign out from NextAuth
-        await signOut({
-            redirect: false,
-            callbackUrl: '/'
-        });
-        
-        // Step 4: Optional - Clear client-side cache/storage
-        if (typeof window !== 'undefined') {
-            localStorage.clear();
-            sessionStorage.clear();
-        }
-        
-        // Step 5: Redirect to home page
-        window.location.href = '/';
-        toast.success('Logged out successfully');
+
+
+      // Step 3: Sign out from NextAuth
+      await signOut({
+        redirect: false,
+        callbackUrl: '/'
+      });
+
+      // Step 4: Optional - Clear client-side cache/storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+
+      // Step 5: Redirect to home page
+      window.location.href = '/';
+      toast.success('Logged out successfully');
+
     } catch (error) {
-        console.error('Logout failed:', error);
-        toast.error('Logout failed. Please try again.');
-        
-        // Force sign out even if backend logout fails
-        await signOut({
-            redirect: false,
-            callbackUrl: '/'
-        });
-        window.location.href = '/';
+      console.error('Logout failed:', error);
+      toast.error('Logout failed. Please try again.');
+
+      // Force sign out even if backend logout fails
+      await signOut({
+        redirect: false,
+        callbackUrl: '/'
+      });
+      window.location.href = '/';
     }
-};
+  };
 
-const getUserInitial = () => {
-  const name = currentUser?.name || session?.user?.name;
-  return name ? name.charAt(0).toUpperCase() : "User";
-};
+  const getUserInitial = () => {
+    const name = currentUser?.name || session?.user?.email;
+    return name ? name.charAt(0).toUpperCase() : "User";
+  };
 
-  let cartItems = 3;
+  let cartItems = cart.length;
   let notifications = 5;
 
 
   return (
     <div className="flex items-center gap-2 sm:gap-3">
       {/* Cart */}
-      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
+      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform" onClick={() => router.push('/cart')}>
         <span className="sr-only">Cart</span>
         <svg
           className="w-6 h-6 text-gray-700"

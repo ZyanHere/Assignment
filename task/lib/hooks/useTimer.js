@@ -11,31 +11,37 @@ const useTimer = (endTime) => {
 
   useEffect(() => {
     if (!endTime || endTime <= Date.now()) {
-      setTimeLeft({ ...timeLeft, expired: true });
+      setTimeLeft({
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        expired: true,
+      });
       return;
     }
 
     const calculateTimeLeft = () => {
-      const difference = endTime - Date.now();
-      if (difference <= 0) return { expired: true };
-
+      const diff = endTime - Date.now();
+      if (diff <= 0) {
+        return { hours: 0, minutes: 0, seconds: 0, expired: true };
+      }
       return {
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-        expired: false
+        hours:   Math.floor(diff / (1000 * 60 * 60)),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+        expired: false,
       };
     };
 
-    const timer = setInterval(() => {
+    setTimeLeft(calculateTimeLeft());
+    const timerId = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
 
-    // Initial calculation
-    setTimeLeft(calculateTimeLeft());
 
-    return () => clearInterval(timer);
-  }, [endTime, timeLeft]);
+
+    return () => clearInterval(timerId);
+  }, [endTime]);
 
   return timeLeft;
 };
