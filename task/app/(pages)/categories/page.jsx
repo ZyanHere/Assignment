@@ -160,8 +160,8 @@ export default function CategoryPage() {
 
 const CategoryItem = ({ category }) => (
   <Link href={`/categories/${category.slug}`} className="group">
-    <div className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-xl transition-all">
-      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24">
+    <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1">
+      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center">
         <Image
           src={category.imageUrl || "/categories/subcat/fallback-category.png"}
           alt={category.name}
