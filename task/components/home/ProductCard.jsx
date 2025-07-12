@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
   const router = useRouter();
   // Check if this specific product is already in the cart by its unique ID
   const isInCart = cart.some((item) => item.id === product.variants[0]?._id);
-  console.log(isInCart);
+  //console.log(isInCart);
   const handleAddToCart = () => {
     if (!isInCart) {
       addToCart({
