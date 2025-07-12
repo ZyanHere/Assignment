@@ -3,31 +3,43 @@ import { useCart } from "@/lib/contexts/cart-context";
 import useTimer from "@/lib/hooks/useTimer";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import { useProduct } from "@/lib/contexts/productContext";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }) => {
   const timeLeft = useTimer(product.time);
-  const { addToCart, cart } = useCart();
-
+  const { addToCart, cart = [] } = useCart();
+  const { setSelectedProduct, setSelectedVariant } = useProduct();
+  const router = useRouter();
   // Check if this specific product is already in the cart by its unique ID
-  const isInCart = cart.some((item) => item.id === product.id);
-
+  const isInCart = cart.some((item) => item.id === product.variants[0]?._id);
+  console.log(isInCart);
   const handleAddToCart = () => {
     if (!isInCart) {
       addToCart({
-        id: product.id,
-        name: product.name,
-        brand: product.brand,
-        seller: product.seller,
-        price: product.discountedPrice,
-        mrp: product.originalPrice,
-        image: product.image,
-        weight: product.weight || "1 unit",
+        id: product.variants[0]._id,
+        variant: product.variants,
+        product,
+        price: product.variants[0].price.base_price,
+        sale_price: product.variants[0].price.sale_price,
+        stock: product.variants[0].stock.quantity,
+        sku: product.variants[0].sku,
       });
+      toast.success('Added to Cart successfully');
     }
   };
 
+  const handleItemClick = () => {
+    setSelectedProduct(product);
+    setSelectedVariant(product.variants[0])
+    router.push(`/product/${product.id}`);
+  }
+
+  const canAdd = product?.variants && product.variants?.length > 0
+
   return (
-    <div className="pb-2 group">
+    <div className="pb-2 group" onClick={handleItemClick}>
       <div className="w-full p-3 border rounded-xl hover:shadow-lg transition-all duration-300 bg-white shadow-sm">
         <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl p-6">
           <Image
@@ -43,17 +55,19 @@ const ProductCard = ({ product }) => {
           />
 
           <Button
-            onClick={handleAddToCart}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddToCart()
+            }}
             disabled={!product.id}
-            className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
-              ${
-                isInCart
-                  ? "bg-green-50 text-green-500 border-green-400"
-                  : "bg-white text-blue-400 border-blue-400"
+            className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 px-3 py-1.5 border font-medium rounded-md hover:bg-blue-100 transition shadow-md
+              ${isInCart
+                ? "bg-green-50 text-green-500 border-green-400"
+                : "bg-white text-blue-400 border-blue-400"
               }`}
             aria-label={isInCart ? "Item added to cart" : "Add item to cart"}
           >
-            {isInCart ? "✓" : "ADD"}
+            {!canAdd ? "Out of stock" : isInCart ? "Added" : "ADD"}
           </Button>
         </div>
 
@@ -64,7 +78,7 @@ const ProductCard = ({ product }) => {
           By {product.seller}
         </p>
 
-        
+
 
         <div className="mt-2">
           <p className="text-sm text-blue-700 font-semibold">

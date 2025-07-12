@@ -7,6 +7,7 @@ import { Providers } from "@/lib/providers";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ProductProvider } from "@/lib/contexts/productContext";
+import { Toaster } from "react-hot-toast";
 
 
 const geistSans = Geist({
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
               <ProductProvider>
                 <AddressProvider>
                   <SelectedItemsProvider>
+                    <Toaster />
                     {children}
                   </SelectedItemsProvider>
                 </AddressProvider>
