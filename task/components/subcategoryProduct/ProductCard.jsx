@@ -6,6 +6,7 @@ import { Button } from "../home/ui2/button";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
 import { useProduct } from "@/lib/contexts/productContext";
+import Image from "next/image";
 
 export default function ProductCard({ product }) {
   const { addToCart, cart } = useCart();
@@ -85,15 +86,17 @@ export default function ProductCard({ product }) {
       onClick={handleItemClick}
     >
       <CardHeader className="p-3">
-        <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl p-4">
-          <img
+        <div className="relative flex items-center justify-center w-full h-[161px] bg-blue-50 rounded-xl p-4">
+          <Image
             src={imageUrl}
             alt={product.name}
             onError={handleImageError}
-            className="w-[148px] h-[90px] object-contain"
+            height={130}
+            width={100}
+            className="w-full h-[160px] object-contain"
           />
           <Button
-            className={`absolute bottom-2 right-4 text-xs w-[53px] h-[33px] font-medium rounded-md border transition shadow-md
+            className={`absolute -bottom-2 right-4 text-xs w-[53px] h-[33px] font-medium rounded-md border transition shadow-md
               ${
                 canAddToCart
                   ? "bg-white text-blue-400 border-blue-400 hover:bg-blue-100"

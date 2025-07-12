@@ -122,13 +122,13 @@ export default function CategorySlugPage() {
           </div>
         )}
 
-        {/* Optional carousels */}
+        {/* Optional carousels
         <div className="mt-8">
           <CategoryCarousel />
         </div>
         <div>
           <CategoryCarousel />
-        </div>
+        </div> */}
 
         <Footer />
       </div>

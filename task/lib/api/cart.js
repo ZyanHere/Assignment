@@ -14,7 +14,7 @@ export async function fetchCart() {
     return items.map((i) => ({
       id: i.cart_item_id,
       variantId: i.variant._id,
-      name: i.variant.product.name,
+      name: i.variant.variant_name,
       brand: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
       seller: i.variant.product.vendor_store_id?.store_name || 'Last Minute Deal',
       vendorId: i.variant.product.vendor_store_id?._id || 'default',

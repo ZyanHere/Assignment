@@ -159,7 +159,7 @@ export default function CategoryPage() {
             {pages.map((page, idx) => (
               <div
                 key={idx}
-                className="w-full shrink-0 snap-start px-2 py-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 justify-center"
+                className="w-full shrink-0 snap-start px-6 py-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 justify-center"
               >
                 {page.map((cat) => (
                   <CategoryItem key={cat._id} category={cat} />
@@ -192,14 +192,14 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 space-y-6">
+      {/* <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 space-y-6">
         <CategoryCarousel data={[]} loading={isLoading} />
-      </section>
+      </section> */}
 
       {/*Random Product Cards Section */}
       <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 py-8">
         {shuffledProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {shuffledProducts.map((product) => {
               // Process images to handle S3 URLs with spaces (optional, as in SubProduct.jsx)
               const processedProduct = {
@@ -233,7 +233,7 @@ export default function CategoryPage() {
 
 const CategoryItem = ({ category }) => (
   <Link href={`/categories/${category.slug}`} className="group">
-    <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1">
+    <div className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-xl transition-all">
       <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center">
         <Image
           src={category.imageUrl || "/categories/subcat/fallback-category.png"}

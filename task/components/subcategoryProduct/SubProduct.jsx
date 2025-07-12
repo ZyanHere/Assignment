@@ -11,7 +11,7 @@ export default function SubProduct({ subCategoryId }) {
     // Handle loading state
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {[...Array(8)].map((_, index) => (
                     <div key={index} className="animate-pulse">
                         <div className="bg-gray-200 h-48 rounded-xl mb-4"></div>
@@ -49,7 +49,7 @@ export default function SubProduct({ subCategoryId }) {
 //                     <div key={product._id} className="flex">
 //                         <ProductCard product={product} compact />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {data.map((product) => {
                 // Process images to handle S3 URLs with spaces
                 const processedProduct = {
