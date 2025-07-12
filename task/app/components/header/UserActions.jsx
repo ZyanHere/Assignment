@@ -10,6 +10,7 @@ import {
 import { LogOut } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut, useSession } from "next-auth/react";
+import { Heart} from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -83,12 +84,18 @@ const UserActions = () => {
 
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3">
+    <div className="flex items-center gap-4">
+      {/* Saved Deals */}
+      <Link href="/profile?tab=SavedDeals" className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
+        <span className="sr-only">Saved Deals</span>
+        <Heart className="w-6 h-6 text-black hover:text-red-500 transition-colors" />
+      </Link>
+
       {/* Cart */}
-      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
+      <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
         <span className="sr-only">Cart</span>
         <svg
-          className="w-6 h-6 text-gray-700"
+          className="w-6 h-6 text-gray-700 hover:text-blue-600 transition-colors"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -105,13 +112,13 @@ const UserActions = () => {
             {cartItems}
           </span>
         )}
-      </button>
+      </Link>
 
       {/* Notifications */}
-      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
+      <Link href="/profile?Notifications" className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
         <span className="sr-only">Notifications</span>
         <svg
-          className="w-6 h-6 text-gray-700"
+          className="w-6 h-6 text-gray-700 hover:text-yellow-600 transition-colors"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -128,7 +135,7 @@ const UserActions = () => {
             {notifications}
           </span>
         )}
-      </button>
+      </Link>
 
       {/* Profile Dropdown */}
       <DropdownMenu>
