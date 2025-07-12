@@ -40,13 +40,12 @@ export function CartProvider({ children, showCartInHeader = false }) {
   useEffect(() => {
     const shouldFetch =
       tokenReady &&
-      !fetched &&
-      (pathname === '/cart' || showCartInHeader);
+      !fetched;
 
     if (shouldFetch) {
       reload();
     }
-  }, [tokenReady, pathname, showCartInHeader, fetched, reload]);
+  }, [tokenReady, fetched, reload]);
 
   const addToCart = useCallback(
     async (item) => {
