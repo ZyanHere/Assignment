@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useSWR from "swr";
 import { fetcher } from "@/lib/categoryFetcher/fetcher";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // const categories = [
 //   { key: "all", label: "All", icon: "/home/assets/all_logo.svg" },
@@ -28,9 +29,9 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [needsScrolling, setNeedsScrolling] = useState(false);
   const { data, error } = useSWR('https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/categories', fetcher);
-  const finalCategories = data
+  const finalCategories = Array.isArray(data)
     ? [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }, ...data]
-    : [];
+    : [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }];
 
   // Check if we're on mobile and if scrolling is needed on component mount and window resize
   useEffect(() => {
@@ -100,36 +101,52 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
         className="overflow-x-auto no-scrollbar px-4 w-full"
       >
         <div className="flex gap-4 whitespace-nowrap min-w-fit">
-          {finalCategories?.map((category) => {
-            const isActive = selectedTab === category._id;
-            return (
-              <button
-                key={category._id}
-                onClick={() => setSelectedTab(category._id)}
-                className={`flex items-center rounded-xl transition-all duration-200
-                  ${isActive
-                    ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4"
-                    : "bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200 shadow-sm border-b border-yellow-500"
-                  }
-                  ${isMobile
-                    ? "gap-2 px-3 py-2 w-[140px] flex-shrink-0"
-                    : "gap-3 px-5 py-3 w-[180px] flex-shrink-0"
-                  }`}
+          {!data && !error ? (
+            Array.from({ length: 5 }).map((_, idx) => (
+              <div
+                key={idx}
+                className={`flex items-center gap-3 px-5 py-3 w-[180px] flex-shrink-0 rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200`}
               >
-                <div className={`relative ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}>
-                  <Image
-                    src={category.imageUrl}
-                    alt={category.name}
-                    fill
-                    className="object-contain"
-                  />
+                <Skeleton className="w-8 h-8 rounded-md" />
+                <div className="flex-1">
+                  <Skeleton className="h-4 w-3/4" />
                 </div>
-                <span className={`font-medium break-words text-center ${isMobile ? "text-xs" : "text-sm"} leading-tight`}>
-                  {category.name}
-                </span>
-              </button>
-            );
-          })}
+              </div>
+            ))
+          ) : (
+            finalCategories?.map((category) => {
+              const isActive = selectedTab === category._id;
+              return (
+                <button
+                  key={category._id}
+                  onClick={() => setSelectedTab(category._id)}
+                  className={`flex items-center rounded-xl transition-all duration-200
+                  ${isActive
+                      ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4"
+                      : "bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200 shadow-sm border-b border-yellow-500"
+                    }
+                  ${isMobile
+                      ? "gap-2 px-3 py-2 w-[140px] flex-shrink-0"
+                      : "gap-3 px-5 py-3 w-[180px] flex-shrink-0"
+                    }`}
+                >
+                  <div className={`relative ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}>
+                    <Image
+                      src={category.imageUrl}
+                      alt={category.name}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <span className={`font-medium break-words text-center ${isMobile ? "text-xs" : "text-sm"} leading-tight`}>
+                    {category.name}
+                  </span>
+                </button>
+              );
+            })
+
+          )}
+
         </div>
       </div>
     </div>
