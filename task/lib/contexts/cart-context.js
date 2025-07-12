@@ -40,13 +40,12 @@ export function CartProvider({ children, showCartInHeader = false }) {
   useEffect(() => {
     const shouldFetch =
       tokenReady &&
-      !fetched &&
-      (pathname === '/cart' || showCartInHeader);
+      !fetched;
 
     if (shouldFetch) {
       reload();
     }
-  }, [tokenReady, pathname, showCartInHeader, fetched, reload]);
+  }, [tokenReady, fetched, reload]);
 
   const addToCart = useCallback(
     async (item) => {
@@ -121,6 +120,7 @@ export function CartProvider({ children, showCartInHeader = false }) {
         removeFromCart,
         clearCart: clearAll,
         reload,
+        cartItems:cart.reduce((sum, item) => sum + item.quantity, 0),
       }}
     >
       {children}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,8 +9,10 @@ import Footer from "@/components/home/footer";
 import Header from "@/components/home/Header";
 import CategoryCarousel from "@/components/categories/CategoryCarousel";
 import { Button } from "@/components/ui/button";
+import ProductCard from "@/components/subcategoryProduct/ProductCard";
 
 const API_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/categories";
+const API_PRODUCTS_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/products";
 const TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // move to .env.local
 
 const fetcher = async (url) => {
@@ -21,10 +23,32 @@ const fetcher = async (url) => {
   return res.json();
 };
 
+
+// SWR fetcher for all products
+const productsFetcher = async (url) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch products");
+  return res.json();
+};
+
+
 export default function CategoryPage() {
   const { data, isLoading } = useSWR(API_URL, fetcher);
+  const {data: ProductData} = useSWR(API_PRODUCTS_URL, productsFetcher);
   const categories = data?.data || [];
+  
 
+  // Randomizing products logic
+  const shuffledProducts = useMemo(() => {
+  if (!ProductData?.data || !Array.isArray(ProductData.data)) return [];
+  const array = [...ProductData.data];
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}, [ProductData?.data]);
+  
   const scrollRef = useRef(null);
   const [pageIndex, setPageIndex] = useState(0);
   const [needsScrolling, setNeedsScrolling] = useState(false);
@@ -90,7 +114,17 @@ export default function CategoryPage() {
               className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-white"
               aria-label="Scroll left"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
@@ -99,7 +133,17 @@ export default function CategoryPage() {
               className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-white"
               aria-label="Scroll right"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
@@ -152,6 +196,35 @@ export default function CategoryPage() {
         <CategoryCarousel data={[]} loading={isLoading} />
       </section>
 
+      {/*Random Product Cards Section */}
+      <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 py-8">
+        {shuffledProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {shuffledProducts.map((product) => {
+              // Process images to handle S3 URLs with spaces (optional, as in SubProduct.jsx)
+              const processedProduct = {
+                ...product,
+                images: Array.isArray(product.images)
+                  ? product.images.map((img) => ({
+                      ...img,
+                      url: encodeURI(img.url),
+                    }))
+                  : product.images,
+              };
+              return (
+                <div key={product._id} className="flex gap-4">
+                  <ProductCard product={processedProduct} />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center text-gray-500 py-8">
+            No products found.
+          </div>
+        )}
+      </section>
+
       <CategoryFooter />
       <Footer />
     </main>
@@ -160,8 +233,8 @@ export default function CategoryPage() {
 
 const CategoryItem = ({ category }) => (
   <Link href={`/categories/${category.slug}`} className="group">
-    <div className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-xl transition-all">
-      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24">
+    <div className="bg-gradient-to-br from-blue-200 to-yellow-50 p-2 rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1">
+      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center">
         <Image
           src={category.imageUrl || "/categories/subcat/fallback-category.png"}
           alt={category.name}

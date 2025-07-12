@@ -1,182 +1,147 @@
+"use client";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, Heart } from 'lucide-react';
+import { Star } from "lucide-react";
 import { Button } from "../home/ui2/button";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
 import { useProduct } from "@/lib/contexts/productContext";
-import { useState } from "react";
-import toast from "react-hot-toast";
-
+import Image from "next/image";
 
 export default function ProductCard({ product }) {
-    const { addToCart } = useCart();
-    const router = useRouter();
-    const { setSelectedProduct, setSelectedVariant } = useProduct();
-    const [imageError, setImageError] = useState(false);
-    const [favorites, setFavorites] = useState({});
+  const { addToCart, cart } = useCart();
+  const router = useRouter();
+  const { setSelectedProduct, setSelectedVariant } = useProduct();
+  const [imageError, setImageError] = useState(false);
 
-    // handle wishlist function
-    const handleFavorite = (id) => {
-        setFavorites((prevFavorites) => ({
-            ...prevFavorites,
-            [id]: !prevFavorites[id],
-        }));
+  const handleItemClick = () => {
+    setSelectedProduct(product);
+    setSelectedVariant(product.variants[0]);
+    router.push(`/product/${product.id}`);
+  };
+
+  const getVariantData = () => {
+    const variant = product?.variants?.[0];
+    if (!variant) return null;
+
+    const price = variant?.price?.base_price || variant.base_price || 100;
+    const sale_price = variant?.price?.sale_price || variant.sale_price || 0;
+
+    return {
+      variant,
+      price,
+      sale_price,
+      stock: variant.stock?.quantity || variant.available_quantity || 0,
+      sku: variant.sku || "N/A",
     };
-    const handleItemClick = () => {
-        setSelectedProduct(product);
-        setSelectedVariant(product.variants[0])
-        router.push(`/product/${product.id}`);
+  };
+
+  const getImageUrl = () => {
+    if (!product.images || product.images.length === 0 || imageError) {
+      return "/placeholder-image.jpg";
     }
+    const primaryImage = product.images.find((img) => img.is_primary) || product.images[0];
+    return primaryImage?.url || "/placeholder-image.jpg";
+  };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    const data = getVariantData();
 
+    if (data?.variant) {
+      addToCart({
+        id: data.variant._id,
+        variant: data.variant,
+        product,
+        price: data.price,
+        sale_price: data.sale_price,
+        stock: data.stock,
+        sku: data.sku,
+      });
+    } else {
+      console.warn("No variant available for this product");
+    }
+  };
 
-    // Get the first variant (base variant) data
-    const getVariantData = () => {
-        const variant = product?.variants?.[0];
-        if (!variant) return null;
+  const imageUrl = getImageUrl();
+  const variantData = getVariantData();
 
-        const price = variant?.price?.base_price || variant.base_price || 100;
-        const sale_price = variant?.price?.sale_price || variant.sale_price || 0;
+  const displayPrice =
+    variantData?.sale_price > 0 ? variantData.sale_price : variantData?.price || 100;
+  const originalPrice = variantData?.sale_price > 0 ? variantData.price : null;
+  const canAddToCart = variantData?.variant && variantData.stock > 0;
 
-        return {
-            variant,
-            price,
-            sale_price,
-            stock: variant.stock?.quantity || variant.available_quantity || 0,
-            sku: variant.sku || "N/A",
-        };
-    };
+  // Discount Percentage
+  const discount = originalPrice
+    ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100)
+    : 0;
 
-    // Get the primary image or first image from the array
-    const getImageUrl = () => {
-        if (!product.images || product.images.length === 0 || imageError) {
-            return "/placeholder-image.jpg";
-        }
+  return (
+    <Card
+      className="w-full max-w-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      onClick={handleItemClick}
+    >
+      <CardHeader className="p-3">
+        <div className="relative flex items-center justify-center w-full h-[161px] bg-blue-50 rounded-xl p-4">
+          <Image
+            src={imageUrl}
+            alt={product.name}
+            onError={handleImageError}
+            height={130}
+            width={100}
+            className="w-full h-[160px] object-contain"
+          />
+          <Button
+            className={`absolute -bottom-2 right-4 text-xs w-[53px] h-[33px] font-medium rounded-md border transition shadow-md
+              ${
+                canAddToCart
+                  ? "bg-white text-blue-400 border-blue-400 hover:bg-blue-100"
+                  : "bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed"
+              }`}
+            onClick={handleAddToCart}
+            disabled={!canAddToCart}
+            aria-label={canAddToCart ? "Add to cart" : "Out of stock"}
+          >
+            {canAddToCart ? "ADD" : "OUT"}
+          </Button>
+        </div>
+      </CardHeader>
 
-        const primaryImage = product.images.find((img) => img.is_primary) || product.images[0];
-        return primaryImage?.url || "/placeholder-image.jpg";
-    };
+      <CardContent className="px-4 pb-4 space-y-2">
+        <CardTitle className="text-sm font-bold line-clamp-1">
+          {variantData?.variant?.variant_name || product.name}
+        </CardTitle>
+        <p className="text-xs text-gray-500 line-clamp-1">({product.brand})</p>
+        <p className="text-xs text-gray-500">
+          By {product.vendor_store_id?.store_name || "Last Minute Deal"}
+        </p>
 
-    const handleImageError = () => {
-        setImageError(true);
-    };
+        {discount > 0 && (
+          <p className="text-sm text-blue-700 font-semibold">{discount}% OFF</p>
+        )}
 
-    const handleAddToCart = (e) => {
-        e.stopPropagation(); // prevent card click
-        const data = getVariantData();
+        <div className="flex items-center gap-2">
+          {originalPrice && (
+            <p className="text-xs text-gray-400 line-through">₹{originalPrice}</p>
+          )}
+          <p className="text-sm font-bold text-green-600">₹{displayPrice}</p>
+        </div>
 
-        if (data?.variant) {
-            addToCart({
-                id: data.variant._id,
-                variant: data.variant,
-                product,
-                price: data.price,
-                sale_price: data.sale_price,
-                stock: data.stock,
-                sku: data.sku,
-            });
-        } else {
-            console.warn("No variant available for this product");
-        }
-    };
+        <div className="flex items-center gap-2 mt-1">
+          <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
+          <p className="text-xs font-medium text-gray-500">
+            {product.rating?.average || 0} ({product.rating?.count || 0})
+          </p>
+        </div>
 
-    const imageUrl = getImageUrl();
-    const variantData = getVariantData();
-
-    const displayPrice =
-        variantData?.sale_price > 0 ? variantData.sale_price : variantData?.price || 100;
-    const originalPrice = variantData?.sale_price > 0 ? variantData.price : null;
-
-    // Check if we can add to cart (has variant and stock)
-    const canAddToCart = variantData?.variant && variantData.stock > 0;
-
-
-    return (
-        <Card
-            className="w-full max-w-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300"
-            onClick={handleItemClick}
-        >
-            <CardHeader className="p-4">
-                <div className="relative">
-                    <img
-                        src={imageUrl}
-                        alt={product.name}
-                        onError={() => setImageError(true)}
-                        className="w-full h-48 object-contain rounded-xl"
-                    />
-
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation(); // prevent triggering card click
-                            handleFavorite(variantData?.id);
-                        }}
-                        className="absolute -top-4 -right-1 p-2 rounded-full bg-white/20 hover:bg-gray-200 shadow"
-                        aria-label="Add to wishlist"
-                    >
-                        <Heart className={`w-5 h-5 ${favorites[variantData?.id] ? "fill-red-500" : "text-gray-500"
-                            }`} />
-                    </button>
-
-                    <Button
-                        className="absolute -bottom-12 right-2 text-xs bg-amber-200 w-20 h-10"
-                        onClick={handleAddToCart}
-                        disabled={!canAddToCart}
-                    >
-                        {canAddToCart ? "ADD" : "OUT OF STOCK"}
-                    </Button>
-                </div>
-            </CardHeader>
-
-            <CardContent className="space-y-1 px-4">
-                <CardTitle className="text-lg font-bold">
-                    {variantData?.variant?.variant_name || product.name}
-                </CardTitle>
-
-                <p className="text-sm text-muted-foreground">{product.brand}</p>
-                <p className="text-sm text-muted-foreground">
-                    By {product.vendor_store_id?.store_name || "Unknown Store"}
-                </p>
-
-                <div className="flex items-center gap-2 mt-2">
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-lg">
-                        {product.category?.name || "Uncategorized"}
-                    </span>
-                    {product.is_featured && (
-                        <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-lg">
-                            Featured
-                        </span>
-                    )}
-                </div>
-
-                <div className="flex items-center gap-2 mt-2">
-                    <Star className="text-yellow-300 fill-yellow-300" height={20} width={20} />
-                    <p className="text-sm font-medium text-muted-foreground">
-                        {product.rating?.average || 0} ({product.rating?.count || 0})
-                    </p>
-                </div>
-
-                <div className="mt-2">
-                    {originalPrice && (
-                        <p className="text-sm text-muted-foreground line-through">
-                            MRP ₹{originalPrice}
-                        </p>
-                    )}
-                    <p className="text-lg font-semibold text-primary">
-                        <span className="text-sm text-muted-foreground font-normal">
-                            {originalPrice ? "Sale Price" : "MRP"}{" "}
-                        </span>
-                        ₹{displayPrice}
-                    </p>
-                </div>
-
-                <div className="mt-2">
-                    <p className="text-xs text-muted-foreground">
-                        Stock: {variantData?.stock > 0 ? `${variantData.stock} available` : "Out of Stock"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">SKU: {variantData?.sku}</p>
-                </div>
-            </CardContent>
-        </Card>
-    );
+        <p className="text-xs text-gray-400">
+          Stock: {variantData?.stock > 0 ? `${variantData.stock} available` : "Out of Stock"}
+        </p>
+      </CardContent>
+    </Card>
+  );
 }
