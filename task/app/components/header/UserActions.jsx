@@ -7,101 +7,75 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
+import { LogOut, Heart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut, useSession } from "next-auth/react";
-import { Heart} from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
 import { useCart } from "@/lib/contexts/cart-context";
-
 import { useRouter } from "next/navigation";
 
-
 const UserActions = () => {
-  //user from redux and next-auth
   const userState = useSelector((state) => state.user);
   const currentUser = userState?.user || null;
   const profilePic = userState?.profilePic || null;
   const { data: session } = useSession();
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("Guest");
-  const { cart } = useCart();
+  const { cartItems } = useCart();
   const router = useRouter();
+  const notifications = 5; // placeholder
 
   useEffect(() => {
-    // First priority: Check Redux store (for immediate state after login/signup)
-    // Second priority: Check Next-Auth session (for persistence across page refreshes)
     if (currentUser?.name) {
       setFirstName(currentUser.name.split(" ")[0]);
     } else if (session?.user?.name) {
       setFirstName(session.user.name.split(" ")[0]);
-      // Optionally sync session data to Redux if needed
-      // dispatch(setCurrentUser(session.user));
     }
   }, [currentUser, session]);
 
 
 
-  const handleLogout = async () => {
+ const handleLogout = async () => {
     try {
-
-
-      // Step 3: Sign out from NextAuth
-      await signOut({
-        redirect: false,
-        callbackUrl: '/'
-      });
-
-      // Step 4: Optional - Clear client-side cache/storage
-      if (typeof window !== 'undefined') {
+      await signOut({ redirect: false });
+      if (typeof window !== "undefined") {
         localStorage.clear();
         sessionStorage.clear();
       }
-
-      // Step 5: Redirect to home page
-      window.location.href = '/';
-      toast.success('Logged out successfully');
-
+      toast.success("Logged out successfully");
+      router.push("/");
     } catch (error) {
-      console.error('Logout failed:', error);
-      toast.error('Logout failed. Please try again.');
-
-      // Force sign out even if backend logout fails
-      await signOut({
-        redirect: false,
-        callbackUrl: '/'
-      });
-      window.location.href = '/';
+      console.error("Logout failed:", error);
+      toast.error("Logout failed. Redirecting...");
+      router.push("/");
     }
   };
 
   const getUserInitial = () => {
     const name = currentUser?.name || session?.user?.email;
-    return name ? name.charAt(0).toUpperCase() : "User";
+    return name ? name.charAt(0).toUpperCase() : "U";
   };
 
-  const{cartItems}=useCart();
-//   let cartItems = cart.length;
-
-  let notifications = 5;
 
 
   return (
     <div className="flex items-center gap-4">
       {/* Saved Deals */}
-      <Link href="/profile?tab=SavedDeals" className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
-        <span className="sr-only">Saved Deals</span>
+      <Link
+        href="/profile?tab=SavedDeals"
+        className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform"
+        title="Saved Deals"
+      >
         <Heart className="w-6 h-6 text-black hover:text-red-500 transition-colors" />
       </Link>
 
       {/* Cart */}
-
-//       <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
-
-      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform" onClick={() => router.push('/cart')}>
-        <span className="sr-only">Cart</span>
+      <Link
+        href="/cart"
+        className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform"
+        title="Cart"
+      >
         <svg
           className="w-6 h-6 text-gray-700 hover:text-blue-600 transition-colors"
           fill="none"
@@ -115,16 +89,19 @@ const UserActions = () => {
             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
           />
         </svg>
-        {cartItems > 0 && (
+        {cartItems?.length > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
-            {cartItems}
+            {cartItems.length}
           </span>
         )}
       </Link>
 
       {/* Notifications */}
-      <Link href="/profile?Notifications" className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
-        <span className="sr-only">Notifications</span>
+      <Link
+        href="/profile?Notifications"
+        className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform"
+        title="Notifications"
+      >
         <svg
           className="w-6 h-6 text-gray-700 hover:text-yellow-600 transition-colors"
           fill="none"
@@ -157,7 +134,7 @@ const UserActions = () => {
                 height={40}
                 className="rounded-full border-2 border-yellow-400"
                 onError={(e) => {
-                  e.currentTarget.src = '/default-avatar.png';
+                  e.currentTarget.src = "/default-avatar.png";
                 }}
               />
             ) : (
@@ -165,11 +142,10 @@ const UserActions = () => {
                 {getUserInitial()}
               </div>
             )}
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
           </div>
           <span className="text-gray-700 font-medium hidden lg:inline-block text-sm">
             {firstName}
-            {/* {currentUser?.premium && <span className="block text-xs text-gray-500 font-normal">Premium Member</span>} */}
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent
