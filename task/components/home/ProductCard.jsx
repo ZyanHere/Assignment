@@ -6,6 +6,8 @@ import { Button } from "../ui/button";
 import { useProduct } from "@/lib/contexts/productContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Heart } from "lucide-react";
+import { useState } from "react";
 
 const ProductCard = ({ product }) => {
   const timeLeft = useTimer(product.time);
@@ -14,7 +16,7 @@ const ProductCard = ({ product }) => {
   const router = useRouter();
   // Check if this specific product is already in the cart by its unique ID
   const isInCart = cart.some((item) => item.id === product.variants[0]?._id);
-  console.log(isInCart);
+  //console.log(isInCart);
   const handleAddToCart = () => {
     if (!isInCart) {
       addToCart({
@@ -37,6 +39,16 @@ const ProductCard = ({ product }) => {
   }
 
   const canAdd = product?.variants && product.variants?.length > 0
+
+  // handle add to wishlist
+  const [favorites, setFavorites] = useState({});
+
+  const handleFavorite = (id) => {
+    setFavorites((prevFavorites) => ({
+      ...prevFavorites,
+      [id]: !prevFavorites[id],
+    }));
+  };
 
   return (
     <div className="pb-2 group" onClick={handleItemClick}>
@@ -68,6 +80,17 @@ const ProductCard = ({ product }) => {
             aria-label={isInCart ? "Item added to cart" : "Add item to cart"}
           >
             {!canAdd ? "Out of stock" : isInCart ? "Added" : "ADD"}
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleFavorite(product.id);
+            }}
+            className="absolute -top-1 -right-2 p-1 rounded-full bg-white/20 hover:bg-gray-100 shadow"
+            aria-label="Add to wishlist"
+          >
+            <Heart className={`w-5 h-5 ${favorites[product.id] ? "fill-red-500" : "text-gray-500"
+              }`} />
           </Button>
         </div>
 

@@ -16,11 +16,11 @@ import { fetcher } from "@/lib/api";
 
 const NearbyStores = () => {
   const { data: storeResponse, error } = useSWR(
-  `/lmd/api/v1/retail/vendor/public`,
-  fetcher
-);
+    `/lmd/api/v1/retail/vendor/public`,
+    fetcher
+  );
 
-const stores = storeResponse?.data || [];
+  const stores = storeResponse?.data || [];
 
   const [favorites, setFavorites] = useState({});
 
@@ -50,9 +50,14 @@ const stores = storeResponse?.data || [];
             return (
               <CarouselItem
                 key={store._id}
-                className="pl-2 basis-[24.1%] min-w-[250px] max-w-[24.1%]"
+                className="
+    
+    basis-[100%] sm:basis-[48%]
+    md:basis-[33.33%]
+    lg:basis-[23%]
+  "
               >
-                <div className="w-full md:w-[400px] rounded-lg shadow-md overflow-hidden border">
+                <div className="w-full h-[300px] md:h-[320px] lg:h-[340px] rounded-lg shadow-md overflow-hidden border">
                   <div className="relative">
                     <Image
                       src={imageUrl}
@@ -76,13 +81,12 @@ const stores = storeResponse?.data || [];
                       onClick={() => handleFavorite(store._id)}
                     >
                       <Heart
-                        className={`w-5 h-5 ${
-                          favorites[store._id] ? "fill-red-500" : "text-white"
-                        }`}
+                        className={`w-5 h-5 ${favorites[store._id] ? "fill-red-500" : "text-white"
+                          }`}
                       />
                     </button>
                   </div>
-                  <div className="p-4">
+                  <div className="h-[40%] p-4">
                     <h3 className="text-lg font-semibold text-black">
                       {store.store_name}
                     </h3>
@@ -94,7 +98,7 @@ const stores = storeResponse?.data || [];
           })}
         </CarouselContent>
         <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-black/10" />
-        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/10" />
+        <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-black/10" />
       </Carousel>
     </section>
   );
