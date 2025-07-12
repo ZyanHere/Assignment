@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star } from 'lucide-react';
+import { Star, Heart } from 'lucide-react';
 import { Button } from "../home/ui2/button";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
 import { useProduct } from "@/lib/contexts/productContext";
 import { useState } from "react";
-
+import toast from "react-hot-toast";
 
 
 export default function ProductCard({ product }) {
@@ -13,7 +13,15 @@ export default function ProductCard({ product }) {
     const router = useRouter();
     const { setSelectedProduct, setSelectedVariant } = useProduct();
     const [imageError, setImageError] = useState(false);
+    const [favorites, setFavorites] = useState({});
 
+    // handle wishlist function
+    const handleFavorite = (id) => {
+        setFavorites((prevFavorites) => ({
+            ...prevFavorites,
+            [id]: !prevFavorites[id],
+        }));
+    };
     const handleItemClick = () => {
         setSelectedProduct(product);
         setSelectedVariant(product.variants[0])
@@ -97,6 +105,19 @@ export default function ProductCard({ product }) {
                         onError={() => setImageError(true)}
                         className="w-full h-48 object-contain rounded-xl"
                     />
+
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation(); // prevent triggering card click
+                            handleFavorite(variantData?.id);
+                        }}
+                        className="absolute -top-4 -right-1 p-2 rounded-full bg-white/20 hover:bg-gray-200 shadow"
+                        aria-label="Add to wishlist"
+                    >
+                        <Heart className={`w-5 h-5 ${favorites[variantData?.id] ? "fill-red-500" : "text-gray-500"
+                            }`} />
+                    </button>
+
                     <Button
                         className="absolute -bottom-12 right-2 text-xs bg-amber-200 w-20 h-10"
                         onClick={handleAddToCart}

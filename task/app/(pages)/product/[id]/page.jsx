@@ -19,6 +19,7 @@ import { Star } from 'lucide-react';
 import { useSelectedItems } from "@/lib/contexts/selected-items-context";
 import toast from "react-hot-toast";
 import { Toaster } from 'react-hot-toast';
+import { Heart } from "lucide-react";
 
 export default function DescriptionPage({ params }) {
 
@@ -28,6 +29,8 @@ export default function DescriptionPage({ params }) {
     const [activeTab, setActiveTab] = useState("keyinfo");
     const [selectedImage, setSelectedImage] = useState(null);
     const { setSingleItem, setSelectedItems } = useSelectedItems();
+    // handle add to wishlist
+    const [favorites, setFavorites] = useState({});
 
     useEffect(() => {
         if (!selectedProduct) {
@@ -88,6 +91,13 @@ export default function DescriptionPage({ params }) {
         }
 
     }
+
+    const handleFavorite = (id) => {
+        setFavorites((prevFavorites) => ({
+            ...prevFavorites,
+            [id]: !prevFavorites[id],
+        }));
+    };
 
     return (
         <>
@@ -184,6 +194,16 @@ export default function DescriptionPage({ params }) {
                                 onClick={handleGrab}
                             >
                                 GRAB IT NOW
+                            </Button>
+                            <Button
+                                onClick={(e) => {
+                                    handleFavorite(selectedVariant.id);
+                                }}
+                                className="rounded-full bg-white  hover:bg-gray-200 shadow"
+                                aria-label="Add to wishlist"
+                            >
+                                <Heart className={`${favorites[selectedVariant.id] ? "fill-red-500" : "text-gray-500"
+                                    }`} />
                             </Button>
                         </div>
                     </div>
