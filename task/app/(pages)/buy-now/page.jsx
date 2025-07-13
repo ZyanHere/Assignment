@@ -21,16 +21,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { createOrderFromCart, createOrderFromSingleItem } from "@/lib/api/order";
+import { useDispatch } from 'react-redux';
+import { createOrderFromCart, createOrderFromSingleItem } from "@/lib/redux/user/userSlice";
 import { initializeRazorpay } from "@/lib/utils/razorpay";
-import { getSession } from 'next-auth/react';
 import { useCart } from '@/lib/contexts/cart-context';
-import { useAddress } from '@/lib/contexts/address-context';
+import { useAuth } from '@/lib/hooks/useAuth';
+import toast from 'react-hot-toast';
 
 export default function BuyNowPage() {
   const { selectedItems, singleItem } = useSelectedItems();
   const { clearCart } = useCart();
-  const { addresses, primaryAddress, getCheckoutAddress } = useAddress();
+  const { addresses, primaryAddress, session, orderCreating } = useAuth();
+  const dispatch = useDispatch();
   const [purchaseMode, setPurchaseMode] = useState("homeDelivery");
   const [activeInstruction, setActiveInstruction] = useState("soundbite");
   const [loading, setLoading] = useState(false);
@@ -147,10 +149,10 @@ export default function BuyNowPage() {
 
       // Step 2: Create order from cart items
       console.log('Creating order from cart items:', selectedItems);
+      console.log('Single item mode:', singleItem);
 
-      // Get session for user data
-      const userSession = await getSession();
-      const user = userSession?.user;
+      // Use session from useAuth hook
+      const user = session?.user;
 
       const orderData = {
         billing_address: purchaseMode === "homeDelivery" ? {
@@ -197,19 +199,36 @@ export default function BuyNowPage() {
         coupon_code: null,
       };
 
-      const orderResult = singleItem ? await createOrderFromSingleItem(orderData) : await createOrderFromCart(orderData);
+      // Create order using Redux thunk
+      // Check if token is available
+      if (!session?.user?.token) {
+        throw new Error('Authentication token not available. Please login again.');
+      }
+      
+      const orderResult = singleItem 
+        ? await dispatch(createOrderFromSingleItem({ token: session.user.token, orderData })).unwrap()
+        : await dispatch(createOrderFromCart({ token: session.user.token, orderData })).unwrap();
 
-      if (orderResult.status !== 'success') {
-        throw new Error(orderResult.message || 'Failed to create order');
+      console.log('Order created successfully:', orderResult);
+
+      // Check if orderResult is valid
+      if (!orderResult) {
+        throw new Error('Order creation failed - no result returned');
       }
 
-      console.log('Order created successfully:', orderResult.data);
+      // The Redux thunk returns the data directly from the API response
+      // So we need to access orderResult.order_id directly
+      if (!orderResult.order_id) {
+        console.error('Order result structure:', orderResult);
+        throw new Error('Order creation failed - missing order_id in response');
+      }
+
+      console.log('Order ID extracted successfully:', orderResult.order_id);
 
       // Step 2: Create Razorpay order
-      const paymentSession = await getSession();
-      const token = paymentSession?.user?.token || paymentSession?.user?.accessToken;
+      const token = session?.user?.token;
 
-      const razorpayResponse = await fetch(`/api/orders/${orderResult.data.order_id}/create-payment`, {
+      const razorpayResponse = await fetch(`/api/orders/${orderResult.order_id}/create-payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -245,7 +264,7 @@ export default function BuyNowPage() {
         handler: function (response) {
           console.log('Payment successful:', response);
           // Process payment on backend
-          processPayment(response, orderResult.data.order_id);
+          processPayment(response, orderResult.order_id);
         },
         prefill: {
           name: orderData.billing_address.name,
@@ -253,7 +272,7 @@ export default function BuyNowPage() {
         },
         notes: {
           order_number: razorpayData.data.order_number,
-          order_id: orderResult.data.order_id,
+          order_id: orderResult.order_id,
         },
         theme: {
           color: '#10b981',
@@ -271,7 +290,7 @@ export default function BuyNowPage() {
 
     } catch (error) {
       console.error('Error during checkout:', error);
-      alert(`Checkout error: ${error.message}`);
+      toast.error(`Checkout failed: ${error.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -280,8 +299,7 @@ export default function BuyNowPage() {
   // Process payment after successful Razorpay payment
   const processPayment = async (paymentResponse, orderId) => {
     try {
-      const processSession = await getSession();
-      const token = processSession?.user?.token || processSession?.user?.accessToken;
+      const token = session?.user?.token;
 
       const response = await fetch('/api/payments/process', {
         method: 'POST',
@@ -567,15 +585,15 @@ export default function BuyNowPage() {
                 <div className="flex-1">
                   <Button
                     onClick={handleCheckout}
-                    disabled={loading}
+                    disabled={loading || orderCreating}
                     variant="default"
                     size="lg"
                     className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
                   >
-                    {loading ? (
+                    {(loading || orderCreating) ? (
                       <>
                         <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
-                        Processing...
+                        {orderCreating ? 'Creating Order...' : 'Processing...'}
                       </>
                     ) : (
                       <>
@@ -626,15 +644,15 @@ export default function BuyNowPage() {
           )}
           <Button
             onClick={handleCheckout}
-            disabled={loading}
+            disabled={loading || orderCreating}
             variant="default"
             size="lg"
             className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
           >
-            {loading ? (
+            {(loading || orderCreating) ? (
               <>
                 <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
-                Processing...
+                {orderCreating ? 'Creating Order...' : 'Processing...'}
               </>
             ) : (
               <>

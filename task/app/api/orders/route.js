@@ -8,7 +8,8 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:600
 export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
-    
+   
+    console.log('Session:', session);
     if (!session?.user?.token && !session?.user?.accessToken) {
       return NextResponse.json(
         { error: 'Authentication required' },

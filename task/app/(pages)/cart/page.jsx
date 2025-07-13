@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Trash2, CreditCard, ShoppingCart } from 'lucide-react';
+import { Trash2, CreditCard, ShoppingCart, AlertCircle, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,13 +23,33 @@ export default function CartPage() {
   const {
     cart,
     isLoading,
+    error,
+    fetched,
+    totalQuantity,
+    totalAmount,
     updateQuantity,
     removeFromCart,
     clearCart,
+    refreshCart,
+    clearError,
+    isInCart,
+    getItemQuantity,
   } = useCart();
+  
   const [selected, setSelected] = React.useState([]);
   const { setSelectedItems } = useSelectedItems();
   const router = useRouter();
+
+  // Clear error when component mounts or error changes
+  React.useEffect(() => {
+    if (error) {
+      // Auto-clear error after 5 seconds
+      const timer = setTimeout(() => {
+        clearError();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, clearError]);
 
   const toggleSelection = (id) =>
     setSelected((prev) =>
@@ -76,113 +96,187 @@ export default function CartPage() {
 
   const selectedTotal = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 20; // Adding transaction fee
 
-  return (
-    <div className="flex flex-col md:flex-row">
-      <div className="flex-1">
-        <Header />
-        <div className="p-3 md:p-6 mx-auto max-w-[1700px]">
-          <nav className="mb-4 text-2xl md:text-4xl">
-            <Link href="/cart" className="font-medium hover:underline">
-              Cart
-            </Link>
-          </nav>
+  // Handle quantity update with better UX
+  const handleQuantityUpdate = async (variantId, change) => {
+    const currentQuantity = getItemQuantity(variantId);
+    const newQuantity = currentQuantity + change;
+    
+    if (newQuantity <= 0) {
+      // Remove item if quantity becomes 0
+      await removeFromCart(variantId);
+    } else {
+      // Update quantity
+      await updateQuantity(variantId, change);
+    }
+  };
 
-          {cart.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-xl text-gray-500">Your cart is empty</p>
-              <Link href="/">
-                <Button className="mt-4">Continue Shopping</Button>
-              </Link>
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <div className="flex-1 flex flex-col xl:flex-row overflow-hidden">
+        {/* Left Side - Products */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="p-3 sm:p-4 border-b bg-white">
+            <div className="flex items-center justify-between">
+              <nav className="text-xl sm:text-2xl font-medium">
+                <Link href="/cart" className="hover:underline">
+                  Cart
+                </Link>
+              </nav>
+              
+              {/* Refresh button */}
+              <Button
+                onClick={refreshCart}
+                disabled={isLoading}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+              >
+                <RefreshCw className={`w-3 h-3 sm:w-4 sm:h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </Button>
             </div>
-          ) : (
-            <>
-              <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4">
+
+            {/* Error Display */}
+            {error && (
+              <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 flex-shrink-0" />
+                  <p className="text-red-700 text-xs sm:text-sm">{error}</p>
+                </div>
+                <Button onClick={clearError} variant="ghost" size="sm" className="flex-shrink-0">
+                  ×
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Loading state */}
+          {isLoading && !fetched && (
+            <div className="flex-1 flex items-center justify-center p-4">
+              <div className="text-center">
+                <RefreshCw className="w-6 h-6 sm:w-8 sm:h-8 animate-spin mx-auto mb-3 sm:mb-4" />
+                <p className="text-gray-500 text-sm sm:text-base">Loading cart...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Empty cart */}
+          {fetched && cart.length === 0 && (
+            <div className="flex-1 flex items-center justify-center p-4">
+              <div className="text-center">
+                <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-gray-400 mb-3 sm:mb-4" />
+                <p className="text-lg sm:text-xl text-gray-500 mb-3 sm:mb-4">Your cart is empty</p>
+                <Link href="/">
+                  <Button className="text-sm sm:text-base">Continue Shopping</Button>
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Cart items */}
+          {fetched && cart.length > 0 && (
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-3 sm:p-4">
                 {/* Mobile view */}
-                <div className="md:hidden space-y-4">
+                <div className="xl:hidden space-y-3">
                   {cart.map((item) => (
                     <div
                       key={item.id}
-                      className="border rounded-lg p-3 shadow-sm"
+                      className="border rounded-lg p-3 shadow-sm bg-white"
                     >
-                      <div className="flex items-center space-x-3 mb-2">
+                      <div className="flex items-start space-x-3 mb-3">
                         <input
                           type="checkbox"
                           checked={selected.includes(item.id)}
                           onChange={() => toggleSelection(item.id)}
+                          disabled={isLoading}
+                          className="mt-1 flex-shrink-0"
                         />
                         <Image
                           src={item.image}
                           alt={item.name}
                           width={60}
                           height={60}
-                          className="w-14 h-14 rounded-lg"
+                          className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover flex-shrink-0"
                         />
-                        <div>
-                          <p className="font-medium">{item.name}</p>
-                          <p className="text-sm text-gray-500">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm sm:text-base truncate">{item.name}</p>
+                          <p className="text-xs sm:text-sm text-gray-500">
                             By {item.brand}
+                          </p>
+                          <p className="text-sm sm:text-base font-medium text-green-600 mt-1">
+                            ₹{item.price}
                           </p>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <div>MRP ₹{item.price}</div>
-                        <div className="flex items-center">
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              updateQuantity(item.variantId, -1)
-                            }
+                            onClick={() => handleQuantityUpdate(item.variantId, -1)}
                             disabled={isLoading}
+                            className="w-8 h-8 p-0"
                           >
                             -
                           </Button>
-                          <span className="mx-2">{item.quantity}</span>
+                          <span className="text-sm sm:text-base font-medium min-w-[2rem] text-center">
+                            {item.quantity}
+                          </span>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              updateQuantity(item.variantId, 1)
-                            }
+                            onClick={() => handleQuantityUpdate(item.variantId, 1)}
                             disabled={isLoading}
+                            className="w-8 h-8 p-0"
                           >
                             +
                           </Button>
                         </div>
-                      </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <div>Total: ₹{item.price * item.quantity}</div>
-                        <Button
-                          variant="ghost"
-                          onClick={() => removeFromCart(item.variantId)}
-                          disabled={isLoading}
-                        >
-                          <Trash2 size={18} />
-                        </Button>
+                        
+                        <div className="flex items-center space-x-2">
+                          <div className="text-right">
+                            <p className="text-sm sm:text-base font-semibold">
+                              ₹{item.price * item.quantity}
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            onClick={() => removeFromCart(item.variantId)}
+                            disabled={isLoading}
+                            size="sm"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Desktop view */}
-                <div className="hidden md:block">
+                {/* Tablet view */}
+                <div className="hidden xl:block bg-white rounded-lg shadow-sm overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>
+                        <TableHead className="w-12">
                           <input
                             type="checkbox"
-                            checked={selected.length === cart.length}
+                            checked={selected.length === cart.length && cart.length > 0}
                             onChange={(e) => selectAll(e.target.checked)}
+                            disabled={isLoading}
                           />
                         </TableHead>
-                        <TableHead>Product</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead className="text-center">
+                        <TableHead className="min-w-[300px]">Product</TableHead>
+                        <TableHead className="min-w-[100px]">Price</TableHead>
+                        <TableHead className="text-center min-w-[150px]">
                           Quantity
                         </TableHead>
-                        <TableHead>Total</TableHead>
-                        <TableHead>Action</TableHead>
+                        <TableHead className="min-w-[100px]">Total</TableHead>
+                        <TableHead className="w-16">Action</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -193,48 +287,51 @@ export default function CartPage() {
                               type="checkbox"
                               checked={selected.includes(item.id)}
                               onChange={() => toggleSelection(item.id)}
+                              disabled={isLoading}
                             />
                           </TableCell>
-                          <TableCell className="flex items-center space-x-4">
+                          <TableCell className="flex items-center space-x-3 sm:space-x-4">
                             <Image
                               src={item.image}
                               alt={item.name}
                               width={100}
                               height={100}
-                              className="w-14 h-14 rounded-lg"
+                              className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover flex-shrink-0"
                             />
-                            <div>
-                              <p className="font-medium">{item.name}</p>
-                              <p className="text-sm text-gray-500">
+                            <div className="min-w-0">
+                              <p className="font-medium text-sm sm:text-base truncate">{item.name}</p>
+                              <p className="text-xs sm:text-sm text-gray-500">
                                 By {item.brand}
                               </p>
                             </div>
                           </TableCell>
-                          <TableCell>₹{item.price}</TableCell>
+                          <TableCell className="text-sm sm:text-base">₹{item.price}</TableCell>
                           <TableCell className="flex justify-center items-center">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateQuantity(item.variantId, -1)
-                              }
-                              disabled={isLoading}
-                            >
-                              -
-                            </Button>
-                            <span className="mx-2">{item.quantity}</span>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateQuantity(item.variantId, 1)
-                              }
-                              disabled={isLoading}
-                            >
-                              +
-                            </Button>
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleQuantityUpdate(item.variantId, -1)}
+                                disabled={isLoading}
+                                className="w-8 h-8 p-0"
+                              >
+                                -
+                              </Button>
+                              <span className="text-sm sm:text-base font-medium min-w-[2rem] text-center">
+                                {item.quantity}
+                              </span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleQuantityUpdate(item.variantId, 1)}
+                                disabled={isLoading}
+                                className="w-8 h-8 p-0"
+                              >
+                                +
+                              </Button>
+                            </div>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-sm sm:text-base font-semibold">
                             ₹{item.price * item.quantity}
                           </TableCell>
                           <TableCell>
@@ -242,8 +339,10 @@ export default function CartPage() {
                               variant="ghost"
                               onClick={() => removeFromCart(item.variantId)}
                               disabled={isLoading}
+                              size="sm"
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
                             >
-                              <Trash2 size={18} />
+                              <Trash2 size={16} />
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -252,24 +351,34 @@ export default function CartPage() {
                   </Table>
                 </div>
               </div>
+            </div>
+          )}
+        </div>
 
-              {/* Cart Summary and Checkout Options */}
+        {/* Right Side - Summary */}
+        {fetched && cart.length > 0 && (
+          <div className="w-full xl:w-80 2xl:w-96 bg-gray-50 border-t xl:border-l xl:border-t-0 flex flex-col">
+            <div className="p-4 sm:p-6 flex-1 overflow-y-auto">
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Order Summary</h2>
+              
+              {/* Selected Items Summary */}
               {selected.length > 0 && (
-                <div className="mt-6 bg-white shadow-md rounded-lg p-6">
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-base sm:text-lg font-medium mb-2 sm:mb-3">Selected Items</h3>
+                  
                   {/* Vendor Breakdown */}
                   {Object.keys(vendorGroups).length > 1 && (
-                    <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                      <h3 className="text-lg font-semibold mb-3">Order Breakdown by Vendor</h3>
-                      <div className="space-y-3">
+                    <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-white rounded-lg border">
+                      <h4 className="text-xs sm:text-sm font-medium mb-2">By Vendor</h4>
+                      <div className="space-y-2">
                         {Object.entries(vendorGroups).map(([vendorId, vendor]) => (
-                          <div key={vendorId} className="flex justify-between items-center p-3 bg-white rounded border">
-                            <div>
-                              <p className="font-medium">{vendor.vendorName}</p>
-                              <p className="text-sm text-gray-500">{vendor.items.length} item{vendor.items.length !== 1 ? 's' : ''}</p>
+                          <div key={vendorId} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                            <div className="min-w-0">
+                              <p className="text-xs sm:text-sm font-medium truncate">{vendor.vendorName}</p>
+                              <p className="text-xs text-gray-500">{vendor.items.length} item{vendor.items.length !== 1 ? 's' : ''}</p>
                             </div>
-                            <div className="text-right">
-                              <p className="font-semibold">₹{vendor.subtotal}</p>
-                              <p className="text-xs text-gray-500">Subtotal</p>
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-xs sm:text-sm font-semibold">₹{vendor.subtotal}</p>
                             </div>
                           </div>
                         ))}
@@ -277,58 +386,59 @@ export default function CartPage() {
                     </div>
                   )}
                   
-                  <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div className="text-center md:text-left">
-                      <p className="text-lg font-semibold">
-                        Selected Items: {selected.length}
-                      </p>
-                      <p className="text-2xl font-bold text-orange-500">
-                        Total: ₹{selectedTotal}
-                      </p>
-                      {Object.keys(vendorGroups).length > 1 && (
-                        <p className="text-sm text-gray-500">
-                          From {Object.keys(vendorGroups).length} vendor{Object.keys(vendorGroups).length !== 1 ? 's' : ''}
-                        </p>
-                      )}
+                  <div className="bg-white rounded-lg border p-3 sm:p-4">
+                    <div className="space-y-2 mb-3 sm:mb-4">
+                      <div className="flex justify-between text-sm sm:text-base">
+                        <span>Items ({selected.length})</span>
+                        <span>₹{selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm sm:text-base">
+                        <span>Transaction Fee</span>
+                        <span>₹20</span>
+                      </div>
+                      <div className="border-t pt-2 flex justify-between font-semibold text-base sm:text-lg">
+                        <span>Total</span>
+                        <span className="text-orange-500">₹{selectedTotal}</span>
+                      </div>
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div className="space-y-2 sm:space-y-3">
+                      <Button
+                        onClick={() => handleCheckout(selectedItems)}
+                        disabled={isLoading}
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base"
+                      >
+                        {isLoading ? (
+                          <>
+                            <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 mr-2 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                            Pay ₹{selectedTotal}
+                          </>
+                        )}
+                      </Button>
+                      
                       <Button
                         onClick={handleProceed}
                         disabled={isLoading}
                         variant="outline"
-                        className="w-full sm:w-auto"
+                        className="w-full text-sm sm:text-base"
                       >
                         Continue Shopping
                       </Button>
-                      
-                      <div className="w-full sm:w-48">
-                        <Button
-                          onClick={() => handleCheckout(selectedItems)}
-                          disabled={isLoading}
-                          className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-                        >
-                          {isLoading ? (
-                            <>
-                              <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
-                              Processing...
-                            </>
-                          ) : (
-                            <>
-                              <CreditCard className="w-4 h-4 mr-2" />
-                              Pay ₹{selectedTotal}
-                            </>
-                          )}
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Quick Checkout for All Items */}
+              {/* All Items Summary */}
               {cart.length > 0 && selected.length === 0 && (
-                <div className="mt-6 bg-white shadow-md rounded-lg p-6">
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-base sm:text-lg font-medium mb-2 sm:mb-3">All Items</h3>
+                  
                   {/* All Items Vendor Breakdown */}
                   {(() => {
                     const allVendorGroups = cart.reduce((groups, item) => {
@@ -346,18 +456,17 @@ export default function CartPage() {
                     }, {});
                     
                     return Object.keys(allVendorGroups).length > 1 ? (
-                      <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                        <h3 className="text-lg font-semibold mb-3">All Items by Vendor</h3>
-                        <div className="space-y-3">
+                      <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-white rounded-lg border">
+                        <h4 className="text-xs sm:text-sm font-medium mb-2">By Vendor</h4>
+                        <div className="space-y-2">
                           {Object.entries(allVendorGroups).map(([vendorId, vendor]) => (
-                            <div key={vendorId} className="flex justify-between items-center p-3 bg-white rounded border">
-                              <div>
-                                <p className="font-medium">{vendor.vendorName}</p>
-                                <p className="text-sm text-gray-500">{vendor.items.length} item{vendor.items.length !== 1 ? 's' : ''}</p>
+                            <div key={vendorId} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                              <div className="min-w-0">
+                                <p className="text-xs sm:text-sm font-medium truncate">{vendor.vendorName}</p>
+                                <p className="text-xs text-gray-500">{vendor.items.length} item{vendor.items.length !== 1 ? 's' : ''}</p>
                               </div>
-                              <div className="text-right">
-                                <p className="font-semibold">₹{vendor.subtotal}</p>
-                                <p className="text-xs text-gray-500">Subtotal</p>
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-xs sm:text-sm font-semibold">₹{vendor.subtotal}</p>
                               </div>
                             </div>
                           ))}
@@ -366,60 +475,56 @@ export default function CartPage() {
                     ) : null;
                   })()}
                   
-                  <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div className="text-center md:text-left">
-                      <p className="text-lg font-semibold">
-                        All Items in Cart: {cart.length}
-                      </p>
-                      <p className="text-2xl font-bold text-orange-500">
-                        Total: ₹{cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 20}
-                      </p>
-                      {(() => {
-                        const vendorCount = new Set(cart.map(item => item.vendorId || 'default')).size;
-                        return vendorCount > 1 ? (
-                          <p className="text-sm text-gray-500">
-                            From {vendorCount} vendor{vendorCount !== 1 ? 's' : ''}
-                          </p>
-                        ) : null;
-                      })()}
+                  <div className="bg-white rounded-lg border p-3 sm:p-4">
+                    <div className="space-y-2 mb-3 sm:mb-4">
+                      <div className="flex justify-between text-sm sm:text-base">
+                        <span>Items ({cart.length})</span>
+                        <span>₹{cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm sm:text-base">
+                        <span>Transaction Fee</span>
+                        <span>₹20</span>
+                      </div>
+                      <div className="border-t pt-2 flex justify-between font-semibold text-base sm:text-lg">
+                        <span>Total</span>
+                        <span className="text-orange-500">₹{cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 20}</span>
+                      </div>
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div className="space-y-2 sm:space-y-3">
+                      <Button
+                        onClick={() => handleCheckout(cart)}
+                        disabled={isLoading}
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base"
+                      >
+                        {isLoading ? (
+                          <>
+                            <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 mr-2 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                            Checkout All ₹{cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 20}
+                          </>
+                        )}
+                      </Button>
+                      
                       <Button
                         onClick={() => selectAll(true)}
                         disabled={isLoading}
                         variant="outline"
-                        className="w-full sm:w-auto"
+                        className="w-full text-sm sm:text-base"
                       >
                         Select All
                       </Button>
-                      
-                      <div className="w-full sm:w-48">
-                        <Button
-                          onClick={() => handleCheckout(cart)}
-                          disabled={isLoading}
-                          className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-                        >
-                          {isLoading ? (
-                            <>
-                              <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
-                              Processing...
-                            </>
-                          ) : (
-                            <>
-                              <CreditCard className="w-4 h-4 mr-2" />
-                              Checkout All ₹{cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 20}
-                            </>
-                          )}
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 </div>
               )}
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
