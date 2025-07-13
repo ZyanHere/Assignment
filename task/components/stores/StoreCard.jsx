@@ -17,7 +17,7 @@ export default function StoreCard({ product, storeName }) {
   // Navigate into product detail
   const handleItemClick = () => {
     setSelectedProduct(product);
-    router.push(`/product/${product.id}`);
+    router.push(`/product/${product._id || product.id}`);
   };
 
   // Pricing & discount
