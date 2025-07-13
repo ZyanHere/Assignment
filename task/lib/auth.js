@@ -73,6 +73,7 @@ export const authOptions = {
             phone: user.phone,
             role: user.role || "user",
             token: user.token,
+            profileImage: user.profileImage,
             rememberMe: credentials.rememberMe === "on",
           };
         } catch (error) {
@@ -105,7 +106,8 @@ export const authOptions = {
       if (user) {
         token.accessToken = user.token;
         token.role = user.role;
-        
+        token.profileImage = user.profileImage;
+        token.name = user.name;
         if (user.rememberMe) {
           token.exp = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
         }
@@ -117,6 +119,9 @@ export const authOptions = {
       // Expose token and role on `session.user`
       session.user.token = token.accessToken;
       session.user.role = token.role;
+      session.user.profileImage = token.profileImage;
+      session.user.name = token.name;
+
       return session;
     },
   },

@@ -1,41 +1,63 @@
 "use client";
 
-import useSWR from "swr";
-import { fetcher } from "@/lib/api";
 import Header from "@/components/home/Header";
 import StoreBanner from "@/components/stores/StoreBanner";
 import StoreCarousel from "@/components/stores/StoreCarousel";
+import { useEffect } from "react";
+import { useStores } from "@/lib/hooks/useStores";
 
 function StoreSection({ vendor }) {
+  const { fetchVendorProducts, productsByVendor, productsLoading } = useStores();
   const { vendor_id, store_name, city, images } = vendor;
-  const logo = images.logoUrl || "/store/default-logo.png";
+  const logo = images.logo || "/store/default-logo.png";
   const distance = vendor.distance || "–";
 
-  const { data, error } = useSWR(
-    `/lmd/api/v1/retail/vendor/public/${vendor_id}/products`,
-    fetcher
-  );
+  useEffect(() => {
+    fetchVendorProducts(vendor_id);
+  }, [fetchVendorProducts, vendor_id]);
 
-  if (error || !data || !Array.isArray(data.data)) return null;
+  const productsRaw = productsByVendor[vendor_id] || [];
+  const products = productsRaw.map((p) => {
+    // Prefer first variant for price/stock, fallback to product-level fields
+    const variant = Array.isArray(p.variants) && p.variants.length > 0 ? p.variants[0] : {};
+    const variantPrice = variant.price || {};
+    const mrp = variantPrice.base_price ?? p.mrp ?? 0;
+    const salePrice = variantPrice.sale_price > 0
+      ? variantPrice.sale_price
+      : (p.price ?? mrp);
+    const stock = variant.stock?.quantity ?? p.stock ?? null;
 
-  const products = data.data
-    .map((p) => {
-      const variantPrice = p.variants?.[0]?.price || {};
-      const mrp = variantPrice.base_price ?? 0;
-      const salePrice = variantPrice.sale_price > 0 ? variantPrice.sale_price : mrp;
-      return {
-        id: p.id,
-        name: p.name,
-        category: p.category.name,
-        image: p.images[0]?.url || "/placeholder-image.jpg",
-        price: salePrice,
-        mrp: mrp,
-        rating: { average: p.rating.average, count: p.rating.count },
-      };
-    });
-    
+    // Always ensure category is a string
+    let category = '';
+    if (Array.isArray(p.category)) {
+      category = p.category.map(c => c.name).join(', ');
+    } else if (typeof p.category === 'object' && p.category !== null) {
+      category = p.category.name || '';
+    }
 
-  if (products.length === 0) return null;
+    return {
+      id: p.id,
+      name: p.name,
+      category,
+      image: (Array.isArray(p.images) && p.images[0]?.url) ? p.images[0].url : "/placeholder-image.jpg",
+      price: salePrice,
+      mrp: mrp,
+      rating: { average: p.rating?.average ?? 0, count: p.rating?.count ?? 0 },
+      stock: stock,
+    };
+  });
+  const loading = productsLoading[vendor_id];
+
+  if (loading) {
+    return (
+      <div className="mb-16 last:mb-0 animate-pulse">
+        <div className="h-40 bg-gray-100 rounded-lg mb-4" />
+        <div className="h-6 w-1/3 bg-gray-200 rounded mb-2" />
+        <div className="h-6 w-1/4 bg-gray-200 rounded" />
+      </div>
+    );
+  }
+  if (!products.length) return null;
 
   return (
     <div className="mb-16 last:mb-0">
@@ -52,28 +74,52 @@ function StoreSection({ vendor }) {
 }
 
 export default function StoresPage() {
-  const { data: resp, error } = useSWR(
-    "/lmd/api/v1/retail/vendor/public",
-    fetcher
-  );
+  const { vendors, vendorsLoading, vendorsError, fetchVendors } = useStores();
 
-  if (error || !resp?.data) return null;
+  useEffect(() => {
+    fetchVendors();
+  }, [fetchVendors]);
 
-  const vendors = resp.data;
+  if (vendorsLoading) {
+    return (
+      <div className="flex-1 flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-1 p-4 sm:p-6 md:p-8 mx-auto w-full max-w-[1700px]">
+          <div className="mb-8 animate-pulse">
+            <div className="h-32 bg-gray-100 rounded-lg mb-4" />
+            <div className="h-8 w-1/3 bg-gray-200 rounded mb-2" />
+            <div className="h-8 w-1/4 bg-gray-200 rounded" />
+          </div>
+        </main>
+      </div>
+    );
+  }
+  if (vendorsError) {
+    return (
+      <div className="flex-1 flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-1 p-4 sm:p-6 md:p-8 mx-auto w-full max-w-[1700px] flex items-center justify-center">
+          <div className="text-center text-red-500 text-lg font-semibold">Failed to load stores.</div>
+        </main>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col min-h-screen">
       <Header />
-      <main className="p-6 mx-auto w-full max-w-[1700px]">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 mx-auto w-full max-w-[1700px]">
         <div className="mb-12">
           <StoreBanner />
         </div>
-        <nav className="mb-4 text-black text-4xl">
-          <span className="font-medium">Stores</span>
+        <nav className="mb-4 text-black text-2xl sm:text-3xl md:text-4xl font-medium">
+          Stores
         </nav>
-        {vendors.map((vendor) => (
-          <StoreSection key={vendor.vendor_id} vendor={vendor} />
-        ))}
+        <div className="space-y-12">
+          {vendors.map((vendor) => (
+            <StoreSection key={vendor.vendor_id} vendor={vendor} />
+          ))}
+        </div>
       </main>
     </div>
   );

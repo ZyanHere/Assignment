@@ -22,7 +22,7 @@ const AllTabBanner = () => {
   return (
     <div className="w-full">
       <BannerHeader />
-      <div className=" mx-auto px-4"> {/* Added container constraint */}
+      <div className="px-0 md:px-4 mx-auto"> {/* px-0 for mobile, px-4 for md+ */}
         <div className="flex flex-col items-center" role="region" aria-label="All tab carousel">
           <div className="relative w-full h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden rounded-2xl">
             <div
@@ -41,7 +41,7 @@ const AllTabBanner = () => {
                     fill
                     className="object-contain" // Changed from object-cover to contain
                     priority={index === 0}
-                    sizes="(max-width: 768px) 90vw, (max-width: 1500px) 80vw, 70vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1500px) 80vw, 70vw"
                   />
                 </div>
               ))}

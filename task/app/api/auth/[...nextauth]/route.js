@@ -50,24 +50,13 @@ const handler = NextAuth({
           };
         }
 
-        // if (!credentials.email && !credentials.phone) {
-        //   throw new Error("Email or phone is required");
-        // }
-        // if (credentials.email && credentials.phone) {
-        //   throw new Error("Use either email or phone, not both");
-        // }
-
-
         try {
           const res = await axios.post(
-            "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/login", 
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/lmd/api/v1/auth/customer/login`, 
             {
-              // phone: credentials.phone,
               email: credentials.email,
               password: credentials.password,
-            },
-
-            //{ withCredentials: true }
+            }
           );
           console.log("Response from login API:", res.data);
 
@@ -76,17 +65,17 @@ const handler = NextAuth({
             throw new Error("Login failed: no token returned");
           }
 
-          // Return a flat object including the token:
-          return {
-            id: user.id || user.user_id,
-            name: user.username,
-            email: user.email,
-            phone: user.phone,
-            role: user.role || "user",
-            token: user.token,
-            rememberMe: credentials.rememberMe === "on",
-          };
-          // return res.data.user ?? null;
+                  // Return a flat object including the token:
+        return {
+          id: user.id || user.user_id,
+          name: user.username || user.name,
+          email: user.email,
+          phone: user.phone,
+          role: user.role || "user",
+          token: user.token,
+          profileImage: user.profileImage,
+          rememberMe: credentials.rememberMe === "on",
+        };
         } catch (error) {
           let errorMessage = "Authentication failed";
 
@@ -111,103 +100,131 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
-  //   callbacks: {
-  //     async jwt({ token, user, account }) {
-  //       // Handle OAuth providers
-  //       if (account?.provider === "google" || account?.provider === "facebook") {
-  //         try {
-  //           // Call your backend to handle OAuth user creation/login
-  //           const response = await axios.post(
-  //             `http://localhost:4000/lmd/api/v1/auth/${account.provider}/callback`,
-  //             {
-  //               token: account.access_token,
-  //               email: token.email,
-  //               name: token.name
-  //             }
-  //           );
-  //           console.log("🔍 [login response] res.data =", JSON.stringify(res.data, null, 2));
-
-  //           if (response.data?.user) {
-  //             token.user = {
-  //               id: response.data.user.id,
-  //               name: response.data.user.name,
-  //               email: response.data.user.email,
-  //               phone: response.data.user.phone,
-  //               role: response.data.user.role || "user",
-  //               token: response.data.token  // Store token from backend
-  //             };
-  //           }
-  //         } catch (error) {
-  //           console.error(`Error during ${account.provider} authentication:`, error);
-  //           return null;
-  //         }
-  //       } else if (user) {
-  //         token.user = {
-  //           id: user.id,
-  //           name: user.name,
-  //           email: user.email,
-  //           phone: user.phone,
-  //           role: user.role || "user",
-  //           token: user.token  // Preserve token
-  //         };
-  //         // Implement rememberMe functionality
-  //         if (user.rememberMe) {
-  //           token.exp = Math.floor(Date.now()/1000) + 30 * 24 * 60 * 60; // 30 days
-  //         }
-  //       }
-  //       return token;
-  //     },
-
-  //     async session({ session, token }) {
-  //       if (token) {
-  //         session.user = token.user;
-  //       }
-  //       return session;
-  //     }
-  //   },
-  //   pages: {
-  //     signIn: "/auth/signin",
-  //   },
-  //   secret: process.env.NEXTAUTH_SECRET,
-  // });
-
   callbacks: {
-    /** 
-     * @param token  — existing token (from previous call or initial),
-     * @param user   — user object returned from `authorize` or OAuth sign-in,
-     * @param account — info about the OAuth provider (only on first sign-in)
-     */
-
-    async jwt({ token, user }) {
-      // On initial sign-in (credentials or OAuth), `user` will be defined.
-      if (user) {
-        token.accessToken = user.token;
-        token.role = user.role;
+    async jwt({ token, user, account }) {
+      // Handle OAuth providers
+      if (account?.provider === "google" || account?.provider === "facebook") {
+        try {
+          console.log("=== OAuth Authentication Started ===");
+          console.log("Provider:", account.provider);
+          console.log("Token data:", { 
+            sub: token.sub, 
+            email: token.email, 
+            name: token.name,
+            picture: token.picture 
+          });
+          
+          const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/lmd/api/v1/auth/${account.provider}/callback`;
+          const requestData = {
+            token: account.access_token,
+            email: token.email,
+            name: token.name,
+            picture: token.picture,
+            sub: token.sub // Pass the Google/Facebook ID
+          };
+          
+          console.log("Calling backend URL:", backendUrl);
+          console.log("Request data:", requestData);
+          
+          // Call your backend to handle OAuth user creation/login
+          const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/lmd/api/v1/auth/${account.provider}/callback`,
+            requestData,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              timeout: 10000, // 10 second timeout
+            }
+          );
+          
+          console.log("Backend response status:", response.status);
+          console.log("Backend response data:", response.data);
+          
+          if (response.data?.user) {
+            token.user = {
+              id: response.data.user.id || response.data.user._id,
+              name: response.data.user.name || response.data.user.userName,
+              email: response.data.user.email,
+              phone: response.data.user.phone,
+              role: response.data.user.role || "CUSTOMER",
+              token: response.data.token || response.data.user.token,
+              profileImage: response.data.user.profileImage || token.picture
+            };
+            console.log("User data set in token:", token.user);
+          } else {
+            console.warn("No user data in backend response");
+            throw new Error("Backend did not return user data");
+          }
+        } catch (error) {
+          console.error("=== OAuth Authentication Error ===");
+          console.error("Error type:", error.constructor.name);
+          
+          if (error.response) {
+            // Server responded with non-2xx status
+            console.error("Response status:", error.response.status);
+            console.error("Response data:", error.response.data);
+            console.error("Response headers:", error.response.headers);
+          } else if (error.request) {
+            // Request was made but no response
+            console.error("No response received from backend");
+            console.error("Request details:", error.request);
+          } else {
+            // Other errors
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+          }
+          
+          // Fallback: create basic user data from OAuth token
+          console.log("Using fallback OAuth data");
+          token.user = {
+            id: token.sub,
+            name: token.name,
+            email: token.email,
+            role: "CUSTOMER",
+            profileImage: token.picture
+          };
+        }
+      } else if (user) {
+        // Handle credentials login
+        console.log("Handling credentials login for user:", user.email);
+        token.user = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          role: user.role || "CUSTOMER",
+          token: user.token,
+          profileImage: user.profileImage
+        };
         
+        // Implement rememberMe functionality
         if (user.rememberMe) {
-          token.exp = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+          token.exp = Math.floor(Date.now()/1000) + 30 * 24 * 60 * 60; // 30 days
         }
       }
       return token;
     },
 
-    /** 
-     * @param session — session object sent to the client
-     * @param token   — same token returned from `jwt` callback
-     */
-    
     async session({ session, token }) {
-      // Expose token and role on `session.user`
-      session.user.token = token.accessToken;
-      session.user.role = token.role;
+      console.log("=== NextAuth Session Callback ===");
+      console.log("Token:", token);
+      console.log("Token.user:", token.user);
+      console.log("Session before:", session);
+      
+      if (token.user) {
+        session.user = token.user;
+        console.log("✅ Session after setting user:", session);
+      } else {
+        console.warn("⚠️ No token.user found in session callback");
+        console.log("Token keys:", Object.keys(token));
+      }
       return session;
-    },
+    }
   },
-
   pages: {
     signIn: "/auth/signin",
   },
-
   secret: process.env.NEXTAUTH_SECRET || 'your-development-secret-key-change-in-production',
 });
 

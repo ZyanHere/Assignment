@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useSWR from "swr";
-import { fetcher } from "@/lib/categoryFetcher/fetcher";
+import { fetcher } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // const categories = [
@@ -28,9 +28,9 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
   const scrollContainerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [needsScrolling, setNeedsScrolling] = useState(false);
-  const { data, error } = useSWR('https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/categories', fetcher);
-  const finalCategories = Array.isArray(data)
-    ? [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }, ...data]
+  const { data, error } = useSWR('/lmd/api/v1/retail/categories', fetcher);
+  const finalCategories = Array.isArray(data?.data)
+    ? [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }, ...data.data]
     : [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }];
 
   // Check if we're on mobile and if scrolling is needed on component mount and window resize

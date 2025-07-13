@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useEffect, useMemo } from "react";
-import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
 import CategoryFooter from "@/components/categories/CategoryFooter";
@@ -10,50 +9,40 @@ import Header from "@/components/home/Header";
 import CategoryCarousel from "@/components/categories/CategoryCarousel";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/subcategoryProduct/ProductCard";
-
-const API_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/categories";
-const API_PRODUCTS_URL = "https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/products";
-const TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // move to .env.local
-
-const fetcher = async (url) => {
-  const res = await fetch(url, {
-    headers: { Authorization: TOKEN },
-  });
-  if (!res.ok) throw new Error("Failed to fetch categories");
-  return res.json();
-};
-
-
-// SWR fetcher for all products
-const productsFetcher = async (url) => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to fetch products");
-  return res.json();
-};
-
+import { useHome } from "@/lib/hooks/useHome";
 
 export default function CategoryPage() {
-  const { data, isLoading } = useSWR(API_URL, fetcher);
-  const {data: ProductData} = useSWR(API_PRODUCTS_URL, productsFetcher);
-  const categories = data?.data || [];
-  
+  const { 
+    categories, 
+    categoriesLoading, 
+    allProducts, 
+    allProductsLoading,
+    fetchCategories, 
+    fetchAllProducts 
+  } = useHome();
 
   // Randomizing products logic
   const shuffledProducts = useMemo(() => {
-  if (!ProductData?.data || !Array.isArray(ProductData.data)) return [];
-  const array = [...ProductData.data];
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}, [ProductData?.data]);
+    if (!allProducts || !Array.isArray(allProducts)) return [];
+    const array = [...allProducts];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }, [allProducts]);
   
   const scrollRef = useRef(null);
   const [pageIndex, setPageIndex] = useState(0);
   const [needsScrolling, setNeedsScrolling] = useState(false);
   const itemsPerPage = 16; // 8 * 2 layout
   const pageCount = Math.ceil(categories.length / itemsPerPage);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchCategories();
+    fetchAllProducts();
+  }, [fetchCategories, fetchAllProducts]);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -94,94 +83,123 @@ export default function CategoryPage() {
   };
 
   return (
-    <main className="space-y-6 md:space-y-8">
+    <main className="min-h-screen bg-white flex flex-col">
       <Header />
 
-      <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 mt-4 flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Categories</h2>
-        <div className="flex gap-2">
-          <Button variant="outline">Filters</Button>
-          <Button variant="outline">Sort</Button>
-        </div>
-      </section>
-
-      <section className="relative px-4 md:px-6">
-        {/* Scroll buttons - only visible when scrolling is needed */}
-        {needsScrolling && (
-          <>
-            <button
-              onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-white"
-              aria-label="Scroll left"
+      {/* Page Header Section */}
+      <section className="w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 mt-4 sm:mt-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
+            Categories
+          </h2>
+          <div className="flex gap-2 sm:gap-3">
+            <Button 
+              variant="outline" 
+              className="text-xs sm:text-sm px-3 sm:px-4 py-2"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-white"
-              aria-label="Scroll right"
+              Filters
+            </Button>
+            <Button 
+              variant="outline" 
+              className="text-xs sm:text-sm px-3 sm:px-4 py-2"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
-          </>
-        )}
-
-        <div
-          ref={scrollRef}
-          onScroll={handleScroll}
-          className="overflow-x-auto scroll-smooth snap-x snap-mandatory"
-        >
-          <div className="flex w-full">
-            {pages.map((page, idx) => (
-              <div
-                key={idx}
-                className="w-full shrink-0 snap-start px-6 py-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 justify-center"
-              >
-                {page.map((cat) => (
-                  <CategoryItem key={cat._id} category={cat} />
-                ))}
-              </div>
-            ))}
+              Sort
+            </Button>
           </div>
         </div>
-
-        <div className="flex justify-center mt-2 space-x-2">
-          {pages.map((_, i) => (
-            <span
-              key={i}
-              className={`w-3 h-3 rounded-full ${
-                i === pageIndex ? "bg-yellow-400" : "bg-gray-400"
-              }`}
-            />
-          ))}
-        </div>
       </section>
 
-      <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6">
+      {/* Categories Carousel Section */}
+      <section className="relative px-3 sm:px-4 md:px-6 lg:px-8 mt-6 sm:mt-8">
+        {/* Loading State */}
+        {categoriesLoading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
+          </div>
+        ) : (
+          <>
+            {/* Scroll buttons - only visible when scrolling is needed */}
+            {needsScrolling && (
+              <>
+                <button
+                  onClick={() => scroll("left")}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all duration-200"
+                  aria-label="Scroll left"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => scroll("right")}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all duration-200"
+                  aria-label="Scroll right"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </>
+            )}
+
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
+            >
+              <div className="flex w-full">
+                {pages.map((page, idx) => (
+                  <div
+                    key={idx}
+                    className="w-full shrink-0 snap-start px-3 sm:px-6 py-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4 justify-center"
+                  >
+                    {page.map((cat) => (
+                      <CategoryItem key={cat._id} category={cat} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Pagination Dots */}
+            {pageCount > 1 && (
+              <div className="flex justify-center mt-4 sm:mt-6 space-x-2">
+                {pages.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-200 ${
+                      i === pageIndex ? "bg-yellow-400" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* Banner Section */}
+      <section className="w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 mt-6 sm:mt-8">
         <div className="relative aspect-[3.5/1] w-full rounded-xl overflow-hidden">
           <Image
             src="/categories/category-bg.png"
@@ -192,16 +210,26 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 space-y-6">
-        <CategoryCarousel data={[]} loading={isLoading} />
-      </section> */}
-
-      {/*Random Product Cards Section */}
-      <section className="w-full max-w-[1700px] mx-auto px-4 md:px-6 py-8">
-        {shuffledProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            {shuffledProducts.map((product) => {
-              // Process images to handle S3 URLs with spaces (optional, as in SubProduct.jsx)
+      {/* Random Product Cards Section */}
+      <section className="w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+        <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
+          Featured Products
+        </h3>
+        
+        {allProductsLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-200 rounded-lg h-48 mb-2"></div>
+                <div className="bg-gray-200 rounded h-4 mb-1"></div>
+                <div className="bg-gray-200 rounded h-3 w-2/3"></div>
+              </div>
+            ))}
+          </div>
+        ) : shuffledProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+            {shuffledProducts.slice(0, 12).map((product) => {
+              // Process images to handle S3 URLs with spaces
               const processedProduct = {
                 ...product,
                 images: Array.isArray(product.images)
@@ -219,8 +247,8 @@ export default function CategoryPage() {
             })}
           </div>
         ) : (
-          <div className="text-center text-gray-500 py-8">
-            No products found.
+          <div className="text-center text-gray-500 py-8 sm:py-12">
+            <p className="text-sm sm:text-base">No products found.</p>
           </div>
         )}
       </section>
@@ -233,8 +261,8 @@ export default function CategoryPage() {
 
 const CategoryItem = ({ category }) => (
   <Link href={`/categories/${category.slug}`} className="group">
-    <div className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-xl transition-all">
-      <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center">
+    <div className="flex flex-col items-center p-2 sm:p-3 hover:bg-gray-50 rounded-xl transition-all duration-200">
+      <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center">
         <Image
           src={category.imageUrl || "/categories/subcat/fallback-category.png"}
           alt={category.name}
@@ -243,18 +271,15 @@ const CategoryItem = ({ category }) => (
           unoptimized
         />
       </div>
-      <p className="text-center mt-2 text-sm font-medium group-hover:text-blue-600">
+      <p className="text-center mt-2 text-xs sm:text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
         {category.name}
       </p>
     </div>
   </Link>
 );
+
 const FilterButton = ({ children }) => (
-  <button className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-100 w-full md:w-auto justify-center">
-    <Image src="/categories/icon.svg" alt="icon" width={20} height={20} />
+  <button className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
     {children}
-    <Image src="/categories/down.svg" alt="arrow" width={16} height={16} className="ml-2" />
   </button>
 );
-
-export { FilterButton };

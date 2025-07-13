@@ -86,10 +86,10 @@ export async function setPrimaryAddress(addressId) {
   }
 }
 
-/** GET /customer/wishlist → returns user saved items */
+/** GET /lmd/api/v1/retail/wishlist → returns user saved items */
 export async function fetchUserWishlist() {
   try {
-    const { data } = await api.get('/lmd/api/v1/customer/wishlist');
+    const { data } = await api.get('/lmd/api/v1/retail/wishlist');
     return data.data;
   } catch (e) {
     unwrapError(e);

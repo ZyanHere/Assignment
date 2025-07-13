@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import NavLinks from "@/app/components/header/NavLinks";
 import UserActions from "@/app/components/header/UserActions";
@@ -17,140 +17,121 @@ const Header = () => {
 
   useEffect(() => {
     setMounted(true);
-    
-    // Handle scroll event for header styling
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
-    
-    // Handle clicks outside mobile menu to close it
     const handleClickOutside = (event) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target) && isMobileMenuOpen) {
         setMobileMenuOpen(false);
       }
     };
-    
     document.addEventListener('mousedown', handleClickOutside);
-    
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isMobileMenuOpen]);
 
-  // Don't render anything during SSR or while loading session
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   return (
-    <nav className={`sticky top-0 z-50 bg-white transition-all duration-300 ${
-      isScrolled ? "shadow-md" : "shadow-sm"
-    } border-b border-yellow-500`}>
-      <div className="mx-auto px-4 sm:px-16 lg:px-20">
-        <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
-          <div className="flex items-center gap-3 sm:gap-6 md:gap-12">
-            {/* Mobile Menu Button */}
+    <nav className={`sticky top-0 z-50 bg-white transition-all duration-300 ${isScrolled ? "shadow-md" : "shadow-sm"} border-b border-yellow-500`}>
+      <div className="mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-20">
+        {/* Header Row */}
+        <div className="flex items-center justify-between h-12 sm:h-14 md:h-16 lg:h-20 relative">
+          {/* Left: Hamburger (mobile) + Logo (md+) + Nav (md+) */}
+          <div className="flex-1 flex items-center min-w-0">
+            {/* Hamburger menu (mobile only) */}
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-yellow-300/40 rounded-lg transition-colors"
+              className="md:hidden p-1.5 sm:p-2 hover:bg-yellow-300/40 rounded-lg transition-colors z-20"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-gray-700" />
+                <X className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700" />
               ) : (
-                <Menu className="h-6 w-6 text-gray-700" />
+                <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700" />
               )}
             </button>
+            {/* Logo (md+ screens, left-aligned) */}
+            <Link href="/" className="hidden md:flex flex-shrink-0 items-center ml-0 md:ml-2 lg:ml-4">
+              <Image
+                src="/auth-asset/logo.png"
+                alt="Logo"
+                width={82}
+                height={68}
+                className="w-16 h-auto sm:w-20 md:w-24 lg:w-28 xl:w-32 hover:scale-105 transition-transform"
+                priority
+              />
+            </Link>
+            {/* Desktop Nav (left-aligned on desktop) */}
+            <div className="hidden md:flex ml-4">
+              <NavLinks />
+            </div>
+          </div>
 
-            {/* Logo */}
+          {/* Center: Logo (absolutely centered on mobile only) */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-fit mx-auto z-10 md:hidden">
             <Link href="/" className="flex-shrink-0">
               <Image
                 src="/auth-asset/logo.png"
                 alt="Logo"
                 width={82}
                 height={68}
-                className="hover:scale-105 transition-transform"
+                className="w-16 h-auto hover:scale-105 transition-transform"
                 priority
               />
             </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <NavLinks />
-            </div>
           </div>
 
-          {/* Search Bar - Centered on desktop */}
-          <form className="hidden md:flex flex-1 max-w-2xl mx-4 lg:mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
-              <input
-                type="text"
-                placeholder='Search "stores"'
-                className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500 text-gray-700 transition-all border border-transparent hover:border-yellow-400"
-              />
-            </div>
-          </form>
+          {/* Search Bar (centered, only on lg+) - smaller */}
+          <div className="hidden lg:flex flex-1 max-w-lg mx-2 xl:mx-8">
+            <form className="flex w-full">
+              <div className="relative w-full">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                <input
+                  type="text"
+                  placeholder='Search "stores"'
+                  className="w-full pl-8 pr-3 py-1.5 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500 text-gray-700 transition-all border border-transparent hover:border-yellow-400 text-sm"
+                />
+              </div>
+            </form>
+          </div>
 
-          {/* Right Section - Icons and Profile */}
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-            {/* Mobile Search Icon */}
-            <button className="md:hidden p-2 hover:bg-yellow-300/40 rounded-lg transition-colors" aria-label="Search">
-              <Search className="h-6 w-6 text-gray-700" />
-            </button>
-
+          {/* Right: Profile only on mobile, full UserActions on sm+ */}
+          <div className="flex-1 flex items-center justify-end min-w-0">
             {isLoggedIn ? (
-              <UserActions />
+              <div className="block sm:hidden z-20">
+                <UserActions onlyProfile />
+              </div>
+            ) : null}
+            {/* On sm+ show all user actions or auth buttons */}
+            {isLoggedIn ? (
+              <div className="hidden sm:block">
+                <UserActions />
+              </div>
             ) : (
-              <div className="flex gap-1.5 sm:gap-2">
+              <div className="hidden sm:flex gap-1 sm:gap-1.5 md:gap-2">
                 <Link
                   href="/auth/signup"
-                  className="flex items-center justify-center text-center 
-                    px-2 sm:px-2.5 md:px-2.5 lg:px-3 
-                    py-1 sm:py-1 md:py-1 lg:py-1.5 
-                    text-[10px] sm:text-xs md:text-xs lg:text-sm 
-                    bg-yellow-500 shadow-2xl rounded-lg font-medium 
-                    text-white hover:bg-yellow-50 hover:text-black transition"
+                  className="flex items-center justify-center text-center px-1.5 sm:px-2 md:px-2.5 lg:px-3 py-1 sm:py-1.5 md:py-1.5 lg:py-2 text-[9px] sm:text-xs md:text-sm lg:text-sm bg-yellow-500 shadow-2xl rounded-lg font-medium text-white hover:bg-yellow-50 hover:text-black transition"
                 >
                   Register
                 </Link>
                 <Link
                   href="/auth/login"
-                  className="flex items-center justify-center text-center 
-                    px-2 sm:px-2.5 md:px-2.5 lg:px-3 
-                    py-1 sm:py-1 md:py-1 lg:py-1.5 
-                    text-[10px] sm:text-xs md:text-xs lg:text-sm 
-                    bg-white border border-yellow-500 shadow-2xl rounded-lg font-medium 
-                    hover:text-orange-400 transition"
+                  className="flex items-center justify-center text-center px-1.5 sm:px-2 md:px-2.5 lg:px-3 py-1 sm:py-1.5 md:py-1.5 lg:py-2 text-[9px] sm:text-xs md:text-sm lg:text-sm bg-white border border-yellow-500 shadow-2xl rounded-lg font-medium hover:text-orange-400 transition"
                 >
                   Log In
                 </Link>
               </div>
-
-
             )}
           </div>
-        </div>
-
-        {/* Mobile Search Bar */}
-        <div className="md:hidden pb-4 px-2">
-          <form className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
-            <input
-              type="text"
-              placeholder='Search "stores"'
-              className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500 text-gray-700 transition-all border border-transparent hover:border-yellow-400"
-            />
-          </form>
         </div>
       </div>
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           ref={mobileMenuRef}
           className="md:hidden absolute top-full left-0 w-full bg-white border-b border-yellow-500 shadow-lg py-2 animate-in slide-in-from-top duration-300"
         >

@@ -26,24 +26,24 @@ const FewMinutesLeft = () => {
         </Link>
       </div>
 
-      {/* Grid layout: 1 on mobile, 2 on tablet, 3 on laptop */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+      {/* Horizontal scroll on mobile, grid on md+ */}
+      <div className="flex gap-4 mt-4 overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 md:overflow-x-visible">
         {movies.map((movie) => {
           const movieSlug = generateSlug(movie.title);
           return (
             <Link 
               key={movie.id} 
               href={`/home/movie/few-minutes-left/${movieSlug}`}
-              className="relative block"
+              className="relative block min-w-[80vw] max-w-xs snap-center md:min-w-0 md:max-w-full md:w-full"
             >
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border p-4 rounded-lg shadow-md w-full">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border p-4 rounded-lg shadow-md w-full h-full bg-white">
                 
                 <Image 
                   src={movie.image} 
                   alt={movie.title} 
-                  width={100} 
-                  height={100} 
-                  className="rounded-md w-full md:w-24 h-auto object-" 
+                  width={300} 
+                  height={180} 
+                  className="rounded-md w-full h-32 sm:h-40 md:h-32 object-cover" 
                 />
                 
                 <div className="flex-1 min-w-0">

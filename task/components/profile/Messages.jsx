@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MessageSquare, Send, Loader2 } from "lucide-react";
+import { Mail, Phone, MessageSquare, Send, Loader2, MapPin } from "lucide-react";
 import { fetchUserMessages } from "@/lib/api/profile";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
@@ -99,7 +99,7 @@ export default function Messages() {
             Contact Us
           </h1>
           <p className="text-muted-foreground mt-2">
-            Have questions? Send us a message and we'll respond within 24 hours.
+            Have questions about Last Minute Deal? Send us a message and we'll respond within 24 hours.
           </p>
         </div>
 
@@ -107,6 +107,14 @@ export default function Messages() {
           {/* Contact Info Sidebar */}
           <div className="bg-gray-50 p-6 lg:p-8 border-r">
             <div className="space-y-8">
+              {/* Company Info */}
+              <div className="mb-6">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">TWWIOS TECHNOLOGIES PRIVATE LIMITED</h3>
+                <p className="text-sm text-gray-600">
+                  Your trusted partner for last-minute deals on retail products, hotels, movies, and events.
+                </p>
+              </div>
+
               {/* Call Us */}
               <div className="flex items-start gap-4">
                 <div className="bg-blue-100 p-3 rounded-lg">
@@ -115,10 +123,10 @@ export default function Messages() {
                 <div>
                   <h3 className="font-medium text-lg">Call Us</h3>
                   <p className="text-muted-foreground mt-1">
-                    Available 24/7 for customer support
+                    Available for customer support
                   </p>
                   <p className="font-medium mt-2 text-blue-600">
-                    +1 (555) 123-4567
+                    8149042420
                   </p>
                 </div>
               </div>
@@ -134,9 +142,32 @@ export default function Messages() {
                     We'll respond within 24 hours
                   </p>
                   <p className="font-medium mt-2 text-blue-600">
-                    support@example.com
+                    info@lastminutessdeal.com
                   </p>
                 </div>
+              </div>
+
+              {/* Address */}
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-lg">Visit Us</h3>
+                  <p className="text-muted-foreground mt-1">
+                    Registered & Operational Office
+                  </p>
+                  <p className="font-medium mt-2 text-blue-600 text-sm">
+                    Fl no. 01, Dhatrak Sankul, PNVT, Panchvati, Nashik Nashik MAHARASHTRA 422003
+                  </p>
+                </div>
+              </div>
+
+              {/* Website */}
+              <div className="pt-4 border-t">
+                <p className="text-sm text-gray-600">
+                  <strong>Website:</strong> www.lastminutessdeal.com
+                </p>
               </div>
             </div>
           </div>
@@ -185,7 +216,7 @@ export default function Messages() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="8149042420"
                     className="h-12"
                   />
                 </div>
@@ -215,7 +246,7 @@ export default function Messages() {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  placeholder="Tell us about your inquiry..."
+                  placeholder="Tell us about your inquiry regarding our products, services, or any other questions..."
                   className="min-h-[150px]"
                   required
                 />

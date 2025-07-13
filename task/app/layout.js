@@ -1,5 +1,4 @@
 // app/layout.jsx
-import { AddressProvider } from "@/lib/contexts/address-context";
 import { CartProvider } from "@/lib/contexts/cart-context";
 import { SelectedItemsProvider } from "@/lib/contexts/selected-items-context";
 import SessionProviderWrapper from "@/lib/NextAuthProvider/SessionProviderWrapper";
@@ -8,7 +7,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ProductProvider } from "@/lib/contexts/productContext";
 import { Toaster } from "react-hot-toast";
-
+import AuthProvider from "@/app/components/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,16 +32,16 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <SessionProviderWrapper>
-            <CartProvider showCartInHeader={true}>
-              <ProductProvider>
-                <AddressProvider>
+            <AuthProvider>
+              <CartProvider showCartInHeader={true}>
+                <ProductProvider>
                   <SelectedItemsProvider>
                     <Toaster />
                     {children}
                   </SelectedItemsProvider>
-                </AddressProvider>
-              </ProductProvider>
-            </CartProvider>
+                </ProductProvider>
+              </CartProvider>
+            </AuthProvider>
           </SessionProviderWrapper>
         </Providers>
       </body>

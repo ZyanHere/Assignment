@@ -3,7 +3,8 @@
 
 import { useRef } from "react";
 import { Provider } from "react-redux";
-import { makeStore } from "@/lib/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { makeStore, persistor } from "@/lib/redux/store";
 
 export function Providers({ children }) {
   const storeRef = useRef();
@@ -12,5 +13,11 @@ export function Providers({ children }) {
     storeRef.current = makeStore();
   }
 
-  return <Provider store={storeRef.current}>{children}</Provider>;
+  return (
+    <Provider store={storeRef.current}>
+      <PersistGate loading={null} persistor={persistor}>
+        {children}
+      </PersistGate>
+    </Provider>
+  );
 }
