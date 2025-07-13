@@ -9,40 +9,38 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Heart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
+import { clearProfileData } from "@/lib/redux/user/userSlice";
+import { useAuth } from "@/lib/hooks/useAuth";
 
-const UserActions = () => {
-  const userState = useSelector((state) => state.user);
-  const currentUser = userState?.user || null;
-  const profilePic = userState?.profilePic || null;
-  const { data: session } = useSession();
+const UserActions = ({ onlyProfile = false }) => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const profileState = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("Guest");
-  const { cartItems } = useCart();
+  const { totalQuantity } = useCart();
   const router = useRouter();
   const notifications = 5; // placeholder
 
   useEffect(() => {
-    if (currentUser?.name) {
-      setFirstName(currentUser.name.split(" ")[0]);
-    } else if (session?.user?.name) {
-      setFirstName(session.user.name.split(" ")[0]);
+    if (user?.name) {
+      setFirstName(user.name.split(" ")[0]);
+    } else if (user?.email) {
+      setFirstName(user.email.split("@")[0]);
+    } else {
+      setFirstName("Guest");
     }
-  }, [currentUser, session]);
+  }, [user]);
 
-
-
- const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
       await signOut({ redirect: false });
-      if (typeof window !== "undefined") {
-        localStorage.clear();
-        sessionStorage.clear();
-      }
+      dispatch(clearProfileData());
       toast.success("Logged out successfully");
       router.push("/");
     } catch (error) {
@@ -53,12 +51,78 @@ const UserActions = () => {
   };
 
   const getUserInitial = () => {
-    const name = currentUser?.name || session?.user?.email;
+    const name = user?.name || user?.email;
     return name ? name.charAt(0).toUpperCase() : "U";
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-4">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-500"></div>
+      </div>
+    );
+  }
 
+  if (!isAuthenticated) {
+    return null;
+  }
 
+  // Only show profile image (for mobile header)
+  if (onlyProfile) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center gap-2 p-2 rounded-lg transition hover:bg-gray-50 group">
+          <div className="relative">
+            {user?.profileImage ? (
+              <Image
+                src={user.profileImage}
+                alt="Profile"
+                width={36}
+                height={36}
+                className="rounded-full border-2 border-yellow-400 w-9 h-9"
+                onError={(e) => {
+                  e.currentTarget.src = "/default-avatar.png";
+                }}
+              />
+            ) : (
+              <div className="rounded-full border-2 border-yellow-400 w-9 h-9 flex items-center justify-center bg-amber-500 text-white text-lg font-bold">
+                {getUserInitial()}
+              </div>
+            )}
+            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white" />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="w-44 bg-white shadow-xl rounded-xl p-2 border border-gray-100"
+        >
+          <DropdownMenuItem asChild>
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 px-3 py-2.5 text-gray-700 hover:bg-yellow-50 rounded-lg font-medium cursor-pointer transition"
+            >
+              <Image
+                src="/home/header/profile.png"
+                alt="Profile"
+                width={18}
+                height={18}
+              />
+              Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-3 py-2.5 text-red-500 hover:bg-red-50 rounded-lg font-medium cursor-pointer transition"
+          >
+            <LogOut size={16} />
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
+  // Full user actions (for sm+)
   return (
     <div className="flex items-center gap-4">
       {/* Saved Deals */}
@@ -89,9 +153,9 @@ const UserActions = () => {
             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
           />
         </svg>
-        {cartItems?.length > 0 && (
+        {totalQuantity > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
-            {cartItems.length}
+            {totalQuantity > 99 ? '99+' : totalQuantity}
           </span>
         )}
       </Link>
@@ -117,7 +181,7 @@ const UserActions = () => {
         </svg>
         {notifications > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
-            {notifications}
+            {notifications > 99 ? '99+' : notifications}
           </span>
         )}
       </Link>
@@ -126,9 +190,9 @@ const UserActions = () => {
       <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center gap-2 p-3 rounded-lg transition hover:bg-gray-50 group">
           <div className="relative">
-            {profilePic ? (
+            {user?.profileImage ? (
               <Image
-                src={profilePic}
+                src={user.profileImage}
                 alt="Profile"
                 width={40}
                 height={40}
