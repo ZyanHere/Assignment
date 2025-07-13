@@ -1,42 +1,29 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import useSWR from "swr";
-import { fetcher } from "@/lib/api";
+import { useHome } from "@/lib/hooks/useHome";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// const categories = [
-//   { key: "all", label: "All", icon: "/home/assets/all_logo.svg" },
-//   { key: "grocery", label: "Grocery", icon: "/home/assets/grocery_logo.png" },
-//   { key: "fashion", label: "Fashion", icon: "/home/assets/fashion_logo.png" },
-//   { key: "gift", label: "Gift", icon: "/home/assets/gift_logo.png" },
-//   {
-//     key: "electronics",
-//     label: "Electronics",
-//     icon: "/home/assets/electronics_logo.png",
-//   },
-//   { key: "Personal Care", label: "Personal Care", icon: "/home/assets/gift_logo.png" },
-//   { key: "Apparels", label: "Apparels", icon: "/home/assets/fashion_logo.png" },
-//   { key: "Fruits and Vegetables", label: "Fruits and Vegetables", icon: "/home/assets/grocery_logo.png" },
-// ];
-
-
-
-const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
-  // Reference to scroll container for mobile scrolling via buttons
-
+const CategoryTabsRedux = () => {
   const scrollContainerRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [needsScrolling, setNeedsScrolling] = useState(false);
-  const { data, error } = useSWR('/lmd/api/v1/retail/categories', fetcher);
-  const finalCategories = Array.isArray(data?.data)
-    ? [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }, ...data.data]
-    : [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }];
+  
+  const {
+    selectedTab,
+    categories,
+    categoriesLoading,
+    categoriesError,
+    isMobile,
+    needsScrolling,
+    setSelectedTab,
+    setIsMobile,
+    setNeedsScrolling
+  } = useHome();
 
   // Check if we're on mobile and if scrolling is needed on component mount and window resize
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
 
       // Check if scrolling is needed
       if (scrollContainerRef.current) {
@@ -56,7 +43,16 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
     return () => {
       window.removeEventListener('resize', checkScreenSize);
     };
-  }, [data]);
+  }, [setIsMobile, setNeedsScrolling]);
+
+  // Check scrolling needs when categories are loaded
+  useEffect(() => {
+    if (!categoriesLoading && categories.length > 0 && scrollContainerRef.current) {
+      const containerWidth = scrollContainerRef.current.clientWidth;
+      const scrollWidth = scrollContainerRef.current.scrollWidth;
+      setNeedsScrolling(scrollWidth > containerWidth);
+    }
+  }, [categoriesLoading, categories.length, setNeedsScrolling]);
 
   // Function to handle scrolling left and right
   const scroll = (direction) => {
@@ -68,6 +64,11 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
       });
     }
   };
+
+  // Prepare categories with "All" option
+  const finalCategories = Array.isArray(categories)
+    ? [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }, ...categories]
+    : [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }];
 
   return (
     <div className="mt-6 relative">
@@ -98,14 +99,14 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
       {/* Scrollable container */}
       <div
         ref={scrollContainerRef}
-        className="overflow-x-auto no-scrollbar px-4 w-full"
+        className="overflow-x-auto no-scrollbar px-0 md:px-4 w-full"
       >
-        <div className="flex gap-4 whitespace-nowrap min-w-fit">
-          {!data && !error ? (
+        <div className="flex gap-3 md:gap-4 whitespace-nowrap min-w-fit snap-x snap-mandatory">
+          {categoriesLoading ? (
             Array.from({ length: 5 }).map((_, idx) => (
               <div
                 key={idx}
-                className={`flex items-center gap-3 px-5 py-3 w-[180px] flex-shrink-0 rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200`}
+                className={`flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 w-[120px] md:w-[180px] flex-shrink-0 rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200`}
               >
                 <Skeleton className="w-8 h-8 rounded-md" />
                 <div className="flex-1">
@@ -120,13 +121,13 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
                 <button
                   key={category._id}
                   onClick={() => setSelectedTab(category._id)}
-                  className={`flex items-center rounded-xl transition-all duration-200
+                  className={`flex items-center rounded-xl transition-all duration-200 snap-center
                   ${isActive
                       ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4"
                       : "bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200 shadow-sm border-b border-yellow-500"
                     }
                   ${isMobile
-                      ? "gap-2 px-3 py-2 w-[140px] flex-shrink-0"
+                      ? "gap-2 px-3 py-2 w-[120px] flex-shrink-0"
                       : "gap-3 px-5 py-3 w-[180px] flex-shrink-0"
                     }`}
                 >
@@ -144,13 +145,11 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
                 </button>
               );
             })
-
           )}
-
         </div>
       </div>
     </div>
   );
 };
 
-export default CategoryTabs;
+export default CategoryTabsRedux; 
