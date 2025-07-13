@@ -1,10 +1,10 @@
 import useSWR from "swr";
 import ProductCard from "./ProductCard";
-import { fetcher } from "@/lib/categoryFetcher/fetcher";
+import { fetcher } from "@/lib/api";
 
 export default function SubProduct({ subCategoryId }) {
     const { data, error, isLoading } = useSWR(
-        `https://lmd-user-2ky8.onrender.com/lmd/api/v1/retail/products/subcategory/${subCategoryId}`, 
+        `/lmd/api/v1/retail/products/subcategory/${subCategoryId}`, 
         fetcher
     );
 
@@ -33,7 +33,7 @@ export default function SubProduct({ subCategoryId }) {
     }
 
     // Handle empty data
-    if (!data || data.length === 0) {
+    if (!data?.data || data.data.length === 0) {
         return (
             <div className="text-center py-8">
                 <p className="text-gray-500">No products found in this subcategory.</p>
@@ -42,15 +42,8 @@ export default function SubProduct({ subCategoryId }) {
     }
 
     return (
-
-//         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
-//             {data?.map((product) => {
-//                 return (
-//                     <div key={product._id} className="flex">
-//                         <ProductCard product={product} compact />
-
         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            {data.map((product) => {
+            {data.data.map((product) => {
                 // Process images to handle S3 URLs with spaces
                 const processedProduct = {
                     ...product,
