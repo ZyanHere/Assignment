@@ -10,27 +10,28 @@ const FourSec = () => {
   ];
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 sm:gap-6 px-4">
+    <div className="flex gap-4 px-0 md:px-4 w-full overflow-x-auto flex-nowrap snap-x snap-mandatory">
       {items.map((item, index) => (
-        <Link key={index} href={item.link} passHref legacyBehavior>
-          <div className="w-full sm:w-[48%] md:w-[45%] lg:w-[30%] xl:w-[400px] rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5 border-b border-yellow-500">
-            
-            {/* Image section */}
-            <div className="relative w-full h-[180px]">
-              <Image
-                src={item.img}
-                alt={item.label}
-                fill
-                className="object-cover"
-              />
-            </div>
+        <Link
+          key={index}
+          href={item.link}
+          className="min-w-[70vw] max-w-xs md:min-w-0 md:max-w-full flex-1 rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5 border-b border-yellow-500 snap-center"
+        >
+          {/* Image section */}
+          <div className="relative w-full h-32 sm:h-40 md:h-48">
+            <Image
+              src={item.img}
+              alt={item.label}
+              fill
+              className="object-cover"
+            />
+          </div>
 
-            {/* Label */}
-            <div className="p-4">
-              <span className="font-semibold text-md text-gray-800 block text-center">
-                {item.label}
-              </span>
-            </div>
+          {/* Label */}
+          <div className="p-4">
+            <span className="font-semibold text-md text-gray-800 block text-center">
+              {item.label}
+            </span>
           </div>
         </Link>
       ))}

@@ -9,8 +9,18 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 
 const BrandCarousel = ({ data = [], loading = false }) => {
+  // Responsive: detect if mobile
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   if (loading) {
     return (
       <div className="flex gap-3">
@@ -48,10 +58,28 @@ const BrandCarousel = ({ data = [], loading = false }) => {
     };
   });
 
+  // Limit products on mobile
+  const productsToShow = isMobile
+    ? mappedProducts.slice(0, Math.ceil(mappedProducts.length / 2))
+    : mappedProducts;
+
+  // Mobile: grid, Desktop: carousel
+  if (isMobile) {
+    return (
+      <div className="grid grid-cols-2 gap-3 w-full">
+        {productsToShow.map((product) => (
+          <div key={product.id} className="w-full">
+            <ProductCard product={product} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <Carousel className="w-full mx-auto">
       <CarouselContent className="-ml-1">
-        {mappedProducts.map((product) => (
+        {productsToShow.map((product) => (
           <CarouselItem
             key={product.id}
             className="pl-2 basis-full xs:basis-1/2 sm:basis-1/3 md:basis-[20%] lg:basis-[16.666%] xl:basis-[12.5%]"

@@ -30,8 +30,8 @@ const NearbyStores = () => {
   };
 
   return (
-    <section className="p-4 md:p-6 mt-4">
-      <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-black">
+    <section className="px-0 md:p-6 mt-4">
+      <h2 className="text-lg md:text-2xl font-semibold mb-3 md:mb-6 text-black px-4 md:px-0">
         Shops from nearby stores
       </h2>
 
@@ -39,7 +39,7 @@ const NearbyStores = () => {
         className="w-full overflow-x-visible"
         opts={{ align: "start", loop: false, dragFree: true }}
       >
-        <CarouselContent className="-ml-4 md:-ml-6">
+        <CarouselContent className="-ml-4 md:-ml-6 flex gap-2 md:gap-4">
           {stores?.map((store) => {
             const imageUrl =
               store.images?.carousel?.[0] ||
@@ -49,19 +49,19 @@ const NearbyStores = () => {
             return (
               <CarouselItem
                 key={store._id}
-                className="basis-[100%] sm:basis-[48%] md:basis-[33.33%] lg:basis-[23%]"
+                className="basis-[85vw] sm:basis-[48%] md:basis-[33.33%] lg:basis-[23%] max-w-[90vw] sm:max-w-none"
               >
-                <div className="w-full h-[300px] md:h-[320px] lg:h-[340px] rounded-lg shadow-md overflow-hidden border bg-white">
-                  <div className="relative">
+                <div className="w-full h-[220px] sm:h-[300px] md:h-[320px] lg:h-[340px] rounded-xl shadow-md overflow-hidden border bg-white flex flex-col">
+                  <div className="relative h-[130px] sm:h-[200px]">
                     <Image
                       src={imageUrl}
                       alt={store.store_name || "Store image"}
                       width={400}
                       height={200}
-                      className="w-full h-[200px] object-cover rounded-t-lg"
+                      className="w-full h-full object-cover rounded-t-xl"
                       loading="lazy"
                     />
-                    <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/30 text-white px-2 py-1 rounded-2xl">
+                    <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/40 text-white px-2 py-1 rounded-2xl text-xs sm:text-sm">
                       <Image
                         src="/home/shops/star.svg"
                         alt="Star"
@@ -69,17 +69,17 @@ const NearbyStores = () => {
                         height={16}
                         className="w-4 h-4"
                       />
-                      <span className="text-sm font-semibold">
+                      <span className="font-semibold">
                         {store.rating ?? "0.0"}
                       </span>
                     </div>
                     <button
-                      className="absolute top-3 right-3 bg-black/20 rounded-full p-2 hover:bg-black/40 transition"
+                      className="absolute top-2 right-2 bg-black/30 rounded-full p-2 hover:bg-black/50 transition"
                       onClick={() => handleFavorite(store._id)}
                       aria-label="Toggle favorite"
                     >
                       <Heart
-                        className={`w-5 h-5 ${
+                        className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-200 ${
                           favorites[store._id]
                             ? "fill-red-500 text-red-500"
                             : "text-white"
@@ -87,11 +87,13 @@ const NearbyStores = () => {
                       />
                     </button>
                   </div>
-                  <div className="h-[40%] p-4">
-                    <h3 className="text-lg font-semibold text-black truncate">
+                  <div className="flex-1 p-3 sm:p-4 flex flex-col justify-center">
+                    <h3 className="text-base sm:text-lg font-semibold text-black truncate">
                       {store.store_name || "Unnamed Store"}
                     </h3>
-                    <p className="text-gray-600 text-sm">{store.city || "—"}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm mt-1">
+                      {store.city || "—"}
+                    </p>
                   </div>
                 </div>
               </CarouselItem>
@@ -99,8 +101,10 @@ const NearbyStores = () => {
           })}
         </CarouselContent>
 
-        <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-black/10 hover:bg-black/20" />
-        <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-black/10 hover:bg-black/20" />
+        <div className="hidden md:block">
+          <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-black/10 hover:bg-black/20" />
+          <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-black/10 hover:bg-black/20" />
+        </div>
       </Carousel>
     </section>
   );
