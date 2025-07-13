@@ -4,75 +4,99 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, RefreshCw, ShoppingBag } from "lucide-react";
-import { useState, useEffect } from "react";
-import { getSession } from 'next-auth/react';
+import { useState, useEffect, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { fetchUserOrders } from "@/lib/redux/user/userSlice";
+import { useAuth } from "@/lib/hooks/useAuth";
+import toast from "react-hot-toast";
 
 const OrderHistory = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { 
+    orders, 
+    ordersLoading, 
+    ordersError, 
+    isAuthenticated, 
+    session 
+  } = useAuth();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetch orders from API
-  const fetchOrders = async () => {
+  // Memoize filtered orders to prevent unnecessary recalculations
+  const filteredOrders = useMemo(() => {
+    if (!Array.isArray(orders)) {
+      return [];
+    }
+    return orders.filter(order => {
+      const matchesSearch = order.order_number?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                           order.order_id?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = filter === "all" || order.status === filter;
+      return matchesSearch && matchesFilter;
+    });
+  }, [orders, searchTerm, filter]);
+
+  const handleRefresh = async () => {
+    if (!isAuthenticated || !session?.user?.token) {
+      toast.error("Authentication required");
+      return;
+    }
+
+    setIsRefreshing(true);
     try {
-      setLoading(true);
-      setError(null);
-      
-      const session = await getSession();
-      const token = session?.user?.token || session?.user?.accessToken;
-      
-      if (!token) {
-        setError('Authentication required');
-        return;
-      }
-
-      const response = await fetch('/api/orders', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch orders');
-      }
-
-      const result = await response.json();
-      
-      if (result.status === "success") {
-        setOrders(result.data?.orders || []);
-      } else {
-        setError(result.message || 'Failed to fetch orders');
-      }
-    } catch (err) {
-      console.error('Error fetching orders:', err);
-      setError(err.message);
+      await dispatch(fetchUserOrders({ token: session.user.token })).unwrap();
+      toast.success("Orders refreshed successfully");
+    } catch (error) {
+      console.error('Failed to refresh orders:', error);
+      toast.error(error || 'Failed to refresh orders');
     } finally {
-      setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
-  // Load orders on component mount
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  // Show authentication required state
+  if (!isAuthenticated) {
+    return (
+      <div className="text-center py-12">
+        <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+        <h3 className="text-lg font-medium mb-2">Authentication Required</h3>
+        <p className="text-gray-500">Please log in to view your orders</p>
+      </div>
+    );
+  }
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.order_number?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         order.order_id?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filter === "all" || order.status === filter;
-    return matchesSearch && matchesFilter;
-  });
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    fetchOrders().finally(() => setIsRefreshing(false));
-  };
+  // Show error state
+  if (ordersError && !ordersLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-bold">Order History</h1>
+            <p className="text-muted-foreground">View and manage your past orders</p>
+          </div>
+          <Button onClick={handleRefresh} disabled={isRefreshing} variant="outline">
+            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Retry
+          </Button>
+        </div>
+        <div className="text-center py-12">
+          <div className="text-red-500 mb-4">
+            <ShoppingBag className="h-16 w-16 mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2">Failed to Load Orders</h3>
+            <p className="text-sm">{ordersError}</p>
+          </div>
+          <Button onClick={handleRefresh} disabled={isRefreshing}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // Show loading state
-  if (loading) {
+  if (ordersLoading && orders.length === 0) {
     return (
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -91,55 +115,38 @@ const OrderHistory = () => {
     );
   }
 
-  // Show error state
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Order History</h1>
-            <p className="text-muted-foreground">View and manage your past orders</p>
-          </div>
-        </div>
-        <div className="flex flex-col items-center justify-center py-12 gap-4 text-center">
-          <div className="bg-red-100 p-4 rounded-full">
-            <ShoppingBag className="h-8 w-8 text-red-400" />
-          </div>
-          <h3 className="text-xl font-medium">Error loading orders</h3>
-          <p className="text-muted-foreground max-w-md">{error}</p>
-          <Button onClick={handleRefresh}>Try Again</Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold">Order History</h1>
           <p className="text-muted-foreground">View and manage your past orders</p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search orders..."
-              className="pl-9"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <Button variant="outline" size="icon" onClick={handleRefresh}>
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-          </Button>
-        </div>
+        <Button 
+          onClick={handleRefresh} 
+          disabled={isRefreshing || ordersLoading} 
+          variant="outline"
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Input
+          placeholder="Search by order number..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+        />
       </div>
 
       {/* Filter Tabs */}
-      <Tabs defaultValue="all" onValueChange={setFilter}>
+      <Tabs value={filter} onValueChange={setFilter}>
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
@@ -176,33 +183,35 @@ const OrderHistory = () => {
                   actionLabel: order.status === "delivered" ? "Review" : "Track"
                 })) || []
               }}
-              customButtons={
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    Track Order
-                  </Button>
-                  <Button variant="default" size="sm">
-                    Buy Again
-                  </Button>
-                </div>
-              }
             />
           ))
+        ) : orders.length === 0 ? (
+          <div className="text-center py-12">
+            <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
+            <p className="text-gray-500 mb-6">Start shopping to see your orders here</p>
+            <Button asChild>
+              <a href="/">Start Shopping</a>
+            </Button>
+          </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 gap-4 text-center">
-            <div className="bg-gray-100 p-4 rounded-full">
-              <ShoppingBag className="h-8 w-8 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-medium">No orders found</h3>
-            <p className="text-muted-foreground max-w-md">
-              {searchTerm 
-                ? "No orders match your search. Try different keywords."
-                : "You haven't placed any orders yet."}
-            </p>
-            <Button>Continue Shopping</Button>
+          <div className="text-center py-12">
+            <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
+            <p className="text-gray-500">Try adjusting your search or filter criteria</p>
           </div>
         )}
       </div>
+
+      {/* Show subtle loading indicator during refresh */}
+      {(isRefreshing || ordersLoading) && orders.length > 0 && (
+        <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg px-4 py-2 border">
+          <div className="flex items-center gap-2 text-sm">
+            <RefreshCw className="h-4 w-4 animate-spin" />
+            <span>Updating orders...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
