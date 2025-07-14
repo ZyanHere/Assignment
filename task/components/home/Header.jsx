@@ -39,7 +39,7 @@ const Header = () => {
         {/* Header Row */}
         <div className="flex items-center justify-between h-12 sm:h-14 md:h-16 lg:h-20 relative">
           {/* Left: Hamburger (mobile) + Logo (md+) + Nav (md+) */}
-          <div className="flex-1 flex items-center min-w-0">
+          <div className="flex items-center min-w-0 gap-4">
             {/* Hamburger menu (mobile only) */}
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
@@ -64,7 +64,7 @@ const Header = () => {
               />
             </Link>
             {/* Desktop Nav (left-aligned on desktop) */}
-            <div className="hidden md:flex ml-4">
+            <div className="hidden md:flex">
               <NavLinks />
             </div>
           </div>
@@ -98,7 +98,7 @@ const Header = () => {
           </div>
 
           {/* Right: Profile only on mobile, full UserActions on sm+ */}
-          <div className="flex-1 flex items-center justify-end min-w-0">
+          <div className="flex items-center justify-end gap-2">
             {isLoggedIn ? (
               <div className="block sm:hidden z-20">
                 <UserActions onlyProfile />
