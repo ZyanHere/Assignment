@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import Sidebar from "@/components/home/sidebar";
+import Sidebar from "@/app/extra/home/sidebar";
 import Header from "@/components/home/Header";
-import UpcomingEvents from "@/components/home/foursec/event/UpcomingEvents";
 import FeaturedEvents from "@/components/home/foursec/event/FeaturedEvents";
 import RecommendedEvents from "@/components/home/foursec/event/RecommendedEvents";
+import UpcomingEvents from "@/components/home/foursec/event/UpcomingEvents";
 import { useEvents } from "@/lib/hooks/useEvents";
+import { useEffect } from "react";
 
 const EventPage = () => {
-  const { 
+  const {
     fetchEventsData,
     needsDataFetch,
     getCacheStatus,
@@ -17,20 +17,20 @@ const EventPage = () => {
     featuredEvents,
     recommendedEvents,
     eventsLoading,
-    eventsError
+    eventsError,
   } = useEvents();
 
   // Fetch events data only when needed (no data or cache expired)
   useEffect(() => {
     const cacheStatus = getCacheStatus();
-    
+
     if (needsDataFetch()) {
-      console.log('EventPage: Data fetch needed, calling events API');
-      console.log('Cache status:', cacheStatus.message);
+      console.log("EventPage: Data fetch needed, calling events API");
+      console.log("Cache status:", cacheStatus.message);
       fetchEventsData();
     } else {
-      console.log('EventPage: Using cached data, skipping API call');
-      console.log('Cache status:', cacheStatus.message);
+      console.log("EventPage: Using cached data, skipping API call");
+      console.log("Cache status:", cacheStatus.message);
     }
   }, [fetchEventsData, needsDataFetch, getCacheStatus]);
 
@@ -39,9 +39,10 @@ const EventPage = () => {
       <Header />
       <div className="p-6 w-full max-w-[1700px] mx-auto">
         <nav className="text-2xl text-gray-600 mb-6">
-          Home &gt; <span className="text-yellow-500 font-semibold">Events</span>
+          Home &gt;{" "}
+          <span className="text-yellow-500 font-semibold">Events</span>
         </nav>
-        
+
         {eventsLoading && (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>

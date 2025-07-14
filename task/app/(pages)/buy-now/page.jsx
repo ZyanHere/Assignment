@@ -331,10 +331,10 @@ export default function BuyNowPage() {
     }
   };
 
-  const handleProceedToPayment = () => {
-    // Navigate to payment mode selection
-    router.push('/payment-mode');
-  };
+  // const handleProceedToPayment = () => {
+  //   // Navigate to payment mode selection
+  //   router.push('/payment-mode');
+  // };
 
   if (!selectedItems.length) {
     return (

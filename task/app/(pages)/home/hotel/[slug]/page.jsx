@@ -1,10 +1,10 @@
 "use client";
-import { useParams } from "next/navigation";
-import { hotelsData } from "@/data/hotelsData";
-import Header from "@/components/home/Header";
-import Sidebar from "@/components/home/sidebar";
-import Link from "next/link";
+import Sidebar from "@/app/extra/home/sidebar";
 import MoreHotels from "@/components/home/foursec/MoreHotels";
+import Header from "@/components/home/Header";
+import { hotelsData } from "@/data/hotelsData";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 const HotelSlugPage = () => {
   const params = useParams();
@@ -25,31 +25,28 @@ const HotelSlugPage = () => {
   }
 
   return (
+    <div className="flex-1">
+      {/* Header */}
+      <Header />
 
-      <div className="flex-1">
-        {/* Header */}
-        <Header />
+      <div className="p-6 w-full max-w-[1700px] mx-auto">
+        {/* Breadcrumb */}
+        <nav className="text-2xl mb-12">
+          <Link href="/" className="text-black">
+            Home
+          </Link>{" "}
+          &gt;{" "}
+          <Link href="/home/hotel" className="text-black">
+            Hotels
+          </Link>{" "}
+          &gt;{" "}
+          <span className="font-semibold text-yellow-500">{sectionTitle}</span>
+        </nav>
 
-        <div className="p-6 w-full max-w-[1700px] mx-auto">
-          {/* Breadcrumb */}
-          <nav className="text-2xl mb-12">
-            <Link href="/" className="text-black">
-              Home
-            </Link>{" "}
-            &gt;{" "}
-            <Link href="/home/hotel" className="text-black">
-              Hotels
-            </Link>{" "}
-            &gt;{" "}
-            <span className="font-semibold text-yellow-500">
-              {sectionTitle}
-            </span>
-          </nav>
-
-          {/* Render MoreHotels with data */}
-          <MoreHotels hotels={hotels} />
-        </div>
+        {/* Render MoreHotels with data */}
+        <MoreHotels hotels={hotels} />
       </div>
+    </div>
   );
 };
 

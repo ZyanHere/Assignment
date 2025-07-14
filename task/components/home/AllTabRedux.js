@@ -1,12 +1,14 @@
 "use client";
 
-import React from "react";
 import BrandCarousel from "./BrandCarousel";
-import FourSec from "./FourSec";
 import Essentials from "./Essentials";
-import NearbyStores from "./NearbyStores";
-import OffersBanner from "./OffersBanner";
 import FestBanner from "./FestBanner";
+import FourSec from "./FourSec";
+import OffersBanner from "./OffersBanner";
+import NearbyStores from './NearbyStores';
+
+
+
 
 const AllTabContentRedux = ({ products = [], loading = false }) => {
   // For now, we'll use the products passed from Redux
@@ -48,7 +50,6 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
       </div>
 
       <NearbyStores />
-      {/* <NearbyEvents events={events} /> */}
     </main>
   );
 };

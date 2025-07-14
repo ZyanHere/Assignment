@@ -124,7 +124,7 @@ const CategoryTabsRedux = () => {
                   className={`flex items-center rounded-xl transition-all duration-200 snap-center
                   ${isActive
                       ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4"
-                      : "bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200 shadow-sm border-b border-yellow-500"
+                      : "bg-gray-200 shadow-sm  "
                     }
                   ${isMobile
                       ? "gap-2 px-3 py-2 w-[120px] flex-shrink-0"

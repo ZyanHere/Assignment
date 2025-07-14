@@ -1,0 +1,58 @@
+// "use client";
+
+// import Image from "next/image";
+// import { useState } from "react";
+// import { Button } from "../../../components/ui/button";
+
+// const GiftCard = ({ imageSrc, name, price, stockStatus, gender }) => {
+//   const [added, setAdded] = useState(false);
+
+//   return (
+//     <div className="flex flex-col items-left justify-left gap-3 w-[230px] h-[388px] border rounded-2xl shadow-sm p-4 hover:shadow-md transition-shadow">
+//       <div className="relative flex items-center justify-center w-full h-[192px] bg-blue-50 rounded-xl p-6">
+//         <Image
+//           src={imageSrc}
+//           alt={name}
+//           width={180}
+//           height={180}
+//           className="w-full h-full object-contain"
+//         />
+
+//         <Button
+//           onClick={() => setAdded(!added)}
+//           className="absolute bottom-1 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border border-blue-400 text-blue-400 font-medium rounded-md hover:bg-blue-100 transition bg-white shadow-md"
+//           aria-label={added ? "Remove from cart" : "Add to cart"}
+//         >
+//           {added ? "✓" : "ADD"}
+//         </Button>
+//       </div>
+
+//       <p
+//         className={`text-sm ${
+//           stockStatus?.toLowerCase().includes("few")
+//             ? "text-red-500"
+//             : stockStatus?.toLowerCase().includes("fresh")
+//             ? "text-green-500"
+//             : "text-orange-500"
+//         }`}
+//       >
+//         {stockStatus || "Unavailable"}
+//       </p>
+
+//       <div className="w-full">
+//         <h3 className="text-lg font-bold">{name}</h3>
+//         <p className="text-gray-600 text-sm">
+//           {gender
+//             ? `For ${gender.toLowerCase()}`
+//             : "Memorable Gifting Experience"}
+//         </p>
+//       </div>
+
+//       <div className="flex text-yellow-500 text-lg">★★★★☆</div>
+
+//       <p className="text-lg font-bold">Rs {price}</p>
+//     </div>
+//   );
+// };
+
+// export default GiftCard;
