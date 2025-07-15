@@ -102,8 +102,8 @@ export default function CategorySlugPage() {
               Category not found
             </h2>
             <p className="text-gray-600 mb-4">The category you're looking for doesn't exist.</p>
-            <Link 
-              href="/categories" 
+            <Link
+              href="/categories"
               className="inline-block px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
             >
               Back to Categories
@@ -125,8 +125,8 @@ export default function CategorySlugPage() {
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             {/* Breadcrumb Navigation */}
             <nav className="flex items-center text-sm sm:text-base md:text-lg lg:text-xl">
-              <Link 
-                href="/categories" 
+              <Link
+                href="/categories"
                 className="hover:underline font-medium text-gray-700 hover:text-yellow-600 transition-colors"
               >
                 Categories
@@ -146,60 +146,53 @@ export default function CategorySlugPage() {
         </section>
 
         {/* Subcategories Grid */}
-        <section className="mb-6 sm:mb-8 lg:mb-12">
-          {loadingSubcategories ? (
-            <SubcategorySkeleton />
-          ) : subcategoriesData?.data?.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4">
-              {subcategoriesData.data.map((sub) => (
-                <div
-                  key={sub._id}
-                  className={`group cursor-pointer flex flex-col items-center p-2 sm:p-3 rounded-lg transition-all duration-200 border-2 ${
-                    selectedSubcategory === sub._id
-                      ? "border-yellow-500 bg-yellow-50 shadow-md"
-                      : "border-transparent hover:bg-gray-50 hover:border-gray-200"
-                  }`}
-                  onClick={() => setSelectedSubcategory(sub._id)}
-                  tabIndex={0}
-                  role="button"
-                  aria-pressed={selectedSubcategory === sub._id}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setSelectedSubcategory(sub._id);
-                    }
-                  }}
-                >
-                  <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-18 lg:h-18 xl:w-20 xl:h-20 mb-2 sm:mb-3">
-                    <Image
-                      src={sub.imageUrl || "/categories/default.png"}
-                      alt={sub.name}
-                      fill
-                      className="object-contain"
-                      unoptimized
-                    />
+        <section className="flex flex-1 overflow-hidden min-h-[500px] sm:min-h-[600px]">
+          <div className="w-1/4 sm:w-1/6 overflow-y-auto max-h-[80vh]">
+            {loadingSubcategories ? (
+              <div className="p-4">
+                <SubcategorySkeleton />
+              </div>
+            ) : subcategoriesData?.data?.length > 0 ? (
+              <div className="flex flex-col p-2 gap-2">
+                {subcategoriesData.data.map((sub) => (
+                  <div
+                    key={sub._id}
+                    onClick={() => setSelectedSubcategory(sub._id)}
+                    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all ${selectedSubcategory === sub._id
+                        ? "bg-yellow-100 font-semibold"
+                        : "hover:bg-gray-100"
+                      }`}
+                  >
+                    <div className="relative w-10 h-10 flex-shrink-0">
+                      <Image
+                        src={sub.imageUrl || "/categories/default.png"}
+                        alt={sub.name}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700">{sub.name}</p>
                   </div>
-                  <p className="text-center text-xs sm:text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
-                    {sub.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 sm:py-12">
-              <p className="text-gray-500 text-sm sm:text-base">
-                No subcategories found for this category.
-              </p>
-            </div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <div className="text-gray-500 text-sm p-4 text-center">
+                No subcategories found
+              </div>
+            )}
+          </div>
+          <div className="w-[2px] bg-gray-300" />
+          <div className="flex-1 overflow-y-auto max-h-[80vh] p-3 sm:p-5">
+            {/* Products for selected subcate gory */}
+            {selectedSubcategory && (
+              <section className="mb-8 sm:mb-12">
+                <SubProduct subCategoryId={selectedSubcategory} />
+              </section>
+            )}
+          </div>
         </section>
 
-        {/* Products for selected subcategory */}
-        {selectedSubcategory && (
-          <section className="mb-8 sm:mb-12">
-            <SubProduct subCategoryId={selectedSubcategory} />
-          </section>
-        )}
+
 
         {/* Optional carousels - commented out for performance */}
         {/* <section className="mt-8 sm:mt-12">
