@@ -1,7 +1,7 @@
 "use client";
 
+import Sidebar from "@/app/extra/home/sidebar";
 import Header from "@/components/home/Header";
-import Sidebar from "@/components/home/sidebar";
 import CardPayment from "@/components/payment/CardPayment";
 import NetBanking from "@/components/payment/NetBanking";
 import UpiPayment from "@/components/payment/UpiPayment";

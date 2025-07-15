@@ -1,14 +1,14 @@
 "use client";
 
-import useSWR from "swr";
 import { fetcher } from "@/lib/api";
+import useSWR from "swr";
 
 import BrandCarousel from "./BrandCarousel";
-import FourSec from "./FourSec";
 import Essentials from "./Essentials";
+import FestBanner from "./FestBanner";
+import FourSec from "./FourSec";
 import NearbyStores from "./NearbyStores";
 import OffersBanner from "./OffersBanner";
-import FestBanner from "./FestBanner";
 
 
 const AllTabContent = () => {

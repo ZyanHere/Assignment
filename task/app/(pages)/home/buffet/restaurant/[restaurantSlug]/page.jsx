@@ -1,13 +1,13 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import Sidebar from "@/components/home/sidebar";
+import Sidebar from "@/app/extra/home/sidebar";
+import MainDishSection from "@/components/home/foursec/MainDish";
+import RestaurantBanner from "@/components/home/foursec/RestaurantBanner";
 import Header from "@/components/home/Header";
 import { buffetData } from "@/data/buffetData";
 import Image from "next/image";
-import RestaurantBanner from "@/components/home/foursec/RestaurantBanner";
-import MainDishSection from "@/components/home/foursec/MainDish";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 // Restaurant-specific data (parking, main dish, menu)
@@ -60,60 +60,59 @@ const RestaurantDetailPage = () => {
   }
 
   return (
+    <div className="flex-1">
+      <Header />
 
-      <div className="flex-1">
-        <Header />
+      <div className="p-6 w-full max-w-[1700px] mx-auto">
+        <div className="px-6 md:px-12">
+          {/* Breadcrumb */}
+          <nav className="mb-4 text-2xl">
+            <Link href="/" className="hover:underline font-medium">
+              Home
+            </Link>
+            <span className="mx-2 text-gray-400">&gt;</span>
+            <Link href="/home/buffet" className="hover:underline font-medium">
+              Restaurants
+            </Link>
+            <span className="mx-2 text-gray-400">&gt;</span>
+            <span className="font-semibold text-yellow-500">
+              {restaurant.name}
+            </span>
+          </nav>
 
-        <div className="p-6 w-full max-w-[1700px] mx-auto">
-          <div className="px-6 md:px-12">
-            {/* Breadcrumb */}
-            <nav className="mb-4 text-2xl">
-              <Link href="/" className="hover:underline font-medium">
-                Home
-              </Link>
-              <span className="mx-2 text-gray-400">&gt;</span>
-              <Link href="/home/buffet" className="hover:underline font-medium">
-                Restaurants
-              </Link>
-              <span className="mx-2 text-gray-400">&gt;</span>
-              <span className="font-semibold text-yellow-500">
-                {restaurant.name}
-              </span>
-            </nav>
-
-            {/* Banner Image */}
-            <div className="w-full mb-6">
-              <Image
-                src={restaurantData.banner}
-                alt={restaurant.name}
-                height={1140}
-                width={387}
-                className="w-full h-auto rounded-b-4xl shadow-md"
-              />
-            </div>
-
-            <MainDishSection
-              restaurantData={restaurantData}
-              favorites={favorites}
-              restaurantIndex={restaurantData.id} 
-              toggleFavorite={toggleFavorite}
+          {/* Banner Image */}
+          <div className="w-full mb-6">
+            <Image
+              src={restaurantData.banner}
+              alt={restaurant.name}
+              height={1140}
+              width={387}
+              className="w-full h-auto rounded-b-4xl shadow-md"
             />
+          </div>
 
-            {/* Menu Section */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Menu</h2>
-              <div className="w-[434px] h-[670px] relative rounded-lg shadow overflow-hidden">
-                <Image
-                  src={restaurantData.menuImage}
-                  alt="Menu"
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
+          <MainDishSection
+            restaurantData={restaurantData}
+            favorites={favorites}
+            restaurantIndex={restaurantData.id}
+            toggleFavorite={toggleFavorite}
+          />
+
+          {/* Menu Section */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold mb-4">Menu</h2>
+            <div className="w-[434px] h-[670px] relative rounded-lg shadow overflow-hidden">
+              <Image
+                src={restaurantData.menuImage}
+                alt="Menu"
+                layout="fill"
+                objectFit="cover"
+              />
             </div>
           </div>
         </div>
       </div>
+    </div>
   );
 };
 

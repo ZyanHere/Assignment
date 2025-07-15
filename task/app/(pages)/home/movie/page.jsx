@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import Sidebar from "@/components/home/sidebar";
-import Header from "@/components/home/Header";
+
 import FewMinutesLeft from "@/components/home/foursec/movie/FewMinutesLeft";
 import PopularNow from "@/components/home/foursec/movie/PopularNow";
 import Recommended from "@/components/home/foursec/movie/RecommandedMovies";
+import Header from "@/components/home/Header";
 import { useMovies } from "@/lib/hooks/useMovies";
+import { useEffect } from "react";
 
 const MoviePage = () => {
-  const { 
+  const {
     fetchMoviesData,
     needsDataFetch,
     getCacheStatus,
@@ -17,20 +17,20 @@ const MoviePage = () => {
     popularNow,
     recommended,
     moviesLoading,
-    moviesError
+    moviesError,
   } = useMovies();
 
   // Fetch movies data only when needed (no data or cache expired)
   useEffect(() => {
     const cacheStatus = getCacheStatus();
-    
+
     if (needsDataFetch()) {
-      console.log('MoviePage: Data fetch needed, calling movies API');
-      console.log('Cache status:', cacheStatus.message);
+      console.log("MoviePage: Data fetch needed, calling movies API");
+      console.log("Cache status:", cacheStatus.message);
       fetchMoviesData();
     } else {
-      console.log('MoviePage: Using cached data, skipping API call');
-      console.log('Cache status:', cacheStatus.message);
+      console.log("MoviePage: Using cached data, skipping API call");
+      console.log("Cache status:", cacheStatus.message);
     }
   }, [fetchMoviesData, needsDataFetch, getCacheStatus]);
 
@@ -39,9 +39,10 @@ const MoviePage = () => {
       <Header />
       <div className="p-6">
         <nav className="text-2xl text-gray-600 mb-6">
-          Home &gt; <span className="text-yellow-500 font-semibold">Movies</span>
+          Home &gt;{" "}
+          <span className="text-yellow-500 font-semibold">Movies</span>
         </nav>
-        
+
         {moviesLoading && (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>

@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
-import Header from "@/components/home/Header";
-import Sidebar from "@/components/home/sidebar";
+import Sidebar from "@/app/extra/home/sidebar";
+import Footer from "@/components/home/footer";
 import HotelCard from "@/components/home/foursec/HotelCard";
 import RecommendedHotels from "@/components/home/foursec/RecommandedHotel";
-import Footer from "@/components/home/footer";
+import Header from "@/components/home/Header";
 import { useHotels } from "@/lib/hooks/useHotels";
+import Link from "next/link";
+import { useEffect } from "react";
 
 export default function HotelsPage() {
-  const { 
+  const {
     fetchHotelsData,
     needsDataFetch,
     getCacheStatus,
@@ -18,20 +18,20 @@ export default function HotelsPage() {
     mostPopular,
     recommended,
     hotelsLoading,
-    hotelsError
+    hotelsError,
   } = useHotels();
 
   // Fetch hotels data only when needed (no data or cache expired)
   useEffect(() => {
     const cacheStatus = getCacheStatus();
-    
+
     if (needsDataFetch()) {
-      console.log('HotelsPage: Data fetch needed, calling hotels API');
-      console.log('Cache status:', cacheStatus.message);
+      console.log("HotelsPage: Data fetch needed, calling hotels API");
+      console.log("Cache status:", cacheStatus.message);
       fetchHotelsData();
     } else {
-      console.log('HotelsPage: Using cached data, skipping API call');
-      console.log('Cache status:', cacheStatus.message);
+      console.log("HotelsPage: Using cached data, skipping API call");
+      console.log("Cache status:", cacheStatus.message);
     }
   }, [fetchHotelsData, needsDataFetch, getCacheStatus]);
 

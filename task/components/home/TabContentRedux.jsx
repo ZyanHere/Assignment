@@ -1,35 +1,33 @@
 "use client";
 
-import React from "react";
 import { useHome } from "@/lib/hooks/useHome";
+import React from "react";
 
-import GroceryTabContent from "./GroceryTab";
-import FashionTabContent from "./FashionTab";
-import AllTabContentRedux from "./AllTabRedux";
-import GiftTabContent from "./GiftTab";
-import ElectronicTabContent from "./Electronics";
-import CareTabContent from "./Care";
-import ApparelsTabContent from "./Apparels";
-import FruitsTabContent from "./Fruits";
 import SubCategoriesRedux from "@/components/subcategories/SubCategoriesRedux";
+import AllTabContentRedux from "./AllTabRedux";
 
 const TabContentRedux = () => {
-  const { 
-    selectedTab, 
-    allProducts, 
+  const {
+    selectedTab,
+    allProducts,
     allProductsLoading,
     productsByCategory,
-    productsLoading
+    productsLoading,
   } = useHome();
 
   const renderTab = () => {
     switch (selectedTab) {
       case "all":
-        return <AllTabContentRedux products={allProducts} loading={allProductsLoading} />;
+        return (
+          <AllTabContentRedux
+            products={allProducts}
+            loading={allProductsLoading}
+          />
+        );
       default:
         return (
-          <SubCategoriesRedux 
-            categoryId={selectedTab} 
+          <SubCategoriesRedux
+            categoryId={selectedTab}
             products={productsByCategory[selectedTab] || []}
             loading={productsLoading[selectedTab] || false}
           />
@@ -40,4 +38,4 @@ const TabContentRedux = () => {
   return <div>{renderTab()}</div>;
 };
 
-export default TabContentRedux; 
+export default TabContentRedux;

@@ -1,11 +1,11 @@
 "use client";
+import Sidebar from "@/app/extra/home/sidebar";
 import Header from "@/components/home/Header";
-import Sidebar from "@/components/home/sidebar";
+import { useSelectedItems } from "@/lib/contexts/selected-items-context";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSelectedItems } from "@/lib/contexts/selected-items-context";
+import { useState } from "react";
 
 const PaymentMode = () => {
   const [selectedMethod, setSelectedMethod] = useState(null);
@@ -14,7 +14,9 @@ const PaymentMode = () => {
   const { selectedItems } = useSelectedItems();
 
   // Calculate total amount
-  const totalAmount = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 20; // Adding transaction fee
+  const totalAmount =
+    selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0) +
+    20; // Adding transaction fee
 
   const paymentOptions = [
     {
@@ -55,12 +57,14 @@ const PaymentMode = () => {
       // For COD, we would typically create an order without payment
       // and redirect to success page
       // This is a simplified implementation
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Redirect to success page with COD details
-      router.push(`/payment-success?payment_id=cod_${Date.now()}&order_id=order_${Date.now()}&amount=${totalAmount}&method=cod`);
+      router.push(
+        `/payment-success?payment_id=cod_${Date.now()}&order_id=order_${Date.now()}&amount=${totalAmount}&method=cod`
+      );
     } catch (error) {
       console.error("COD order error:", error);
     } finally {
@@ -94,7 +98,13 @@ const PaymentMode = () => {
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span>Items Total:</span>
-                  <span>₹{selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                  <span>
+                    ₹
+                    {selectedItems.reduce(
+                      (sum, item) => sum + item.price * item.quantity,
+                      0
+                    )}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Transaction Fee:</span>
@@ -185,7 +195,9 @@ const PaymentMode = () => {
                 />
                 <div>
                   <p className="text-lg">Cash on Delivery</p>
-                  <p className="text-sm text-gray-500">Pay when you receive your order</p>
+                  <p className="text-sm text-gray-500">
+                    Pay when you receive your order
+                  </p>
                 </div>
               </div>
               <input
@@ -214,7 +226,8 @@ const PaymentMode = () => {
                   </>
                 ) : (
                   <>
-                    {selectedMethod === "cod" ? "Place Order" : "Next"} <span className="text-xl">➡️</span>
+                    {selectedMethod === "cod" ? "Place Order" : "Next"}{" "}
+                    <span className="text-xl">➡️</span>
                   </>
                 )}
               </button>
