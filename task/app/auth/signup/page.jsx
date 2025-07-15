@@ -6,16 +6,12 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  signUpStart,
-  signUpSuccess,
-  signUpFailure,
-} from "@/lib/redux/user/userSlice";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
+import { signUpFailure, signUpStart, signUpSuccess } from "@/lib/redux/auth/authSlice";
 
 const Signup = () => {
   const dispatch = useDispatch();

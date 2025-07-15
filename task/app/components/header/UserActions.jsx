@@ -162,7 +162,7 @@ const UserActions = ({ onlyProfile = false }) => {
 
       {/* Notifications */}
       <Link
-        href="/profile?Notifications"
+        href="/profile?tab=Notifications"
         className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform"
         title="Notifications"
       >

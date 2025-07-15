@@ -43,7 +43,7 @@ const Header = () => {
             {/* Hamburger menu (mobile only) */}
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-1.5 sm:p-2 hover:bg-yellow-300/40 rounded-lg transition-colors z-20"
+              className="lg:hidden p-1.5 sm:p-2 hover:bg-yellow-300/40 rounded-lg transition-colors z-20"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMobileMenuOpen ? (
@@ -52,8 +52,8 @@ const Header = () => {
                 <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700" />
               )}
             </button>
-            {/* Logo (md+ screens, left-aligned) */}
-            <Link href="/" className="hidden md:flex flex-shrink-0 items-center ml-0 md:ml-2 lg:ml-4">
+            {/* Logo (lg+ screens, left-aligned) */}
+            <Link href="/" className="hidden lg:flex flex-shrink-0 items-center ml-0 lg:ml-4">
               <Image
                 src="/auth-asset/logo.png"
                 alt="Logo"
@@ -64,7 +64,7 @@ const Header = () => {
               />
             </Link>
             {/* Desktop Nav (left-aligned on desktop) */}
-            <div className="hidden md:flex">
+            <div className="hidden lg:flex">
               <NavLinks />
             </div>
           </div>
@@ -133,7 +133,7 @@ const Header = () => {
       {isMobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden absolute top-full left-0 w-full bg-white border-b border-yellow-500 shadow-lg py-2 animate-in slide-in-from-top duration-300"
+          className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-yellow-500 shadow-lg py-2 animate-in slide-in-from-top duration-300"
         >
           <NavLinks isMobile />
         </div>

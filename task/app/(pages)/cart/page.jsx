@@ -218,9 +218,9 @@ export default function CartPage() {
                             size="sm"
                             onClick={() => handleQuantityUpdate(item.variantId, -1)}
                             disabled={isLoading}
-                            className="w-8 h-8 p-0"
+                            className="w-8 h-8 p-0 text-lg leading-none flex items-center justify-center font-mono"
                           >
-                            -
+                            <span className="block w-full text-center">-</span>
                           </Button>
                           <span className="text-sm sm:text-base font-medium min-w-[2rem] text-center">
                             {item.quantity}
@@ -230,9 +230,9 @@ export default function CartPage() {
                             size="sm"
                             onClick={() => handleQuantityUpdate(item.variantId, 1)}
                             disabled={isLoading}
-                            className="w-8 h-8 p-0"
+                            className="w-8 h-8 p-0 text-lg leading-none flex items-center justify-center font-mono"
                           >
-                            +
+                            <span className="block w-full text-center">+</span>
                           </Button>
                         </div>
                         
@@ -313,9 +313,9 @@ export default function CartPage() {
                                 size="sm"
                                 onClick={() => handleQuantityUpdate(item.variantId, -1)}
                                 disabled={isLoading}
-                                className="w-8 h-8 p-0"
+                                className="w-8 h-8 p-0 text-lg leading-none flex items-center justify-center font-mono"
                               >
-                                -
+                                <span className="block w-full text-center">-</span>
                               </Button>
                               <span className="text-sm sm:text-base font-medium min-w-[2rem] text-center">
                                 {item.quantity}
@@ -325,9 +325,9 @@ export default function CartPage() {
                                 size="sm"
                                 onClick={() => handleQuantityUpdate(item.variantId, 1)}
                                 disabled={isLoading}
-                                className="w-8 h-8 p-0"
+                                className="w-8 h-8 p-0 text-lg leading-none flex items-center justify-center font-mono"
                               >
-                                +
+                                <span className="block w-full text-center">+</span>
                               </Button>
                             </div>
                           </TableCell>

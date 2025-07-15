@@ -116,7 +116,7 @@ const ProductCard = React.memo(({ product }) => {
 
   return (
     <Card
-      className="w-full max-w-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      className="w-[240px] rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
       onClick={handleItemClick}
     >
       <CardHeader className="">

@@ -23,25 +23,39 @@ import { uploadProfileImage } from "@/lib/redux/user/userSlice";
 import { useAuth } from "@/lib/hooks/useAuth";
 import toast from "react-hot-toast";
 import { validateProfilePhotoFile, fileToBase64 } from "@/lib/utils/profilePhotoUpload";
+import { useSearchParams } from "next/navigation";
 
 const ProfilePage = () => {
-  const [selectedTab, setSelectedTab] = useState("about");
+  const searchParams = useSearchParams();
+  const tabMap = {
+    about: "about",
+    myorders: "orders",
+    saveddeals: "saved",
+    paymentmethods: "payment",
+    messages: "messages",
+    notifications: "notifications",
+    logout: "logout",
+  };
+
+  const rawTab = searchParams.get("tab")?.toLowerCase();
+  const initialTab = tabMap[rawTab] || "about";
+  const [selectedTab, setSelectedTab] = useState(initialTab);
+
   const [newProfileImage, setNewProfileImage] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [error, setError] = useState(null);
 
   const dispatch = useDispatch();
-  const { 
-    user, 
-    isAuthenticated, 
-    isLoading, 
-    imageUploading, 
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    imageUploading,
     profileLoading,
-    session 
+    session,
   } = useAuth();
 
-  // Compute user data for display
   const userData = {
     name: user.name || "User",
     email: user.email || "",
@@ -51,7 +65,6 @@ const ProfilePage = () => {
     }),
   };
 
-  // Compute profile image and initial
   const profileImage = user.profileImage || "";
   const userInitial = profileImage ? "" : (user.name ? user.name.charAt(0).toUpperCase() : "U");
 
@@ -59,10 +72,7 @@ const ProfilePage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Clear previous errors
     setError(null);
-
-    // Validate file
     const validation = validateProfilePhotoFile(file);
     if (!validation.valid) {
       setError(validation.error);
@@ -70,15 +80,13 @@ const ProfilePage = () => {
       return;
     }
 
-    // Create preview
     try {
       const base64 = await fileToBase64(file);
       setPreviewUrl(base64);
-      setNewProfileImage(file); // Store the actual file for upload
+      setNewProfileImage(file);
     } catch (err) {
-      setError('Failed to create preview');
-      toast.error('Failed to create preview');
-      return;
+      setError("Failed to create preview");
+      toast.error("Failed to create preview");
     }
   };
 
@@ -96,21 +104,20 @@ const ProfilePage = () => {
     setError(null);
 
     try {
-      // Upload profile photo using Redux thunk
-      await dispatch(uploadProfileImage({ 
-        token: session.user.token, 
-        imageFile: newProfileImage 
-      })).unwrap();
-      
-      // Reset form state
+      await dispatch(
+        uploadProfileImage({
+          token: session.user.token,
+          imageFile: newProfileImage,
+        })
+      ).unwrap();
+
       setNewProfileImage(null);
       setPreviewUrl(null);
       setIsDialogOpen(false);
-      
       toast.success("Profile picture updated successfully!");
     } catch (error) {
-      console.error('Failed to update profile picture:', error);
-      const errorMessage = error || 'Failed to update profile picture. Please try again.';
+      console.error("Failed to update profile picture:", error);
+      const errorMessage = error || "Failed to update profile picture. Please try again.";
       setError(errorMessage);
       toast.error(errorMessage);
     }
@@ -173,10 +180,7 @@ const ProfilePage = () => {
                           {userInitial}
                         </div>
                       )}
-                      <Dialog
-                        open={isDialogOpen}
-                        onOpenChange={setIsDialogOpen}
-                      >
+                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
                           <Button
                             variant="secondary"
@@ -193,7 +197,6 @@ const ProfilePage = () => {
                               Update Profile Picture
                             </DialogTitle>
 
-                            {/* Preview */}
                             {previewUrl && (
                               <div className="flex justify-center">
                                 <Image
@@ -206,7 +209,6 @@ const ProfilePage = () => {
                               </div>
                             )}
 
-                            {/* File Upload */}
                             <div className="flex flex-col gap-2">
                               <label className="flex items-center justify-center w-full px-4 py-2 border border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                                 <Upload className="w-5 h-5 mr-2" />
@@ -222,21 +224,18 @@ const ProfilePage = () => {
                               </label>
                             </div>
 
-                            {/* Error Message */}
                             {error && (
                               <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
                                 {error}
                               </div>
                             )}
 
-                            {/* Help Text */}
                             <div className="text-xs text-gray-500 space-y-1">
                               <p>• Supported formats: JPEG, PNG, WebP</p>
                               <p>• Maximum file size: 5MB</p>
                               <p>• Recommended size: 400x400 pixels or larger</p>
                             </div>
 
-                            {/* Action Buttons */}
                             <div className="flex justify-end gap-2">
                               <Button
                                 variant="outline"
@@ -289,11 +288,7 @@ const ProfilePage = () => {
 
             {/* Profile Content */}
             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-              <ProfileTabs
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-              />
-
+              <ProfileTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
               <div className="p-3 sm:p-6 overflow-x-auto">
                 {isLoading || profileLoading ? (
                   <div className="space-y-4">

@@ -13,6 +13,7 @@ import hotelsReducer from "./hotels/hotelsSlice";
 import moviesReducer from "./movies/moviesSlice";
 import eventsReducer from "./events/eventsSlice";
 import buffetReducer from "./buffet/buffetSlice";
+import authReducer from "./auth/authSlice";
 
 // Configure persistence for profile data only
 const userPersistConfig = {
@@ -38,6 +39,7 @@ export const makeStore = () => {
       movies: moviesReducer,
       events: eventsReducer,
       buffet: buffetReducer,
+      auth: authReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
