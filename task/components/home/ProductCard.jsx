@@ -7,12 +7,14 @@ import { Button } from "../ui/button";
 import { useProduct } from "@/lib/contexts/productContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 const ProductCard = React.memo(({ product }) => {
   const timeLeft = useTimer(product.time);
   const { addToCart, isInCart, getItemQuantity, isProductLoading: isCartLoading } = useCart();
   const { setSelectedProduct, setSelectedVariant } = useProduct();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   
   // Memoize cart-related values to prevent unnecessary re-renders
   const variantId = product.variants[0]?._id;
@@ -21,6 +23,11 @@ const ProductCard = React.memo(({ product }) => {
   const isLoading = useMemo(() => isCartLoading(variantId), [isCartLoading, variantId]);
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      toast.error('Login to add products');
+      router.push('/auth/login');
+      return;
+    }
     if (!isProductInCart && product.variants?.[0]) {
       try {
         await addToCart({
