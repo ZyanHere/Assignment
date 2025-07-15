@@ -8,11 +8,13 @@ import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
 import { useProduct } from "@/lib/contexts/productContext";
 import toast from "react-hot-toast";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 const StoreCard = React.memo(({ product, storeName }) => {
   const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart();
   const { setSelectedProduct } = useProduct();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
 
   const [imageError, setImageError] = useState(false);
 
@@ -61,6 +63,11 @@ const StoreCard = React.memo(({ product, storeName }) => {
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.error('Login to add products');
+      router.push('/auth/login');
+      return;
+    }
     if (!canAdd || isProductInCart) return;
 
     try {
