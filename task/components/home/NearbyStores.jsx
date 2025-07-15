@@ -12,6 +12,7 @@ import { Heart } from "lucide-react";
 import useSWR from "swr";
 import { useState } from "react";
 import { fetcher } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const NearbyStores = () => {
   const { data: storeResponse, error } = useSWR(
@@ -21,6 +22,7 @@ const NearbyStores = () => {
 
   const stores = storeResponse?.data || [];
   const [favorites, setFavorites] = useState({});
+  const router = useRouter();
 
   const handleFavorite = (id) => {
     setFavorites((prev) => ({
@@ -50,6 +52,7 @@ const NearbyStores = () => {
               <CarouselItem
                 key={store._id}
                 className="basis-[85vw] sm:basis-[48%] md:basis-[33.33%] lg:basis-[23%] max-w-[90vw] sm:max-w-none"
+                onClick={() => router.push(`/stores/${store.vendor_id}`)}
               >
                 <div className="w-full h-[220px] sm:h-[300px] md:h-[320px] lg:h-[340px] rounded-xl shadow-md overflow-hidden border bg-white flex flex-col">
                   <div className="relative h-[130px] sm:h-[200px]">
@@ -79,11 +82,10 @@ const NearbyStores = () => {
                       aria-label="Toggle favorite"
                     >
                       <Heart
-                        className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-200 ${
-                          favorites[store._id]
+                        className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-200 ${favorites[store._id]
                             ? "fill-red-500 text-red-500"
                             : "text-white"
-                        }`}
+                          }`}
                       />
                     </button>
                   </div>
