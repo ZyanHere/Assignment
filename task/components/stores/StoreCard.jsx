@@ -12,9 +12,11 @@ import { useAuth } from "@/lib/hooks/useAuth";
 
 const StoreCard = React.memo(({ product, storeName }) => {
   const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart();
-  const { setSelectedProduct } = useProduct();
+  const { setSelectedProduct, setSelectedVariant } = useProduct();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  console.log(product);
+  const variantData = product?.variants[0];
 
   const [imageError, setImageError] = useState(false);
 
@@ -22,6 +24,7 @@ const StoreCard = React.memo(({ product, storeName }) => {
 
   const handleItemClick = () => {
     setSelectedProduct(product);
+    setSelectedVariant(variantData);
     router.push(`/product/${product._id || product.id}`);
   };
 
@@ -37,7 +40,7 @@ const StoreCard = React.memo(({ product, storeName }) => {
     : 0;
 
   const stockQty = product.stock ?? null;
-  const canAdd = stockQty == null || stockQty > 0;
+  const canAdd = variantData && (stockQty == null || stockQty > 0);
 
   const isProductInCart = useMemo(() => isInCart(product.id), [isInCart, product.id]);
   const cartItemQuantity = useMemo(() => getItemQuantity(product.id), [getItemQuantity, product.id]);
@@ -72,13 +75,13 @@ const StoreCard = React.memo(({ product, storeName }) => {
 
     try {
       await addToCart({
-        id: product.id,
-        name: product.name,
-        brand: storeName,
-        price,
-        mrp: original,
-        image: product.image,
-        category: product.category,
+        id: variantData._id,
+        variant: variantData,
+        product,
+        price: original,
+        sale_price: price,
+        stock: stockQty,
+        sku: variantData.sku,
       });
       toast.success("Added to Cart successfully");
     } catch (error) {
@@ -88,70 +91,70 @@ const StoreCard = React.memo(({ product, storeName }) => {
 
   return (
     <Card
-  className="w-full max-w-sm min-h-[420px] flex flex-col justify-between rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-  onClick={handleItemClick}
->
-  {/* Image Section */}
-  <CardHeader className=" relative">
-    <img
-      src={imgSrc}
-      alt={product.name}
-      onError={handleImageError}
-      className="w-full h-48 object-contain rounded-xl"
-    />
-    <Button
-      className={buttonClassName}
-      onClick={handleAddToCart}
-      disabled={!canAdd || isLoading}
+      className="w-full max-w-sm min-h-[420px] flex flex-col justify-between rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      onClick={handleItemClick}
     >
-      {buttonText}
-    </Button>
-  </CardHeader>
+      {/* Image Section */}
+      <CardHeader className=" relative">
+        <img
+          src={imgSrc}
+          alt={product.name}
+          onError={handleImageError}
+          className="w-full h-48 object-contain rounded-xl"
+        />
+        <Button
+          className={buttonClassName}
+          onClick={handleAddToCart}
+          disabled={!canAdd || isLoading}
+        >
+          {buttonText}
+        </Button>
+      </CardHeader>
 
-  {/* Content Section with reserved space */}
-  <CardContent className="px-4 flex flex-col gap-1 flex-grow">
-    <CardTitle className="text-sm font-bold truncate">{product.name}</CardTitle>
+      {/* Content Section with reserved space */}
+      <CardContent className="px-4 flex flex-col gap-1 flex-grow">
+        <CardTitle className="text-sm font-bold truncate">{product.name}</CardTitle>
 
-    {/* Category */}
-    {product.category && (
-      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded w-fit">
-        {product.category}
-      </span>
-    )}
+        {/* Category */}
+        {product.category && (
+          <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded w-fit">
+            {product.category}
+          </span>
+        )}
 
-    <p className="text-xs text-gray-500">By {storeName}</p>
+        <p className="text-xs text-gray-500">By {storeName}</p>
 
-    {/* Discount */}
-    {discount > 0 && (
-      <p className="text-sm text-blue-700 font-semibold">{discount}% OFF</p>
-    )}
+        {/* Discount */}
+        {discount > 0 && (
+          <p className="text-sm text-blue-700 font-semibold">{discount}% OFF</p>
+        )}
 
-    {/* Price */}
-    <div className="flex items-center gap-2">
-      {original > price && (
-        <p className="text-xs text-gray-400 line-through">₹{original}</p>
-      )}
-      <p className="text-sm font-bold text-green-600">₹{price}</p>
-    </div>
+        {/* Price */}
+        <div className="flex items-center gap-2">
+          {original > price && (
+            <p className="text-xs text-gray-400 line-through">₹{original}</p>
+          )}
+          <p className="text-sm font-bold text-green-600">₹{price}</p>
+        </div>
 
-    {/* Rating */}
-    <div className="flex items-center gap-2">
-      <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
-      <p className="text-xs font-medium text-gray-500">
-        {product.rating?.average || 0} ({product.rating?.count || 0})
-      </p>
-    </div>
+        {/* Rating */}
+        <div className="flex items-center gap-2">
+          <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
+          <p className="text-xs font-medium text-gray-500">
+            {product.rating?.average || 0} ({product.rating?.count || 0})
+          </p>
+        </div>
 
-    {/* Stock (with fallback space) */}
-    {stockQty != null ? (
-      <p className="mt-1 text-xs text-muted-foreground">
-        Stock: {stockQty > 0 ? `${stockQty} available` : "Out of Stock"}
-      </p>
-    ) : (
-      <div className="mt-1 h-[16px]" /> // fallback height
-    )}
-  </CardContent>
-</Card>
+        {/* Stock (with fallback space) */}
+        {stockQty != null ? (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Stock: {stockQty > 0 ? `${stockQty} available` : "Out of Stock"}
+          </p>
+        ) : (
+          <div className="mt-1 h-[16px]" /> // fallback height
+        )}
+      </CardContent>
+    </Card>
 
   );
 });
