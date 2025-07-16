@@ -1,3 +1,7 @@
+// components/home/foursec/BuffetCarousel.jsx
+"use client";
+
+import React from "react";
 import {
   Carousel,
   CarouselContent,
@@ -5,38 +9,35 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import RestaurantCard from "./RestaurentCard";
-import Link from "next/link";
 
-const BuffetCarousel = ({ title, seeAllLink, items }) => {
+export default function BuffetCarousel({ items }) {
   return (
-    <div className="mt-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <Link href={seeAllLink} className="text-orange-500 text-sm font-semibold">
-          See All
-        </Link>
-      </div>
-      <div className="py-4">
-        <Carousel className="w-full mx-auto">
-          <CarouselContent className="-ml-4">
-            {items.map((restaurant, index) => (
-              <CarouselItem
-                key={index}
-                className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-[22.35%] flex-shrink-0"
-              >
-                <div className="p-1">
-                  <RestaurantCard {...restaurant} index={index} />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-      </div>
-    </div>
-  );
-};
+    <Carousel className="py-4">
+      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10">
+        <ChevronLeft className="h-5 w-5" />
+      </CarouselPrevious>
 
-export default BuffetCarousel;
+      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
+        <ChevronRight className="h-5 w-5" />
+      </CarouselNext>
+
+      <CarouselContent className="space-x-4 overflow-visible">
+        {items.map((restaurant, index) => (
+          <CarouselItem key={restaurant._id} className="w-[300px]">
+            <RestaurantCard
+              img={restaurant.img}
+              name={restaurant.name}
+              rating={restaurant.rating}
+              time={restaurant.time}
+              price={restaurant.price}
+              category={restaurant.category}  // can be object or string
+              index={index}
+            />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
+  );
+}
