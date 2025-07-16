@@ -20,6 +20,7 @@ function StoreSection({ vendor }) {
   const products = productsRaw.map((p) => {
     // Prefer first variant for price/stock, fallback to product-level fields
     const variant = Array.isArray(p.variants) && p.variants.length > 0 ? p.variants[0] : {};
+    const variants = Array.isArray(p.variants) && p.variants.length > 0 ? p.variants : {}
     const variantPrice = variant.price || {};
     const mrp = variantPrice.base_price ?? p.mrp ?? 0;
     const salePrice = variantPrice.sale_price > 0
@@ -44,6 +45,7 @@ function StoreSection({ vendor }) {
       mrp: mrp,
       rating: { average: p.rating?.average ?? 0, count: p.rating?.count ?? 0 },
       stock: stock,
+      variants: variants,
     };
   });
   const loading = productsLoading[vendor_id];
