@@ -1,10 +1,8 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-// Helper function to generate slug from restaurant name
 const getSlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
 
 const RestaurantCard = ({ img, name, rating, time, price, category, index }) => {
@@ -19,20 +17,19 @@ const RestaurantCard = ({ img, name, rating, time, price, category, index }) => 
   };
 
   return (
-    <Link href={`/home/buffet/restaurant/${getSlug(name)}`} className="block">
-      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 cursor-pointer">
-        <div className="relative">
+    <Link href={`/home/buffet/restaurant/${getSlug(name)}`} className="block h-full">
+      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer flex flex-col h-full p-4">
+        <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
           <Image
             src={img}
             alt={name}
-            width={300}
-            height={200}
-            className="w-full h-40 object-cover rounded-lg"
+            fill
+            className="object-cover"
           />
           <div
             className="absolute top-2 right-2 cursor-pointer"
             onClick={(e) => {
-              e.preventDefault(); 
+              e.preventDefault();
               toggleFavorite();
             }}
           >
@@ -45,9 +42,9 @@ const RestaurantCard = ({ img, name, rating, time, price, category, index }) => 
           </div>
         </div>
 
-        <div className="mt-3">
+        <div className="mt-3 flex flex-col justify-between flex-grow">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">{name}</h3>
+            <h3 className="text-lg font-semibold truncate">{name}</h3>
             <div className="flex items-center text-sm text-gray-700">
               <span className="mr-1">⭐</span>
               <span>{rating}</span>
@@ -55,17 +52,18 @@ const RestaurantCard = ({ img, name, rating, time, price, category, index }) => 
           </div>
 
           <div className="flex items-center justify-between mt-2 text-gray-700">
-            <span className="text-sm flex items-center gap-1">
+            <span className="text-sm flex items-center gap-1 whitespace-nowrap">
               <Image src="/buffet/clock.svg" alt="Time" width={14} height={14} />
               {time}
             </span>
 
-            <span className="text-sm flex items-center gap-1">
-              <Image src="/buffet/car.svg" alt="Delivery" width={14} height={14} />
+            <span className="text-sm whitespace-nowrap">
               {price}
             </span>
+          </div>
 
-            <span className="text-sm bg-yellow-400 px-2 py-1 rounded-full font-semibold">
+          <div className="mt-2">
+            <span className="text-sm bg-yellow-400 px-2 py-1 rounded-full font-semibold whitespace-nowrap">
               {category}
             </span>
           </div>

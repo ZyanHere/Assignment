@@ -20,12 +20,10 @@ const Signup = () => {
   const router = useRouter();
   const { loading, error } = useSelector((state) => state.user);
 
-  // Local UI state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  // RHF + Zod setup
   const {
     register,
     handleSubmit,
@@ -34,15 +32,12 @@ const Signup = () => {
     resolver: zodResolver(signupSchema),
   });
 
-
-    // Handle form submission
-    const onSubmit = async (data) => {
+  const onSubmit = async (data) => {
     dispatch(signUpStart());
     try {
       const payload = {
         userName: data.userName,
         email: data.email,
-        // prefix country code; adjust if you support multiple countries
         phone: `+91${data.phone}`,
         password: data.password,
         confirmPassword: data.confirmPassword,
@@ -53,7 +48,6 @@ const Signup = () => {
         payload
       );
 
-      // Dispatch success with user + temp credentials for auto-login
       dispatch(
         signUpSuccess({
           user: res.data.data.user,
@@ -62,9 +56,6 @@ const Signup = () => {
         })
       );
 
-      // Optionally persist “remember me” here (e.g. cookie/localStorage)
-
-      // Redirect to next step (e.g. OTP verification)
       router.push("/auth/verification");
     } catch (err) {
       const msg =
@@ -75,13 +66,11 @@ const Signup = () => {
     }
   };
 
-
-
   return (
-    <div className="flex min-h-screen ">
+    <div className="flex flex-col md:flex-row min-h-screen">
       {/* Left Side - Signup Form */}
-      <div className="w-1/2 mt-20 mb-20">
-        <div className="flex flex-col justify-center items-start max-w-[404px] mx-auto ">
+      <div className="w-full md:w-1/2 px-6 py-10 md:py-20">
+        <div className="flex flex-col justify-center items-start max-w-[404px] mx-auto w-full">
           <Image
             src="/auth-asset/logo.png"
             alt="Logo"
@@ -98,7 +87,6 @@ const Signup = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="w-full max-w-md mt-[70px]"
           >
-            {/* Name */}
             <div>
               <label className="block text-sm font-medium text-black">
                 Username
@@ -118,7 +106,7 @@ const Signup = () => {
                 </p>
               )}
             </div>
-            {/* Mobile Number */}
+
             <div>
               <label className="block text-sm font-medium text-black mt-[14px]">
                 Mobile Number
@@ -138,7 +126,7 @@ const Signup = () => {
                 </span>
               )}
             </div>
-            {/* Email */}
+
             <div>
               <label className="block text-sm font-medium text-black mt-[14px]">
                 Email Address
@@ -158,8 +146,8 @@ const Signup = () => {
                 </span>
               )}
             </div>
-            {/* Password */}
-            <div className=" relative">
+
+            <div className="relative">
               <label className="block text-sm font-medium text-black mb-1">
                 Password
               </label>
@@ -188,7 +176,6 @@ const Signup = () => {
               )}
             </div>
 
-            {/* Confirm Password */}
             <div className="relative">
               <label className="block text-sm font-medium text-black mt-[14px]">
                 Confirm Password
@@ -223,6 +210,7 @@ const Signup = () => {
                 </span>
               )}
             </div>
+
             <div className="flex justify-end mt-1">
               <Link
                 href="/auth/forgotPassword"
@@ -231,6 +219,7 @@ const Signup = () => {
                 Forgot password?
               </Link>
             </div>
+
             <div className="mt-[5px]">
               <input
                 type="checkbox"
@@ -243,62 +232,57 @@ const Signup = () => {
                 Remember
               </label>
             </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#FFC107] font-semibold rounded-lg hover:bg-yellow-600 disabled:opacity-75 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 bg-[#FFC107] font-semibold rounded-lg hover:bg-yellow-600 disabled:opacity-75 disabled:cursor-not-allowed transition-colors mt-4"
             >
               {loading ? "Creating Account..." : "Sign Up"}
             </button>
+
             {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
           </form>
 
-          {/* Social Signup Section */}
           <div className="flex items-center mt-[32px] mb-[40px] w-full max-w-md">
             <hr className="flex-grow border-[#F5F5F5]" />
             <span className="mx-4 text-black">Or</span>
             <hr className="flex-grow border-[#F5F5F5]" />
           </div>
 
-          <div className="w-full flex justify-between mt-4">
-            {/* Google Sign-Up */}
-            <div>
-              <button
-                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
-                     hover:bg-gray-100 transition duration-200"
-              >
-                <Image
-                  src="/auth-asset/google-logo.svg"
-                  alt="Google"
-                  width={20}
-                  height={20}
-                />
-                <span className="ml-2 text-black text-sm font-medium">
-                  Sign up with Google
-                </span>
-              </button>
-            </div>
+          <div className="w-full flex flex-col sm:flex-row justify-between gap-4 mt-4">
+            <button
+              className="flex items-center justify-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
+                     hover:bg-gray-100 transition duration-200 w-full"
+            >
+              <Image
+                src="/auth-asset/google-logo.svg"
+                alt="Google"
+                width={20}
+                height={20}
+              />
+              <span className="ml-2 text-black text-sm font-medium">
+                Sign up with Google
+              </span>
+            </button>
 
-            {/* Apple Sign-Up */}
-            <div>
-              <button
-                className="flex items-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
-                     hover:bg-gray-100 transition duration-200"
-              >
-                <Image
-                  src="/auth-asset/apple-logo.svg"
-                  alt="Apple"
-                  width={20}
-                  height={20}
-                />
-                <span className="ml-2 text-black text-sm font-medium">
-                  Sign up with Apple
-                </span>
-              </button>
-            </div>
+            <button
+              className="flex items-center justify-center px-6 py-2 border border-gray-300 rounded-full shadow-sm 
+                     hover:bg-gray-100 transition duration-200 w-full"
+            >
+              <Image
+                src="/auth-asset/apple-logo.svg"
+                alt="Apple"
+                width={20}
+                height={20}
+              />
+              <span className="ml-2 text-black text-sm font-medium">
+                Sign up with Apple
+              </span>
+            </button>
           </div>
 
-          <div className="mt-4 text-sm text-black w-full flex justify-center items-center">
+          <div className="mt-4 text-sm text-black w-full flex justify-center items-center text-center">
             Already have an account?
             <Link
               href="/auth/login"
@@ -311,7 +295,7 @@ const Signup = () => {
       </div>
 
       {/* Right Side - Background Image */}
-      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative">
+      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative min-h-[400px]">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"

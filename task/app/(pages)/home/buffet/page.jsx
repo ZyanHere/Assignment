@@ -1,44 +1,78 @@
 "use client";
-
 import BuffetCarousel from "@/components/home/foursec/BuffetCarousel";
 import RestaurantCard from "@/components/home/foursec/RestaurentCard";
 import Header from "@/components/home/Header";
-import Sidebar from "@/components/home/sidebar";
 import { buffetData } from "@/data/buffetData";
 import Link from "next/link";
-
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const BuffetPage = () => {
-
   return (
-      <div className="flex-1">
-        <Header />
-        <div className="p-6 w-full max-w-[1700px] mx-auto">
-          <div className="px-6 md:px-12">
-            
-            {/* Breadcrumb */}
-            <nav className="mb-10 text-black text-4xl">
-              <Link href="/" className="hover:underline font-medium">
-                Home
-              </Link>
-              {" > "}
-              <Link href="/home/buffet" className="hover:underline font-medium text-yellow-500">
-                Restaurants
-              </Link>
-            </nav>
-
+    <div className="flex-1">
+      <Header />
+      <div className="p-6 w-full max-w-[1700px] mx-auto">
+        <div className="px-6 md:px-12">
           
-            <BuffetCarousel title="Popular Now" seeAllLink="/home/buffet/popular" items={buffetData.popular} />
-            <BuffetCarousel title="In Your Area" seeAllLink="/home/buffet/area" items={buffetData.inYourArea} />
-            
-            <div className="flex justify-between items-center mt-6">
+   
+          <nav className="mb-10 text-black text-4xl">
+            <Link href="/" className="hover:underline font-medium">
+              Home
+            </Link>
+            {" > "}
+            <Link href="/home/buffet" className="hover:underline font-medium text-yellow-500">
+              Restaurants
+            </Link>
+          </nav>
+
+      
+          <BuffetCarousel title="Popular Now" seeAllLink="/home/buffet/popular" items={buffetData.popular} />
+          <BuffetCarousel title="In Your Area" seeAllLink="/home/buffet/area" items={buffetData.inYourArea} />
+          
+      
+          <div className="mt-6">
+            <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Based on your previous choices</h2>
               <Link href="/home/buffet/choices" className="text-orange-500 text-sm font-semibold">
                 See All
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+            {/* Mobile - Single card */}
+            <div className="md:hidden mt-4">
+              <Carousel>
+                <CarouselContent className="-ml-1">
+                  {buffetData.previousChoices.map((restaurant, index) => (
+                    <CarouselItem key={index} className="pl-1 basis-[85%]">
+                      <div className="p-1">
+                        <RestaurantCard {...restaurant} index={index} />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-0" />
+                <CarouselNext className="right-0" />
+              </Carousel>
+            </div>
+
+            {/* Tablet - 3 cards */}
+            <div className="hidden md:block lg:hidden mt-4">
+              <Carousel>
+                <CarouselContent className="-ml-4">
+                  {buffetData.previousChoices.map((restaurant, index) => (
+                    <CarouselItem key={index} className="pl-4 basis-1/3">
+                      <div className="p-1">
+                        <RestaurantCard {...restaurant} index={index} />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-0" />
+                <CarouselNext className="right-0" />
+              </Carousel>
+            </div>
+
+            {/* Desktop - Original grid */}
+            <div className="hidden lg:grid grid-cols-4 gap-4 mt-4">
               {buffetData.previousChoices.map((restaurant, index) => (
                 <RestaurantCard key={index} {...restaurant} index={index} />
               ))}
@@ -46,12 +80,11 @@ const BuffetPage = () => {
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
 export default BuffetPage;
-
-
 
 // "use client";
 

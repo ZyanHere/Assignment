@@ -24,6 +24,7 @@ const RecommendedEvents = () => {
           See All
         </Link>
       </div>
+
       <div className="flex flex-col gap-6 mt-4">
         {events.map((event) => {
           const eventSlug = generateSlug(event.title);
@@ -33,26 +34,31 @@ const RecommendedEvents = () => {
               href={`/home/event/recommended-events/${eventSlug}`}
               className="relative block"
             >
-              <div className="relative bg-white shadow-md rounded-lg overflow-hidden flex p-4">
-                <Image 
-                  src={event.image} 
-                  alt={event.title} 
-                  width={160} 
-                  height={160} 
-                  className="rounded-lg object-cover" 
-                />
-                <div className="ml-6 flex-1 mt-4">
-                  <h3 className="font-semibold text-lg">{event.title}</h3>
-                  <p className="text-sm mt-2">{event.date}</p>
-                  <p className="text-lg">{event.time}</p>
-                  <p className="text-sm flex items-center mt-4">
-                    📍 {event.location}
-                  </p>
+              <div className="relative bg-white shadow-md rounded-lg overflow-hidden flex flex-col sm:flex-row p-4 gap-4">
+                <div className="w-full sm:w-[160px] h-[200px] sm:h-[160px] flex-shrink-0">
+                  <Image
+                    src={event.image}
+                    alt={event.title}
+                    width={160}
+                    height={160}
+                    className="rounded-lg object-cover w-full h-full"
+                  />
                 </div>
-                <span className="bg-green-100 text-black px-4 py-2 text-sm font-medium rounded-md self-end">
-                  {event.price} Rs
-                </span>
+
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-semibold text-lg">{event.title}</h3>
+                    <p className="text-sm mt-1">{event.date}</p>
+                    <p className="text-lg">{event.time}</p>
+                    <p className="text-sm flex items-center mt-2">📍 {event.location}</p>
+                  </div>
+
+                  <span className="mt-3 inline-block bg-green-100 text-black px-4 py-2 text-sm font-medium rounded-md w-max">
+                    {event.price} Rs
+                  </span>
+                </div>
               </div>
+
               <button
                 className="absolute top-2 right-2"
                 onClick={(e) => {
@@ -62,7 +68,11 @@ const RecommendedEvents = () => {
                 }}
               >
                 <Image
-                  src={favorites.includes(event.id) ? "/home/shops/Heart-red.svg" : "/home/shops/Heart.svg"}
+                  src={
+                    favorites.includes(event.id)
+                      ? "/home/shops/Heart-red.svg"
+                      : "/home/shops/Heart.svg"
+                  }
                   alt="Favorite"
                   width={24}
                   height={24}

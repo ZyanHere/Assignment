@@ -95,10 +95,10 @@ export default function Login() {
   // };
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-white">
       {/* Left Side - Login Form */}
-      <div className="w-1/2">
-        <div className="flex flex-col justify-center items-start max-w-[418px] mx-auto h-screen">
+      <div className="w-full md:w-1/2 px-6 py-8 md:py-0">
+        <div className="flex flex-col justify-center items-start w-full max-w-[418px] mx-auto h-full">
           <Image
             src="/auth-asset/logo.png"
             alt="Logo"
@@ -154,9 +154,9 @@ export default function Login() {
                 {...register("email")}
                 type="text"
                 placeholder="Enter email or phone"
-                className={`... ${
+                className={`w-full p-3 border rounded-lg ${
                   errors.email ? "border-red-500" : "border-[#D9D9D9]"
-                }`}
+                } focus:ring-2 focus:ring-yellow-500`}
               />
               {errors.email && (
                 <span className="text-red-500 text-sm">
@@ -285,7 +285,7 @@ export default function Login() {
             </div>  */}
           {/* </div> */}
 
-          <div className="mt-4 text-sm text-black w-full flex justify-center items-center">
+          <div className="mt-4 text-sm text-black w-full flex justify-center items-center text-center">
             Don't have an account?
             <Link
               href="/signup"
@@ -298,7 +298,7 @@ export default function Login() {
       </div>
 
       {/* Right Side - Background Image */}
-      <div className="hidden md:block w-1/2  shrink-0 rounded-l-[40px] relative">
+      <div className="hidden md:block w-1/2 shrink-0 rounded-l-[40px] relative min-h-[400px]">
         <Image
           src="/auth-asset/hero-bg.png"
           alt="Background"
@@ -310,3 +310,18 @@ export default function Login() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
