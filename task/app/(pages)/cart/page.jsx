@@ -114,14 +114,11 @@ export default function CartPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex flex-col min-h-screen items-center justify-center">
+      <div className="flex flex-col min-h-screen  justify-center">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center">
           <div className="text-center">
             <p className="text-lg sm:text-xl text-gray-700 mb-4">Login before adding items to cart</p>
-            <Link href="/auth/login">
-              <Button className="text-sm sm:text-base">Login</Button>
-            </Link>
           </div>
         </div>
       </div>
