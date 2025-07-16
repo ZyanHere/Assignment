@@ -37,7 +37,7 @@ export default function DescriptionPage({ params }) {
     const [grabLoading, setGrabLoading] = useState(false);
     const { setSingleItem, setSelectedItems } = useSelectedItems();
     const { data: session } = useSession();
-    
+
     const {
         addItem,
         removeItem,
@@ -50,22 +50,22 @@ export default function DescriptionPage({ params }) {
         try {
             setLoading(true);
             const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/lmd/api/v1/retail/products/${productId}`);
-            
+
             if (!response.ok) {
                 throw new Error('Product not found');
             }
-            
+
             const data = await response.json();
             const product = data.data || data;
-            
+
             // Set the product in context
             setSelectedProduct(product);
-            
+
             // Set the first variant as selected if available
             if (product.variants && product.variants.length > 0) {
                 setSelectedVariant(product.variants[0]);
             }
-            
+
         } catch (error) {
             console.error('Error fetching product:', error);
             toast.error('Product not found');
@@ -133,10 +133,10 @@ export default function DescriptionPage({ params }) {
         if (selectedVariant) {
             try {
                 setGrabLoading(true);
-                
+
                 // Clear existing cart first
                 await clearCart();
-                
+
                 // Add only this product to cart
                 await addToCart({
                     id: selectedVariant._id,
@@ -165,7 +165,7 @@ export default function DescriptionPage({ params }) {
                     weight: selectedVariant.variant_name,
                     quantity: 1,
                 }];
-                
+
                 setSelectedItems(cartItemData);
                 setSingleItem(false); // This is from cart, not single item
 
@@ -173,7 +173,7 @@ export default function DescriptionPage({ params }) {
                 await new Promise(resolve => setTimeout(resolve, 500));
 
                 toast.success('Item grabbed successfully!');
-                
+
                 // Navigate to buy-now page
                 router.push('/buy-now');
             } catch (error) {
@@ -215,7 +215,7 @@ export default function DescriptionPage({ params }) {
         <>
             <Header />
             <Toaster />
-            
+
             {/* Breadcrumb Navigation */}
             <div className="px-3 sm:px-4 md:px-6 lg:px-8 mt-4 sm:mt-6 md:mt-8">
                 <Breadcrumb>
@@ -227,7 +227,7 @@ export default function DescriptionPage({ params }) {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink 
+                            <BreadcrumbLink
                                 href={`/categories/${selectedProduct.category.slug}`}
                                 className='text-sm sm:text-base md:text-lg hover:text-yellow-600 transition-colors'
                             >
@@ -235,7 +235,7 @@ export default function DescriptionPage({ params }) {
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        {
+                        {/* {
                             selectedProduct.subcategory && <>
                                 <BreadcrumbItem>
                                     <BreadcrumbLink 
@@ -247,7 +247,7 @@ export default function DescriptionPage({ params }) {
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                             </>
-                        }
+                        } */}
 
                         <BreadcrumbItem>
                             <BreadcrumbPage className='text-yellow-500 text-sm sm:text-base md:text-lg truncate'>
@@ -261,19 +261,18 @@ export default function DescriptionPage({ params }) {
             {/* Main Product Section */}
             <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
                 <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8">
-                    
+
                     {/* Product Images Section */}
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:w-1/2">
                         {/* Thumbnail Images */}
                         <div className="flex sm:flex-col gap-2 order-2 sm:order-1">
                             {selectedVariant.images.map((img, idx) => (
-                                <div 
-                                    key={idx} 
-                                    className={`h-16 w-16 sm:h-20 sm:w-20 relative border-2 cursor-pointer transition-all duration-200 ${
-                                        selectedImage === img.url 
-                                            ? "border-cyan-500 shadow-md" 
+                                <div
+                                    key={idx}
+                                    className={`h-16 w-16 sm:h-20 sm:w-20 relative border-2 cursor-pointer transition-all duration-200 ${selectedImage === img.url
+                                            ? "border-cyan-500 shadow-md"
                                             : "border-gray-300 hover:border-cyan-400"
-                                    }`} 
+                                        }`}
                                     onClick={() => setSelectedImage(img.url)}
                                 >
                                     <Image
@@ -324,11 +323,10 @@ export default function DescriptionPage({ params }) {
                                 {[...Array(5)].map((_, i) => (
                                     <Star
                                         key={i}
-                                        className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                                            i < Math.floor(selectedProduct.rating?.average || 0)
+                                        className={`w-4 h-4 sm:w-5 sm:h-5 ${i < Math.floor(selectedProduct.rating?.average || 0)
                                                 ? "fill-yellow-400 text-yellow-400"
                                                 : "text-gray-300"
-                                        }`}
+                                            }`}
                                     />
                                 ))}
                             </div>
@@ -342,7 +340,7 @@ export default function DescriptionPage({ params }) {
 
                         {/* Description */}
                         <p className="text-gray-600 mt-2 text-sm sm:text-base leading-relaxed">
-                            {selectedProduct.description || 
+                            {selectedProduct.description ||
                                 `Experience the quality of ${selectedProduct.name} by ${selectedProduct.brand || 'Last Minute Deal'}. This premium product offers excellent value and is available in the ${selectedProduct.category?.name || 'selected'} category.`}
                         </p>
 
@@ -363,12 +361,11 @@ export default function DescriptionPage({ params }) {
                                     {wishlistLoading ? (
                                         <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-gray-500" />
                                     ) : (
-                                        <Heart 
-                                            className={`w-5 h-5 sm:w-6 sm:h-6 ${
-                                                isInWishlist(productIdForWishlist)
-                                                    ? "fill-red-500 text-red-500" 
+                                        <Heart
+                                            className={`w-5 h-5 sm:w-6 sm:h-6 ${isInWishlist(productIdForWishlist)
+                                                    ? "fill-red-500 text-red-500"
                                                     : "text-gray-500 hover:text-red-500"
-                                            }`} 
+                                                }`}
                                         />
                                     )}
                                 </Button>
@@ -376,14 +373,14 @@ export default function DescriptionPage({ params }) {
 
                             {/* Action Buttons */}
                             <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
-                                <Button 
+                                <Button
                                     className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-base sm:text-lg font-semibold py-3 sm:py-4 shadow-lg transition-all duration-200"
                                     style={{ minWidth: '160px' }}
                                     onClick={handleAddToCart}
                                 >
                                     ADD TO CART
                                 </Button>
-                                <Button 
+                                <Button
                                     className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-base sm:text-lg font-semibold py-3 sm:py-4 shadow-lg transition-all duration-200"
                                     style={{ minWidth: '160px' }}
                                     onClick={handleGrab}
@@ -412,12 +409,11 @@ export default function DescriptionPage({ params }) {
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
                             {selectedProduct.variants.map((variant, index) => (
                                 <div key={index} className="flex flex-col items-center gap-2">
-                                    <div 
-                                        className={`h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40 border-2 relative overflow-hidden cursor-pointer rounded-lg transition-all duration-200 ${
-                                            selectedVariant === variant 
-                                                ? "border-cyan-500 shadow-lg" 
+                                    <div
+                                        className={`h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40 border-2 relative overflow-hidden cursor-pointer rounded-lg transition-all duration-200 ${selectedVariant === variant
+                                                ? "border-cyan-500 shadow-lg"
                                                 : "border-gray-300 hover:border-cyan-400"
-                                        }`} 
+                                            }`}
                                         onClick={() => {
                                             setSelectedVariant(variant)
                                             setSelectedImage(variant.images[0].url)
@@ -446,37 +442,34 @@ export default function DescriptionPage({ params }) {
                         <div className="flex flex-wrap gap-2 sm:gap-3 pb-2 text-sm sm:text-base">
                             <button
                                 onClick={() => setActiveTab("keyinfo")}
-                                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                                    activeTab === "keyinfo" 
-                                        ? "bg-green-200 text-green-800 shadow-sm" 
+                                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${activeTab === "keyinfo"
+                                        ? "bg-green-200 text-green-800 shadow-sm"
                                         : "text-gray-700 hover:bg-gray-100"
-                                }`}
+                                    }`}
                             >
                                 Key Info
                             </button>
 
                             <button
                                 onClick={() => setActiveTab("attributes")}
-                                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                                    activeTab === "attributes" 
-                                        ? "bg-green-200 text-green-800 shadow-sm" 
+                                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${activeTab === "attributes"
+                                        ? "bg-green-200 text-green-800 shadow-sm"
                                         : "text-gray-700 hover:bg-gray-100"
-                                }`}
+                                    }`}
                             >
                                 Attributes
                             </button>
 
                             <button
                                 onClick={() => setActiveTab("specifications")}
-                                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                                    activeTab === "specifications" 
-                                        ? "bg-green-200 text-green-800 shadow-sm" 
+                                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${activeTab === "specifications"
+                                        ? "bg-green-200 text-green-800 shadow-sm"
                                         : "text-gray-700 hover:bg-gray-100"
-                                }`}
+                                    }`}
                             >
                                 Specifications
                             </button>
-                            
+
                             <button className="text-orange-500 border-2 border-orange-300 px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors">
                                 Visit store
                             </button>
@@ -492,7 +485,7 @@ export default function DescriptionPage({ params }) {
                                     </div>
                                     <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
                                         <span className="font-semibold text-sm sm:text-base min-w-[100px]">Description:</span>
-                                        <span>{selectedProduct.description || 
+                                        <span>{selectedProduct.description ||
                                             `Experience the quality of ${selectedProduct.name} by ${selectedProduct.brand || 'Last Minute Deal'}. This premium product offers excellent value and is available in the ${selectedProduct.category?.name || 'selected'} category.`}</span>
                                     </div>
                                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">

@@ -18,8 +18,10 @@ import {
 import Header from '@/components/home/Header';
 import { useCart } from '@/lib/contexts/cart-context';
 import { useSelectedItems } from '@/lib/contexts/selected-items-context';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function CartPage() {
+  const { isAuthenticated } = useAuth();
   const {
     cart,
     isLoading,
@@ -109,6 +111,19 @@ export default function CartPage() {
       await updateQuantity(variantId, change);
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex flex-col min-h-screen  justify-center">
+        <Header />
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="text-center">
+            <p className="text-lg sm:text-xl text-gray-700 mb-4">Login before adding items to cart</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
