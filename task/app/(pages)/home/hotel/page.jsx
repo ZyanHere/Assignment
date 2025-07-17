@@ -21,6 +21,10 @@ export default function HotelsPage() {
     hotelsError,
   } = useHotels();
 
+  console.log('most popular', mostPopular);
+  console.log('recommended', recommended);
+  console.log('Hotels', hotels);
+
   // Fetch hotels data only when needed (no data or cache expired)
   useEffect(() => {
     const cacheStatus = getCacheStatus();
@@ -60,9 +64,9 @@ export default function HotelsPage() {
           </div>
         )}
 
-        {!hotelsLoading && !hotelsError && (
+        {!hotelsLoading && !hotelsError && mostPopular && recommended && (
           <>
-            <HotelCard hotels={mostPopular} />
+            <HotelCard hotels={recommended} />
             <RecommendedHotels hotels={recommended} />
           </>
         )}

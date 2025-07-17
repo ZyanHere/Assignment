@@ -7,6 +7,7 @@ import RecommendedEvents from "@/components/home/foursec/event/RecommendedEvents
 import UpcomingEvents from "@/components/home/foursec/event/UpcomingEvents";
 import { useEvents } from "@/lib/hooks/useEvents";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const EventPage = () => {
   const {
@@ -19,6 +20,10 @@ const EventPage = () => {
     eventsLoading,
     eventsError,
   } = useEvents();
+
+  // console.log('Upcoming events', upcomingEvents); // no data since the response doesnt have a timing field 
+  // console.log('Featured Events', featuredEvents); // no data since the response doesnt have a is_featured field
+  // console.log('Recommended Events', recommendedEvents); // only this has data for now
 
   // Fetch events data only when needed (no data or cache expired)
   useEffect(() => {
@@ -38,9 +43,12 @@ const EventPage = () => {
     <div className="flex-1">
       <Header />
       <div className="p-6 w-full max-w-[1700px] mx-auto">
-        <nav className="text-2xl text-gray-600 mb-6">
-          Home &gt;{" "}
-          <span className="text-yellow-500 font-semibold">Events</span>
+        {/* Breadcrumb */}
+        <nav className="text-2xl mb-4">
+          <Link href="/" className="text-black">
+            Home
+          </Link>{" "}
+          &gt; <span className="font-semibold text-yellow-500">Events</span>
         </nav>
 
         {eventsLoading && (
@@ -58,8 +66,9 @@ const EventPage = () => {
 
         {!eventsLoading && !eventsError && (
           <div className="p-6">
-            <UpcomingEvents events={upcomingEvents} />
-            <FeaturedEvents events={featuredEvents} />
+            {/* using recommended events becoz the only that data is available right now */}
+            <UpcomingEvents events={recommendedEvents} />
+            <FeaturedEvents events={recommendedEvents} />
             <RecommendedEvents events={recommendedEvents} />
           </div>
         )}
