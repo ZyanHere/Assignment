@@ -3,18 +3,21 @@ import { eventData } from "@/data/eventData";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
-const generateSlug = (title) => title.toLowerCase().replace(/\s+/g, "-");
-
-const FeaturedEvents = () => {
+const FeaturedEvents = ({ events }) => {
   const [favorites, setFavorites] = useState([]);
   const toggleFavorite = (eventId) => {
     setFavorites((prev) =>
       prev.includes(eventId) ? prev.filter((id) => id !== eventId) : [...prev, eventId]
     );
   };
-
-  const events = eventData.FeaturedEvents.slice(0, 4);
 
   return (
     <section className="mb-10">
@@ -24,54 +27,62 @@ const FeaturedEvents = () => {
           See All
         </Link>
       </div>
-      <div className="grid grid-cols-4 gap-4 mt-4">
-        {events.map((event) => {
-          const eventSlug = generateSlug(event.title);
-          return (
-            <Link
-              key={event.id}
-              href={`/home/event/featured-events/${eventSlug}`}
-              className="relative block"
-            >
-              <div className="relative bg-white shadow-md rounded-lg overflow-hidden">
-                <Image 
-                  src={event.image} 
-                  alt={event.title} 
-                  width={500} 
-                  height={300} 
-                  className="w-full h-[200px] object-cover" 
-                />
-                <div className="p-3">
-                  <h3 className="font-semibold">{event.title}</h3>
-                  <p className="text-sm">{event.date}</p>
-                  <p className="text-lg">{event.time}</p>
-                  <div className="mt-3 flex justify-between items-center">
-                    <p className="text-sm text-gray-600">📍 {event.location}</p>
-                    <span className="bg-yellow-400 text-black px-3 py-1 rounded-md">
-                      {event.price} Rs
-                    </span>
+      <Carousel className="mt-4">
+        <CarouselContent>
+          {events.map((event) =>
+            event.variants && (
+              <CarouselItem key={event.variants[0]._id} className="basis-1/4">
+                <Link
+                  href={`/home/event/featured-events/${event.variants[0].variant_name}`}
+                  className="relative block"
+                >
+                  <div className="relative bg-white shadow-md rounded-lg overflow-hidden">
+                    <Image
+                      src={event.variants[0].images[0].url}
+                      alt={event.variants[0].variant_name}
+                      width={500}
+                      height={300}
+                      className="w-full h-[200px] object-contain"
+                    />
+                    <div className="p-3">
+                      <h3 className="font-semibold">{event.variants[0].variant_name}</h3>
+                      <p className="text-sm">{event.date ?? "N/A"}</p>
+                      <p className="text-lg">{event.time ?? "N/A"}</p>
+                      <div className="mt-3 flex justify-between items-center">
+                        <p className="text-sm text-gray-600">📍 {event.location ?? "N/A"}</p>
+                        <span className="bg-yellow-400 text-black px-3 py-1 rounded-md">
+                          {event.variants[0].price.base_price} Rs
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <button
-                className="absolute top-2 right-2"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleFavorite(event.id);
-                }}
-              >
-                <Image
-                  src={favorites.includes(event.id) ? "/home/shops/Heart-red.svg" : "/home/shops/Heart.svg"}
-                  alt="Favorite"
-                  width={24}
-                  height={24}
-                />
-              </button>
-            </Link>
-          );
-        })}
-      </div>
+                  <button
+                    className="absolute top-2 right-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite(event.id);
+                    }}
+                  >
+                    <Image
+                      src={
+                        favorites.includes(event.id)
+                          ? "/home/shops/Heart-red.svg"
+                          : "/home/shops/Heart.svg"
+                      }
+                      alt="Favorite"
+                      width={24}
+                      height={24}
+                    />
+                  </button>
+                </Link>
+              </CarouselItem>
+            )
+          )}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </section>
   );
 };
