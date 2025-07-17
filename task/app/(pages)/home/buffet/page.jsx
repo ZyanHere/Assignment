@@ -1,6 +1,5 @@
 "use client";
 
-import Sidebar from "@/app/extra/home/sidebar";
 import BuffetCarousel from "@/components/home/foursec/BuffetCarousel";
 import RestaurantCard from "@/components/home/foursec/RestaurentCard";
 import Header from "@/components/home/Header";
@@ -68,11 +67,11 @@ const BuffetPage = () => {
 
           {!buffetLoading && !buffetError && (
             <>
-              <BuffetCarousel
+              {/* <BuffetCarousel
                 title="Popular Now"
                 seeAllLink="/home/buffet/popular"
                 items={popular}
-              />
+              /> */}
               <BuffetCarousel
                 title="In Your Area"
                 seeAllLink="/home/buffet/area"

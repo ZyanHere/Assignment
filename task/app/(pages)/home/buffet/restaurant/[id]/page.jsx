@@ -1,17 +1,15 @@
 "use client";
 
-import Sidebar from "@/app/extra/home/sidebar";
-import MainDishSection from "@/components/home/foursec/MainDish";
-import RestaurantBanner from "@/components/home/foursec/RestaurantBanner";
 import Header from "@/components/home/Header";
-import { buffetData } from "@/data/buffetData";
+import MainDishSection from "@/components/home/foursec/MainDish";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { buffetData } from "@/data/buffetData";
 
-// Restaurant-specific data (parking, main dish, menu)
-const restaurantData = {
+// Static fallback UI
+const restaurantDataFallback = {
   banner: "/buffet/TopBanner.png",
   address: "Pashan, Pune 411013",
   parking: "Available on-site",
@@ -22,34 +20,33 @@ const restaurantData = {
   menuImage: "/buffet/menu2.png",
 };
 
-// Helper function to create a URL-friendly slug
-const getSlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
-
 const RestaurantDetailPage = () => {
-  const { restaurantSlug } = useParams();
-  const [favorites, setFavorites] = useState({}); // Store favorite status
+  const { id } = useParams(); // Dynamic param from /home/buffet/restaurant/[id]
+  const restaurantId = Array.isArray(id) ? id[0] : id;
 
-  const toggleFavorite = (index) => {
+  const [favorites, setFavorites] = useState({});
+
+  const toggleFavorite = (rid) => {
     setFavorites((prev) => ({
       ...prev,
-      [index]: !prev[index], // Toggle favorite status for the index
+      [rid]: !prev[rid],
     }));
   };
 
-  // Combine all restaurant data from buffetData
-  const allRestaurants = [
-    ...buffetData.popular,
-    ...buffetData.inYourArea,
-    ...buffetData.previousChoices,
-    ...buffetData.popular2,
-    ...buffetData.inYourArea2,
-    ...buffetData.previousChoices2,
-  ];
+  // Combine all restaurant arrays from buffetData
+  const allRestaurants = useMemo(() => {
+    return [
+      ...buffetData.popular,
+      ...buffetData.inYourArea,
+      ...buffetData.previousChoices,
+      ...buffetData.popular2,
+      ...buffetData.inYourArea2,
+      ...buffetData.previousChoices2,
+    ];
+  }, []);
 
-  // Find restaurant details from buffetData
-  const restaurant = allRestaurants.find(
-    (r) => getSlug(r.name) === restaurantSlug
-  );
+  // Find restaurant by ID
+  const restaurant = allRestaurants.find((r) => String(r.id) === String(restaurantId));
 
   if (!restaurant) {
     return (
@@ -58,6 +55,17 @@ const RestaurantDetailPage = () => {
       </div>
     );
   }
+
+  const uiData = {
+    banner: restaurant.banner || restaurantDataFallback.banner,
+    address: restaurant.address || restaurantDataFallback.address,
+    parking: restaurant.parking || restaurantDataFallback.parking,
+    mainDish: {
+      image: restaurant.image || restaurantDataFallback.mainDish.image,
+      name: restaurant.name,
+    },
+    menuImage: restaurant.menuImage || restaurantDataFallback.menuImage,
+  };
 
   return (
     <div className="flex-1">
@@ -83,7 +91,7 @@ const RestaurantDetailPage = () => {
           {/* Banner Image */}
           <div className="w-full mb-6">
             <Image
-              src={restaurantData.banner}
+              src={uiData.banner}
               alt={restaurant.name}
               height={1140}
               width={387}
@@ -91,10 +99,11 @@ const RestaurantDetailPage = () => {
             />
           </div>
 
+          {/* Main Dish + Favorite */}
           <MainDishSection
-            restaurantData={restaurantData}
+            restaurantData={uiData}
             favorites={favorites}
-            restaurantIndex={restaurantData.id}
+            restaurantIndex={restaurantId}
             toggleFavorite={toggleFavorite}
           />
 
@@ -103,12 +112,22 @@ const RestaurantDetailPage = () => {
             <h2 className="text-2xl font-semibold mb-4">Menu</h2>
             <div className="w-[434px] h-[670px] relative rounded-lg shadow overflow-hidden">
               <Image
-                src={restaurantData.menuImage}
-                alt="Menu"
-                layout="fill"
-                objectFit="cover"
+                src={uiData.menuImage}
+                alt={`${restaurant.name} menu`}
+                fill
+                style={{ objectFit: "cover" }}
               />
             </div>
+          </div>
+
+          {/* Address / Parking */}
+          <div className="mt-8 text-lg space-y-1">
+            <p>
+              <strong>Address:</strong> {uiData.address}
+            </p>
+            <p>
+              <strong>Parking:</strong> {uiData.parking}
+            </p>
           </div>
         </div>
       </div>
