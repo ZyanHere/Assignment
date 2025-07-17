@@ -7,6 +7,7 @@ import Recommended from "@/components/home/foursec/movie/RecommandedMovies";
 import Header from "@/components/home/Header";
 import { useMovies } from "@/lib/hooks/useMovies";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const MoviePage = () => {
   const {
@@ -19,6 +20,10 @@ const MoviePage = () => {
     moviesLoading,
     moviesError,
   } = useMovies();
+
+  console.log('Few Minutes Left', fewMinutesLeft);
+  console.log('Popular Now', popularNow);
+  console.log('Recommended For You', recommended);  // only this data is available hence using this further in all the child components  
 
   // Fetch movies data only when needed (no data or cache expired)
   useEffect(() => {
@@ -38,9 +43,12 @@ const MoviePage = () => {
     <div className="flex-1">
       <Header />
       <div className="p-6">
-        <nav className="text-2xl text-gray-600 mb-6">
-          Home &gt;{" "}
-          <span className="text-yellow-500 font-semibold">Movies</span>
+        {/* Breadcrumb */}
+        <nav className="text-2xl mb-4">
+          <Link href="/" className="text-black">
+            Home
+          </Link>{" "}
+          &gt; <span className="font-semibold text-yellow-500">Movies</span>
         </nav>
 
         {moviesLoading && (
@@ -58,8 +66,8 @@ const MoviePage = () => {
 
         {!moviesLoading && !moviesError && (
           <div className="p-6">
-            <FewMinutesLeft movies={fewMinutesLeft} />
-            <PopularNow movies={popularNow} />
+            <FewMinutesLeft movies={recommended} />
+            <PopularNow movies={recommended} />
             <Recommended movies={recommended} />
           </div>
         )}
