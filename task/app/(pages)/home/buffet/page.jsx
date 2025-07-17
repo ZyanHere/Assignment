@@ -12,14 +12,13 @@ const BuffetPage = () => {
     fetchBuffetData,
     needsDataFetch,
     getCacheStatus,
-    popular,
     inYourArea,
     previousChoices,
     buffetLoading,
     buffetError,
   } = useBuffet();
 
-  // Fetch buffet data only when needed (no data or cache expired)
+  // Fetch buffet data only when needed
   useEffect(() => {
     const cacheStatus = getCacheStatus();
 
@@ -67,11 +66,6 @@ const BuffetPage = () => {
 
           {!buffetLoading && !buffetError && (
             <>
-              {/* <BuffetCarousel
-                title="Popular Now"
-                seeAllLink="/home/buffet/popular"
-                items={popular}
-              /> */}
               <BuffetCarousel
                 title="In Your Area"
                 seeAllLink="/home/buffet/area"
@@ -92,7 +86,17 @@ const BuffetPage = () => {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                 {previousChoices.map((restaurant, index) => (
-                  <RestaurantCard key={index} {...restaurant} index={index} />
+                  <RestaurantCard
+                    key={restaurant.id}
+                    id={restaurant.id}
+                    img={restaurant.images?.[0]?.url}
+                    name={restaurant.name}
+                    rating={restaurant.rating}
+                    time="30 min"
+                    price="Free Delivery"
+                    category={restaurant.category}
+                    index={index}
+                  />
                 ))}
               </div>
             </>

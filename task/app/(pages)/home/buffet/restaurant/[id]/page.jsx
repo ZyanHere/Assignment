@@ -1,71 +1,24 @@
 "use client";
 
 import Header from "@/components/home/Header";
-import MainDishSection from "@/components/home/foursec/MainDish";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, useMemo } from "react";
-import { buffetData } from "@/data/buffetData";
+import { useRestaurantDetails } from "@/lib/hooks/useBuffetSWR";
 
-// Static fallback UI
-const restaurantDataFallback = {
-  banner: "/buffet/TopBanner.png",
-  address: "Pashan, Pune 411013",
-  parking: "Available on-site",
-  mainDish: {
-    image: "/buffet/bowlers.png",
-    name: "Bowlers",
-  },
-  menuImage: "/buffet/menu2.png",
-};
+export default function RestaurantDetailPage() {
+  const params = useParams();
+  const id = params?.id;
 
-const RestaurantDetailPage = () => {
-  const { id } = useParams(); // Dynamic param from /home/buffet/restaurant/[id]
-  const restaurantId = Array.isArray(id) ? id[0] : id;
+  const { data: restaurant, isLoading, error } = useRestaurantDetails(id);
 
-  const [favorites, setFavorites] = useState({});
-
-  const toggleFavorite = (rid) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [rid]: !prev[rid],
-    }));
-  };
-
-  // Combine all restaurant arrays from buffetData
-  const allRestaurants = useMemo(() => {
-    return [
-      ...buffetData.popular,
-      ...buffetData.inYourArea,
-      ...buffetData.previousChoices,
-      ...buffetData.popular2,
-      ...buffetData.inYourArea2,
-      ...buffetData.previousChoices2,
-    ];
-  }, []);
-
-  // Find restaurant by ID
-  const restaurant = allRestaurants.find((r) => String(r.id) === String(restaurantId));
-
-  if (!restaurant) {
-    return (
-      <div className="flex h-screen items-center justify-center text-red-500 text-2xl">
-        Restaurant not found
-      </div>
-    );
+  if (isLoading) {
+    return <div className="p-6 text-center">Loading restaurant details...</div>;
   }
 
-  const uiData = {
-    banner: restaurant.banner || restaurantDataFallback.banner,
-    address: restaurant.address || restaurantDataFallback.address,
-    parking: restaurant.parking || restaurantDataFallback.parking,
-    mainDish: {
-      image: restaurant.image || restaurantDataFallback.mainDish.image,
-      name: restaurant.name,
-    },
-    menuImage: restaurant.menuImage || restaurantDataFallback.menuImage,
-  };
+  if (error || !restaurant) {
+    return <div className="p-6 text-center text-red-500">Restaurant not found</div>;
+  }
 
   return (
     <div className="flex-1">
@@ -83,56 +36,53 @@ const RestaurantDetailPage = () => {
               Restaurants
             </Link>
             <span className="mx-2 text-gray-400">&gt;</span>
-            <span className="font-semibold text-yellow-500">
-              {restaurant.name}
-            </span>
+            <span className="font-semibold text-yellow-500">{restaurant.name}</span>
           </nav>
 
-          {/* Banner Image */}
+          {/* Banner */}
           <div className="w-full mb-6">
             <Image
-              src={uiData.banner}
+              src={restaurant.banner}
               alt={restaurant.name}
-              height={1140}
-              width={387}
+              width={1200}
+              height={400}
               className="w-full h-auto rounded-b-4xl shadow-md"
             />
           </div>
 
-          {/* Main Dish + Favorite */}
-          <MainDishSection
-            restaurantData={uiData}
-            favorites={favorites}
-            restaurantIndex={restaurantId}
-            toggleFavorite={toggleFavorite}
-          />
-
           {/* Menu Section */}
           <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-4">Menu</h2>
-            <div className="w-[434px] h-[670px] relative rounded-lg shadow overflow-hidden">
-              <Image
-                src={uiData.menuImage}
-                alt={`${restaurant.name} menu`}
-                fill
-                style={{ objectFit: "cover" }}
-              />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {restaurant.variants.map((variant) => (
+                <div
+                  key={variant.id}
+                  className="border rounded-lg shadow hover:shadow-lg p-4 bg-white"
+                >
+                  <Image
+                    src={variant.image}
+                    alt={variant.name}
+                    width={200}
+                    height={150}
+                    className="w-full h-40 object-cover rounded"
+                  />
+                  <h3 className="text-lg font-semibold mt-2">{variant.name}</h3>
+                  <p className="text-gray-600 text-sm">{variant.attributes}</p>
+                  <p className="text-yellow-600 font-bold mt-2">
+                    ₹{variant.price}{" "}
+                    <span className="line-through text-gray-400 ml-2 text-sm">
+                      ₹{variant.basePrice}
+                    </span>
+                  </p>
+                  <button className="w-full mt-3 bg-yellow-500 text-white py-2 rounded">
+                    Add to Cart
+                  </button>
+                </div>
+              ))}
             </div>
-          </div>
-
-          {/* Address / Parking */}
-          <div className="mt-8 text-lg space-y-1">
-            <p>
-              <strong>Address:</strong> {uiData.address}
-            </p>
-            <p>
-              <strong>Parking:</strong> {uiData.parking}
-            </p>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default RestaurantDetailPage;
+}

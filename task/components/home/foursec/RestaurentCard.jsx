@@ -1,12 +1,8 @@
-// components/home/foursec/RestaurentCard.jsx
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// Helper to slugify the restaurant name
-const getSlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
 
 export default function RestaurantCard({
   img,
@@ -15,6 +11,7 @@ export default function RestaurantCard({
   time,
   price,
   category,
+  id,
   index,
 }) {
   const [favorites, setFavorites] = useState([]);
@@ -27,16 +24,14 @@ export default function RestaurantCard({
     });
   };
 
-  // Extract numeric average
   const ratingValue =
     rating && typeof rating === "object" ? rating.average : rating;
 
-  // Safely pull out category name if it's an object
   const categoryValue =
     category && typeof category === "object" ? category.name : category;
 
   return (
-    <Link href={`/home/buffet/restaurant/${getSlug(name)}`} className="block">
+    <Link href={`/home/buffet/restaurant/${id}`} className="block">
       <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 cursor-pointer">
         <div className="relative">
           {img ? (
