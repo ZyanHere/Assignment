@@ -5,13 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function RestaurantCard({
+  id,
   img,
   name,
   rating,
   time,
   price,
   category,
-  id,
   index,
 }) {
   const [favorites, setFavorites] = useState([]);
@@ -24,14 +24,12 @@ export default function RestaurantCard({
     });
   };
 
-  const ratingValue =
-    rating && typeof rating === "object" ? rating.average : rating;
-
-  const categoryValue =
-    category && typeof category === "object" ? category.name : category;
-
   return (
-    <Link href={`/home/buffet/restaurant/${id}`} className="block">
+    <Link
+      href={`/home/buffet/restaurant/${id}`}
+      key={id}
+      className="block"
+    >
       <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 cursor-pointer">
         <div className="relative">
           {img ? (
@@ -71,21 +69,31 @@ export default function RestaurantCard({
             <h3 className="text-lg font-semibold">{name}</h3>
             <div className="flex items-center text-sm text-gray-700">
               <span className="mr-1">⭐</span>
-              <span>{ratingValue}</span>
+              <span>{rating}</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-2 text-gray-700">
-            <span className="text-sm flex items-center gap-1">
-              <Image src="/buffet/clock.svg" alt="Time" width={14} height={14} />
+          <div className="flex items-center justify-between mt-2 text-gray-700 text-sm">
+            <span className="flex items-center gap-1">
+              <Image
+                src="/buffet/clock.svg"
+                alt="Time"
+                width={14}
+                height={14}
+              />
               {time}
             </span>
-            <span className="text-sm flex items-center gap-1">
-              <Image src="/buffet/car.svg" alt="Delivery" width={14} height={14} />
+            <span className="flex items-center gap-1">
+              <Image
+                src="/buffet/car.svg"
+                alt="Delivery"
+                width={14}
+                height={14}
+              />
               {price}
             </span>
-            <span className="text-sm bg-yellow-400 px-2 py-1 rounded-full font-semibold">
-              {categoryValue}
+            <span className="bg-yellow-400 px-2 py-1 rounded-full font-semibold">
+              {category}
             </span>
           </div>
         </div>
