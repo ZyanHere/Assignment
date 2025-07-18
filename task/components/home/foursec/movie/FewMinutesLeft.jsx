@@ -10,7 +10,7 @@ import {
   CarouselPrevious
 } from "@/components/ui/carousel";
 
-const FewMinutesLeft = ({ movies }) => {
+const FewMinutesLeft = ({ movies = [] }) => {
   const [favorites, setFavorites] = useState([]);
 
   const toggleFavorite = (movieId) => {
@@ -33,7 +33,7 @@ const FewMinutesLeft = ({ movies }) => {
           {movies.map((movie) => (
             <CarouselItem key={movie.id} className="md:basis-1/2 lg:basis-1/3">
               <Link
-                href={`/home/movie/${movie.slug}`}
+                href={`/home/movie/${movie.id}`}
                 className="relative block max-w-xs w-full mx-auto"
               >
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border p-4 rounded-lg shadow-md w-full h-full bg-white">

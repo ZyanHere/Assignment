@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-const Recommended = ({ movies }) => {
+const Recommended = ({ movies = [] }) => {
   const [favorites, setFavorites] = useState([]);
 
   const toggleFavorite = (movieId) => {
@@ -25,7 +25,7 @@ const Recommended = ({ movies }) => {
         {movies.map((movie) => (
           <Link
             key={movie.id}
-            href={`/home/movie/${movie.slug}`}
+            href={`/home/movie/${movie.id}`}
             className="relative block"
           >
             <div className="relative bg-white shadow-md rounded-lg overflow-hidden flex flex-col sm:flex-row p-4 gap-4">

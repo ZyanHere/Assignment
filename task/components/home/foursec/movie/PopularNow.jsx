@@ -10,7 +10,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-const PopularNow = ({ movies }) => {
+const PopularNow = ({ movies = [] }) => {
   const [favorites, setFavorites] = useState([]);
 
   const toggleFavorite = (movieId) => {
@@ -34,7 +34,7 @@ const PopularNow = ({ movies }) => {
             {movies.map((movie) => (
               <CarouselItem key={movie.id} className="basis-full md:basis-1/2 lg:basis-1/4 px-2">
                 <Link
-                  href={`/home/movie/${movie.slug}`}
+                  href={`/home/movie/${movie.id}`}
                   className="relative block"
                 >
                   <div className="relative bg-white shadow-md rounded-lg overflow-hidden h-full">

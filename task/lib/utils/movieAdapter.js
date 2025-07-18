@@ -1,105 +1,65 @@
-// lib/utils/movieAdapter.js
 import { slugify } from "./slugify";
 
 function normalizeVariant(v) {
-  const primaryImage =
-    v?.images?.find((img) => img.is_primary)?.url ||
-    v?.images?.[0]?.url ||
-    "";
   return {
-    id: v?._id || v?.id,
-    sku: v?.sku || "",
+    id: String(v?._id),
     name: v?.variant_name || "",
     price: {
       base: v?.price?.base_price ?? 0,
-      sale: v?.price?.sale_price ?? v?.price?.base_price ?? 0,
-      discount: v?.price?.discount_percentage ?? null,
+      sale: v?.price?.sale_price ?? 0,
     },
     stock: {
       qty: v?.stock?.quantity ?? 0,
-      available: v?.available_quantity ?? v?.stock?.quantity ?? 0,
-      lowStockThreshold: v?.stock?.low_stock_threshold ?? 0,
-      isLow: !!v?.is_low_stock,
+      available: v?.available_quantity ?? 0,
     },
-    primaryImage,
-    images: v?.images || [],
-    attributes: v?.attributes || [],
-    status: v?.status || "unknown",
   };
 }
 
-function getLowestVariantPrice(variants = []) {
+function getLowestVariantPrice(variants) {
   if (!variants.length) return { base: 0, sale: 0 };
   let low = variants[0];
   for (const v of variants) {
-    const sale = v?.price?.sale_price ?? v?.price?.base_price ?? Infinity;
-    const currLow = low?.price?.sale_price ?? low?.price?.base_price ?? Infinity;
-    if (sale < currLow) low = v;
+    const curr = v.price.sale ?? v.price.base;
+    const best = low.price.sale ?? low.price.base;
+    if (curr < best) low = v;
   }
-  return {
-    base: low?.price?.base_price ?? 0,
-    sale: low?.price?.sale_price ?? low?.price?.base_price ?? 0,
-  };
+  return { base: low.price.base, sale: low.price.sale };
 }
 
 function choosePoster(product) {
-  const variantPrimary =
-    product?.variants?.flatMap((v) => v.images || []).find((img) => img.is_primary)?.url;
-  if (variantPrimary) return variantPrimary;
-
-  const productPrimary = product?.images?.find((img) => img.is_primary)?.url;
-  if (productPrimary) return productPrimary;
-
-  const firstVariantAny =
-    product?.variants?.flatMap((v) => v.images || [])[0]?.url;
-  if (firstVariantAny) return firstVariantAny;
-
-  return product?.images?.[0]?.url || "";
+  const variantImg = product?.variants?.flatMap(v => v.images || [])
+    .find(img => img.is_primary)?.url;
+  if (variantImg) return variantImg;
+  const productImg = product?.images?.find(img => img.is_primary)?.url;
+  return productImg || product?.images?.[0]?.url || "";
 }
 
-function normalizeMovie(product) {
+export function normalizeMovie(product) {
   const variants = (product?.variants || []).map(normalizeVariant);
-  const { base, sale } = getLowestVariantPrice(product?.variants || []);
-  const poster = choosePoster(product);
-
-  const title = product?.name || "Untitled";
-  const slug = slugify(title || product?._id || product?.id);
-
+  const { base, sale } = getLowestVariantPrice(variants);
   return {
-    id: product?._id || product?.id,
-    title,
-    slug,
-    description: product?.description || "",
-    poster,
-    ratingAverage: product?.rating?.average ?? 0,
-    ratingCount: product?.rating?.count ?? 0,
-    storeName: product?.vendor_store_id?.store_name || "",
-    storeAddress: product?.vendor_store_id?.fullAddress || "",
-    location: product?.vendor_store_id?.store_name || "",
-    date: null,
-    time: null,
+    id: String(product._id),
+    title: product.name || "Untitled",
+    slug: slugify(product.name),
+    description: product.description || "",
+    poster: choosePoster(product),
+    ratingAverage: product.rating?.average ?? 0,
+    ratingCount: product.rating?.count ?? 0,
+    location: product.vendor_store_id?.store_name || "",
+    date: product.date || null,
+    time: product.time || null,
     variants,
     price: { base, sale },
     raw: product,
   };
 }
 
-function safeSlice(arr, start, count) {
-  return arr.slice(start, start + count);
-}
-
 export function adaptMovieSections(data, { sectionSize = 10 } = {}) {
-  const allProducts = Array.isArray(data?.allProducts) ? data.allProducts : [];
-  const all = allProducts.map(normalizeMovie);
-
-  const fewMinutesLeft = safeSlice(all, 0, sectionSize);
-  const popularNow = safeSlice(all, sectionSize, sectionSize);
-  const recommended = safeSlice(all, sectionSize * 2, sectionSize);
-
+  const all = (data.allProducts || []).map(normalizeMovie);
   return {
     all,
-    fewMinutesLeft,
-    popularNow,
-    recommended,
+    fewMinutesLeft: all.slice(0, sectionSize),
+    popularNow: all.slice(sectionSize, sectionSize * 2),
+    recommended: all.slice(sectionSize * 2, sectionSize * 3),
   };
 }
