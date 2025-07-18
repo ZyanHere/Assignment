@@ -1,43 +1,15 @@
+// app/home/hotel/page.jsx
 "use client";
 
-import Sidebar from "@/app/extra/home/sidebar";
+import Link from "next/link";
+import Header from "@/components/home/Header";
 import Footer from "@/components/home/footer";
 import HotelCard from "@/components/home/foursec/HotelCard";
 import RecommendedHotels from "@/components/home/foursec/RecommandedHotel";
-import Header from "@/components/home/Header";
-import { useHotels } from "@/lib/hooks/useHotels";
-import Link from "next/link";
-import { useEffect } from "react";
+import { useHotelsSWR } from "@/lib/hooks/useHotelSWR";
 
 export default function HotelsPage() {
-  const {
-    fetchHotelsData,
-    needsDataFetch,
-    getCacheStatus,
-    hotels,
-    mostPopular,
-    recommended,
-    hotelsLoading,
-    hotelsError,
-  } = useHotels();
-
-  console.log('most popular', mostPopular);
-  console.log('recommended', recommended);
-  console.log('Hotels', hotels);
-
-  // Fetch hotels data only when needed (no data or cache expired)
-  useEffect(() => {
-    const cacheStatus = getCacheStatus();
-
-    if (needsDataFetch()) {
-      console.log("HotelsPage: Data fetch needed, calling hotels API");
-      console.log("Cache status:", cacheStatus.message);
-      fetchHotelsData();
-    } else {
-      console.log("HotelsPage: Using cached data, skipping API call");
-      console.log("Cache status:", cacheStatus.message);
-    }
-  }, [fetchHotelsData, needsDataFetch, getCacheStatus]);
+  const { data, isLoading, isError } = useHotelsSWR({ hotelsOnly: true, productsLimit: 50 });
 
   return (
     <div className="flex-1">
@@ -51,23 +23,38 @@ export default function HotelsPage() {
           &gt; <span className="font-semibold text-yellow-500">Hotels</span>
         </nav>
 
-        {hotelsLoading && (
+        {isLoading && (
           <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500" />
             <span className="ml-2">Loading hotels...</span>
           </div>
         )}
 
-        {hotelsError && (
+        {isError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <strong>Error:</strong> {hotelsError}
+            <strong>Error:</strong> Failed to load hotels.
           </div>
         )}
 
-        {!hotelsLoading && !hotelsError && mostPopular && recommended && (
+        {!isLoading && !isError && data && (
           <>
-            <HotelCard hotels={recommended} />
-            <RecommendedHotels hotels={recommended} />
+            {/* In Your Area Section (maps to "popular") */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">Hotels in Your Area</h2>
+              <HotelCard hotels={data.inYourArea || []} />
+            </section>
+
+            {/* Previous Choices (maps to "recommended") */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">Based on Your Previous Choices</h2>
+              <HotelCard hotels={data.previousChoices || []} />
+            </section>
+
+            {/* All Hotels */}
+            <section>
+              <h2 className="text-2xl font-bold mb-4">All Hotels</h2>
+              <RecommendedHotels hotels={data.allHotels || []} />
+            </section>
           </>
         )}
       </div>
