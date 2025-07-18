@@ -10,8 +10,9 @@ import { useHotelsSWR } from "@/lib/hooks/useHotelSWR";
 
 export default function HotelSlugPage() {
   const { slug } = useParams();
-  const { data, isLoading, isError } = useHotelsSWR({ hotelsOnly: true, productsLimit: 100 });
+  const { data, isLoading, isError, error } = useHotelsSWR({ hotelsOnly: true });
 
+  // Map slugs to sections in the normalized data
   let sectionTitle = "";
   let sectionHotels = [];
 
@@ -24,6 +25,7 @@ export default function HotelSlugPage() {
   }
 
   const isValidSlug = slug === "popular" || slug === "recommended";
+  const hotelsCount = sectionHotels?.length ?? 0;
 
   return (
     <div className="flex-1">
@@ -32,13 +34,9 @@ export default function HotelSlugPage() {
       <div className="p-6 w-full max-w-[1700px] mx-auto">
         {/* Breadcrumb */}
         <nav className="text-2xl mb-12">
-          <Link href="/" className="text-black">
-            Home
-          </Link>{" "}
+          <Link href="/" className="text-black">Home</Link>{" "}
           &gt;{" "}
-          <Link href="/home/hotel" className="text-black">
-            Hotels
-          </Link>{" "}
+          <Link href="/home/hotel" className="text-black">Hotels</Link>{" "}
           &gt;{" "}
           <span className="font-semibold text-yellow-500">
             {sectionTitle || "..."}
@@ -54,7 +52,7 @@ export default function HotelSlugPage() {
 
         {isError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <strong>Error:</strong> Failed to load hotels.
+            <strong>Error:</strong> {error?.message || "Failed to load hotels."}
           </div>
         )}
 
@@ -62,13 +60,13 @@ export default function HotelSlugPage() {
           <div className="text-center text-red-500 text-xl p-6">Page Not Found.</div>
         )}
 
-        {!isLoading && !isError && isValidSlug && sectionHotels.length === 0 && (
+        {!isLoading && !isError && isValidSlug && hotelsCount === 0 && (
           <div className="text-center text-gray-500 text-xl p-6">
             No hotels found in this section.
           </div>
         )}
 
-        {!isLoading && !isError && sectionHotels.length > 0 && (
+        {!isLoading && !isError && isValidSlug && hotelsCount > 0 && (
           <MoreHotels hotels={sectionHotels} />
         )}
       </div>

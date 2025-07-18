@@ -68,7 +68,7 @@ const HotelCard = ({ hotels = [] }) => {
                 key={slug}
                 className="basis-[85%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pr-4"
               >
-                <Link href={`/home/hotel/rooms/${slug}`}>
+                <Link href={`/home/hotel/rooms/${hotel.slug || hotel.id}`}>
                   <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
                     <Image
                       src={img}
