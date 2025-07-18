@@ -31,41 +31,39 @@ const PopularNow = ({ movies }) => {
       <div className="mt-4">
         <Carousel>
           <CarouselContent>
-            {movies.map((movie) =>
-              movie.variants && (
-                <CarouselItem key={movie.id} className="basis-full md:basis-1/2 lg:basis-1/4 px-2">
-                  <Link
-                    href={`/home/movie/popular-now/${movie.variants[0].variant_name}`}
-                    className="relative block"
-                  >
-                    <div className="relative bg-white shadow-md rounded-lg overflow-hidden h-full">
-                      <Image
-                        src={movie.variants[0].images[0].url}
-                        alt={movie.variants[0].variant_name}
-                        width={250}
-                        height={300}
-                        className="w-full sm:h-78 md:h-54 lg:h-50 xl:h-65 object-contain rounded-t-md"
-                      />
-                      <div className="p-3">
-                        <h3 className="font-semibold text-sm sm:text-base truncate">
-                          {movie.variants[0].variant_name}
-                        </h3>
-                        <p className="text-xs sm:text-sm">{movie.date ?? "N/A"}</p>
-                        <p className="text-xs sm:text-sm">{movie.time ?? "N/A"}</p>
-                        <div className="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                          <p className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-                            📍 {movie.location ?? "N/A"}
-                          </p>
-                          <span className="bg-yellow-400 text-black text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
-                            Rs {movie.variants[0].price.base_price}
-                          </span>
-                        </div>
+            {movies.map((movie) => (
+              <CarouselItem key={movie.id} className="basis-full md:basis-1/2 lg:basis-1/4 px-2">
+                <Link
+                  href={`/home/movie/${movie.slug}`}
+                  className="relative block"
+                >
+                  <div className="relative bg-white shadow-md rounded-lg overflow-hidden h-full">
+                    <Image
+                      src={movie.poster}
+                      alt={movie.title}
+                      width={250}
+                      height={300}
+                      className="w-full sm:h-78 md:h-54 lg:h-50 xl:h-65 object-contain rounded-t-md"
+                    />
+                    <div className="p-3">
+                      <h3 className="font-semibold text-sm sm:text-base truncate">
+                        {movie.title}
+                      </h3>
+                      <p className="text-xs sm:text-sm">{movie.date ?? "N/A"}</p>
+                      <p className="text-xs sm:text-sm">{movie.time ?? "N/A"}</p>
+                      <div className="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <p className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
+                          📍 {movie.location ?? "N/A"}
+                        </p>
+                        <span className="bg-yellow-400 text-black text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
+                          Rs {movie.price?.sale ?? movie.price?.base ?? 0}
+                        </span>
                       </div>
                     </div>
-                  </Link>
-                </CarouselItem>
-              )
-            )}
+                  </div>
+                </Link>
+              </CarouselItem>
+            ))}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
