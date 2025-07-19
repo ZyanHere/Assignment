@@ -118,13 +118,13 @@ const ProfilePage = () => {
       <div className="flex-1 flex flex-col">
         <Header />
 
-        <main className="flex-1 p-6 mx-auto w-full max-w-[1700px]">
-          <div className=" mx-auto">
+        <main className="flex-1 p-2 sm:p-4 md:p-6 mx-auto w-full max-w-[1700px]">
+          <div className="mx-auto">
             {/* Profile Header */}
-            <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 mb-4 sm:mb-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6">
                 {/* Profile Picture */}
-                <div className="relative group">
+                <div className="relative group mx-auto md:mx-0">
                   {isLoading ? (
                     <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse" />
                   ) : (
@@ -215,7 +215,7 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Profile Info */}
-                <div className="flex-1">
+                <div className="flex-1 w-full min-w-0">
                   {isLoading ? (
                     <div className="space-y-3">
                       <div className="h-6 w-48 bg-gray-200 rounded animate-pulse" />
@@ -235,16 +235,16 @@ const ProfilePage = () => {
             </div>
 
             {/* Profile Content */}
-            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border overflow-hidden mt-4">
               <ProfileTabs
                 selectedTab={selectedTab}
                 setSelectedTab={setSelectedTab}
               />
 
-              <div className="p-6">
+              <div className="p-2 sm:p-4 md:p-6">
                 {isLoading ? (
                   <div className="space-y-4">
-                    <div className="h-8 w-1/3 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-8 w-1/2 sm:w-1/3 bg-gray-200 rounded animate-pulse" />
                     <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
                     <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
                   </div>

@@ -28,7 +28,7 @@ const HotelCard = () => {
           See All
         </Link>
       </div>
-      <div className="grid grid-cols-1 gap-7 mt-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-7 mt-4 sm:grid-cols-2 lg:grid-cols-4">
         {hotelsData.mostPopular.map((hotel, index) => (
           <Link key={hotel.id} href={`/home/hotel/rooms/${hotel.slug}`}>
             <div className="relative bg-white rounded-lg shadow-md overflow-hidden">

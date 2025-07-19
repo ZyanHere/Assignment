@@ -64,10 +64,10 @@ const RestaurantDetailPage = () => {
       <div className="flex-1">
         <Header />
 
-        <div className="p-6 w-full max-w-[1700px] mx-auto">
-          <div className="px-6 md:px-12">
+        <div className="p-4 sm:p-6 w-full max-w-[1700px] mx-auto">
+          <div className="px-2 sm:px-6 md:px-12">
             {/* Breadcrumb */}
-            <nav className="mb-4 text-2xl">
+            <nav className="mb-4 text-lg sm:text-2xl flex flex-wrap items-center">
               <Link href="/" className="hover:underline font-medium">
                 Home
               </Link>
@@ -76,19 +76,20 @@ const RestaurantDetailPage = () => {
                 Restaurants
               </Link>
               <span className="mx-2 text-gray-400">&gt;</span>
-              <span className="font-semibold text-yellow-500">
+              <span className="font-semibold text-yellow-500 truncate max-w-[60vw]">
                 {restaurant.name}
               </span>
             </nav>
 
             {/* Banner Image */}
-            <div className="w-full mb-6">
+            <div className="w-full mb-6 rounded-b-3xl overflow-hidden">
               <Image
                 src={restaurantData.banner}
                 alt={restaurant.name}
-                height={1140}
-                width={387}
-                className="w-full h-auto rounded-b-4xl shadow-md"
+                height={400}
+                width={1200}
+                className="w-full h-40 sm:h-64 md:h-80 lg:h-[400px] object-cover rounded-b-3xl shadow-md"
+                priority
               />
             </div>
 
@@ -101,13 +102,15 @@ const RestaurantDetailPage = () => {
 
             {/* Menu Section */}
             <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Menu</h2>
-              <div className="w-[434px] h-[670px] relative rounded-lg shadow overflow-hidden">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4">Menu</h2>
+              <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl aspect-[3/5] relative rounded-lg shadow overflow-hidden mx-auto">
                 <Image
                   src={restaurantData.menuImage}
                   alt="Menu"
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 60vw, 434px"
+                  priority
                 />
               </div>
             </div>

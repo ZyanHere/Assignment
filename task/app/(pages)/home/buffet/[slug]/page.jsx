@@ -33,10 +33,10 @@ const BuffetSlugPage = () => {
       <div className="flex-1">
         <Header />
 
-        <div className="p-6 w-full max-w-[1700px] mx-auto">
-          <div className="px-6 md:px-12">
+        <div className="p-2 sm:p-4 md:p-6 w-full max-w-[1700px] mx-auto">
+          <div className="px-1 sm:px-4 md:px-6 lg:px-12">
             {/* Breadcrumb */}
-            <nav className="mb-10 text-2xl">
+            <nav className="mb-6 sm:mb-10 text-2xl sm:text-3xl flex flex-wrap items-center gap-2">
               <Link href="/" className="hover:underline font-medium">
                 Home
               </Link>
@@ -51,10 +51,10 @@ const BuffetSlugPage = () => {
             </nav>
 
             {/* Section Heading */}
-            <h2 className="text-2xl font-bold mb-3">{section.title}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">{section.title}</h2>
 
             {/* Restaurant Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {section.data.slice(0, 16).map((restaurant, index) => (
                 <RestaurantCard key={index} {...restaurant} index={index} />
               ))}

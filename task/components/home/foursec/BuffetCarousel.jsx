@@ -17,7 +17,7 @@ const BuffetCarousel = ({ title, seeAllLink, items }) => {
           See All
         </Link>
       </div>
-      <div className="py-4">
+      <div className="py-4 relative">
         <Carousel className="w-full mx-auto">
           <CarouselContent className="-ml-4">
             {items.map((restaurant, index) => (
@@ -31,8 +31,8 @@ const BuffetCarousel = ({ title, seeAllLink, items }) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="!absolute top-1/2 -translate-y-1/2 left-2 z-10 bg-white/80 hover:bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center border border-gray-300 transition-all" />
+          <CarouselNext className="!absolute top-1/2 -translate-y-1/2 right-2 z-10 bg-white/80 hover:bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center border border-gray-300 transition-all" />
         </Carousel>
       </div>
     </div>

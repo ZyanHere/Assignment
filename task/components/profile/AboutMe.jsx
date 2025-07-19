@@ -53,12 +53,12 @@ const AboutMe = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-4xl mx-auto" // Maintained original width
+      className="max-w-4xl w-full mx-auto px-2 sm:px-4 md:px-8"
     >
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+      <div className="flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
         {/* Header */}
-        <div className="bg-gray-50 p-6 border-b">
-          <div className="flex justify-between items-center">
+        <div className="bg-gray-50 p-4 sm:p-6 border-b">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
               <User className="w-6 h-6" />
               Personal Information
@@ -77,8 +77,8 @@ const AboutMe = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {inputFields.map((field) => (
               <div key={field.name} className="space-y-2">
                 <label 
@@ -136,7 +136,7 @@ const AboutMe = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 right-6 bg-green-50 border border-green-200 text-green-800 px-6 py-3 rounded-lg shadow-lg flex items-center gap-3"
+            className="fixed bottom-4 right-2 sm:bottom-6 sm:right-6 bg-green-50 border border-green-200 text-green-800 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg flex items-center gap-3 text-sm sm:text-base"
           >
             <CheckCircle2 className="w-5 h-5 text-green-600" />
             <span className="font-medium">Profile updated successfully!</span>

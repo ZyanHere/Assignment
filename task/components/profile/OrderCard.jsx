@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import {
   Table,
   TableBody,
@@ -40,52 +40,86 @@ export default function OrderCard({ order, customButtons = null }) {
         </span>
       </div>
 
-      {/* Order Items Table */}
-      <Table>
-        <TableHeader className="bg-gray-50">
-          <TableRow>
-            <TableHead className="w-[260px]">Product</TableHead>
-            <TableHead className="w-[80px]">Qty</TableHead>
-            <TableHead className="w-[140px]">Date</TableHead>
-            <TableHead className="w-[100px]">Price</TableHead>
-            <TableHead className="w-[120px]">Status</TableHead>
-            <TableHead className="w-[140px]">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item, index) => (
-            <TableRow
-              key={index}
-              className={index !== items.length - 1 ? "border-b" : ""}
-            >
-              <TableCell className="w-[260px]">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src={item.productImage || "/placeholder-product.jpg"}
-                    alt={item.product}
-                    width={48}
-                    height={48}
-                    className="rounded-md border"
-                  />
-                  <div>
-                    <div className="font-medium">{item.product}</div>
-                    <div className="text-sm text-gray-500">{item.brand}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell className="w-[80px]">{item.quantity}</TableCell>
-              <TableCell className="w-[140px]">{item.date}</TableCell>
-              <TableCell className="w-[100px]">${item.price}</TableCell>
-              <TableCell className="w-[120px]">{item.status}</TableCell>
-              <TableCell className="w-[140px]">
-                <button className="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700">
-                  {item.actionLabel}
-                </button>
-              </TableCell>
+      {/* Responsive Order Items */}
+      {/* Table for md+ screens, card/list for mobile */}
+      <div className="hidden md:block">
+        <Table className="min-w-[700px] text-sm">
+          <TableHeader className="bg-gray-50">
+            <TableRow>
+              <TableHead className="w-[260px]">Product</TableHead>
+              <TableHead className="w-[80px]">Qty</TableHead>
+              <TableHead className="w-[140px]">Date</TableHead>
+              <TableHead className="w-[100px]">Price</TableHead>
+              <TableHead className="w-[120px]">Status</TableHead>
+              <TableHead className="w-[140px]">Action</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {items.map((item, index) => (
+              <TableRow
+                key={index}
+                className={index !== items.length - 1 ? "border-b" : ""}
+              >
+                <TableCell className="w-[260px]">
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={item.productImage || "/placeholder-product.jpg"}
+                      alt={item.product}
+                      width={48}
+                      height={48}
+                      className="rounded-md border"
+                    />
+                    <div>
+                      <div className="font-medium">{item.product}</div>
+                      <div className="text-sm text-gray-500">{item.brand}</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="w-[80px]">{item.quantity}</TableCell>
+                <TableCell className="w-[140px]">{item.date}</TableCell>
+                <TableCell className="w-[100px]">${item.price}</TableCell>
+                <TableCell className="w-[120px]">{item.status}</TableCell>
+                <TableCell className="w-[140px]">
+                  <button className="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700">
+                    {item.actionLabel}
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      {/* Card/List layout for mobile */}
+      <div className="md:hidden flex flex-col gap-4 p-2">
+        {items.map((item, index) => (
+          <div key={index} className="bg-gray-50 rounded-lg border p-3 flex flex-col gap-2 shadow-sm">
+            <div className="flex items-center gap-3">
+              <Image
+                src={item.productImage || "/placeholder-product.jpg"}
+                alt={item.product}
+                width={48}
+                height={48}
+                className="rounded-md border"
+              />
+              <div>
+                <div className="font-medium text-base">{item.product}</div>
+                <div className="text-xs text-gray-500">{item.brand}</div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs text-gray-700">
+              <span><span className="font-semibold">Qty:</span> {item.quantity}</span>
+              <span><span className="font-semibold">Date:</span> {item.date}</span>
+              <span><span className="font-semibold">Price:</span> ${item.price}</span>
+              <span><span className="font-semibold">Status:</span> {item.status}</span>
+            </div>
+            <div className="flex gap-2 mt-1">
+              <button className="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700">
+                {item.actionLabel}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* Card Footer */}
       <div className="bg-gray-50 p-4 border-t flex justify-end gap-3">
