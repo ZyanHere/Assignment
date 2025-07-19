@@ -57,7 +57,7 @@ export default function MovieDetailPage() {
 
   const selectedProduct = movie;
 
-  console.log('Selected Product', movie);
+  // console.log('Selected Product', movie);
   // Prepare variants
   const seatVariants = movie.variants.length
     ? movie.variants.map((v) => ({
@@ -81,7 +81,7 @@ export default function MovieDetailPage() {
 
   // console.log('Variant Data', variantData);
 
-  console.log('Movie variants', movie.variants);
+  // console.log('Movie variants', movie.variants);
   console.log("Selected Variant", selectedVariant);
 
   const handleGrab = async () => {
@@ -243,7 +243,7 @@ export default function MovieDetailPage() {
                 <span>Grabbing...</span>
               </div>
             ) : (
-              `GRAB DEAL - ₹${movie.price.sale}`
+              `GRAB DEAL${selectedVariant ? ` - ₹${selectedVariant.price?.sale ?? 0}` : ''}`
             )}
 
           </Button>
