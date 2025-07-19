@@ -6,6 +6,7 @@ const MovieVariant = ({ seatVariants = [] }) => {
   const { selectedProduct, selectedVariant, setSelectedProduct, setSelectedVariant } = useProduct();
 
   console.log('selected variant', selectedVariant);
+  // console.log('Seat Variant', seatVariants);
   return (
     <section className="mb-8">
       <h2 className="text-xl sm:text-2xl font-bold mb-4">
