@@ -21,16 +21,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useDispatch } from 'react-redux';
-import { createOrderFromCart, createOrderFromSingleItem } from "@/lib/redux/user/userSlice";
+import { useDispatch } from "react-redux";
+import {
+  createOrderFromCart,
+  createOrderFromSingleItem,
+} from "@/lib/redux/user/userSlice";
 import { initializeRazorpay } from "@/lib/utils/razorpay";
-import { useCart } from '@/lib/contexts/cart-context';
-import { useAuth } from '@/lib/hooks/useAuth';
-import toast from 'react-hot-toast';
+import { useCart } from "@/lib/contexts/cart-context";
+import { useAuth } from "@/lib/hooks/useAuth";
+import toast from "react-hot-toast";
 
 export default function BuyNowPage() {
   const { selectedItems, singleItem } = useSelectedItems();
-  const { clearCart } = useCart();
+  const { clearCart, removeFromCart } = useCart();
   const { addresses, primaryAddress, session, orderCreating } = useAuth();
   const dispatch = useDispatch();
   const [purchaseMode, setPurchaseMode] = useState("homeDelivery");
@@ -61,13 +64,13 @@ export default function BuyNowPage() {
 
     // Group items by vendor
     const vendorGroups = selectedItems.reduce((groups, item) => {
-      const vendorId = item.vendorId || 'default';
+      const vendorId = item.vendorId || "default";
       if (!groups[vendorId]) {
         groups[vendorId] = {
-          vendorName: item.vendorName || 'Last Minute Deal',
+          vendorName: item.vendorName || "Last Minute Deal",
           items: [],
           subtotal: 0,
-          itemCount: 0
+          itemCount: 0,
         };
       }
       groups[vendorId].items.push(item);
@@ -110,19 +113,19 @@ export default function BuyNowPage() {
   // Complete checkout process
   const handleCheckout = async () => {
     if (selectedItems.length === 0) {
-      alert('No items selected for checkout');
+      alert("No items selected for checkout");
       return;
     }
 
     // Validate address selection for home delivery
     if (purchaseMode === "homeDelivery") {
       if (!selectedAddressId && addresses.length === 0) {
-        setAddressError('Please add a delivery address before proceeding');
+        setAddressError("Please add a delivery address before proceeding");
         return;
       }
 
       if (!selectedAddressId && addresses.length > 0) {
-        setAddressError('Please select a delivery address');
+        setAddressError("Please select a delivery address");
         return;
       }
     }
@@ -136,65 +139,81 @@ export default function BuyNowPage() {
 
       if (purchaseMode === "homeDelivery") {
         if (selectedAddressId) {
-          selectedAddress = addresses.find(addr => addr._id === selectedAddressId);
+          selectedAddress = addresses.find(
+            (addr) => addr._id === selectedAddressId
+          );
         } else {
           // Use primary address or first available address
           selectedAddress = primaryAddress || addresses[0];
         }
 
         if (!selectedAddress) {
-          throw new Error('No delivery address available');
+          throw new Error("No delivery address available");
         }
       }
 
       // Step 2: Create order from cart items
-      console.log('Creating order from cart items:', selectedItems);
-      console.log('Single item mode:', singleItem);
+      console.log("Creating order from cart items:", selectedItems);
+      console.log("Single item mode:", singleItem);
 
       // Use session from useAuth hook
       const user = session?.user;
 
       const orderData = {
-        billing_address: purchaseMode === "homeDelivery" ? {
-          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
-          email: user?.email || 'customer@example.com',
-          address_line1: selectedAddress.addressLine1,
-          address_line2: selectedAddress.addressLine2 || '',
-          city: selectedAddress.city,
-          state: selectedAddress.state,
-          postal_code: selectedAddress.postalCode,
-          country: selectedAddress.country,
-          phone: user?.phone || '1234567890'
-        } : {
-          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
-          email: user?.email || 'customer@example.com',
-          address_line1: 'Store Pickup',
-          city: 'Store Location',
-          state: 'Store State',
-          postal_code: '000000',
-          country: 'India',
-          phone: user?.phone || '1234567890'
-        },
-        shipping_address: purchaseMode === "homeDelivery" ? {
-          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
-          email: user?.email || 'customer@example.com',
-          address_line1: selectedAddress.addressLine1,
-          address_line2: selectedAddress.addressLine2 || '',
-          city: selectedAddress.city,
-          state: selectedAddress.state,
-          postal_code: selectedAddress.postalCode,
-          country: selectedAddress.country,
-          phone: user?.phone || '1234567890'
-        } : {
-          name: `${user?.firstName || 'Customer'} ${user?.lastName || 'Name'}`,
-          email: user?.email || 'customer@example.com',
-          address_line1: 'Store Pickup',
-          city: 'Store Location',
-          state: 'Store State',
-          postal_code: '000000',
-          country: 'India',
-          phone: user?.phone || '1234567890'
-        },
+        billing_address:
+          purchaseMode === "homeDelivery"
+            ? {
+                name: `${user?.firstName || "Customer"} ${
+                  user?.lastName || "Name"
+                }`,
+                email: user?.email || "customer@example.com",
+                address_line1: selectedAddress.addressLine1,
+                address_line2: selectedAddress.addressLine2 || "",
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                postal_code: selectedAddress.postalCode,
+                country: selectedAddress.country,
+                phone: user?.phone || "1234567890",
+              }
+            : {
+                name: `${user?.firstName || "Customer"} ${
+                  user?.lastName || "Name"
+                }`,
+                email: user?.email || "customer@example.com",
+                address_line1: "Store Pickup",
+                city: "Store Location",
+                state: "Store State",
+                postal_code: "000000",
+                country: "India",
+                phone: user?.phone || "1234567890",
+              },
+        shipping_address:
+          purchaseMode === "homeDelivery"
+            ? {
+                name: `${user?.firstName || "Customer"} ${
+                  user?.lastName || "Name"
+                }`,
+                email: user?.email || "customer@example.com",
+                address_line1: selectedAddress.addressLine1,
+                address_line2: selectedAddress.addressLine2 || "",
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                postal_code: selectedAddress.postalCode,
+                country: selectedAddress.country,
+                phone: user?.phone || "1234567890",
+              }
+            : {
+                name: `${user?.firstName || "Customer"} ${
+                  user?.lastName || "Name"
+                }`,
+                email: user?.email || "customer@example.com",
+                address_line1: "Store Pickup",
+                city: "Store Location",
+                state: "Store State",
+                postal_code: "000000",
+                country: "India",
+                phone: user?.phone || "1234567890",
+              },
         notes: `Order from buy-now page with ${selectedItems.length} items. Delivery mode: ${purchaseMode}. Delivery instruction: ${activeInstruction}`,
         coupon_code: null,
       };
@@ -202,55 +221,64 @@ export default function BuyNowPage() {
       // Create order using Redux thunk
       // Check if token is available
       if (!session?.user?.token) {
-        throw new Error('Authentication token not available. Please login again.');
+        throw new Error(
+          "Authentication token not available. Please login again."
+        );
       }
-      
-      const orderResult = singleItem 
-        ? await dispatch(createOrderFromSingleItem({ token: session.user.token, orderData })).unwrap()
-        : await dispatch(createOrderFromCart({ token: session.user.token, orderData })).unwrap();
 
-      console.log('Order created successfully:', orderResult);
+      const orderResult = singleItem
+        ? await dispatch(
+            createOrderFromSingleItem({ token: session.user.token, orderData })
+          ).unwrap()
+        : await dispatch(
+            createOrderFromCart({ token: session.user.token, orderData })
+          ).unwrap();
+
+      console.log("Order created successfully:", orderResult);
 
       // Check if orderResult is valid
       if (!orderResult) {
-        throw new Error('Order creation failed - no result returned');
+        throw new Error("Order creation failed - no result returned");
       }
 
       // The Redux thunk returns the data directly from the API response
       // So we need to access orderResult.order_id directly
       if (!orderResult.order_id) {
-        console.error('Order result structure:', orderResult);
-        throw new Error('Order creation failed - missing order_id in response');
+        console.error("Order result structure:", orderResult);
+        throw new Error("Order creation failed - missing order_id in response");
       }
 
-      console.log('Order ID extracted successfully:', orderResult.order_id);
+      console.log("Order ID extracted successfully:", orderResult.order_id);
 
       // Step 2: Create Razorpay order
       const token = session?.user?.token;
 
-      const razorpayResponse = await fetch(`/api/orders/${orderResult.order_id}/create-payment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          payment_method: 'razorpay'
-        }),
-      });
+      const razorpayResponse = await fetch(
+        `/api/orders/${orderResult.order_id}/create-payment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            payment_method: "razorpay",
+          }),
+        }
+      );
 
       if (!razorpayResponse.ok) {
         const errorData = await razorpayResponse.json();
-        throw new Error(errorData.message || 'Failed to create Razorpay order');
+        throw new Error(errorData.message || "Failed to create Razorpay order");
       }
 
       const razorpayData = await razorpayResponse.json();
-      console.log('Razorpay order created:', razorpayData.data);
+      console.log("Razorpay order created:", razorpayData.data);
 
       // Step 3: Initialize Razorpay payment
       const razorpay = await initializeRazorpay();
       if (!razorpay) {
-        throw new Error('Razorpay failed to load');
+        throw new Error("Razorpay failed to load");
       }
 
       // Configure payment options
@@ -258,11 +286,11 @@ export default function BuyNowPage() {
         key: razorpayData.data.key_id,
         amount: Math.round(razorpayData.data.total_amount * 100), // Convert to paise
         currency: razorpayData.data.currency,
-        name: 'Last Minute Deal',
+        name: "Last Minute Deal",
         description: `Order ${razorpayData.data.order_number}`,
         order_id: razorpayData.data.razorpay_order_id,
         handler: function (response) {
-          console.log('Payment successful:', response);
+          console.log("Payment successful:", response);
           // Process payment on backend
           processPayment(response, orderResult.order_id);
         },
@@ -275,11 +303,11 @@ export default function BuyNowPage() {
           order_id: orderResult.order_id,
         },
         theme: {
-          color: '#10b981',
+          color: "#10b981",
         },
         modal: {
           ondismiss: function () {
-            console.log('Payment modal dismissed');
+            console.log("Payment modal dismissed");
           },
         },
       };
@@ -287,9 +315,8 @@ export default function BuyNowPage() {
       // Open Razorpay checkout
       const rzp = new razorpay(options);
       rzp.open();
-
     } catch (error) {
-      console.error('Error during checkout:', error);
+      console.error("Error during checkout:", error);
       toast.error(`Checkout failed: ${error.message || error}`);
     } finally {
       setLoading(false);
@@ -301,11 +328,11 @@ export default function BuyNowPage() {
     try {
       const token = session?.user?.token;
 
-      const response = await fetch('/api/payments/process', {
-        method: 'POST',
+      const response = await fetch("/api/payments/process", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -318,15 +345,20 @@ export default function BuyNowPage() {
       const result = await response.json();
 
       if (result.success) {
-        // Clear cart after successful payment
-        await clearCart();
-        alert('Payment successful! Your order has been confirmed.');
-        router.push(`/payment-success?order_id=${orderId}&payment_id=${paymentResponse.razorpay_payment_id}`);
+        // await clearCart();
+        // Remove only the purchased items from the cart
+        for (const item of selectedItems) {
+          await removeFromCart(item.variantId);
+        }
+        alert("Payment successful! Your order has been confirmed.");
+        router.push(
+          `/payment-success?order_id=${orderId}&payment_id=${paymentResponse.razorpay_payment_id}`
+        );
       } else {
-        throw new Error(result.message || 'Payment processing failed');
+        throw new Error(result.message || "Payment processing failed");
       }
     } catch (error) {
-      console.error('Error processing payment:', error);
+      console.error("Error processing payment:", error);
       alert(`Payment processing failed: ${error.message}`);
     }
   };
@@ -338,7 +370,9 @@ export default function BuyNowPage() {
 
   if (!selectedItems.length) {
     return (
-      <div className="p-6 text-center text-gray-500 lg:p-6 ">No items selected.</div>
+      <div className="p-6 text-center text-gray-500 lg:p-6 ">
+        No items selected.
+      </div>
     );
   }
 
@@ -354,40 +388,65 @@ export default function BuyNowPage() {
           {/* Vendor Breakdown */}
           {Object.keys(billDetails?.vendorGroups || {}).length > 1 && (
             <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold mb-3">Order Breakdown by Vendor</h3>
+              <h3 className="text-lg font-semibold mb-3">
+                Order Breakdown by Vendor
+              </h3>
               <div className="space-y-3">
-                {Object.entries(billDetails.vendorGroups).map(([vendorId, vendor]) => (
-                  <div key={vendorId} className="bg-white rounded-lg p-4 border">
-                    <div className="flex justify-between items-center mb-3">
-                      <h4 className="font-medium text-lg">{vendor.vendorName}</h4>
-                      <span className="text-sm text-gray-500">{vendor.itemCount} item{vendor.itemCount !== 1 ? 's' : ''}</span>
-                    </div>
-                    <div className="space-y-2">
-                      {vendor.items.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
-                          <div className="flex items-center space-x-3">
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              width={40}
-                              height={40}
-                              className="rounded-md w-10 h-10 object-cover"
-                            />
-                            <div>
-                              <p className="font-medium text-sm">{item.name}</p>
-                              <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                {Object.entries(billDetails.vendorGroups).map(
+                  ([vendorId, vendor]) => (
+                    <div
+                      key={vendorId}
+                      className="bg-white rounded-lg p-4 border"
+                    >
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-medium text-lg">
+                          {vendor.vendorName}
+                        </h4>
+                        <span className="text-sm text-gray-500">
+                          {vendor.itemCount} item
+                          {vendor.itemCount !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        {vendor.items.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <Image
+                                src={item.image}
+                                alt={item.name}
+                                width={40}
+                                height={40}
+                                className="rounded-md w-10 h-10 object-cover"
+                              />
+                              <div>
+                                <p className="font-medium text-sm">
+                                  {item.name}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  Qty: {item.quantity}
+                                </p>
+                              </div>
                             </div>
+                            <p className="font-semibold text-sm">
+                              ₹{item.price * item.quantity}
+                            </p>
                           </div>
-                          <p className="font-semibold text-sm">₹{item.price * item.quantity}</p>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                      <div className="mt-3 pt-3 border-t flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          Vendor Subtotal:
+                        </span>
+                        <span className="font-semibold">
+                          ₹{vendor.subtotal}
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-3 pt-3 border-t flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Vendor Subtotal:</span>
-                      <span className="font-semibold">₹{vendor.subtotal}</span>
-                    </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           )}
@@ -407,16 +466,22 @@ export default function BuyNowPage() {
                     className="rounded-md lg:w-20 lg:h-20 w-16 h-16 object-cover"
                   />
                   <div className="lg:block flex-1 min-w-0">
-                    <p className="font-medium lg:text-base text-sm truncate">{item.name}</p>
+                    <p className="font-medium lg:text-base text-sm truncate">
+                      {item.name}
+                    </p>
                     <p className="text-sm text-gray-500 lg:text-sm ">
                       Qty: {item.quantity}
                     </p>
                     {item.vendorName && (
-                      <p className="text-xs text-blue-600">From {item.vendorName}</p>
+                      <p className="text-xs text-blue-600">
+                        From {item.vendorName}
+                      </p>
                     )}
                   </div>
                 </div>
-                <p className="font-semibold lg:text-base text-sm self-end sm:self-auto">₹{item.price * item.quantity}</p>
+                <p className="font-semibold lg:text-base text-sm self-end sm:self-auto">
+                  ₹{item.price * item.quantity}
+                </p>
               </div>
             ))}
           </div>
@@ -489,7 +554,10 @@ export default function BuyNowPage() {
                       Multi-Vendor Order
                     </span>
                     <span className="text-xs text-blue-600">
-                      {Object.keys(billDetails.vendorGroups).length} vendor{Object.keys(billDetails.vendorGroups).length !== 1 ? 's' : ''}
+                      {Object.keys(billDetails.vendorGroups).length} vendor
+                      {Object.keys(billDetails.vendorGroups).length !== 1
+                        ? "s"
+                        : ""}
                     </span>
                   </div>
                   <p className="text-xs text-blue-600 mt-1">
@@ -580,7 +648,9 @@ export default function BuyNowPage() {
           <div className="mt-8 space-y-4">
             {/* Razorpay Quick Checkout */}
             <div className="bg-white shadow rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Checkout with Razorpay</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Quick Checkout with Razorpay
+              </h3>
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                   <Button
@@ -590,10 +660,10 @@ export default function BuyNowPage() {
                     size="lg"
                     className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
                   >
-                    {(loading || orderCreating) ? (
+                    {loading || orderCreating ? (
                       <>
                         <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
-                        {orderCreating ? 'Creating Order...' : 'Processing...'}
+                        {orderCreating ? "Creating Order..." : "Processing..."}
                       </>
                     ) : (
                       <>
@@ -649,10 +719,10 @@ export default function BuyNowPage() {
             size="lg"
             className="w-full bg-yellow-500 hover:bg-orange-600 text-white"
           >
-            {(loading || orderCreating) ? (
+            {loading || orderCreating ? (
               <>
                 <ShoppingCart className="w-4 h-4 mr-2 animate-spin" />
-                {orderCreating ? 'Creating Order...' : 'Processing...'}
+                {orderCreating ? "Creating Order..." : "Processing..."}
               </>
             ) : (
               <>

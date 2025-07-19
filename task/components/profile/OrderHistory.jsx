@@ -180,7 +180,7 @@ const OrderHistory = () => {
                   status: item.status || order.status,
                   vendorStoreName: item.vendor_store_name,
                   vendorOrderId: item.vendor_order_id,
-                  actionLabel: order.status === "delivered" ? "Review" : "Track"
+                  actionLabel: order.status === "delivered" ? "Review" : "Review" // change second to Track when there's the API for it
                 })) || []
               }}
             />

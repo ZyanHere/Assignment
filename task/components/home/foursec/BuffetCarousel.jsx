@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Carousel,
   CarouselContent,
@@ -8,35 +10,29 @@ import {
 import RestaurantCard from "./RestaurentCard";
 import Link from "next/link";
 
-const BuffetCarousel = ({ title, seeAllLink, items }) => {
+export default function BuffetCarousel({ title, seeAllLink, items }) {
   return (
-    <div className="mt-6">
-      <div className="flex justify-between items-center">
+    <div className="mt-8">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">{title}</h2>
         <Link href={seeAllLink} className="text-orange-500 text-sm font-semibold">
           See All
         </Link>
       </div>
-      <div className="py-4">
-        <Carousel className="w-full mx-auto">
-          <CarouselContent className="-ml-4">
-            {items.map((restaurant, index) => (
-              <CarouselItem
-                key={index}
-                className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-[22.35%] flex-shrink-0"
-              >
-                <div className="p-1">
-                  <RestaurantCard {...restaurant} index={index} />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-      </div>
+      <Carousel className="relative">
+        <CarouselContent className="-ml-4">
+          {items.map((restaurant, index) => (
+            <CarouselItem
+              key={restaurant.id}
+              className="basis-1/2 md:basis-1/4 pl-4"
+            >
+              <RestaurantCard {...restaurant} index={index} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </div>
   );
-};
-
-export default BuffetCarousel;
+}

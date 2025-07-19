@@ -12,9 +12,11 @@ import { useAuth } from "@/lib/hooks/useAuth";
 
 const StoreCard = React.memo(({ product, storeName }) => {
   const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart();
-  const { setSelectedProduct } = useProduct();
+  const { setSelectedProduct, setSelectedVariant } = useProduct();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  console.log(product);
+  const variantData = product?.variants[0];
 
   const [imageError, setImageError] = useState(false);
 
@@ -22,6 +24,7 @@ const StoreCard = React.memo(({ product, storeName }) => {
 
   const handleItemClick = () => {
     setSelectedProduct(product);
+    setSelectedVariant(variantData);
     router.push(`/product/${product._id || product.id}`);
   };
 
@@ -37,7 +40,7 @@ const StoreCard = React.memo(({ product, storeName }) => {
     : 0;
 
   const stockQty = product.stock ?? null;
-  const canAdd = stockQty == null || stockQty > 0;
+  const canAdd = variantData && (stockQty == null || stockQty > 0);
 
   const isProductInCart = useMemo(() => isInCart(product.id), [isInCart, product.id]);
   const cartItemQuantity = useMemo(() => getItemQuantity(product.id), [getItemQuantity, product.id]);
@@ -72,13 +75,13 @@ const StoreCard = React.memo(({ product, storeName }) => {
 
     try {
       await addToCart({
-        id: product.id,
-        name: product.name,
-        brand: storeName,
-        price,
-        mrp: original,
-        image: product.image,
-        category: product.category,
+        id: variantData._id,
+        variant: variantData,
+        product,
+        price: original,
+        sale_price: price,
+        stock: stockQty,
+        sku: variantData.sku,
       });
       toast.success("Added to Cart successfully");
     } catch (error) {
@@ -138,6 +141,7 @@ const StoreCard = React.memo(({ product, storeName }) => {
     ) : <div className="mt-1 h-[16px] text-xs text-gray-400 flex items-center">No stock info</div>}
   </CardContent>
 </Card>
+
 
   );
 });
