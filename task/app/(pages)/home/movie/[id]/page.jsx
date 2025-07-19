@@ -6,17 +6,33 @@ import Link from "next/link";
 import Header from "@/components/home/Header";
 import MovieVariant from "@/components/home/foursec/movie/movieVariant";
 import { useMoviesSWR } from "@/lib/hooks/useMoviesSWR";
+import { useProduct } from "@/lib/contexts/productContext";
+import { useState } from "react";
+import { useSelectedItems } from "@/lib/contexts/selected-items-context";
+import { useSession } from "next-auth/react";
+import { useCart } from "@/lib/contexts/cart-context";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const fallbackSeatVariants = [
   { type: "Standard", price: 200, seatsLeft: 30 },
-  { type: "Premium",  price: 350, seatsLeft: 15 },
+  { type: "Premium", price: 350, seatsLeft: 15 },
   { type: "Recliner", price: 500, seatsLeft: 8 },
-  { type: "Supreme",  price: 700, seatsLeft: 4 },
+  { type: "Supreme", price: 700, seatsLeft: 4 },
 ];
 
 export default function MovieDetailPage() {
   const { id } = useParams();
   const { data, isLoading, isError, error } = useMoviesSWR({ moviesOnly: true, productsLimit: 100 });
+  const { selectedVariant, setSelectedProduct, setSelectedVariant } = useProduct();
+  const { addToCart, clearCart } = useCart();
+  const [loading, setLoading] = useState(false);
+  const [grabLoading, setGrabLoading] = useState(false);
+  const { setSingleItem, setSelectedItems } = useSelectedItems();
+  const { data: session } = useSession();
+  const router = useRouter();
 
   if (isLoading) {
     return (
@@ -39,13 +55,16 @@ export default function MovieDetailPage() {
     return <div className="p-6 text-gray-500">Movie not found.</div>;
   }
 
+  const selectedProduct = movie;
+
+  console.log('Selected Product', movie);
   // Prepare variants
   const seatVariants = movie.variants.length
     ? movie.variants.map((v) => ({
-        type: v.name,
-        price: v.price.sale,
-        seatsLeft: v.stock.available,
-      }))
+      type: v.name,
+      price: v.price.sale,
+      seatsLeft: v.stock.available,
+    }))
     : fallbackSeatVariants;
 
   // original design used movie.desc[0] for details; we'll use raw fields if present
@@ -57,6 +76,75 @@ export default function MovieDetailPage() {
     ageLimit: movie.raw?.ageLimit || "N/A",
     description: movie.description,
   };
+
+  const variantData = movie?.variants ?? fallbackSeatVariants;
+
+  // console.log('Variant Data', variantData);
+
+  console.log('Movie variants', movie.variants);
+  console.log("Selected Variant", selectedVariant);
+
+  const handleGrab = async () => {
+    if (!session?.user?.token) {
+      toast.error('Please login to grab this item');
+      return;
+    }
+
+    if (selectedVariant) {
+      try {
+        setGrabLoading(true);
+
+        // Clear existing cart first
+        await clearCart();
+
+        // Add only this product to cart
+        await addToCart({
+          id: selectedVariant.id,
+          variant: selectedVariant,
+          selectedVariant,
+          price: selectedVariant.price.base,
+          sale_price: selectedVariant.price.sale,
+          stock: selectedVariant.stock.qty,
+          sku: selectedVariant.sku || 'N/A',
+        });
+
+        // Also populate selectedItems context for buy-now page
+        const cartItemData = [{
+          id: selectedVariant.id,
+          variantId: selectedVariant.id,
+          name: selectedVariant.name,
+          brand: selectedProduct.raw?.brand || 'Last Minute Deal',
+          seller: selectedProduct.raw.vendor_store_id?.store_name || 'Last Minute Deal',
+          vendorId: selectedProduct.raw.vendor_store_id?._id || 'default',
+          vendorName: selectedProduct.raw.vendor_store_id?.store_name || 'Last Minute Deal',
+          price: selectedVariant.price.sale,
+          mrp: selectedVariant.price.base,
+          image: selectedProduct.raw.images[0].url,
+          weight: selectedVariant.name,
+          quantity: 1,
+        }];
+
+        setSelectedItems(cartItemData);
+        setSingleItem(false); // This is from cart, not single item
+
+        // Add a small delay to ensure cart is updated
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        toast.success('Item grabbed successfully!');
+
+        // Navigate to buy-now page
+        router.push('/buy-now');
+      } catch (error) {
+        console.error('Error grabbing item:', error);
+        toast.error('Failed to grab item. Please try again.');
+      } finally {
+        setGrabLoading(false);
+      }
+    } else {
+      toast.error('No variant selected');
+    }
+  }
+
 
   return (
     <div className="flex-1 bg-white">
@@ -128,7 +216,8 @@ export default function MovieDetailPage() {
           </section>
 
           {/* Variant Options */}
-          <MovieVariant seatVariants={seatVariants} />
+          {/* <MovieVariant seatVariants={seatVariants} /> */}
+          <MovieVariant seatVariants={variantData} />
 
           {/* Terms & Conditions */}
           <div className="p-4 sm:p-6 shadow-lg sm:shadow-2xl rounded-lg sm:rounded-xl mb-6">
@@ -144,9 +233,21 @@ export default function MovieDetailPage() {
           </div>
 
           {/* Grab Deal Button */}
-          <button className="w-full py-3 sm:py-4 bg-yellow-400 text-black font-bold rounded-lg sm:rounded-xl hover:bg-yellow-500 transition-colors text-sm sm:text-base lg:text-lg">
-            GRAB DEAL - ₹{movie.price.sale}
-          </button>
+          <Button className="w-full h-12 py-3 sm:py-4 bg-yellow-400 text-black font-bold rounded-lg sm:rounded-xl hover:bg-yellow-500 transition-colors text-sm sm:text-base lg:text-lg"
+            onClick={handleGrab}
+            disabled={grabLoading}
+          >
+            {grabLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-white" />
+                <span>Grabbing...</span>
+              </div>
+            ) : (
+              `GRAB DEAL - ₹${movie.price.sale}`
+            )}
+
+          </Button>
+
         </div>
       </div>
     </div>

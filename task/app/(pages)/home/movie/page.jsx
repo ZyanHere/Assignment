@@ -5,6 +5,7 @@ import FewMinutesLeft from "@/components/home/foursec/movie/FewMinutesLeft";
 import PopularNow from "@/components/home/foursec/movie/PopularNow";
 import RecommendedMovies from "@/components/home/foursec/movie/RecommandedMovies";
 import { useMoviesSWR } from "@/lib/hooks/useMoviesSWR";
+import Link from "next/link";
 
 export default function MoviePage() {
   const { data, isLoading, isError, error } = useMoviesSWR({ moviesOnly: true, productsLimit: 60 });
@@ -14,7 +15,7 @@ export default function MoviePage() {
       <Header />
       <div className="p-6">
         <nav className="text-2xl mb-4">
-          Home &gt; <span className="font-semibold text-yellow-500">Movies</span>
+          <Link href="/">Home</Link> &gt;{" "} <span className="font-semibold text-yellow-500">Movies</span>
         </nav>
 
         {isLoading && <p>Loading movies...</p>}

@@ -3,9 +3,12 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
+import { useProduct } from "@/lib/contexts/productContext";
 
 const MoreHotels = ({ hotels = [] }) => {
+
   const [favorites, setFavorites] = useState([]);
+  const { selectedVariant, setSelectedProduct, setSelectedVariant } = useProduct();
 
   const toggleFavorite = (hotelId) => {
     setFavorites((prev) =>
@@ -26,7 +29,7 @@ const MoreHotels = ({ hotels = [] }) => {
 
         return (
           <Link key={slug} href={`/home/hotel/rooms/${slug}`}>
-            <div className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition">
+            <div className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition" onClick={() => setSelectedProduct(hotel)}>
               <div className="relative w-full h-[350px] rounded-lg overflow-hidden">
                 <Image src={img} alt={hotel.name} fill className="object-contain" />
 
