@@ -11,6 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Heart, Star } from "lucide-react";
 
 const HotelCard = ({ hotels = [] }) => {
   // Track favorites per hotel
@@ -34,8 +35,8 @@ const HotelCard = ({ hotels = [] }) => {
 
   return (
     <div className="mb-6 p-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Most Popular</h2>
+      <div className="flex justify-end items-center">
+        {/* <h2 className="text-xl font-semibold">Most Popular</h2> */}
         <Link
           href="/home/hotel/popular"
           className="text-blue-500 text-lg font-semibold"
@@ -66,7 +67,7 @@ const HotelCard = ({ hotels = [] }) => {
             return (
               <CarouselItem
                 key={slug}
-                className="basis-[85%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pr-4"
+                className="basis-[80%] sm:basis-[55%] md:basis-[40%] lg:basis-[22%] shrink-0 pr-4"
               >
                 <Link href={`/home/hotel/rooms/${hotel.slug || hotel.id}`}>
                   <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
@@ -75,40 +76,35 @@ const HotelCard = ({ hotels = [] }) => {
                       alt={title}
                       width={300}
                       height={200}
-                      className="w-full h-100 object-cover"
+                      className="w-full h-100 object-contain"
                     />
 
                     <button
                       type="button"
                       aria-label="Toggle Favorite"
-                      className="absolute top-3 right-3 cursor-pointer"
+                      className="absolute top-3 right-3 cursor-pointer bg-white rounded-full p-2 shadow-md"
                       onClick={(e) => {
                         e.preventDefault();
                         toggleFavorite(index);
                       }}
                     >
-                      <Image
-                        src={
-                          favorites[index]
-                            ? "/home/shops/Heart-red.svg"
-                            : "/buffet/newHeart.svg"
-                        }
-                        alt="Favorite"
-                        width={32}
-                        height={32}
+                      <Heart
+                        size={24}
+                        stroke={favorites[index] ? "red" : "black"}
+                        fill={favorites[index] ? "red" : "none"}
+                        strokeWidth={2}
                       />
                     </button>
 
-                    <div className="flex justify-between absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent text-white">
-                      <div>
+                    <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black to-transparent text-white flex justify-between items-end">
+                      <div className="flex flex-col gap-6">
                         <h3 className="font-semibold text-lg">{title}</h3>
                         <p className="text-sm">{location}</p>
-                        <p className="text-sm font-semibold">{price} Rs/night</p>
+                        <p className="text-lg font-semibold">{price} Rs/night</p>
                       </div>
-
-                      <div className="flex items-center text-yellow-400 text-lg mt-1">
-                        {"⭐"}
-                        <span className="ml-1">{ratingCount}</span>
+                      <div className="flex items-center text-yellow-400 text-lg ml-6 mb-1">
+                        <Star size={20} color="#facc15" fill="#facc15" />
+                        <span className="ml-2">{ratingCount}</span>
                       </div>
                     </div>
                   </div>

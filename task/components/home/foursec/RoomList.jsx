@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 const RoomList = ({ hotelSlug, rooms }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pl-14 pr-14 pb-14">
     {rooms.map((room) => (
       <Link
         key={room.id}

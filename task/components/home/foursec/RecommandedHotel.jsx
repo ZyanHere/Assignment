@@ -3,12 +3,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Star } from "lucide-react";
 
 export default function RecommendedHotels({ hotels = [] }) {
   return (
-    <div className="mb-6 p-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Recommended for You</h2>
+    <div className="mb-6">
+      <div className="flex justify-end items-center">
+        {/* <h2 className="text-xl font-semibold">Recommended for You</h2> */}
         <Link
           href="/home/hotel/recommended"
           className="text-blue-500 text-lg font-semibold"
@@ -42,22 +43,23 @@ export default function RecommendedHotels({ hotels = [] }) {
                   alt={title}
                   width={175}
                   height={175}
-                  className="rounded-lg border border-gray-200 object-cover"
+                  className="rounded-lg object-contain"
                 />
 
                 <div className="flex flex-col w-full md:ml-5 md:justify-between md:flex-row md:items-center">
-                  <div className="md:ml-5 md:flex-1">
+                  <div className="md:ml-5 md:flex-1 space-y-6">
                     <h3 className="font-semibold text-2xl">{title}</h3>
                     <p className="text-gray-500 text-lg flex items-center">
                       📍 {location}
                     </p>
-                    <p className="text-blue-500 font-semibold">
-                      {price} Rs /night
+                    <p className="text-lg font-semibold">
+                      <span className="text-blue-500">{price} Rs </span>
+                      <span className="text-black">/night</span>
                     </p>
                   </div>
 
                   <div className="sm:flex items-center text-yellow-400 text-2xl md:ml-5">
-                    ⭐ <span className="ml-1 text-black">{ratingCount}</span>
+                    <Star size={25} color="#facc15" fill="#facc15" /> <span className="ml-1 text-black">{ratingCount}</span>
                   </div>
                 </div>
               </div>
