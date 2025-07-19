@@ -12,11 +12,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Heart, Star } from "lucide-react";
+import { useProduct } from "@/lib/contexts/productContext";
 
 const HotelCard = ({ hotels = [] }) => {
   // Track favorites per hotel
   const [favorites, setFavorites] = useState(() => Array(hotels.length).fill(false));
-
+  const { selectedProduct, setSelectedProduct } = useProduct();
   // Adjust favorites if hotels length changes
   useMemo(() => {
     setFavorites((prev) => {
@@ -33,6 +34,7 @@ const HotelCard = ({ hotels = [] }) => {
     });
   };
 
+  console.log('selected product', selectedProduct);
   return (
     <div className="mb-6 p-6">
       <div className="flex justify-end items-center">
@@ -70,7 +72,7 @@ const HotelCard = ({ hotels = [] }) => {
                 className="basis-[80%] sm:basis-[55%] md:basis-[40%] lg:basis-[22%] shrink-0 pr-4"
               >
                 <Link href={`/home/hotel/rooms/${hotel.slug || hotel.id}`}>
-                  <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="relative bg-white rounded-lg shadow-md overflow-hidden" onClick={() => setSelectedProduct(hotel)}>
                     <Image
                       src={img}
                       alt={title}

@@ -8,10 +8,25 @@ import Image from "next/image";
 import { useHotelsSWR } from "@/lib/hooks/useHotelSWR";
 import { MapPin, Star } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useProduct } from "@/lib/contexts/productContext";
+import { useState } from "react";
+import { useSelectedItems } from "@/lib/contexts/selected-items-context";
+import { useSession } from "next-auth/react";
+import { useCart } from "@/lib/contexts/cart-context";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function RoomDetailsPage() {
   const { hotelSlug, variantId } = useParams();
   const { data, isLoading, isError } = useHotelsSWR({ hotelsOnly: true, productsLimit: 200 });
+  const { selectedProduct } = useProduct();
+  const { addToCart, clearCart } = useCart();
+  const [loading, setLoading] = useState(false);
+  const [grabLoading, setGrabLoading] = useState(false);
+  const { setSingleItem, setSelectedItems } = useSelectedItems();
+  const { data: session } = useSession();
+  const router = useRouter();
 
   if (isLoading) return <p className="p-6">Loading room details...</p>;
   if (isError) return <p className="text-red-500 p-6">Failed to load room data</p>;
@@ -25,10 +40,76 @@ export default function RoomDetailsPage() {
   }
 
   const variant = hotel.variants?.find((v) => String(v.id) === String(variantId));
+  const selectedVariant = variant;
 
   if (!variant) {
     return <p className="text-red-500 p-6">Room not found</p>;
   }
+
+  const handleGrab = async () => {
+    if (!session?.user?.token) {
+      toast.error('Please login to grab this item');
+      return;
+    }
+
+    if (selectedVariant) {
+      try {
+        setGrabLoading(true);
+
+        // Clear existing cart first
+        await clearCart();
+
+        // Add only this product to cart
+        await addToCart({
+          id: selectedVariant._id,
+          variant: selectedVariant,
+          selectedVariant,
+          price: selectedVariant.base_price,
+          sale_price: selectedVariant.price.sale_price,
+          stock: selectedVariant.stock.quantity,
+          sku: selectedVariant.sku,
+        });
+
+        // Also populate selectedItems context for buy-now page
+        const cartItemData = [{
+          id: selectedVariant._id,
+          variantId: selectedVariant._id,
+          name: selectedVariant.variant_name,
+          brand: selectedProduct.raw?.brand || 'Last Minute Deal',
+          seller: selectedProduct.raw.vendor_store_id?.store_name || 'Last Minute Deal',
+          vendorId: selectedProduct.raw.vendor_store_id?._id || 'default',
+          vendorName: selectedProduct.raw.vendor_store_id?.store_name || 'Last Minute Deal',
+          price: selectedVariant.price.sale_price,
+          mrp: selectedVariant.price.base_price,
+          image:
+            selectedVariant.images.find((img) => img.is_primary)?.url ||
+            selectedProduct.images[0]?.url,
+          weight: selectedVariant.variant_name,
+          quantity: 1,
+        }];
+
+        setSelectedItems(cartItemData);
+        setSingleItem(false); // This is from cart, not single item
+
+        // Add a small delay to ensure cart is updated
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        toast.success('Item grabbed successfully!');
+
+        // Navigate to buy-now page
+        router.push('/buy-now');
+      } catch (error) {
+        console.error('Error grabbing item:', error);
+        toast.error('Failed to grab item. Please try again.');
+      } finally {
+        setGrabLoading(false);
+      }
+    } else {
+      toast.error('No variant selected');
+    }
+  }
+
+  console.log('Room Details', variant);
 
   return (
     <div className="flex-1">
@@ -103,9 +184,17 @@ export default function RoomDetailsPage() {
             </div>
             <Button
               className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-2xl text-base sm:text-lg font-bold px-18 h-14  sm:py-4 shadow-md transition-all duration-200"
-
+              onClick={handleGrab}
+              disabled={grabLoading}
             >
-              Book Now
+              {grabLoading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-white" />
+                  <span>Grabbing...</span>
+                </div>
+              ) : (
+                "BOOK NOW"
+              )}
             </Button>
           </div>
 
