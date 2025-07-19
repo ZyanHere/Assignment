@@ -114,7 +114,7 @@ const ProductCard = React.memo(({ product }) => {
 
   return (
     <div className="pb-2 group" onClick={handleItemClick}>
-      <div className="w-full p-2 border rounded-xl hover:shadow-lg transition-all duration-300 bg-white shadow-sm ">
+      <div className="w-full p-2 border rounded-xl hover:shadow-lg transition-all duration-300 bg-white shadow-sm flex flex-col justify-between min-h-[320px]">
         <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl overflow-hidden">
           <button
             onClick={handleWishlistToggle}
@@ -152,25 +152,15 @@ const ProductCard = React.memo(({ product }) => {
           </Button>
 
         </div>
-
         <h3 className="font-bold text-sm mt-2 line-clamp-1">{product.name}</h3>
-        <p className="text-xs text-gray-500 line-clamp-1">({product.brand})</p>
-        <p className="text-xs text-gray-500">{product.weight || "1 unit"}</p>
-        <p className="text-xs text-gray-500 line-clamp-1">
-          By {product.seller}
-        </p>
-
-        <div className="mt-2">
-          <p className="text-sm text-blue-700 font-semibold">
-            {product.discount}% OFF
-          </p>
-          <div className="flex items-center gap-2">
-            <p className="text-xs text-gray-400 line-through">
-              ₹{product.originalPrice}
-            </p>
-            <p className="text-sm font-bold text-green-600">
-              ₹{product.discountedPrice}
-            </p>
+        <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className='invisible'>brand</span>})</p>
+        <p className="text-xs text-gray-500">{product.weight || <span className='invisible'>1 unit</span>}</p>
+        <p className="text-xs text-gray-500 line-clamp-1">By {product.seller || <span className='invisible'>seller</span>}</p>
+        <div className="mt-2 min-h-[40px] flex flex-col justify-between">
+          <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{product.discount ? `${product.discount}% OFF` : <span className='invisible'>discount</span>}</p>
+          <div className="flex items-center gap-2 min-h-[20px]">
+            <p className="text-xs text-gray-400 line-through">{product.originalPrice ? `₹${product.originalPrice}` : <span className='invisible'>price</span>}</p>
+            <p className="text-sm font-bold text-green-600">{product.discountedPrice ? `₹${product.discountedPrice}` : <span className='invisible'>price</span>}</p>
           </div>
         </div>
       </div>
