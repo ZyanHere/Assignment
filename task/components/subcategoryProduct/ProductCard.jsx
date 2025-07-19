@@ -149,36 +149,20 @@ const ProductCard = React.memo(({ product }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="px-4 pb-4 space-y-2">
-        <CardTitle className="text-sm font-bold line-clamp-1">
-          {variantData?.variant?.variant_name || product.name}
-        </CardTitle>
-        <p className="text-xs text-gray-500 line-clamp-1">({product.brand})</p>
-        <p className="text-xs text-gray-500">
-          By {product.vendor_store_id?.store_name || "Last Minute Deal"}
-        </p>
-
-        {discount > 0 && (
-          <p className="text-sm text-blue-700 font-semibold">{discount}% OFF</p>
-        )}
-
-        <div className="flex items-center gap-2">
-          {originalPrice && (
-            <p className="text-xs text-gray-400 line-through">₹{originalPrice}</p>
-          )}
-          <p className="text-sm font-bold text-green-600">₹{displayPrice}</p>
+      <CardContent className="px-4 pb-4 space-y-2 min-h-[120px] flex flex-col justify-between">
+        <CardTitle className="text-sm font-bold line-clamp-1">{variantData?.variant?.variant_name || product.name}</CardTitle>
+        <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className='invisible'>brand</span>})</p>
+        <p className="text-xs text-gray-500">By {product.vendor_store_id?.store_name || <span className='invisible'>seller</span>}</p>
+        <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{discount > 0 ? `${discount}% OFF` : <span className='invisible'>discount</span>}</p>
+        <div className="flex items-center gap-2 min-h-[20px]">
+          {originalPrice ? <p className="text-xs text-gray-400 line-through">₹{originalPrice}</p> : <span className='invisible'>price</span>}
+          <p className="text-sm font-bold text-green-600">{displayPrice ? `₹${displayPrice}` : <span className='invisible'>price</span>}</p>
         </div>
-
-        <div className="flex items-center gap-2 mt-1">
+        <div className="flex items-center gap-2 mt-1 min-h-[20px]">
           <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
-          <p className="text-xs font-medium text-gray-500">
-            {product.rating?.average || 0} ({product.rating?.count || 0})
-          </p>
+          <p className="text-xs font-medium text-gray-500">{product.rating?.average || 0} ({product.rating?.count || 0})</p>
         </div>
-
-        <p className="text-xs text-gray-400">
-          Stock: {variantData?.stock > 0 ? `${variantData.stock} available` : "Out of Stock"}
-        </p>
+        <p className="text-xs text-gray-400 min-h-[16px]">Stock: {variantData?.stock > 0 ? `${variantData.stock} available` : <span className='invisible'>stock</span>}</p>
       </CardContent>
     </Card>
   );
