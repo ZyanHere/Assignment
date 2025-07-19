@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Heart, Star } from "lucide-react";
 
 const MoreHotels = ({ hotels = [] }) => {
   const [favorites, setFavorites] = useState([]);
@@ -15,8 +16,8 @@ const MoreHotels = ({ hotels = [] }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {hotels.map((hotel) => {
+    <div className="flex flex-col gap-6">
+      {hotels.map((hotel, index) => {
         const slug = hotel.slug || hotel.id;
         const img =
           hotel?.img && hotel.img.trim() !== ""
@@ -26,36 +27,32 @@ const MoreHotels = ({ hotels = [] }) => {
         return (
           <Link key={slug} href={`/home/hotel/rooms/${slug}`}>
             <div className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition">
-              <div className="relative w-full h-48 rounded-lg overflow-hidden">
-                <Image src={img} alt={hotel.name} fill style={{ objectFit: "cover" }} />
+              <div className="relative w-full h-[350px] rounded-lg overflow-hidden">
+                <Image src={img} alt={hotel.name} fill className="object-contain" />
 
-                <div className="absolute top-2 left-2 bg-gray-900 text-white text-sm px-2 py-1 rounded-lg">
-                  ⭐ {hotel.rating?.average ?? 0} ({hotel.rating?.count ?? 0})
+                <div className="flex gap-2 justify-between absolute top-2 left-2 bg-black/20 text-white text-sm px-4 py-2 rounded-2xl ">
+                  <Star size={20} color="#facc15" fill="#facc15" /> {hotel.rating?.average ?? 0} ({hotel.rating?.count ?? 0})
                 </div>
 
                 <button
-                  className="absolute top-2 right-2"
+                  className="absolute top-2 right-2  bg-black/10 rounded-full p-2 shadow-md"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleFavorite(slug);
                   }}
                 >
-                  <Image
-                    src={
-                      favorites.includes(slug)
-                        ? "/home/shops/Heart-red.svg"
-                        : "/buffet/newHeart.svg"
-                    }
-                    alt="Favorite"
-                    width={24}
-                    height={24}
+                  <Heart
+                    size={24}
+                    stroke={favorites[index] ? "red" : "white"}
+                    fill={favorites[index] ? "red" : "none"}
+                    strokeWidth={2}
                   />
                 </button>
               </div>
 
-              <div className="flex justify-between items-center mt-4">
-                <div>
+              <div className="flex justify-between items-center mt-12">
+                <div className="space-y-8">
                   <h3 className="text-lg font-semibold">{hotel.name}</h3>
                   <p className="text-gray-600">{hotel.location}</p>
                 </div>
