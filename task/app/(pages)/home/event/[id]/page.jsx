@@ -205,7 +205,8 @@ export default function EventDetailPage() {
                 <span>Grabbing...</span>
               </div>
             ) : (
-              `GRAB DEAL - ₹${selectedVariant?.price?.sale ?? event.price?.sale ?? event.price?.base ?? 0}`
+              `GRAB DEAL${selectedVariant ? ` - ₹${selectedVariant.price?.sale ?? 0}` : ''}`
+
             )}
 
           </Button>

@@ -243,7 +243,7 @@ export default function MovieDetailPage() {
                 <span>Grabbing...</span>
               </div>
             ) : (
-              `GRAB DEAL - ₹${selectedVariant?.price?.sale ?? movie.price?.sale ?? movie.price?.base ?? 0}`
+              `GRAB DEAL${selectedVariant ? ` - ₹${selectedVariant.price?.sale ?? 0}` : ''}`
             )}
 
           </Button>
