@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useProduct } from "@/lib/contexts/productContext";
 
 const RoomList = ({ hotelSlug, rooms }) => {
 
@@ -12,7 +11,7 @@ const RoomList = ({ hotelSlug, rooms }) => {
           href={`/home/hotel/rooms/${hotelSlug}/${room.id}`}
           className="block"
         >
-          <div className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition h-full flex flex-col justify-between" onClick={() => setSelectedVariant(room)}>
+          <div className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition h-full flex flex-col justify-between">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">
               <Image
                 src={room.image || "/hotels/placeholder.png"}
