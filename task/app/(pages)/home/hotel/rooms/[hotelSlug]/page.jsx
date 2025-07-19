@@ -46,9 +46,9 @@ export default function HotelRoomsPage() {
   return (
     <div className="flex-1">
       <Header />
-      <div className="p-6 w-full max-w-[1700px] mx-auto">
+      <div className="pl-14 pr-14 pb-14 w-full max-w-[1700px] mx-auto">
         {/* Breadcrumb */}
-        <nav className="text-2xl mb-8">
+        <nav className="text-2xl mb-8 mt-8">
           <Link href="/" className="text-black">Home</Link> &gt;{" "}
           <Link href="/home/hotel" className="text-black">Hotels</Link> &gt;{" "}
           <span className="font-semibold text-yellow-500">{hotel?.name || "Hotel"}</span>
@@ -74,7 +74,7 @@ export default function HotelRoomsPage() {
         {!isLoading && !isError && hotel && (
           <>
             {/* Hotel Info */}
-            <div className="mb-8">
+            <div className="mb-4 space-y-4 pl-14 pr-14">
               <h1 className="text-3xl font-bold">{hotel.name}</h1>
               <p className="text-gray-600 text-lg">📍 {hotel.location || "N/A"}</p>
               <p className="text-gray-600 text-lg">

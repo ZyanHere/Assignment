@@ -31,9 +31,9 @@ export default function HotelSlugPage() {
     <div className="flex-1">
       <Header />
 
-      <div className="p-6 w-full max-w-[1700px] mx-auto">
+      <div className="pl-14 pr-14 pb-14 w-full max-w-[1700px] mx-auto">
         {/* Breadcrumb */}
-        <nav className="text-2xl mb-12">
+        <nav className="text-2xl mb-8 mt-8">
           <Link href="/" className="text-black">Home</Link>{" "}
           &gt;{" "}
           <Link href="/home/hotel" className="text-black">Hotels</Link>{" "}
