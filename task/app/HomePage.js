@@ -7,6 +7,7 @@ import Footer from "@/components/home/footer";
 import LocationBannerRedux from "@/components/home/banners/LocationBannerRedux";
 import TabContentRedux from "@/components/home/TabContentRedux";
 import { useHome } from "@/lib/hooks/useHome";
+import Component from "@/components/home/Trending";
 
 const HomePage = () => {
   const { 
@@ -40,6 +41,7 @@ const HomePage = () => {
         <LocationBannerRedux />
         <div className="p-0 md:p-6">
           <TabContentRedux />
+          <Component/>
         </div>
       </div>
       <Footer />

@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
-import { Button } from "../home/ui2/button";
+import { Button } from "../home/ui2/product-card";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
 import { useProduct } from "@/lib/contexts/productContext";
