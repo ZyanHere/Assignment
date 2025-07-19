@@ -1,0 +1,323 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "dynamicRoutes": [
+    {
+      "page": "/api/auth/[...nextauth]",
+      "regex": "^/api/auth/(.+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPnextauth": "nxtPnextauth"
+      },
+      "namedRegex": "^/api/auth/(?<nxtPnextauth>.+?)(?:/)?$"
+    },
+    {
+      "page": "/api/retail/categories/[categoryId]/subcategories",
+      "regex": "^/api/retail/categories/([^/]+?)/subcategories(?:/)?$",
+      "routeKeys": {
+        "nxtPcategoryId": "nxtPcategoryId"
+      },
+      "namedRegex": "^/api/retail/categories/(?<nxtPcategoryId>[^/]+?)/subcategories(?:/)?$"
+    },
+    {
+      "page": "/api/retail/products/category/[categoryId]",
+      "regex": "^/api/retail/products/category/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcategoryId": "nxtPcategoryId"
+      },
+      "namedRegex": "^/api/retail/products/category/(?<nxtPcategoryId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/retail/products/subcategory/[subcategoryId]",
+      "regex": "^/api/retail/products/subcategory/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPsubcategoryId": "nxtPsubcategoryId"
+      },
+      "namedRegex": "^/api/retail/products/subcategory/(?<nxtPsubcategoryId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/categories/[slug]",
+      "regex": "^/categories/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/categories/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/buffet/restaurant/[restaurantSlug]",
+      "regex": "^/home/buffet/restaurant/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPrestaurantSlug": "nxtPrestaurantSlug"
+      },
+      "namedRegex": "^/home/buffet/restaurant/(?<nxtPrestaurantSlug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/buffet/[slug]",
+      "regex": "^/home/buffet/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/home/buffet/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/event/[slug]",
+      "regex": "^/home/event/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/home/event/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/event/[slug]/[eventSlug]",
+      "regex": "^/home/event/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug",
+        "nxtPeventSlug": "nxtPeventSlug"
+      },
+      "namedRegex": "^/home/event/(?<nxtPslug>[^/]+?)/(?<nxtPeventSlug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/hotel/rooms/[hotelSlug]",
+      "regex": "^/home/hotel/rooms/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPhotelSlug": "nxtPhotelSlug"
+      },
+      "namedRegex": "^/home/hotel/rooms/(?<nxtPhotelSlug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/hotel/rooms/[hotelSlug]/[roomSlug]",
+      "regex": "^/home/hotel/rooms/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPhotelSlug": "nxtPhotelSlug",
+        "nxtProomSlug": "nxtProomSlug"
+      },
+      "namedRegex": "^/home/hotel/rooms/(?<nxtPhotelSlug>[^/]+?)/(?<nxtProomSlug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/hotel/[slug]",
+      "regex": "^/home/hotel/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/home/hotel/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/movie/[slug]",
+      "regex": "^/home/movie/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/home/movie/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home/movie/[slug]/[movieSlug]",
+      "regex": "^/home/movie/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug",
+        "nxtPmovieSlug": "nxtPmovieSlug"
+      },
+      "namedRegex": "^/home/movie/(?<nxtPslug>[^/]+?)/(?<nxtPmovieSlug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/payment-mode/[slug]",
+      "regex": "^/payment\\-mode/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/payment\\-mode/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/product/[id]",
+      "regex": "^/product/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/product/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/products/[productId]",
+      "regex": "^/products/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPproductId": "nxtPproductId"
+      },
+      "namedRegex": "^/products/(?<nxtPproductId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/stores/[slug]",
+      "regex": "^/stores/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/stores/(?<nxtPslug>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/auth/forgotPassword",
+      "regex": "^/auth/forgotPassword(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/forgotPassword(?:/)?$"
+    },
+    {
+      "page": "/auth/loc-info",
+      "regex": "^/auth/loc\\-info(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/loc\\-info(?:/)?$"
+    },
+    {
+      "page": "/auth/location",
+      "regex": "^/auth/location(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/location(?:/)?$"
+    },
+    {
+      "page": "/auth/login",
+      "regex": "^/auth/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/login(?:/)?$"
+    },
+    {
+      "page": "/auth/manual-location",
+      "regex": "^/auth/manual\\-location(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/manual\\-location(?:/)?$"
+    },
+    {
+      "page": "/auth/reset-password",
+      "regex": "^/auth/reset\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/reset\\-password(?:/)?$"
+    },
+    {
+      "page": "/auth/signup",
+      "regex": "^/auth/signup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/signup(?:/)?$"
+    },
+    {
+      "page": "/auth/success",
+      "regex": "^/auth/success(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/success(?:/)?$"
+    },
+    {
+      "page": "/auth/verification",
+      "regex": "^/auth/verification(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/verification(?:/)?$"
+    },
+    {
+      "page": "/buy-now",
+      "regex": "^/buy\\-now(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/buy\\-now(?:/)?$"
+    },
+    {
+      "page": "/cart",
+      "regex": "^/cart(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cart(?:/)?$"
+    },
+    {
+      "page": "/categories",
+      "regex": "^/categories(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/categories(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/home/buffet",
+      "regex": "^/home/buffet(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/home/buffet(?:/)?$"
+    },
+    {
+      "page": "/home/event",
+      "regex": "^/home/event(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/home/event(?:/)?$"
+    },
+    {
+      "page": "/home/hotel",
+      "regex": "^/home/hotel(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/home/hotel(?:/)?$"
+    },
+    {
+      "page": "/home/movie",
+      "regex": "^/home/movie(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/home/movie(?:/)?$"
+    },
+    {
+      "page": "/orders",
+      "regex": "^/orders(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/orders(?:/)?$"
+    },
+    {
+      "page": "/payment-mode",
+      "regex": "^/payment\\-mode(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/payment\\-mode(?:/)?$"
+    },
+    {
+      "page": "/profile",
+      "regex": "^/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/profile(?:/)?$"
+    },
+    {
+      "page": "/stores",
+      "regex": "^/stores(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/stores(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "RSC",
+    "varyHeader": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch",
+    "prefetchHeader": "Next-Router-Prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "Next-Router-Segment-Prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  },
+  "rewrites": []
+}
