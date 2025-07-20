@@ -9,6 +9,7 @@ import FestBanner from "./FestBanner";
 import FourSec from "./FourSec";
 import NearbyStores from "./NearbyStores";
 import OffersBanner from "./OffersBanner";
+import Component from "./Trending";
 
 
 const AllTabContent = () => {
@@ -37,6 +38,7 @@ const AllTabContent = () => {
       </div>
 
       <OffersBanner />
+      <Component/>
       <Essentials />
       <FestBanner />
 

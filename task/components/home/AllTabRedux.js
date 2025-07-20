@@ -6,6 +6,7 @@ import FestBanner from "./FestBanner";
 import FourSec from "./FourSec";
 import OffersBanner from "./OffersBanner";
 import NearbyStores from './NearbyStores';
+import Component from "./Trending";
 
 
 
@@ -36,6 +37,7 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
       </div>
 
       <OffersBanner />
+      <Component />
       <Essentials />
       <FestBanner />
 
