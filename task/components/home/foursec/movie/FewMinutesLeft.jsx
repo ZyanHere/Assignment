@@ -23,7 +23,7 @@ const FewMinutesLeft = ({ movies = [] }) => {
     <section className="mb-10">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Few Minutes Left</h2>
-        <Link href="/home/movie/few-minutes-left" className="text-blue-600 font-medium">
+        <Link href="/home/movie/section/few-minutes-left" className="text-blue-600 font-medium">
           See All
         </Link>
       </div>
