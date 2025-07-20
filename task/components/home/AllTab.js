@@ -32,7 +32,7 @@ const AllTabContent = () => {
       <div className="pl-6 w-full mt-5">
         <section>
           <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">
-            Top brands last minutes deal
+            Top brands last minutes deals
           </h2>
           <BrandCarousel data={featuredProducts} loading={featuredLoading} />
         </section>
