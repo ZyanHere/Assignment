@@ -6,15 +6,13 @@ import FestBanner from "./FestBanner";
 import FourSec from "./FourSec";
 import OffersBanner from "./OffersBanner";
 import NearbyStores from './NearbyStores';
-
-
-
+import Component from "./Trending";
+import WomanWithGroceries from "./womanWithGroceries";
+import GroceryPromoSection from "./groceryPromoSection";
 
 const AllTabContentRedux = ({ products = [], loading = false }) => {
-  // For now, we'll use the products passed from Redux
-  // In a more complete implementation, you might want to add featured/best-sellers to Redux state
-  const featuredProducts = products.slice(0, 10); // First 10 products as featured
-  const bestSellerProducts = products.slice(10, 20); // Next 10 products as best sellers
+  const featuredProducts = products.slice(0, 10);
+  const bestSellerProducts = products.slice(10, 20);
 
   return (
     <main className="space-y-6 md:space-y-8">
@@ -24,6 +22,9 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
         </h2>
         <FourSec />
       </section>
+
+      {/* Woman with Groceries Section - placed above Top Brands */}
+      <WomanWithGroceries />
 
       {/* Top Brands/Last Minute Deal section */}
       <div className="px-0 md:pl-6 w-full mt-5">
@@ -36,7 +37,12 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
       </div>
 
       <OffersBanner />
+      <Component />
       <Essentials />
+
+      {/* Grocery Promotional Section */}
+      <GroceryPromoSection products={featuredProducts} />
+
       <FestBanner />
 
       {/* Products section */}
@@ -54,4 +60,4 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
   );
 };
 
-export default AllTabContentRedux; 
+export default AllTabContentRedux;

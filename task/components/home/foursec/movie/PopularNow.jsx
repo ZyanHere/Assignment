@@ -23,7 +23,7 @@ const PopularNow = ({ movies = [] }) => {
     <section className="mb-10">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Popular Now</h2>
-        <Link href="/home/movie/popular-now" className="text-blue-600 font-medium">
+        <Link href="/home/movie/section/popular-now" className="text-blue-600 font-medium">
           See All
         </Link>
       </div>

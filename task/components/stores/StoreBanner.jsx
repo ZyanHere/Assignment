@@ -15,7 +15,7 @@ const StoreBanner = () => {
   const timeLeft = useTimer(endTime);
 
   return (
-    <div className="relative w-full p-2 sm:p-3 md:p-6 lg:p-8 xl:p-10">
+    <div className="relative overflow-hidden w-full p-2 sm:p-3 md:p-6 lg:p-8 xl:p-10">
       <Image
         src="/store/pentaloon.png"
         alt="Pantaloons Store"

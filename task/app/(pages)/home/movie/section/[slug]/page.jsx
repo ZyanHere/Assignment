@@ -8,9 +8,12 @@ import { useMoviesSWR } from "@/lib/hooks/useMoviesSWR";
 
 export default function MovieSectionPage() {
   const { slug } = useParams();
-  const { data, isLoading, isError, error } = useMoviesSWR({ moviesOnly: true, productsLimit: 100 });
+  const productsLimit = slug === 'all' ? 1000 : 100;
+  const { data, isLoading, isError, error } = useMoviesSWR({ moviesOnly: true, productsLimit });
+  console.log('slug:', slug, 'data:', data);
 
   const sectionMap = {
+    all: data?.all ?? [],
     "few-minutes-left": data?.fewMinutesLeft ?? [],
     "popular-now": data?.popularNow ?? [],
     recommended: data?.recommended ?? [],
