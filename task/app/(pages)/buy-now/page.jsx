@@ -59,7 +59,6 @@ export default function BuyNowPage() {
       0
     );
     const savings = mrpTotal - priceTotal;
-    const transactionFee = priceTotal > 0 ? 20 : 0;
     const deliveryFeeOriginal = priceTotal > 0 ? 165 : 0;
 
     // Group items by vendor
@@ -79,23 +78,46 @@ export default function BuyNowPage() {
       return groups;
     }, {});
 
+    // Calculate totals matching backend logic EXACTLY
+    const subtotal = priceTotal;
+    const discountAmount = 0; // No coupon applied
+    const taxAmount = (subtotal - discountAmount) * 0.18; // 18% GST on (subtotal - discount)
+    const shippingAmount = 0; // Free shipping
+    const totalAmount = subtotal - discountAmount + taxAmount + shippingAmount;
+
+    // Debug logging for calculation verification
+    console.log('Frontend Calculation Debug:', {
+      priceTotal,
+      subtotal,
+      discountAmount,
+      taxAmount,
+      shippingAmount,
+      totalAmount,
+      items: selectedItems.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        total: item.price * item.quantity
+      }))
+    });
+
     return {
       vendorGroups,
       subTotal: {
         label: "Sub total",
-        amount: priceTotal,
+        amount: subtotal,
         mrp: mrpTotal,
         icon: <Receipt />,
       },
       deliveryFee: {
         label: "Delivery fee",
-        amount: 0,
+        amount: shippingAmount,
         original: deliveryFeeOriginal,
         icon: <Truck />,
       },
-      transactionFee: {
-        label: "Transaction fee",
-        amount: transactionFee,
+      taxAmount: {
+        label: "Tax (18% GST)",
+        amount: taxAmount,
         icon: <Wallet />,
       },
       savings: {
@@ -105,7 +127,7 @@ export default function BuyNowPage() {
       },
       grandTotal: {
         label: "Grand Total",
-        amount: priceTotal + transactionFee,
+        amount: totalAmount,
       },
     };
   }, [selectedItems]);
@@ -284,7 +306,7 @@ export default function BuyNowPage() {
       // Configure payment options
       const options = {
         key: razorpayData.data.key_id,
-        amount: Math.round(razorpayData.data.total_amount * 100), // Convert to paise
+        amount: Math.round(Number(razorpayData.data.total_amount) * 100), // Convert to paise with proper conversion
         currency: razorpayData.data.currency,
         name: "Last Minute Deal",
         description: `Order ${razorpayData.data.order_number}`,
