@@ -7,14 +7,14 @@ import { useHome } from "@/lib/hooks/useHome";
 
 export default function SubCategoriesRedux({ categoryId, products = [], loading = false }) {
     const { categories } = useHome();
-    
+
     // Find the category to get its subcategories
     const category = categories.find(cat => cat._id === categoryId);
-    
+
     // Group products by subcategory
     const productsBySubcategory = React.useMemo(() => {
         if (!products || products.length === 0) return {};
-        
+
         return products.reduce((acc, product) => {
             const subcategoryId = product.subcategory?._id || product.subcategoryId;
             if (subcategoryId) {
@@ -73,7 +73,7 @@ export default function SubCategoriesRedux({ categoryId, products = [], loading 
                 {Object.entries(productsBySubcategory).map(([subcategoryId, subcategoryProducts]) => {
                     const firstProduct = subcategoryProducts[0];
                     const subcategory = firstProduct.subcategory;
-                    
+
                     return (
                         <div key={subcategoryId} className="p-4 border-b-2 border-gray-300">
                             <div className="flex items-center gap-4 mb-4">
@@ -91,7 +91,7 @@ export default function SubCategoriesRedux({ categoryId, products = [], loading 
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                                 {subcategoryProducts.map((product) => (
-                                    <div key={product._id} className="flex gap-4">
+                                    <div key={product._id}>
                                         <SubProductRedux product={product} />
                                     </div>
                                 ))}
@@ -108,7 +108,7 @@ export default function SubCategoriesRedux({ categoryId, products = [], loading 
         <div className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {products.map((product) => (
-                    <div key={product._id} className="flex gap-4">
+                    <div key={product._id}>
                         <SubProductRedux product={product} />
                     </div>
                 ))}
