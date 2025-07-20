@@ -9,8 +9,9 @@ import FestBanner from "./FestBanner";
 import FourSec from "./FourSec";
 import NearbyStores from "./NearbyStores";
 import OffersBanner from "./OffersBanner";
-import Component from "./Trending";
-
+import FestBanner from "./FestBanner";
+import WomanWithGroceries from "./womanWithGroceries";
+import GroceryPromoSection from "./groceryPromoSection";
 
 const AllTabContent = () => {
   const { data: featuredData, isLoading: featuredLoading } = useSWR("/lmd/api/v1/retail/products/featured", fetcher);
@@ -38,8 +39,16 @@ const AllTabContent = () => {
       </div>
 
       <OffersBanner />
-      <Component/>
+      
+      {/* Woman with Groceries Section */}
+      <WomanWithGroceries />
+
+      {/* Essentials Section */}
       <Essentials />
+      
+      {/* Grocery Promotional Section (Moved Below Essentials) */}
+      <GroceryPromoSection products={featuredProducts} />
+
       <FestBanner />
 
       <div className="pl-6 w-full mt-5">
