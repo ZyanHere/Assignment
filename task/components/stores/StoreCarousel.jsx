@@ -40,7 +40,14 @@ const StoreCarousel = ({
       </div>
 
       {/* Carousel */}
-      <Carousel className="relative">
+      <div className="flex overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory sm:hidden">
+        {products.map((product, index) => (
+          <div key={index} className="flex-shrink-0 w-64 snap-start">
+            <StoreCard product={product} storeName={name} />
+          </div>
+        ))}
+      </div>
+      <Carousel className="relative hidden sm:block">
         <CarouselPrevious />
         <CarouselContent>
           {products.map((product, index) => (

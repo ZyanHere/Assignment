@@ -215,7 +215,6 @@ export default function CategoryPage() {
         <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
           Featured Products
         </h3>
-        
         {allProductsLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
             {[...Array(12)].map((_, i) => (
@@ -227,7 +226,7 @@ export default function CategoryPage() {
             ))}
           </div>
         ) : shuffledProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+          <div className="flex overflow-x-auto gap-4 sm:gap-6 scrollbar-hide snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 md:overflow-x-visible md:gap-6">
             {shuffledProducts.slice(0, 12).map((product) => {
               // Process images to handle S3 URLs with spaces
               const processedProduct = {
@@ -240,7 +239,7 @@ export default function CategoryPage() {
                   : product.images,
               };
               return (
-                <div key={product._id} className="flex gap-4">
+                <div key={product._id} className="flex-shrink-0 w-64 snap-start md:w-auto">
                   <ProductCard product={processedProduct} />
                 </div>
               );
@@ -248,7 +247,7 @@ export default function CategoryPage() {
           </div>
         ) : (
           <div className="text-center text-gray-500 py-8 sm:py-12">
-            <p className="text-sm sm:text-base">No products found.</p>
+            No featured products found.
           </div>
         )}
       </section>
