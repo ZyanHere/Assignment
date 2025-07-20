@@ -18,21 +18,24 @@ const StoreCarousel = ({
   distance,
   products,
 }) => {
+
+  const showCarousel = products.length > 4;
+
   return (
-    <div className="w-full max-w-[1500px] mx-auto mt-6 mb-15">
+    <div className="w-full max-w-[1500px] mx-auto mt-6 mb-16 overflow-hidden p-6">
       {/* Store Heading */}
       <div className="flex items-center justify-between mb-8">
         <Link href={`/stores/${vendorId}`} className="flex items-center gap-3">
           <Image
             src={logo}
             alt={`${name} Logo`}
-            className="w-20 h-20 cursor-pointer rounded-full"
+            className="w-16 h-16 cursor-pointer rounded-full"
             width={96}
             height={96}
           />
           <div>
-            <p className="text-4xl font-semibold cursor-pointer">{name}</p>
-            <p className="text-lg text-gray-500">
+            <p className="text-2xl font-semibold cursor-pointer text-[#42434C]">{name}</p>
+            <p className="text-lg text-gray-500 font-medium">
               {location} • {distance} away
             </p>
           </div>
@@ -40,26 +43,33 @@ const StoreCarousel = ({
       </div>
 
       {/* Carousel */}
-      <div className="flex overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory sm:hidden">
+      <div className="flex overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory sm:hidden -mx-4 px-4">
         {products.map((product, index) => (
           <div key={index} className="flex-shrink-0 w-64 snap-start">
             <StoreCard product={product} storeName={name} />
           </div>
         ))}
       </div>
+
+
       <Carousel className="relative hidden sm:block">
-        <CarouselPrevious />
+        {
+          showCarousel && (<CarouselPrevious className="-left-4 top-1/2 -translate-y-1/2 z-10 bg-black/20" />)
+        }
         <CarouselContent>
           {products.map((product, index) => (
             <CarouselItem
               key={index}
-              className="px-2 basis-[80%] sm:basis-[50%] md:basis-[33.33%] lg:basis-[25%] xl:basis-[19.23%]"
+              className="basis-[80%] sm:basis-[50%] md:basis-[33.33%] lg:basis-[25%] xl:basis-[19.23%]"
             >
               <StoreCard product={product} storeName={name} />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselNext />
+        {
+          showCarousel && (<CarouselNext className="-right-4 top-1/2 -translate-y-1/2 z-10 bg-black/20" />)
+        }
+
       </Carousel>
     </div>
   );

@@ -22,7 +22,7 @@ const ProductCard = React.memo(({ product }) => {
   const router = useRouter();
 
   const { isAuthenticated } = useAuth();
-  
+
 
   const { data: session } = useSession();
   const {
@@ -82,7 +82,7 @@ const ProductCard = React.memo(({ product }) => {
 
   // Memoize button className to prevent unnecessary re-renders
   const buttonClassName = useMemo(() => {
-    const baseClass = "absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 px-3 py-1.5 border font-medium rounded-md hover:bg-blue-100 transition shadow-md";
+    const baseClass = "absolute bottom-3 right-10 transform translate-y-1/2 translate-x-1/2 px-3 py-1.5 border font-medium rounded-md hover:bg-blue-100 transition shadow-md";
     return `${baseClass} ${isProductInCart
       ? "bg-green-50 text-green-500 border-green-400"
       : "bg-white text-blue-400 border-blue-400"
