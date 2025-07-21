@@ -1,79 +1,67 @@
 "use client";
-
 import React, { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star } from "lucide-react";
-import { Button } from "../home/ui2/button";
-import { useCart } from "@/lib/contexts/cart-context";
-import { useRouter } from "next/navigation";
-import { useProduct } from "@/lib/contexts/productContext";
-import toast from "react-hot-toast";
-import { useAuth } from "@/lib/hooks/useAuth";
 import Image from "next/image";
+import { Button } from "@/components/ui/button"; // use common button
+import { Heart, Star } from "lucide-react";
+import { useCart } from "@/lib/contexts/cart-context";
+import { useProduct } from "@/lib/contexts/productContext";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { useWishlist } from "@/lib/hooks/useWishlist";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
-const StoreCard = React.memo(({ product, storeName }) => {
-  const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart();
-  const { setSelectedProduct, setSelectedVariant } = useProduct();
+const StoreCard = ({
+  product,
+  storeName,
+  showBrand = true,
+  showSeller = true,
+  showWishlist = true,
+  showRating = true,
+}) => {
   const router = useRouter();
+  const { setSelectedProduct, setSelectedVariant } = useProduct();
   const { isAuthenticated } = useAuth();
-  console.log(product);
-  const variantData = product?.variants[0];
+  const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart();
+  const { data: session } = useSession();
+  const { addItem, removeItem, isInWishlist } = useWishlist();
 
   const [imageError, setImageError] = useState(false);
+  const variantData = product?.variants?.[0];
+  const productId = product?._id || product?.id;
 
-  const handleImageError = () => setImageError(true);
-
-  const handleItemClick = () => {
-    setSelectedProduct(product);
-    setSelectedVariant(variantData);
-    router.push(`/product/${product._id || product.id}`);
-  };
-
-  const imgSrc = !imageError && product.image
-    ? product.image
-    : "/placeholder-image.jpg";
-
-  const price = product.price ?? 0;
-  const original = product.mrp ?? 0;
-
-  const discount = original > price
-    ? Math.round(((original - price) / original) * 100)
-    : 0;
-
-  const stockQty = product.stock ?? null;
+  const imgSrc =
+    !imageError && product?.image ? product.image : "/placeholder-image.jpg";
+  const price = variantData?.price?.sale_price ?? product.price ?? 0;
+  const original = variantData?.price?.base_price ?? product.mrp ?? 0;
+  const discount =
+    original > price ? Math.round(((original - price) / original) * 100) : 0;
+  const stockQty = variantData?.stock?.quantity ?? product.stock ?? null;
   const canAdd = variantData && (stockQty == null || stockQty > 0);
 
-  const isProductInCart = useMemo(() => isInCart(product.id), [isInCart, product.id]);
-  const cartItemQuantity = useMemo(() => getItemQuantity(product.id), [getItemQuantity, product.id]);
-  const isLoading = useMemo(() => isProductLoading(product.id), [isProductLoading, product.id]);
+  const itemKey = variantData?._id || productId;
+  const isProductInCart = useMemo(() => isInCart(itemKey), [isInCart, itemKey]);
+  const cartItemQuantity = useMemo(
+    () => getItemQuantity(itemKey),
+    [getItemQuantity, itemKey]
+  );
+  const isLoading = useMemo(
+    () => isProductLoading(itemKey),
+    [isProductLoading, itemKey]
+  );
+  const inWishlist = useMemo(
+    () => isInWishlist(productId),
+    [isInWishlist, productId]
+  );
 
-  const buttonText = useMemo(() => {
-    if (isLoading) return "...";
-    if (isProductInCart) return `${cartItemQuantity}`;
-    if (canAdd) return "ADD";
-    return "OUT";
-  }, [isLoading, isProductInCart, cartItemQuantity, canAdd]);
-
-  const buttonClassName = useMemo(() => {
-    const base = "absolute -bottom-2 right-4 text-xs w-[53px] h-[33px] font-medium rounded-md border transition shadow-md";
-    if (isProductInCart) {
-      return `${base} bg-green-50 text-green-500 border-green-400`;
-    } else if (canAdd) {
-      return `${base} bg-white text-blue-400 border-blue-400 hover:bg-blue-100`;
-    } else {
-      return `${base} bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed`;
-    }
-  }, [isProductInCart, canAdd]);
-
-  const handleAddToCart = async (e) => {
-    e.stopPropagation();
+  // Add to cart
+  const handleAddToCart = async () => {
     if (!isAuthenticated) {
-      toast.error('Login to add products');
-      router.push('/auth/login');
+      toast.error("Login to add products");
+      router.push("/auth/login");
       return;
     }
     if (!canAdd || isProductInCart) return;
-
     try {
       await addToCart({
         id: variantData._id,
@@ -90,50 +78,152 @@ const StoreCard = React.memo(({ product, storeName }) => {
     }
   };
 
+  // Wishlist toggle
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation();
+    if (!session?.user?.token) {
+      toast.error("Please login to save items to wishlist");
+      return;
+    }
+    try {
+      if (isInWishlist(productId)) {
+        await removeItem(productId);
+        toast.success("Removed from wishlist");
+      } else {
+        await addItem(productId);
+        toast.success("Added to wishlist");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update wishlist");
+    }
+  };
+
+  // Navigate
+  const handleItemClick = () => {
+    setSelectedProduct(product);
+    setSelectedVariant(variantData);
+    router.push(`/product/${product._id || product.id}`);
+  };
+
+  const buttonText = useMemo(() => {
+    if (!canAdd) return "Out of stock";
+    if (isLoading) return "Adding...";
+    if (isProductInCart) return `✓`;
+    return "ADD";
+  }, [canAdd, isLoading, isProductInCart, cartItemQuantity]);
+
+  const buttonClassName = useMemo(() => {
+    return `absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md transition shadow-md ${
+      isProductInCart
+        ? "bg-green-50 text-green-500 border-green-400"
+        : "bg-white text-blue-400 border-blue-400 hover:bg-blue-100"
+    }`;
+  }, [isProductInCart]);
+
   return (
-    <Card
-      className="w-[240px] rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-      onClick={handleItemClick}
-    >
-      <span className="block w-full text-center">{buttonText}</span>
-    </Button>
-  </CardHeader>
+    <div className="pb-2 group" onClick={handleItemClick}>
+      <div className="w-full p-2 border rounded-xl hover:shadow-lg transition-all duration-300 bg-white shadow-sm flex flex-col justify-between min-h-[320px]">
+        {/* Image & Wishlist */}
+        <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl overflow-hidden">
+          {/* Wishlist Heart Button */}
+          {showWishlist && (
+            <button
+              onClick={handleWishlistToggle}
+              className={`absolute top-2 right-2 z-10 p-1 rounded-full shadow-md transition ${
+                inWishlist
+                  ? "bg-white/60 text-red-500"
+                  : "bg-white/60 text-gray-600 hover:text-red-500"
+              }`}
+              aria-label={
+                inWishlist ? "Remove from wishlist" : "Add to wishlist"
+              }
+            >
+              <Heart
+                className="w-5 h-5"
+                fill={inWishlist ? "currentColor" : "none"}
+              />
+            </button>
+          )}
 
-  {/* Content Section with reserved space */}
-  <CardContent className="px-4 flex flex-col gap-1 flex-grow min-h-[120px] justify-between">
-    <CardTitle className="text-sm font-bold truncate">{product.name}</CardTitle>
-    {/* Category */}
-    {product.category ? (
-      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded w-fit">{product.category}</span>
-    ) : <span className="bg-gray-100 text-gray-400 text-xs font-medium px-2 py-1 rounded w-fit">No category</span>}
-    <p className="text-xs text-gray-500">By {storeName || <span className='text-gray-400'>Unknown Store</span>}</p>
-    {/* Discount */}
-    {discount > 0 ? (
-      <p className="text-sm text-blue-700 font-semibold">{discount}% OFF</p>
-    ) : <span className="bg-gray-100 text-gray-400 text-xs font-medium px-2 py-1 rounded w-fit">No discount</span>}
-    {/* Price */}
-    <div className="flex items-center gap-2 min-h-[24px]">
-      {original > price ? (
-        <p className="text-xs text-gray-400 line-through">₹{original}</p>
-      ) : <span className="text-xs text-gray-400 line-through">₹100</span>}
-      <p className="text-sm font-bold text-green-600">₹{price || 100}</p>
+          {/* Product Image */}
+          <Image
+            src={imgSrc}
+            alt={product?.name || "Product image"}
+            width={300}
+            height={200}
+            className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+          />
+
+          {/* Add to Cart Button */}
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddToCart();
+            }}
+            disabled={!canAdd || isLoading}
+            className={buttonClassName}
+          >
+            {buttonText}
+          </Button>
+        </div>
+
+        {/* Product Info */}
+        <h3 className="font-bold text-sm mt-2 line-clamp-1">
+          {product?.name || <span className="text-gray-400">No name</span>}
+        </h3>
+        {showBrand && (
+          <p className="text-xs text-gray-500 line-clamp-1">
+            ({product?.brand || <span className="text-gray-400">No brand</span>}
+            )
+          </p>
+        )}
+        {product?.weight && (
+          <p className="text-xs text-gray-500">{product.weight}</p>
+        )}
+        {showSeller && (
+          <p className="text-xs text-gray-500 line-clamp-1">
+            By{" "}
+            {storeName || product?.seller || (
+              <span className="text-gray-400">Unknown Seller</span>
+            )}
+          </p>
+        )}
+
+        {/* Price & Discount */}
+        <div className="mt-2 min-h-[40px] flex flex-col justify-between">
+          {discount > 0 ? (
+            <p className="text-sm text-blue-700 font-semibold">
+              {discount}% OFF
+            </p>
+          ) : (
+            <span className="text-xs text-green-600 font-medium">Best Price</span>
+          )}
+          <div className="flex items-center gap-2 min-h-[20px]">
+            {original > price && (
+              <p className="text-xs text-gray-400 line-through">₹{original}</p>
+            )}
+            <p className="text-sm font-bold text-green-600">₹{price || 100}</p>
+          </div>
+        </div>
+
+        {/* Rating */}
+        {showRating && (
+          <div className="flex items-center gap-2 mt-1">
+            <Star
+              className="text-yellow-300 fill-yellow-300"
+              height={16}
+              width={16}
+            />
+            <p className="text-xs font-medium text-gray-500">
+              {product?.rating?.average || 0} ({product?.rating?.count || 0})
+            </p>
+          </div>
+        )}
+      </div>
     </div>
-    {/* Rating */}
-    <div className="flex items-center gap-2 min-h-[20px]">
-      <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
-      <p className="text-xs font-medium text-gray-500">{product.rating?.average || 0} ({product.rating?.count || 0})</p>
-    </div>
-    {/* Stock (with fallback space) */}
-    {stockQty != null ? (
-      <p className="mt-1 text-xs text-muted-foreground">Stock: {stockQty > 0 ? `${stockQty} available` : <span className='text-red-500 font-semibold'>No stock</span>}</p>
-    ) : <span className="mt-1 text-xs text-red-500 font-semibold">No stock</span>}
-  </CardContent>
-</Card>
-
-
   );
-});
+};
 
 StoreCard.displayName = "StoreCard";
-
 export default StoreCard;
