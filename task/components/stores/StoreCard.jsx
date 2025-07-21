@@ -95,56 +95,40 @@ const StoreCard = React.memo(({ product, storeName }) => {
       className="w-[240px] rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
       onClick={handleItemClick}
     >
-      {/* Image Section */}
-      <CardHeader className="relative">
-        <div className="w-full h-[160px] relative rounded-xl overflow-hidden bg-white flex items-center justify-center">
-          <Image
-            src={imgSrc}
-            alt={product.name}
-            onError={handleImageError}
-            fill
-            className="object-contain rounded-xl"
-          />
-        </div>
-        <Button
-          className={buttonClassName + " flex items-center justify-center text-base leading-none font-mono"}
-          onClick={handleAddToCart}
-          disabled={!canAdd || isLoading}
-        >
-          <span className="block w-full text-center">{buttonText}</span>
-        </Button>
-      </CardHeader>
+      <span className="block w-full text-center">{buttonText}</span>
+    </Button>
+  </CardHeader>
 
-      {/* Content Section with reserved space */}
-      <CardContent className="px-4 flex flex-col gap-2 flex-grow min-h-[120px] justify-between">
-        <CardTitle className="text-sm font-bold truncate">{product.name}</CardTitle>
-        {/* Category */}
-        {product.category ? (
-          <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded w-fit">{product.category}</span>
-        ) : <div className="h-5 text-xs text-gray-400 flex items-center">No category</div>}
-        <p className="text-xs text-gray-500">By {storeName}</p>
-        {/* Discount */}
-        {discount > 0 ? (
-          <p className="text-sm text-blue-700 font-semibold">{discount}% OFF</p>
-        ) : <div className="h-5 text-xs text-gray-400 flex items-center">20%</div>}
-        {/* Price */}
-        <div className="flex items-center gap-2 min-h-[24px]">
-          {original > price ? (
-            <p className="text-xs text-gray-400 line-through">₹{original}</p>
-          ) : <div className="w-10 text-xs text-gray-400 flex items-center">30</div>}
-          <p className="text-sm font-bold text-green-600">{price ? `₹${price}` : <span className="text-xs text-gray-400">No price</span>}</p>
-        </div>
-        {/* Rating */}
-        <div className="flex items-center gap-2 min-h-[20px]">
-          <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
-          <p className="text-xs font-medium text-gray-500">{product.rating?.average || 0} ({product.rating?.count || 0})</p>
-        </div>
-        {/* Stock (with fallback space) */}
-        {stockQty != null ? (
-          <p className="mt-1 text-xs text-muted-foreground">Stock: {stockQty > 0 ? `${stockQty} available` : "Out of Stock"}</p>
-        ) : <div className="mt-1 h-[16px] text-xs text-gray-400 flex items-center">No stock info</div>}
-      </CardContent>
-    </Card>
+  {/* Content Section with reserved space */}
+  <CardContent className="px-4 flex flex-col gap-1 flex-grow min-h-[120px] justify-between">
+    <CardTitle className="text-sm font-bold truncate">{product.name}</CardTitle>
+    {/* Category */}
+    {product.category ? (
+      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded w-fit">{product.category}</span>
+    ) : <span className="bg-gray-100 text-gray-400 text-xs font-medium px-2 py-1 rounded w-fit">No category</span>}
+    <p className="text-xs text-gray-500">By {storeName || <span className='text-gray-400'>Unknown Store</span>}</p>
+    {/* Discount */}
+    {discount > 0 ? (
+      <p className="text-sm text-blue-700 font-semibold">{discount}% OFF</p>
+    ) : <span className="bg-gray-100 text-gray-400 text-xs font-medium px-2 py-1 rounded w-fit">No discount</span>}
+    {/* Price */}
+    <div className="flex items-center gap-2 min-h-[24px]">
+      {original > price ? (
+        <p className="text-xs text-gray-400 line-through">₹{original}</p>
+      ) : <span className="text-xs text-gray-400 line-through">₹100</span>}
+      <p className="text-sm font-bold text-green-600">₹{price || 100}</p>
+    </div>
+    {/* Rating */}
+    <div className="flex items-center gap-2 min-h-[20px]">
+      <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
+      <p className="text-xs font-medium text-gray-500">{product.rating?.average || 0} ({product.rating?.count || 0})</p>
+    </div>
+    {/* Stock (with fallback space) */}
+    {stockQty != null ? (
+      <p className="mt-1 text-xs text-muted-foreground">Stock: {stockQty > 0 ? `${stockQty} available` : <span className='text-red-500 font-semibold'>No stock</span>}</p>
+    ) : <span className="mt-1 text-xs text-red-500 font-semibold">No stock</span>}
+  </CardContent>
+</Card>
 
 
   );
