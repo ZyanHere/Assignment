@@ -7,16 +7,17 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/home/Header";
 import StoreCard from "@/components/stores/StoreCard";
+import StoreSkeleton from "@/components/stores/StoresSkeleton";
 
 export default function StoreSlugPage() {
   const { vendorId } = useParams();
 
-  const { data: vendorResp } = useSWR(
+  const { data: vendorResp, isLoading: isVendorLoading } = useSWR(
     `/lmd/api/v1/retail/vendor/public/${vendorId}`,
     fetcher
   );
 
-  const { data: productResp } = useSWR(
+  const { data: productResp, isLoading: isProductLoading } = useSWR(
     `/lmd/api/v1/retail/vendor/public/${vendorId}/products`,
     fetcher
   );
@@ -24,7 +25,17 @@ export default function StoreSlugPage() {
   const vendor = vendorResp?.data;
   const products = productResp?.data || [];
 
-  if (!vendor || !products) return null;
+  const loading = isProductLoading || isVendorLoading;
+
+
+  if (loading || !vendor || !products) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <StoreSkeleton />
+      </div>
+    )
+  };
 
   const {
     store_name,
@@ -50,6 +61,7 @@ export default function StoreSlugPage() {
         average: p.rating?.average || 0,
         count: p.rating?.count || 0,
       },
+      variants: p.variants,
     };
   });
 
@@ -62,13 +74,13 @@ export default function StoreSlugPage() {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="p-6 mx-auto w-full max-w-[1700px]">
+      <main className="pl-12 pr-12 pb-12 mx-auto w-full max-w-[1700px]">
         {/* Breadcrumb */}
-        <nav className="mt-6 mb-4 text-black text-2xl">
+        <nav className="mt-8 mb-8 text-black text-2xl">
           <Link href="/stores" className="hover:underline font-medium">
             Stores
           </Link>{" "}
-          &gt; {store_name}
+          &gt; <span className="font-semibold text-yellow-500">{store_name}</span>
         </nav>
 
         {/* Banner */}
@@ -93,7 +105,7 @@ export default function StoreSlugPage() {
               width={1500}
               height={340}
               className="w-[1500px] h-[340px] mx-auto rounded-xl shadow-lg"
-           
+
             />
           </div>
         )}
@@ -110,7 +122,7 @@ export default function StoreSlugPage() {
                 <h2 className="text-3xl font-semibold text-gray-800 mb-6">
                   {categoryName}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                   {categoryProducts.map((product) => (
                     <StoreCard
                       key={product.id}

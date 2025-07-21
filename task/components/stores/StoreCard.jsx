@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useProduct } from "@/lib/contexts/productContext";
 import toast from "react-hot-toast";
 import { useAuth } from "@/lib/hooks/useAuth";
+import Image from "next/image";
 
 const StoreCard = React.memo(({ product, storeName }) => {
   const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart();
@@ -91,21 +92,8 @@ const StoreCard = React.memo(({ product, storeName }) => {
 
   return (
     <Card
-  className="w-full max-w-sm min-h-[420px] flex flex-col justify-between rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-  onClick={handleItemClick}
->
-  {/* Image Section */}
-  <CardHeader className=" relative">
-    <img
-      src={imgSrc}
-      alt={product.name}
-      onError={handleImageError}
-      className="w-full h-48 object-contain rounded-xl"
-    />
-    <Button
-      className={buttonClassName + " flex items-center justify-center text-base leading-none font-mono"}
-      onClick={handleAddToCart}
-      disabled={!canAdd || isLoading}
+      className="w-[240px] rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      onClick={handleItemClick}
     >
       <span className="block w-full text-center">{buttonText}</span>
     </Button>

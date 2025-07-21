@@ -89,7 +89,7 @@ const ProductCard = React.memo(({ product }) => {
     variantData?.sale_price > 0 ? variantData.sale_price : variantData?.price || 100;
   const originalPrice = variantData?.sale_price > 0 ? variantData.price : null;
   const canAddToCart = variantData?.variant && variantData.stock > 0;
-  
+
   // Memoize cart-related values to prevent unnecessary re-renders
   const variantId = variantData?.variant?._id;
   const isProductInCart = useMemo(() => isInCart(variantId), [isInCart, variantId]);
@@ -111,7 +111,7 @@ const ProductCard = React.memo(({ product }) => {
 
   // Memoize button className to prevent unnecessary re-renders
   const buttonClassName = useMemo(() => {
-    const baseClass = "absolute -bottom-2 right-4 text-xs w-[53px] h-[33px] font-medium rounded-md border transition shadow-md";
+    const baseClass = "absolute -bottom-1.5 right-4 text-xs w-[53px] h-[33px] font-medium rounded-md border transition shadow-md";
     if (isProductInCart) {
       return `${baseClass} bg-green-50 text-green-500 border-green-400`;
     } else if (canAddToCart) {
