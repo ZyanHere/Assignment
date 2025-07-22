@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateProfilePic } from "@/lib/redux/user/userSlice";
 import toast from "react-hot-toast";
 
-
 const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("about");
   const [profilePic, setProfilePic] = useState("");
@@ -63,7 +62,6 @@ const ProfilePage = () => {
     }
   }, [currentUser, session]);
 
-  // Simulate data loading
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
@@ -71,7 +69,6 @@ const ProfilePage = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    // Basic validation
     if (!file.type.match("image.*")) {
       toast.error("Please select an image file");
       return;
@@ -114,153 +111,145 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <div className="flex-1 flex flex-col">
-        <Header />
-
-        <main className="flex-1 p-6 mx-auto w-full max-w-[1700px]">
-          <div className=" mx-auto">
-            {/* Profile Header */}
-            <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                {/* Profile Picture */}
-                <div className="relative group">
-                  {isLoading ? (
-                    <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse" />
-                  ) : (
-                    <>
-                      {profilePic ? (
-                        <Image
-                          src={profilePic}
-                          alt="Profile"
-                          width={96}
-                          height={96}
-                          className="rounded-full border-4 border-white shadow-lg w-24 h-24 object-cover"
-                        />
-                      ) : (
-                        <div className="rounded-full border-4 border-white shadow-lg w-24 h-24 flex items-center justify-center bg-amber-500 text-white text-4xl font-bold">
-                          {userInitial}
-                        </div>
-                      )}
-                      <Dialog
-                        open={isDialogOpen}
-                        onOpenChange={setIsDialogOpen}
-                      >
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            className="absolute bottom-0 right-0 rounded-full w-8 h-8"
-                            onClick={() => setIsDialogOpen(true)}
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-md">
-                          <div className="space-y-4">
-                            {/* ✅ Fix: Use DialogTitle instead of plain h3 */}
-                            <DialogTitle className="text-lg font-semibold">
-                              Update Profile Picture
-                            </DialogTitle>
-
-                            {newProfilePic && (
-                              <div className="flex justify-center">
-                                <Image
-                                  src={newProfilePic}
-                                  alt="Preview"
-                                  width={160}
-                                  height={160}
-                                  className="rounded-full w-40 h-40 object-cover"
-                                />
-                              </div>
-                            )}
-
-                            <div className="flex flex-col gap-2">
-                              <label className="flex items-center justify-center w-full px-4 py-2 border border-dashed rounded-lg cursor-pointer">
-                                <Upload className="w-5 h-5 mr-2" />
-                                Upload New Photo
-                                <input
-                                  type="file"
-                                  className="hidden"
-                                  accept="image/*"
-                                  onChange={handleImageChange}
-                                  onClick={(e) => (e.target.value = null)}
-                                  id="profile-upload"
-                                />
-                              </label>
-                            </div>
-
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                variant="outline"
-                                onClick={() => {
-                                  setIsDialogOpen(false);
-                                  setNewProfilePic(null);
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                onClick={handleSaveProfilePic}
-                                disabled={!newProfilePic}
-                              >
-                                Save Changes
-                              </Button>
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </>
-                  )}
-                </div>
-
-                {/* Profile Info */}
-                <div className="flex-1">
-                  {isLoading ? (
-                    <div className="space-y-3">
-                      <div className="h-6 w-48 bg-gray-200 rounded animate-pulse" />
-                      <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
-                    </div>
-                  ) : (
-                    <>
-                      <h1 className="text-2xl font-bold">{userData.name}</h1>
-                      <p className="text-gray-600">{userData.email}</p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        Member since {userData.joinDate}
-                      </p>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Profile Content */}
-            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-              <ProfileTabs
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-              />
-
-              <div className="p-6">
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <Header />
+      <main className="flex-1 px-4 sm:px-6 md:px-8 w-full max-w-full mx-auto">
+        <div className="w-full max-w-7xl mx-auto">
+          {/* Profile Header */}
+          <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 mb-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6 flex-wrap">
+              {/* Profile Picture */}
+              <div className="relative group">
                 {isLoading ? (
-                  <div className="space-y-4">
-                    <div className="h-8 w-1/3 bg-gray-200 rounded animate-pulse" />
-                    <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-                    <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 animate-pulse" />
+                ) : (
+                  <>
+                    {profilePic ? (
+                      <Image
+                        src={profilePic}
+                        alt="Profile"
+                        width={96}
+                        height={96}
+                        className="rounded-full border-4 border-white shadow-lg w-20 h-20 sm:w-24 sm:h-24 object-cover"
+                      />
+                    ) : (
+                      <div className="rounded-full border-4 border-white shadow-lg w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center bg-amber-500 text-white text-3xl sm:text-4xl font-bold">
+                        {userInitial}
+                      </div>
+                    )}
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="absolute bottom-0 right-0 rounded-full w-8 h-8"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <div className="space-y-4">
+                          <DialogTitle className="text-lg font-semibold">
+                            Update Profile Picture
+                          </DialogTitle>
+
+                          {newProfilePic && (
+                            <div className="flex justify-center">
+                              <Image
+                                src={newProfilePic}
+                                alt="Preview"
+                                width={160}
+                                height={160}
+                                className="rounded-full w-40 h-40 object-cover"
+                              />
+                            </div>
+                          )}
+
+                          <div className="flex flex-col gap-2">
+                            <label className="flex items-center justify-center w-full px-4 py-2 border border-dashed rounded-lg cursor-pointer">
+                              <Upload className="w-5 h-5 mr-2" />
+                              Upload New Photo
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                onClick={(e) => (e.target.value = null)}
+                              />
+                            </label>
+                          </div>
+
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setIsDialogOpen(false);
+                                setNewProfilePic(null);
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleSaveProfilePic}
+                              disabled={!newProfilePic}
+                            >
+                              Save Changes
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </>
+                )}
+              </div>
+
+              {/* Profile Info */}
+              <div className="flex-1 min-w-[200px]">
+                {isLoading ? (
+                  <div className="space-y-3">
+                    <div className="h-6 w-48 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
                   </div>
                 ) : (
-                  renderTabContent()
+                  <>
+                    <h1 className="text-xl sm:text-2xl font-bold">{userData.name}</h1>
+                    <p className="text-gray-600 text-sm sm:text-base">{userData.email}</p>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">
+                      Member since {userData.joinDate}
+                    </p>
+                  </>
                 )}
               </div>
             </div>
           </div>
-        </main>
-      </div>
+
+          {/* Profile Content */}
+          <div className="bg-white rounded-xl shadow-sm border overflow-hidden w-full">
+            <ProfileTabs
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+            <div className="p-4 sm:p-6">
+              {isLoading ? (
+                <div className="space-y-4">
+                  <div className="h-8 w-1/3 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
+                </div>
+              ) : (
+                renderTabContent()
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
 
 export default ProfilePage;
+
+
 
 // "use client";
 // import { useState, useEffect } from "react";
