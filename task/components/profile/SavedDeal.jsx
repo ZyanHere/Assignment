@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import OrderCard from "./OrderCard";
+import OrderCard from "./subCards/OrderCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";

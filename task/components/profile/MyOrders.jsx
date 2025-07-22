@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import OrderCard from "./OrderCard";
+import OrderCard from "./subCards/OrderCard";
 import ToReview from "./ToReview";
 import {
   Tabs,
@@ -86,23 +86,23 @@ export default function MyOrders() {
   }, []);
 
   return (
-    <div className="p-4 lg:p-8">
+    <div className="p-2 sm:p-4 lg:p-8">
       <Tabs defaultValue="orderHistory" className="w-full">
         {/* Tabs Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <TabsList className="md:justify-center justify-start md:flex-1 mb-4 bg-gray-100 p-2 rounded-xl w-full shadow-sm flex gap-4">
+          <TabsList className="md:justify-center justify-start md:flex-1 mb-4 bg-gray-100 p-1 sm:p-2 rounded-xl w-full shadow-sm flex flex-wrap gap-2 sm:gap-4 overflow-x-auto">
             <TabsTrigger
               value="orderHistory"
-              className="data-[state=active]:bg-white data-[state=active]:shadow-md px-6 py-3 rounded-lg text-sm transition-all"
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md px-3 sm:px-6 py-2 sm:py-3 rounded-lg text-xs sm:text-sm transition-all"
             >
               📦 Order History
             </TabsTrigger>
             <TabsTrigger
               value="toReview"
-              className="data-[state=active]:bg-white data-[state=active]:shadow-md px-6 py-3 rounded-lg text-sm transition-all"
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md px-3 sm:px-6 py-2 sm:py-3 rounded-lg text-xs sm:text-sm transition-all"
             >
               ⭐ To Review
             </TabsTrigger>
@@ -111,7 +111,7 @@ export default function MyOrders() {
 
         {/* Tabs Content */}
         <TabsContent value="orderHistory">
-          <ScrollArea className="h-[calc(100vh-220px)] pr-4">
+          <ScrollArea className="h-[calc(100vh-220px)] pr-0 sm:pr-4">
             {loading ? (
               <div className="space-y-6">
                 {sortOrder.map((_, i) => ( 
@@ -132,7 +132,7 @@ export default function MyOrders() {
                     <button
                       key={status}
                       onClick={() => setFilter(status)}
-                      className={`px-4 py-2 rounded-md ${
+                      className={`px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm ${
                         filter === status
                           ? "bg-blue-600 text-white"
                           : "bg-gray-100 text-gray-700"

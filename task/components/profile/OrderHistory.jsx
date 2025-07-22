@@ -1,5 +1,5 @@
 "use client";
-import OrderCard from "./OrderCard";
+import OrderCard from "./subCards/OrderCard";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";

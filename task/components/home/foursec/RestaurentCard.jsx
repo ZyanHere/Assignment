@@ -66,7 +66,7 @@ const RestaurantCard = ({ img, name, rating, time, price, category, index }) => 
               {price}
             </span>
 
-            <span className="text-xs sm:text-sm bg-yellow-400 px-2 py-1 rounded-full font-semibold">
+            <span className="text-xs sm:text-sm bg-yellow-400/90 border border-yellow-500 px-3 py-1 rounded-full font-semibold shadow-sm text-gray-900 whitespace-nowrap flex items-center justify-center min-w-[60px]">
               {category}
             </span>
           </div>

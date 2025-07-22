@@ -6,6 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -94,6 +95,42 @@ const getUserInitial = () => {
 
   let cartItems = 3;
   let notifications = 5;
+  // Sample notifications
+  const notificationList = [
+    {
+      id: 1,
+      title: "Order Shipped",
+      message: "Your order #1234 has been shipped!",
+      icon: "/home/header/Bell.svg",
+      time: "2m ago",
+      read: false,
+    },
+    {
+      id: 2,
+      title: "New Offer",
+      message: "20% off on electronics this weekend!",
+      icon: "/home/header/Bell.svg",
+      time: "1h ago",
+      read: false,
+    },
+    {
+      id: 3,
+      title: "Payment Received",
+      message: "Your payment of $29.99 was successful.",
+      icon: "/home/header/Bell.svg",
+      time: "3h ago",
+      read: true,
+    },
+    {
+      id: 4,
+      title: "Security Alert",
+      message: "New login from Chrome on Windows.",
+      icon: "/home/header/Bell.svg",
+      time: "1d ago",
+      read: true,
+    },
+  ];
+  const unreadCount = notificationList.filter(n => !n.read).length;
 
 
   return (
@@ -121,28 +158,59 @@ const getUserInitial = () => {
         )}
       </button>
 
-      {/* Notifications */}
-      <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform">
-        <span className="sr-only">Notifications</span>
-        <svg
-          className="w-6 h-6 text-gray-700"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-          />
-        </svg>
-        {notifications > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
-            {notifications}
-          </span>
-        )}
-      </button>
+      {/* Notifications Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform focus:outline-none">
+          <span className="sr-only">Notifications</span>
+          <svg
+            className="w-6 h-6 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            />
+          </svg>
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
+              {unreadCount}
+            </span>
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-80 max-h-96 overflow-y-auto bg-white shadow-2xl rounded-xl p-0 border border-gray-100">
+          <div className="p-4 pb-2 flex items-center justify-between">
+            <span className="font-semibold text-lg text-gray-800">Notifications</span>
+            <button className="text-xs text-blue-600 hover:underline font-medium">Mark all as read</button>
+          </div>
+          <DropdownMenuSeparator />
+          <div className="max-h-64 overflow-y-auto">
+            {notificationList.length === 0 ? (
+              <div className="p-6 text-center text-gray-500 text-sm">No notifications</div>
+            ) : (
+              notificationList.map((n) => (
+                <DropdownMenuItem key={n.id} className={`flex items-start gap-3 px-4 py-3 hover:bg-yellow-50 transition rounded-none border-b last:border-b-0 ${n.read ? '' : 'bg-yellow-50/60'}`}>
+                  <div className="flex-shrink-0 mt-1">
+                    <Image src={n.icon} alt="icon" width={28} height={28} className="rounded-full" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-900 text-sm truncate">{n.title}</div>
+                    <div className="text-xs text-gray-600 truncate">{n.message}</div>
+                    <div className="text-[11px] text-gray-400 mt-1">{n.time}</div>
+                  </div>
+                </DropdownMenuItem>
+              ))
+            )}
+          </div>
+          <DropdownMenuSeparator />
+          <div className="p-2 text-center">
+            <Link href="/profile?tab=notifications" className="text-blue-600 text-xs font-medium hover:underline">View all notifications</Link>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Profile Dropdown */}
       <DropdownMenu>

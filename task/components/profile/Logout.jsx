@@ -18,11 +18,11 @@ export default function Logout() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex justify-center items-start pt-8 sm:pt-12 pb-4 sm:pb-8 px-2 sm:px-4"
+      className="flex justify-center items-start pt-12 pb-8 px-4" // Changed to items-start and added pt-12
     >
-      <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-8 max-w-4xl w-full bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
+      <div className="flex flex-col md:flex-row items-center gap-8 max-w-4xl w-full bg-white rounded-xl shadow-lg p-6 border border-gray-200">
         {/* Left Side: Image Grid (original layout) */}
-        <div className="grid grid-cols-2 gap-1 sm:gap-2 w-full md:w-1/2">
+        <div className="grid grid-cols-2 gap-2 w-full md:w-1/2">
           <Image
             src="/profile/store.png"
             alt="Store"
@@ -49,7 +49,7 @@ export default function Logout() {
         </div>
 
         {/* Right Side: Confirmation */}
-        <div className="w-full md:w-1/2 flex flex-col items-center p-2 sm:p-4">
+        <div className="w-full md:w-1/2 flex flex-col items-center p-4">
           <motion.div 
             initial={{ y: -20 }}
             animate={{ y: 0 }}
