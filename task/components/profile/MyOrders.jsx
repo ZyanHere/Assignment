@@ -21,7 +21,7 @@ export default function MyOrders() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <TabsList className="mb-4 bg-gray-100 p-2 rounded-xl w-full shadow-sm flex gap-4">
+          <TabsList className="md:justify-center justify-start md:flex-1 mb-4 bg-gray-100 p-2 rounded-xl w-full shadow-sm flex gap-4">
             <TabsTrigger
               value="orderHistory"
               className="data-[state=active]:bg-white data-[state=active]:shadow-md px-6 py-3 rounded-lg text-sm transition-all"
