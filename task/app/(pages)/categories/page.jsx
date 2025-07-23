@@ -165,7 +165,7 @@ export default function CategoryPage() {
             <div
               ref={scrollRef}
               onScroll={handleScroll}
-              className="overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
+              className="overflow-hidden scroll-smooth snap-x snap-mandatory"
             >
               <div className="flex w-full">
                 {pages.map((page, idx) => (
