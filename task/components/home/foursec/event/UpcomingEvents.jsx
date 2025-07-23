@@ -64,22 +64,23 @@ const UpcomingEvents = ({ events = [] }) => {
               return (
                 <CarouselItem
                   key={event.id}
-                  className="basis-1/3 md:basis-1/4 lg:basis-1/5 min-w-[240px]"
+                  className="md:basis-1/2 lg:basis-1/3"
                 >
                   <Link
                     href={`/home/event/${event.id}`}
-                    className="relative block group"
+                    className="relative block h-full w-full"
                   >
-                    <div className="flex items-center border p-4 rounded-lg shadow-md bg-white transition hover:shadow-lg">
-                      <div className="relative w-[100px] h-[100px] flex-shrink-0 bg-gray-50 rounded-md overflow-hidden">
-                        <Image
-                          src={displayImage}
-                          alt={displayTitle}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                      <div className="ml-4 flex-1">
+                    <div className="relative flex flex-col md:flex-row items-start md:items-center gap-4 border p-4 rounded-lg shadow-md w-full h-[180px] overflow-hidden bg-white">
+
+                      <Image
+                        src={displayImage}
+                        alt={displayTitle}
+                        width={300}
+                        height={180}
+                        className="rounded-md w-full h-32 sm:h-40 md:h-32 md:w-32 object-cover flex-shrink-0"
+                      />
+
+                      <div className="flex flex-col gap-2 flex-1 overflow-hidden">
                         <h3 className="font-semibold text-sm sm:text-base line-clamp-2">
                           {displayTitle}{" "}
                           {event.date && (
@@ -88,17 +89,20 @@ const UpcomingEvents = ({ events = [] }) => {
                             </span>
                           )}
                         </h3>
-                        <p className="text-xs sm:text-sm mt-1">
+                        <p className="text-xs sm:text-sm">
                           {event.time || "Time TBA"}
                         </p>
-                        <p className="text-xs flex items-center mt-2 text-gray-600">
-                          📍 {event.location || "Location TBA"}
+                        <p className="text-xs sm:text-sm flex items-center text-gray-600">
+                          📍{event.location || "Location TBA"}
                         </p>
                       </div>
-                      <span className="ml-2 bg-green-100 text-black px-3 py-1 rounded-md text-xs sm:text-sm font-medium whitespace-nowrap">
-                        ₹{price}
-                      </span>
+                      <div className="absolute bottom-3 right-3">
+                        <span className="bg-green-100 text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
+                          ₹{price}
+                        </span>
+                      </div>
                     </div>
+
 
                     <button
                       className="absolute top-2 right-2"
@@ -126,7 +130,7 @@ const UpcomingEvents = ({ events = [] }) => {
             })}
           </CarouselContent>
           <CarouselPrevious />
-            <CarouselNext />
+          <CarouselNext />
         </Carousel>
       )}
     </section>

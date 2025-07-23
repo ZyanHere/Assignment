@@ -10,6 +10,8 @@ import { useHotelsSWR } from "@/lib/hooks/useHotelSWR";
 export default function HotelsPage() {
   const { data, isLoading, isError } = useHotelsSWR({ hotelsOnly: true });
 
+  console.log('Hotels Data', data);
+
   return (
     <div className="flex-1">
       <Header />
