@@ -12,6 +12,17 @@ import ProductCard from "@/components/subcategoryProduct/ProductCard";
 import { useHome } from "@/lib/hooks/useHome";
 
 export default function CategoryPage() {
+  const [sortOption, setSortOption] = useState('best-match');
+
+  const sortOptions = [
+    { value: 'best-match', label: 'Best Match' },
+    { value: 'price-asc', label: 'Price: Low to High' },
+    { value: 'price-desc', label: 'Price: High to Low' },
+    { value: 'newest', label: 'Newest' },
+    { value: 'oldest', label: 'Oldest' },
+    { value: 'popularity', label: 'Popularity' },
+    { value: 'rating', label: 'Customer Rating' },
+  ];
   const { 
     categories, 
     categoriesLoading, 
@@ -92,7 +103,7 @@ export default function CategoryPage() {
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
             Categories
           </h2>
-          <div className="flex gap-2 sm:gap-3">
+          {/* <div className="flex gap-2 sm:gap-3">
             <Button 
               variant="outline" 
               className="text-xs sm:text-sm px-3 sm:px-4 py-2"
@@ -105,7 +116,23 @@ export default function CategoryPage() {
             >
               Sort
             </Button>
-          </div>
+          </div> */}
+           {/* Sorting Pills (Right side) */}
+           <div className="flex flex-wrap gap-2 sm:gap-3 justify-start sm:justify-end max-w-md">
+              {sortOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setSortOption(option.value)}
+                  className={`px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 ${
+                    sortOption === option.value
+                      ? 'bg-yellow-400 text-black shadow'
+                      : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
         </div>
       </section>
 
