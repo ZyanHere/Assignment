@@ -1,0 +1,325 @@
+name: Deploy Frontend to EC2
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Docker image tag to deploy'
+        required: false
+        default: 'latest'
+
+env:
+  AWS_REGION: ap-southeast-2
+  ECR_REPOSITORY: lmd-frontend
+  CONTAINER_NAME: lmd-frontend
+  APP_PORT: 3000
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Set variables
+            IMAGE_TAG="${{ github.sha }}"
+            ECR_REGISTRY="${{ steps.login-ecr.outputs.registry }}"
+            FULL_IMAGE="$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
+            CONTAINER_NAME="${{ env.CONTAINER_NAME }}"
+            APP_DIR="/opt/$CONTAINER_NAME"
+            APP_PORT="${{ env.APP_PORT }}"
+
+            echo "🚀 Starting frontend deployment..."
+            echo "Image: $FULL_IMAGE"
+            echo "Container: $CONTAINER_NAME"
+            echo "Port: $APP_PORT"
+
+            # Update system packages
+            sudo apt-get update
+            sudo apt-get install -y curl unzip nginx
+
+            # Install Docker if not installed
+            if ! command -v docker &> /dev/null; then
+              echo "📦 Installing Docker..."
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sudo sh get-docker.sh
+              sudo usermod -aG docker $USER
+              sudo systemctl start docker
+              sudo systemctl enable docker
+            fi
+
+            # Install AWS CLI if not installed
+            if ! command -v aws &> /dev/null; then
+              echo "📦 Installing AWS CLI..."
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
+              rm -rf aws awscliv2.zip
+            fi
+
+            # Create application directory
+            sudo mkdir -p $APP_DIR
+            sudo chown $USER:$USER $APP_DIR
+            cd $APP_DIR
+
+            # Configure AWS credentials
+            echo "🔐 Configuring AWS credentials..."
+            mkdir -p ~/.aws
+            cat > ~/.aws/credentials << EOF
+            [default]
+            aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            EOF
+
+            cat > ~/.aws/config << EOF
+            [default]
+            region = ${{ env.AWS_REGION }}
+            output = json
+            EOF
+
+            # Login to ECR
+            echo "🔐 Logging into ECR..."
+            aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+            # Stop and remove existing container
+            echo "🛑 Stopping existing container..."
+            docker stop $CONTAINER_NAME 2>/dev/null || echo "No existing container to stop"
+            docker rm $CONTAINER_NAME 2>/dev/null || echo "No existing container to remove"
+
+            # Create .env file for frontend
+            echo "📝 Creating .env file..."
+            cat > .env << EOF
+            NODE_ENV=production
+            PORT=$APP_PORT
+
+            # Next.js Configuration
+            NEXT_PUBLIC_API_URL=https://api.lastminutessdeal.com
+            NEXT_PUBLIC_APP_URL=https://lastminutessdeal.com
+
+            # Authentication Configuration
+            NEXTAUTH_URL=https://lastminutessdeal.com
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+
+            # OAuth Configuration
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            FACEBOOK_CLIENT_ID=${{ secrets.FACEBOOK_APP_ID }}
+            FACEBOOK_CLIENT_SECRET=${{ secrets.FACEBOOK_APP_SECRET }}
+
+            # AWS S3 Configuration
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION=${{ env.AWS_REGION }}
+            AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET }}
+
+            # Payment Configuration
+            NEXT_PUBLIC_RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}
+
+            # Google Services
+            NEXT_PUBLIC_GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}
+            EOF
+
+            # Setup Nginx for frontend (coexisting with backend)
+            if [ ! -f /etc/nginx/sites-available/$CONTAINER_NAME ]; then
+              echo "📝 Setting up Nginx for frontend (coexisting with backend)..."
+              cat > /tmp/nginx-frontend-config << EOF
+            # HTTP to HTTPS redirect for frontend
+            server {
+                listen 80;
+                server_name lastminutessdeal.com www.lastminutessdeal.com;
+                return 301 https://\$server_name\$request_uri;
+            }
+
+            # HTTPS server for frontend
+            server {
+                listen 443 ssl http2;
+                server_name lastminutessdeal.com www.lastminutessdeal.com;
+
+                # SSL Configuration
+                ssl_certificate /etc/letsencrypt/live/lastminutessdeal.com/fullchain.pem;
+                ssl_certificate_key /etc/letsencrypt/live/lastminutessdeal.com/privkey.pem;
+                include /etc/letsencrypt/options-ssl-nginx.conf;
+                ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+                # Security headers
+                add_header X-Frame-Options "SAMEORIGIN" always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Content-Type-Options "nosniff" always;
+                add_header Referrer-Policy "no-referrer-when-downgrade" always;
+                add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+
+                # Gzip compression
+                gzip on;
+                gzip_vary on;
+                gzip_min_length 1024;
+                gzip_proxied expired no-cache no-store private must-revalidate auth;
+                gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml+rss application/javascript;
+
+                # Proxy all requests to Next.js app
+                location / {
+                    proxy_pass http://localhost:$APP_PORT;
+                    proxy_http_version 1.1;
+                    proxy_set_header Host \$host;
+                    proxy_set_header X-Real-IP \$remote_addr;
+                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto \$scheme;
+                    proxy_read_timeout 300s;
+                    proxy_connect_timeout 75s;
+                    proxy_send_timeout 300s;
+                }
+
+                # Cache static assets
+                location /_next/static/ {
+                    proxy_pass http://localhost:$APP_PORT;
+                    proxy_cache_valid 200 1y;
+                    add_header Cache-Control "public, immutable";
+                }
+
+                # Cache images
+                location ~* \.(jpg|jpeg|png|gif|ico|svg|webp)$ {
+                    proxy_pass http://localhost:$APP_PORT;
+                    proxy_cache_valid 200 1y;
+                    add_header Cache-Control "public, max-age=31536000";
+                }
+            }
+            EOF
+              
+              sudo cp /tmp/nginx-frontend-config /etc/nginx/sites-available/$CONTAINER_NAME
+              sudo ln -sf /etc/nginx/sites-available/$CONTAINER_NAME /etc/nginx/sites-enabled/
+              
+              # Don't remove default if backend is already configured
+              # sudo rm -f /etc/nginx/sites-enabled/default
+              
+              sudo nginx -t
+              sudo systemctl reload nginx
+            fi
+
+            # Setup firewall (check if already configured)
+            if ! sudo ufw status | grep -q "Status: active"; then
+              echo "🔥 Setting up firewall..."
+              sudo ufw --force enable
+              sudo ufw allow ssh
+              sudo ufw allow 80
+              sudo ufw allow 443
+              sudo ufw allow $APP_PORT
+            else
+              echo "🔥 Firewall already active, ensuring frontend port is allowed..."
+              sudo ufw allow $APP_PORT 2>/dev/null || echo "Port $APP_PORT already allowed"
+            fi
+
+            # Install Certbot for SSL certificates
+            if ! command -v certbot &> /dev/null; then
+              echo "📦 Installing Certbot..."
+              sudo apt-get install -y certbot python3-certbot-nginx
+            fi
+
+            # Pull and run container
+            echo "📥 Pulling latest image..."
+            docker pull $FULL_IMAGE
+
+            echo "🚀 Starting container..."
+            docker run -d \
+              --name $CONTAINER_NAME \
+              --restart unless-stopped \
+              -p $APP_PORT:$APP_PORT \
+              --env-file .env \
+              -v $(pwd)/.next:/app/.next \
+              -v $(pwd)/public:/app/public \
+              $FULL_IMAGE
+
+            # Check container status immediately
+            echo "📊 Container status after startup:"
+            docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+            # Show container logs if it's not running
+            if ! docker ps | grep -q $CONTAINER_NAME; then
+              echo "❌ Container failed to start. Logs:"
+              docker logs $CONTAINER_NAME
+            fi
+
+            # Debug: Show environment variables (without sensitive data)
+            echo "🔍 Environment variables check:"
+            echo "PORT: $APP_PORT"
+            echo "NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:+'SET'}"
+            echo "NEXTAUTH_URL: ${NEXTAUTH_URL:+'SET'}"
+
+            # Wait for application to start
+            echo "⏳ Waiting for application to start..."
+            sleep 30
+
+            # Health check
+            echo "🏥 Performing health check..."
+            max_attempts=10
+            attempt=1
+
+            while [ $attempt -le $max_attempts ]; do
+              if curl -f http://localhost:$APP_PORT > /dev/null 2>&1; then
+                echo "✅ Application is healthy and running!"
+                break
+              else
+                echo "⚠️ Health check attempt $attempt failed. Retrying in 10 seconds..."
+                sleep 10
+                attempt=$((attempt + 1))
+              fi
+            done
+
+            if [ $attempt -gt $max_attempts ]; then
+              echo "❌ Application failed to start properly."
+              echo "📋 Container logs:"
+              docker logs $CONTAINER_NAME
+              exit 1
+            fi
+
+            # Clean up old images
+            echo "🧹 Cleaning up old Docker images..."
+            docker system prune -af --volumes
+
+            # Show deployment info
+            echo "🎉 Frontend deployment completed successfully!"
+            echo "📊 Container status:"
+            docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+            echo ""
+            echo "🌐 Application is available at:"
+            echo "   Local: http://localhost:$APP_PORT"
+            echo "   Public: https://lastminutessdeal.com"
+            echo ""
+            echo "📝 Recent logs:"
+            docker logs --tail=20 $CONTAINER_NAME 
