@@ -21,15 +21,28 @@ const sortOptions = [
   { value: "discount", label: "Discount" },
 ];
 
-export default function SortSheet({ onApply }) {
+export default function SortSheet({ onApply, currentSort = "relevance" }) {
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState(null);
+  const [selected, setSelected] = React.useState(currentSort);
+  const [hasApplied, setHasApplied] = React.useState(false);
+
+  React.useEffect(() => {
+    setSelected(currentSort);
+  }, [currentSort]);
 
   const handleApply = () => {
     if (selected) {
       onApply(selected);
+      setHasApplied(true);
       setOpen(false);
     }
+  };
+
+  const handleClear = () => {
+    setSelected("relevance");
+    onApply("relevance");
+    setHasApplied(false);
+    setOpen(false);
   };
 
   return (
@@ -42,6 +55,7 @@ export default function SortSheet({ onApply }) {
           Sort
         </Button>
       </SheetTrigger>
+
       <SheetContent
         side="right"
         className="w-[300px] sm:w-[350px] bg-gradient-to-b from-yellow-50 to-yellow-100 p-5 shadow-xl"
@@ -74,8 +88,8 @@ export default function SortSheet({ onApply }) {
           ))}
         </div>
 
-        {/* Apply Button */}
-        <div className="mt-8">
+        {/* Action Buttons */}
+        <div className="mt-8 flex flex-col gap-2">
           <Button
             onClick={handleApply}
             disabled={!selected}
@@ -86,8 +100,20 @@ export default function SortSheet({ onApply }) {
                   : "bg-gray-300 text-gray-600 cursor-not-allowed"
               }`}
           >
-            {selected ? `Apply Sort (${selected.replace(/_/g, " ")})` : "Select an Option"}
+            {selected
+              ? `Apply Sort (${selected.replace(/_/g, " ")})`
+              : "Select an Option"}
           </Button>
+
+          {hasApplied && selected !== "relevance" && (
+            <Button
+              variant="ghost"
+              className="w-full text-yellow-700 font-medium border border-yellow-300 hover:bg-yellow-100"
+              onClick={handleClear}
+            >
+              ⟲ Clear Sort
+            </Button>
+          )}
         </div>
       </SheetContent>
     </Sheet>
