@@ -16,6 +16,7 @@ export default function MyOrders() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        {/* Tabs Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -36,6 +37,7 @@ export default function MyOrders() {
           </TabsList>
         </motion.div>
 
+        {/* Tabs Content */}
         <TabsContent value="orderHistory" className="mt-4">
           <OrderHistory />
         </TabsContent>

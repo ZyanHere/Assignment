@@ -16,6 +16,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import toast from "react-hot-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 
 const AboutMe = () => {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const AboutMe = () => {
     postalCode: "",
     country: "India",
     isPrimary: false,
-    addressType: "home"
+    addressType: "home" // home, work, other
   });
 
   // Initialize form data from Redux profile data
@@ -106,6 +107,7 @@ const AboutMe = () => {
     } catch (error) {
       console.error('Failed to update profile:', error);
       toast.error(error || 'Failed to update profile. Please try again.');
+      // Revert to original data
       setFormData(originalData);
     } finally {
       setIsSaving(false);
@@ -117,6 +119,7 @@ const AboutMe = () => {
     setEditMode(false);
   };
 
+  // Address management functions
   const handleAddressChange = (e) => {
     setAddressForm(prev => ({
       ...prev,
@@ -167,6 +170,7 @@ const AboutMe = () => {
     }
 
     try {
+      // Transform form data to match backend expectations
       const addressData = {
         addressLine1: addressForm.addressLine1,
         addressLine2: addressForm.addressLine2,
@@ -176,7 +180,7 @@ const AboutMe = () => {
         country: addressForm.country,
         addressType: addressForm.addressType,
         isDefault: addressForm.isPrimary,
-        label: addressForm.fullName,
+        label: addressForm.fullName, // Use fullName as label
         notes: addressForm.phone ? `Phone: ${addressForm.phone}` : ""
       };
 

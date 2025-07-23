@@ -22,6 +22,7 @@ export default function Messages() {
     message: ""
   });
 
+  // Fetch user messages
   useEffect(() => {
     const loadMessages = async () => {
       if (session?.user?.token) {
@@ -30,6 +31,7 @@ export default function Messages() {
           setMessages(messagesData);
         } catch (error) {
           console.error('Failed to fetch messages:', error);
+          // Continue with empty messages
         } finally {
           setLoading(false);
         }
@@ -41,6 +43,7 @@ export default function Messages() {
     loadMessages();
   }, [session]);
 
+  // Pre-fill form with user data
   useEffect(() => {
     if (session?.user) {
       setFormData(prev => ({
@@ -63,7 +66,10 @@ export default function Messages() {
     setSending(true);
     
     try {
+      // Here you would typically send the message to your backend
+      // For now, we'll simulate sending
       await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast.success('Message sent successfully!');
       setFormData({
         name: session?.user?.name || "",
@@ -87,6 +93,7 @@ export default function Messages() {
       className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
     >
       <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+        {/* Header */}
         <div className="border-b p-6 bg-gradient-to-r from-gray-50 to-gray-100">
           <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-3">
             <MessageSquare className="w-6 h-6 text-blue-500" />
@@ -98,8 +105,10 @@ export default function Messages() {
         </div>
 
         <div className="flex flex-col lg:flex-row">
+          {/* Contact Info Sidebar */}
           <div className="bg-gray-50 p-6 lg:p-8 lg:w-1/3 border-b lg:border-b-0 lg:border-r">
             <div className="space-y-6 sm:space-y-8">
+              {/* Company Info */}
               <div className="mb-4 sm:mb-6">
                 <h3 className="font-bold text-lg text-gray-800 mb-2">TWWIOS TECHNOLOGIES PRIVATE LIMITED</h3>
                 <p className="text-sm text-gray-600">
@@ -107,6 +116,7 @@ export default function Messages() {
                 </p>
               </div>
 
+              {/* Call Us */}
               <div className="flex items-start gap-4">
                 <div className="bg-blue-100 p-3 rounded-lg">
                   <Phone className="w-5 h-5 text-blue-600" />
@@ -118,6 +128,7 @@ export default function Messages() {
                 </div>
               </div>
 
+              {/* Email Us */}
               <div className="flex items-start gap-4">
                 <div className="bg-blue-100 p-3 rounded-lg">
                   <Mail className="w-5 h-5 text-blue-600" />
@@ -129,6 +140,7 @@ export default function Messages() {
                 </div>
               </div>
 
+              {/* Address */}
               <div className="flex items-start gap-4">
                 <div className="bg-blue-100 p-3 rounded-lg">
                   <MapPin className="w-5 h-5 text-blue-600" />
@@ -142,6 +154,7 @@ export default function Messages() {
                 </div>
               </div>
 
+              {/* Website */}
               <div className="pt-4 border-t">
                 <p className="text-sm text-gray-600">
                   <strong>Website:</strong> www.lastminutessdeal.com
@@ -150,6 +163,7 @@ export default function Messages() {
             </div>
           </div>
 
+          {/* Contact Form */}
           <div className="p-6 lg:p-8 lg:w-2/3">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
