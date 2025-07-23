@@ -153,7 +153,7 @@ const ProductCard = React.memo(({ product }) => {
         <CardTitle className="text-sm font-bold line-clamp-1">{variantData?.variant?.variant_name || product.name || <span className='text-gray-400'>No name</span>}</CardTitle>
         <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className='text-gray-400'>No brand</span>})</p>
         <p className="text-xs text-gray-500">By {product.vendor_store_id?.store_name || <span className='text-gray-400'>Unknown Seller</span>}</p>
-        <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{discount > 0 ? `${discount}% OFF` : <span className='bg-gray-100 text-gray-400 px-2 py-1 rounded'>No discount</span>}</p>
+        <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{discount > 0 ? `${discount}% OFF` : <span className=' text-green-400 px-2 py-1 rounded'>Best Price</span>}</p>
         <div className="flex items-center gap-2 min-h-[20px]">
           {originalPrice ? <p className="text-xs text-gray-400 line-through">₹{originalPrice}</p> : <span className='text-gray-400'>₹100</span>}
           <p className="text-sm font-bold text-green-600">{displayPrice ? `₹${displayPrice}` : <span className='text-gray-400'>₹100</span>}</p>
