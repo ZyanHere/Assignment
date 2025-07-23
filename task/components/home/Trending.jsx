@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { categories, secondaryCategories } from "../../data/trendingData"
+import { categories, secondaryCategories  } from "../../data/trendingData"
 import { ProductCard } from "../../components/home/ui2/product-card.jsx"
 import { PromotionalCard } from "../../components/home/ui2/promotional-card.jsx"
 import { CategoryTabs } from "../../components/home/ui2/category-tabs.jsx"
@@ -55,9 +55,9 @@ export default function Component() {
     <div className=" bg-gradient-to-br from-purple-100 to-pink-50 p-20 rounded-3xl">
       <div className="mx-auto bg-white p-10 rounded-4xl">
         {/* Header */}
-        <div className="flex justify-between items-start ">
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Trending Store Favorites</h1>
+        <div className="flex bg-purple-800 -mt-10">
+          <div className="bg-white flex-1 rounded-tr-[40px]">
+            <h1 className="text-3xl font-bold text-gray-900 mb-6 mt-10">Trending Store Favorites</h1>
 
             <CategoryTabs
               activeCategory={activeCategory}
@@ -67,13 +67,14 @@ export default function Component() {
             />
           </div>
 
-          <div className="ml-8 -mt-10 -mr-10">
+          <div className=" -mr-10 bg-white rounded-tr-4xl ">
             <PromotionalCard onButtonClick={handlePromotionalClick} />
           </div>
         </div>
 
         {/* Category Title */}
-        <div className="mb-3">
+        <div className="bg-purple-800 -mr-10 ">
+        <div className="mb-3 bg-white rounded-tr-[40px] ">
           <h2 className="text-xl font-semibold text-gray-800">
             {activeSecondaryCategory
               ? secondaryCategories.find(cat => cat.id === activeSecondaryCategory)?.name
@@ -81,6 +82,8 @@ export default function Component() {
           </h2>
           <p className="text-gray-600 text-sm mt-1">{currentProducts.length} items available</p>
         </div>
+        </div>
+
 
         {/* Product Grid */}
         <div className={`grid gap-6 ${gridColsClass}`}>
