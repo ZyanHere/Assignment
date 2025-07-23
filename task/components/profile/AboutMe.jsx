@@ -16,7 +16,6 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import toast from "react-hot-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 
 const AboutMe = () => {
   const dispatch = useDispatch();
@@ -54,7 +53,7 @@ const AboutMe = () => {
     postalCode: "",
     country: "India",
     isPrimary: false,
-    addressType: "home" // home, work, other
+    addressType: "home"
   });
 
   // Initialize form data from Redux profile data
@@ -107,7 +106,6 @@ const AboutMe = () => {
     } catch (error) {
       console.error('Failed to update profile:', error);
       toast.error(error || 'Failed to update profile. Please try again.');
-      // Revert to original data
       setFormData(originalData);
     } finally {
       setIsSaving(false);
@@ -119,7 +117,6 @@ const AboutMe = () => {
     setEditMode(false);
   };
 
-  // Address management functions
   const handleAddressChange = (e) => {
     setAddressForm(prev => ({
       ...prev,
@@ -170,7 +167,6 @@ const AboutMe = () => {
     }
 
     try {
-      // Transform form data to match backend expectations
       const addressData = {
         addressLine1: addressForm.addressLine1,
         addressLine2: addressForm.addressLine2,
@@ -180,7 +176,7 @@ const AboutMe = () => {
         country: addressForm.country,
         addressType: addressForm.addressType,
         isDefault: addressForm.isPrimary,
-        label: addressForm.fullName, // Use fullName as label
+        label: addressForm.fullName,
         notes: addressForm.phone ? `Phone: ${addressForm.phone}` : ""
       };
 
@@ -263,18 +259,18 @@ const AboutMe = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       {/* Profile Information */}
-      <Card>
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
             <User className="w-5 h-5" />
             Profile Information
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">First Name</label>
                 <Input
@@ -329,23 +325,23 @@ const AboutMe = () => {
               />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               {!editMode ? (
                 <Button
                   type="button"
                   onClick={() => setEditMode(true)}
                   variant="outline"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 w-full sm:w-auto"
                 >
                   <Edit2 className="w-4 h-4" />
                   Edit Profile
                 </Button>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <Button
                     type="submit"
                     disabled={isSaving || profileLoading}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 w-full sm:w-auto"
                   >
                     {isSaving ? (
                       <>
@@ -364,6 +360,7 @@ const AboutMe = () => {
                     variant="outline"
                     onClick={handleCancel}
                     disabled={isSaving}
+                    className="w-full sm:w-auto"
                   >
                     Cancel
                   </Button>
@@ -376,7 +373,7 @@ const AboutMe = () => {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    className="flex items-center gap-2 text-green-600"
+                    className="flex items-center gap-2 text-green-600 mt-2 sm:mt-0"
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     <span className="text-sm">Profile updated successfully!</span>
@@ -389,17 +386,17 @@ const AboutMe = () => {
       </Card>
 
       {/* Address Management */}
-      <Card>
+      <Card className="w-full">
         <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <MapPin className="w-5 h-5" />
               Saved Addresses
             </CardTitle>
             <Button
               onClick={handleAddAddress}
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full sm:w-auto"
             >
               <Plus className="w-4 h-4" />
               Add Address
@@ -423,9 +420,9 @@ const AboutMe = () => {
             <div className="space-y-4">
               {addresses.map((address) => (
                 <div key={address._id} className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <Badge variant={address.isDefault ? "default" : "secondary"}>
                           {address.addressType || "home"}
                         </Badge>
@@ -451,12 +448,13 @@ const AboutMe = () => {
                         <p className="text-xs text-gray-500 mt-1">{address.notes}</p>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       {!address.isDefault && (
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleSetPrimary(address._id)}
+                          className="w-full sm:w-auto"
                         >
                           Set Primary
                         </Button>
@@ -465,6 +463,7 @@ const AboutMe = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => handleEditAddress(address)}
+                        className="w-full sm:w-auto"
                       >
                         <Edit2 className="w-4 h-4" />
                       </Button>
@@ -472,7 +471,7 @@ const AboutMe = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteAddress(address._id)}
-                        className="text-red-600 hover:bg-red-50"
+                        className="text-red-600 hover:bg-red-50 w-full sm:w-auto"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -487,13 +486,13 @@ const AboutMe = () => {
           {showAddressForm && (
             <Card className="mt-4">
               <CardHeader>
-                <CardTitle className="text-lg">
+                <CardTitle className="text-lg sm:text-xl">
                   {editingAddress ? "Edit Address" : "Add New Address"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSaveAddress} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form onSubmit={handleSaveAddress} className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Full Name</label>
                       <Input
@@ -536,7 +535,7 @@ const AboutMe = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">City</label>
                       <Input
@@ -569,7 +568,7 @@ const AboutMe = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Country</label>
                       <Input
@@ -608,11 +607,11 @@ const AboutMe = () => {
                     </label>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <Button
                       type="submit"
                       disabled={addressLoading}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 w-full sm:w-auto"
                     >
                       {addressLoading ? (
                         <>
@@ -631,6 +630,7 @@ const AboutMe = () => {
                       variant="outline"
                       onClick={handleCancelAddress}
                       disabled={addressLoading}
+                      className="w-full sm:w-auto"
                     >
                       Cancel
                     </Button>
