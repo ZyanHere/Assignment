@@ -47,9 +47,11 @@ const ProductCard = React.memo(({ product }) => {
     return primaryImage?.url || "/placeholder-image.jpg";
   };
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
+  const handleImageError = (e) => {
+  e.currentTarget.src = "/fallback.png"; 
+  setImageError(true);
+};
+
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
@@ -137,6 +139,7 @@ const ProductCard = React.memo(({ product }) => {
             className="w-full h-full object-cover"
             quality={90}
             priority={false}
+            
           />
           <Button
             className={buttonClassName}

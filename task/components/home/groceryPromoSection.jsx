@@ -173,7 +173,7 @@ const ProductCardMini = ({ product }) => {
         <Button
           onClick={handleAddToCart}
           disabled={!product.id}
-          className={`absolute bottom-2 right-2 transform translate-y-1/2 translate-x-1/2 w-[48px] sm:w-[53px] h-[30px] sm:h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
+          className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[48px] sm:w-[53px] h-[30px] sm:h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
             ${
               isInCart
                 ? "bg-green-50 text-green-500 border-green-400"
