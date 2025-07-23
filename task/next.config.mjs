@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-     images: {
+  images: {
     domains: [
       'lastminutedeal.s3.ap-southeast-2.amazonaws.com',
       'example.com',
@@ -18,7 +18,7 @@ const nextConfig = {
     //   },
     // ],
   },
-//     ignoreBuildErrors: true,
+  //     ignoreBuildErrors: true,
 
 };
 

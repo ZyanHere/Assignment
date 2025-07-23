@@ -10,6 +10,8 @@ import Link from "next/link";
 export default function MoviePage() {
   const { data, isLoading, isError, error } = useMoviesSWR({ moviesOnly: true, productsLimit: 60 });
 
+  console.log('Movie Data', data);
+
   return (
     <div className="flex-1">
       <Header />
