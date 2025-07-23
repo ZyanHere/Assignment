@@ -27,39 +27,49 @@ export default function BuffetPage() {
   const buffet = adaptBuffetSections(data.data);
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 min-h-screen bg-gray-50">
       <Header />
-      <div className="p-6 w-full max-w-[1700px] mx-auto">
-        <div className="px-6 md:px-12">
-          <nav className="mb-10 text-black text-4xl">
-            <Link href="/" className="hover:underline font-medium">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        {/* Responsive Breadcrumb Navigation */}
+        <nav className="mb-6 sm:mb-8 lg:mb-10">
+          <div className="flex flex-wrap items-center text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl gap-2">
+            <Link href="/" className="hover:underline font-medium text-gray-800 hover:text-yellow-600 transition-colors">
               Home
             </Link>
-            {" > "}
-            <span className="font-medium text-yellow-500">Restaurants</span>
-          </nav>
+            <span className="text-gray-400">&gt;</span>
+            <span className="font-semibold text-yellow-500">Restaurants</span>
+          </div>
+        </nav>
 
+        {/* In Your Area Section */}
+        <div className="mb-8 sm:mb-10 lg:mb-12">
           <BuffetCarousel
             title="In Your Area"
             seeAllLink="/home/buffet/area"
             items={buffet.inYourArea}
           />
+        </div>
 
-          <div className="flex justify-between items-center mt-6">
-            <h2 className="text-xl font-semibold">
+        {/* Previous Choices Section */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">
               Based on your previous choices
             </h2>
             <Link
               href="/home/buffet/choices"
-              className="text-orange-500 text-sm font-semibold"
+              className="text-orange-500 text-sm sm:text-base font-semibold hover:text-orange-600 transition-colors self-start sm:self-auto"
             >
               See All
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+          {/* Responsive Grid for Restaurant Cards */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
             {buffet.previousChoices.map((restaurant, index) => (
-              <RestaurantCard key={restaurant.id} {...restaurant} index={index} />
+              <div key={restaurant.id} className="w-full">
+                <RestaurantCard {...restaurant} index={index} />
+              </div>
             ))}
           </div>
         </div>

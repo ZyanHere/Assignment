@@ -153,7 +153,7 @@ const WishlistItem = ({
       </CardHeader>
 
       <CardContent>
-        <div className="flex gap-4">
+        <div className="sm:flex-col flex-row md:flex gap-4">
           {/* Product Image */}
           <div className="relative w-24 h-24 flex-shrink-0">
             <Image

@@ -113,7 +113,7 @@ const PaymentMethods = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="md:flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <div>
           <h2 className="text-2xl font-bold">Payment Methods</h2>
           <p className="text-gray-600 mt-1">

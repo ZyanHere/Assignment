@@ -103,7 +103,7 @@ const SavedDeal = () => {
   };
 
   return (
-    <div className="p-4 lg:p-8">
+    <div className="md:p-4 p-1 lg:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header with filter options - Skeleton when loading */}
         {loading && !wishlistItems.length ? (

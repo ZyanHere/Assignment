@@ -119,81 +119,117 @@ export default function RestaurantDetailPage({ params }) {
   console.log('Original Data: ', data.data);
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 min-h-screen bg-gray-50">
       <Header />
-      <div className="p-6 w-full max-w-[1700px] mx-auto">
-        <div className="px-6 md:px-12">
-          <nav className="mb-4 text-2xl">
-            <Link href="/" className="hover:underline font-medium">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        {/* Breadcrumb Navigation */}
+        <nav className="mb-4 sm:mb-6">
+          <div className="flex flex-wrap items-center text-sm sm:text-base lg:text-lg gap-1 sm:gap-2">
+            <Link href="/" className="hover:underline font-medium text-gray-700 hover:text-yellow-600 transition-colors">
               Home
             </Link>
-            <span className="mx-2 text-gray-400">&gt;</span>
-            <Link href="/home/buffet" className="hover:underline font-medium">
+            <span className="text-gray-400">&gt;</span>
+            <Link href="/home/buffet" className="hover:underline font-medium text-gray-700 hover:text-yellow-600 transition-colors">
               Restaurants
             </Link>
-            <span className="mx-2 text-gray-400">&gt;</span>
-            <span className="font-semibold text-yellow-500">
+            <span className="text-gray-400">&gt;</span>
+            <span className="font-semibold text-yellow-600 truncate">
               {restaurant.name}
             </span>
-          </nav>
+          </div>
+        </nav>
 
-          <div className="w-full mb-6">
+        {/* Restaurant Banner */}
+        <div className="w-full mb-6 sm:mb-8">
+          <div className="relative overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl shadow-lg">
             <Image
               src={restaurant.banner}
               alt={`${restaurant.name} Banner`}
               height={400}
               width={1200}
-              className="w-full h-auto rounded-b-4xl shadow-md"
+              className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover"
+              priority
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
+        </div>
 
-          <h2 className="text-2xl font-semibold mb-4">Menu</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Menu Section */}
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">
+            Menu
+          </h2>
+          
+          {/* Responsive Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {restaurant.variants.map((variant) => (
               <div
                 key={variant.id}
-                className={`bg-white p-4 rounded-lg shadow hover:shadow-md transition cursor-pointer min-h-[260px] border-2 ${selectedVariant && selectedVariant.id === variant.id
-                  ? "ring-2 ring-yellow-500 border-yellow-500"
-                  : "border-transparent"
-                  }`}
-                style={{ boxSizing: "border-box" }}
+                className={`bg-white rounded-lg sm:rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-2 ${
+                  selectedVariant && selectedVariant.id === variant.id
+                    ? "ring-2 ring-yellow-500 border-yellow-500 shadow-yellow-200"
+                    : "border-transparent hover:border-gray-200"
+                }`}
                 onClick={() => {
-                  setSelectedVariant(variant)
+                  setSelectedVariant(variant);
                   setSelectedProduct(restaurant);
                 }}
               >
-                <Image
-                  src={variant.images[0].url}
-                  alt={variant.variant_name}
-                  width={300}
-                  height={200}
-                  className="rounded-lg mb-3"
-                />
-                <h3 className="text-lg font-semibold">{variant.variant_name}</h3>
-                {/* <p className="text-gray-600">{variant.attributes}</p> */}
-                <p className="mt-2 font-bold text-orange-500">
-                  ₹{variant.price.base_price}
-                </p>
+                {/* Image Container */}
+                <div className="relative overflow-hidden rounded-t-lg sm:rounded-t-xl">
+                  <Image
+                    src={variant.images[0].url}
+                    alt={variant.variant_name}
+                    width={300}
+                    height={200}
+                    className="w-full h-40 sm:h-48 object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                  {selectedVariant && selectedVariant.id === variant.id && (
+                    <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      Selected
+                    </div>
+                  )}
+                </div>
+                
+                {/* Content */}
+                <div className="p-3 sm:p-4">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                    {variant.variant_name}
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <p className="text-lg sm:text-xl font-bold text-orange-500">
+                      ₹{variant.price.base_price}
+                    </p>
+                    {variant.price.sale_price && variant.price.sale_price < variant.price.base_price && (
+                      <span className="text-xs sm:text-sm bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
+                        Sale
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-          <div className="mt-6 flex items-center">
-            <Button
-              className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-base sm:text-lg font-semibold py-3 sm:py-4 shadow-lg transition-all duration-200"
-              style={{ minWidth: '160px' }}
-              onClick={handleGrab}
-              disabled={grabLoading}
-            >
-              {grabLoading ? (
-                <div className="flex items-center gap-2">
-                  <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-white" />
-                  <span>Grabbing...</span>
-                </div>
-              ) : (
-                "GRAB IT NOW"
-              )}
-            </Button>
-          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="sticky bottom-4 sm:bottom-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border">
+          <Button
+            className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-xl text-sm sm:text-base lg:text-lg font-bold py-3 sm:py-4 lg:py-5 shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            onClick={handleGrab}
+            disabled={grabLoading || !selectedVariant}
+          >
+            {grabLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 animate-spin" />
+                <span>Grabbing...</span>
+              </div>
+            ) : !selectedVariant ? (
+              "Select a Menu Item"
+            ) : (
+              "GRAB IT NOW"
+            )}
+          </Button>
         </div>
       </div>
     </div>

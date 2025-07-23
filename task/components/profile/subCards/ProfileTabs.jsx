@@ -19,7 +19,7 @@ const ProfileTabs = ({ selectedTab, setSelectedTab }) => {
   const tabs = [
     {
       key: "about",
-      name: "About Me",
+      name: "About Me", 
       icon: <User className="w-5 h-5" />,
       color: "text-blue-500"
     },

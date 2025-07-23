@@ -498,7 +498,7 @@ export const BannerHeader = () => {
 
       toast.success(`Location set to ${displayLocation}`);
     } catch (error) {
-      console.error('Auto location detection error:', error);
+      // console.error('Auto location detection error:', error);
       // Don't show error toast for auto-detection, just log it
     } finally {
       setIsAutoDetecting(false);

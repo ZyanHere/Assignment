@@ -14,7 +14,7 @@ export default function MyOrders() {
   const [activeTab, setActiveTab] = useState("orderHistory");
 
   return (
-    <div className="p-4 lg:p-8">
+    <div className="md:p-4 p-1 lg:p-8">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Tabs Header */}
         <motion.div
