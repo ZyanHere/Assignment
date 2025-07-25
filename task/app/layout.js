@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* new changes check  */}
+
         <Providers>
           <SessionProviderWrapper>
             <AuthProvider>
