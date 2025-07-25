@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -13,17 +12,17 @@ import { Skeleton } from "@/components/ui/skeleton"
 const FALLBACK_IMAGE = "https://lastminutedeal.s3.ap-southeast-2.amazonaws.com/retail/products/fallback.png"
 
 const ProductSkeleton = () => (
-  <div className="p-4 flex flex-col gap-4">
+  <div className="p-4 sm:p-6 flex flex-col gap-4">
     {[...Array(3)].map((_, index) => (
       <div key={index} className="p-4 border-b-2 border-gray-300 animate-pulse">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-24 h-24 bg-gray-200 rounded-lg"></div>
-          <div className="h-6 bg-gray-200 rounded w-32"></div>
+          <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-200 rounded-lg"></div>
+          <div className="h-6 bg-gray-200 rounded w-24 sm:w-32"></div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
           {[...Array(6)].map((_, productIndex) => (
             <div key={productIndex} className="animate-pulse">
-              <div className="bg-gray-200 h-48 rounded-xl mb-4"></div>
+              <div className="bg-gray-200 h-24 sm:h-32 md:h-40 rounded-xl mb-4"></div>
               <div className="bg-gray-200 h-4 rounded mb-2"></div>
               <div className="bg-gray-200 h-4 rounded w-3/4"></div>
             </div>
@@ -46,14 +45,12 @@ const CategoryTabs = ({
     homeDataError,
   } = useSelector(state => state.home)
 
-  // Fetch categories if not already loaded
   useEffect(() => {
     if (categories.length === 0 && !homeDataLoading) {
       dispatch(fetchComprehensiveHomeData())
     }
   }, [dispatch, categories.length, homeDataLoading])
 
-  // Prepare categories - show first 6 categories
   const finalCategories = (() => {
     const processedCategories = Array.isArray(categories) 
       ? categories.slice(0, 6).map(cat => ({
@@ -70,26 +67,16 @@ const CategoryTabs = ({
     return processedCategories
   })()
 
-  // Debug log - remove in production
-  useEffect(() => {
-    if (finalCategories.length > 0) {
-      console.log('Final categories for tabs:', finalCategories.map(cat => ({ 
-        id: cat._id || cat.id, 
-        name: cat.name 
-      })))
-    }
-  }, [finalCategories])
-
   return (
-    <div className="mt-6">
-      <div className="flex flex-wrap gap-3 md:gap-4">
+    <div className="mt-4 sm:mt-6">
+      <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4">
         {homeDataLoading ? (
           Array.from({ length: 5 }).map((_, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 w-[120px] md:w-[180px] rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200"
+              className="flex items-center gap-2 px-3 py-2 w-[100px] sm:w-[120px] md:w-[160px] rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200"
             >
-              <Skeleton className="w-8 h-8 rounded-md" />
+              <Skeleton className="w-6 h-6 sm:w-8 sm:h-8 rounded-md" />
               <div className="flex-1">
                 <Skeleton className="h-4 w-3/4" />
               </div>
@@ -113,9 +100,9 @@ const CategoryTabs = ({
                     ? "bg-purple-800 shadow-lg text-white border-2 border-purple-900"
                     : "bg-gray-200 shadow-sm hover:bg-gray-300"
                   }
-                  w-[120px] md:w-[180px] gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3`}
+                  w-[100px] sm:w-[120px] md:w-[160px] gap-2 px-3 py-2 text-xs sm:text-sm`}
               >
-                <div className="relative w-6 h-6 md:w-8 md:h-8">
+                <div className="relative w-6 h-6 sm:w-8 sm:h-8">
                   <Image
                     src={category.imageUrl}
                     alt={category.name}
@@ -127,7 +114,7 @@ const CategoryTabs = ({
                     }}
                   />
                 </div>
-                <span className="font-medium break-words text-center text-xs md:text-sm leading-tight">
+                <span className="font-medium break-words text-center leading-tight">
                   {category.name}
                 </span>
               </button>
@@ -154,53 +141,41 @@ export default function TrendingProducts() {
   const [activeSecondaryCategory, setActiveSecondaryCategory] = useState(null)
   const [fetchAttempts, setFetchAttempts] = useState(0)
   const maxFetchAttempts = 3
+  const [isSmallScreen, setIsSmallScreen] = useState(false)
 
-  // Fetch data on component mount with retry logic
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 640)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   useEffect(() => {
     if (!categories.length && !homeDataLoading && !homeDataError && fetchAttempts < maxFetchAttempts) {
-      console.log(`Fetching home data, attempt ${fetchAttempts + 1}`)
       dispatch(fetchComprehensiveHomeData())
       setFetchAttempts(prev => prev + 1)
     }
-
-    // Timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
-      if (homeDataLoading && fetchAttempts >= maxFetchAttempts) {
-        console.error("Max fetch attempts reached, stopping loading")
-        dispatch({ type: "home/fetchComprehensiveHomeData/rejected", payload: "Max retries reached" })
-      }
-    }, 10000) // 10-second timeout
-
-    return () => clearTimeout(timeout)
   }, [dispatch, categories.length, homeDataLoading, homeDataError, fetchAttempts])
 
-  // Set initial active category
   useEffect(() => {
     if (categories.length > 0 && !activeCategory && !homeDataLoading) {
       const firstCategory = categories[0]
       const firstCategoryId = firstCategory._id || firstCategory.id
       setActiveCategory(firstCategoryId)
-      console.log('Setting initial category:', firstCategoryId, firstCategory.name)
     }
   }, [categories, activeCategory, homeDataLoading])
 
-  // Fetch products for specific category
   useEffect(() => {
     if (activeCategory && !productsByCategory[activeCategory] && !productsLoading[activeCategory]) {
-      console.log('Fetching products for category:', activeCategory)
       dispatch(fetchProductsByCategory(activeCategory))
     }
   }, [activeCategory, productsByCategory, productsLoading, dispatch])
 
   const handlePrimaryCategoryClick = (categoryId) => {
-    console.log('Category clicked:', categoryId)
     setActiveCategory(categoryId)
     setActiveSecondaryCategory(null)
-  }
-
-  const handleSecondaryCategoryClick = (categoryId) => {
-    setActiveSecondaryCategory(prev => (prev === categoryId ? null : categoryId))
-    console.log('Secondary category clicked:', categoryId)
   }
 
   const handleProductClick = (product) => {
@@ -226,7 +201,114 @@ export default function TrendingProducts() {
     })) || []
   }
 
-  const getCurrentCategoryName = () => {
+  const currentProducts = getCurrentProducts()
+  const displayedProducts = isSmallScreen && currentProducts.length > 4 
+    ? currentProducts.slice(0, 4) 
+    : currentProducts
+
+  const isLoadingCurrentCategory = activeCategory && productsLoading[activeCategory]
+
+  if (homeDataError) {
+    return (
+      <div className="px-4 py-8 sm:px-8 sm:py-12">
+        <div className="mx-auto max-w-7xl bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+          <div className="text-center py-8">
+            <p className="text-red-500 text-sm sm:text-base">Error loading data</p>
+            <button 
+              onClick={() => dispatch(fetchComprehensiveHomeData())}
+              className="mt-4 px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-700 text-sm"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="px-4 py-8 sm:px-8 sm:py-12">
+      <div className="mx-auto max-w-7xl bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+        {/* Header section */}
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+              Trending Store Favorites
+            </h1>
+            <CategoryTabs
+              activeCategory={activeCategory}
+              onPrimaryCategoryClick={handlePrimaryCategoryClick}
+            />
+          </div>
+          <div className="md:max-w-xs">
+            <PromotionalCard onButtonClick={handlePromotionalClick} />
+          </div>
+        </div>
+
+        {/* Products section */}
+        <div className="mt-6">
+          <div className="flex items-center gap-4 mb-4">
+            {activeCategory && (
+              <Image
+                src={categories.find(cat => (cat.id || cat._id) === activeCategory)?.imageUrl || FALLBACK_IMAGE}
+                alt={getCurrentCategoryName()}
+                width={60}
+                height={60}
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+                onError={(e) => {
+                  e.target.src = FALLBACK_IMAGE
+                }}
+              />
+            )}
+            <div>
+              <h2 className="text-lg font-semibold">
+                {getCurrentCategoryName()}
+              </h2>
+              <p className="text-gray-600 text-sm">
+                {isLoadingCurrentCategory ? "Loading..." : `${currentProducts.length} items available`}
+              </p>
+            </div>
+          </div>
+          
+          <div className={`grid ${isSmallScreen ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'} gap-4`}>
+            {isLoadingCurrentCategory ? (
+              Array.from({ length: isSmallScreen ? 4 : 6 }).map((_, idx) => (
+                <div key={idx} className="animate-pulse">
+                  <div className="bg-gray-200 h-40 rounded-lg mb-2"></div>
+                  <div className="bg-gray-200 h-4 rounded mb-1"></div>
+                  <div className="bg-gray-200 h-4 rounded w-3/4"></div>
+                </div>
+              ))
+            ) : displayedProducts.length === 0 ? (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500">No products available</p>
+              </div>
+            ) : (
+              displayedProducts.map(product => (
+                <div key={product.id || product._id} className="group">
+                  <SubProductRedux 
+                    product={product} 
+                    onClick={() => handleProductClick(product)}
+                    compact={isSmallScreen}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+
+          {isSmallScreen && currentProducts.length > 4 && (
+            <div className="mt-4 text-center">
+              <button className="text-purple-800 hover:text-purple-900 text-sm font-medium">
+                View all {currentProducts.length} products →
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+
+  function getCurrentCategoryName() {
     if (activeSecondaryCategory) {
       const secondaryCategory = categories.find(cat => 
         cat.subcategories?.find(sub => (sub.id || sub._id) === activeSecondaryCategory)
@@ -239,137 +321,4 @@ export default function TrendingProducts() {
     const category = categories.find(cat => (cat.id || cat._id) === activeCategory)
     return category?.name || "Category"
   }
-
-  const currentProducts = getCurrentProducts()
-  const isLoadingCurrentCategory = activeCategory && productsLoading[activeCategory]
-
-  // Error state
-  if (homeDataError) {
-    return (
-      <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-20 rounded-3xl">
-        <div className="mx-auto bg-white p-10 rounded-4xl">
-          <div className="text-center py-12">
-            <p className="text-red-500 text-lg">Error loading data: {homeDataError}</p>
-            <button 
-              onClick={() => dispatch(fetchComprehensiveHomeData())}
-              className="mt-4 px-6 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-700"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Loading state
-  if (homeDataLoading && categories.length === 0) {
-    return (
-      <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-20 rounded-3xl">
-        <div className="mx-auto bg-white p-10 rounded-4xl">
-          <div className="flex bg-purple-800 -mt-10">
-            <div className="bg-white flex-1 rounded-tr-[40px]">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6 mt-10">Trending Store Favorites</h1>
-              <CategoryTabs
-                activeCategory={activeCategory}
-                onPrimaryCategoryClick={handlePrimaryCategoryClick}
-                showAllOption={false}
-              />
-            </div>
-            <div className="-mr-10 bg-white rounded-tr-4xl">
-              <PromotionalCard onButtonClick={handlePromotionalClick} />
-            </div>
-          </div>
-          <div className="bg-purple-800 -mr-10">
-            <div className="bg-white rounded-tr-[40px]">
-              <ProductSkeleton />
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Main content
-  return (
-    <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-20 rounded-3xl">
-      <div className="mx-auto bg-white p-10 rounded-4xl">
-        <div className="flex bg-purple-800 -mt-10">
-          <div className="bg-white flex-1 rounded-tr-[40px]">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6 mt-10">Trending Store Favorites</h1>
-            <CategoryTabs
-              activeCategory={activeCategory}
-              onPrimaryCategoryClick={handlePrimaryCategoryClick}
-              showAllOption={false}
-            />
-          </div>
-          <div className="-mr-10 bg-white rounded-tr-4xl">
-            <PromotionalCard onButtonClick={handlePromotionalClick} />
-          </div>
-        </div>
-        <div className="bg-purple-800 -mr-10">
-          <div className="p-4 flex flex-col gap-4 bg-white rounded-tr-[40px]">
-            <div className="p-4 border-b-2 border-gray-300">
-              <div className="flex items-center gap-4 mb-4">
-                {activeCategory && (
-                  <Image
-                    src={categories.find(cat => (cat.id || cat._id) === activeCategory)?.imageUrl || FALLBACK_IMAGE}
-                    alt={getCurrentCategoryName()}
-                    width={100}
-                    height={100}
-                    className="object-contain"
-                    onError={(e) => {
-                      console.warn(`Failed to load category image: ${e.target.src}`)
-                      e.target.src = FALLBACK_IMAGE
-                    }}
-                  />
-                )}
-                <div>
-                  <h2 className="text-lg font-semibold">{getCurrentCategoryName()}</h2>
-                  <p className="text-gray-600 text-sm">
-                    {isLoadingCurrentCategory ? "Loading..." : `${currentProducts.length} items available`}
-                    {isLoadingCurrentCategory && (
-                      <span className="ml-2 inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-purple-800"></span>
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {isLoadingCurrentCategory ? (
-                  Array.from({ length: 6 }).map((_, idx) => (
-                    <div key={idx} className="animate-pulse">
-                      <div className="bg-gray-200 h-48 rounded-xl mb-4"></div>
-                      <div className="bg-gray-200 h-4 rounded mb-2"></div>
-                      <div className="bg-gray-200 h-4 rounded w-3/4"></div>
-                    </div>
-                  ))
-                ) : currentProducts.length === 0 ? (
-                  <div className="col-span-full text-center py-12">
-                    <p className="text-gray-500 text-lg">No products available in this category</p>
-                    {activeCategory && (
-                      <button 
-                        onClick={() => dispatch(fetchProductsByCategory(activeCategory))}
-                        className="mt-4 px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-700 text-sm"
-                      >
-                        Retry Loading Products
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  currentProducts.map(product => (
-                    <div key={product.id || product._id}>
-                      <SubProductRedux 
-                        product={product} 
-                        onClick={() => handleProductClick(product)} 
-                      />
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
 }

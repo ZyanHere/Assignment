@@ -1,72 +1,127 @@
 "use client";
 
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchComprehensiveHomeData, fetchProductsByCategory } from "@/lib/redux/home/homeSlice"; // Update this path
 import { useCart } from "@/lib/contexts/cart-context";
 import useTimer from "@/lib/hooks/useTimer";
 import Image from "next/image";
 import { Button } from "../ui/button";
 
-const GroceryPromoSection = ({ products = [] }) => {
-  // Normalize product data to match BrandCarousel structure
-  const mappedProducts = products.length > 0 ? products.slice(0, 3).map((p) => {
-    const variant = p.variants?.[0] || {};
-    const basePrice = variant?.price?.base_price || 0;
-    const salePrice = variant?.price?.sale_price || basePrice;
+const GroceryPromoSection = () => {
+  const dispatch = useDispatch();
+  const { 
+    categories, 
+    productsByCategory, 
+    homeDataLoading,
+    productsLoading
+  } = useSelector(state => state.home);
 
-    return {
-      id: p._id || `fallback-${Math.random()}`, // Ensure unique ID
-      name: p.name || "Unknown Product",
-      brand: p.brand || "Unknown Brand",
-      seller: p.vendor_store_id?.store_name || "Unknown Seller",
-      discountedPrice: salePrice,
-      originalPrice: basePrice,
-      image: variant?.images?.[0]?.url || p.images?.[0]?.url || "/fallback.png",
-      weight:
-        p.attributes?.find((attr) => attr.name?.toLowerCase() === "weight")?.value ||
-        "1 unit",
-      time: p.timing?.end_date || null,
-      discount:
-        basePrice && salePrice
-          ? Math.round(((basePrice - salePrice) / basePrice) * 100)
-          : 0,
-    };
-  }) : [
-    {
-      id: "fallback-1",
-      name: "Macbook Pro",
-      brand: "Apple",
-      seller: "Apple Store",
-      originalPrice: 75000,
-      discountedPrice: 67460,
-      discount: 20,
-      image: "/images/macbook.jpg", // Ensure this exists in /public/images
-      weight: "1 unit",
-      time: new Date(Date.now() + 12 * 60 * 60 * 1000),
-    },
-    {
-      id: "fallback-2",
-      name: "Headphone",
-      brand: "Sony",
-      seller: "Sony Store",
-      originalPrice: 3300,
-      discountedPrice: 2690,
-      discount: 20,
-      image: "/images/headphone.jpg", // Ensure this exists in /public/images
-      weight: "1 unit",
-      time: new Date(Date.now() + 12 * 60 * 60 * 1000),
-    },
-    {
-      id: "fallback-3",
-      name: "Macbook Pro",
-      brand: "Apple",
-      seller: "Apple Store",
-      originalPrice: 18400,
-      discountedPrice: 14400,
-      discount: 20,
-      image: "/images/macbook.jpg", // Ensure this exists in /public/images
-      weight: "1 unit",
-      time: new Date(Date.now() + 12 * 60 * 60 * 1000),
-    },
-  ];
+  // Fetch initial data
+  useEffect(() => {
+    dispatch(fetchComprehensiveHomeData());
+  }, [dispatch]);
+
+  // Find Fruits and Vegetables category
+  const fruitsVegCategory = categories.find(cat => 
+    cat.name?.toLowerCase().includes('fruits') && cat.name?.toLowerCase().includes('vegetables') ||
+    cat.name?.toLowerCase().includes('fruit') ||
+    cat.name?.toLowerCase().includes('vegetable') ||
+    cat.name?.toLowerCase() === 'produce' ||
+    cat.name?.toLowerCase() === 'fresh'
+  );
+
+  const categoryId = fruitsVegCategory?._id || fruitsVegCategory?.id;
+
+  // Fetch products for Fruits and Vegetables category
+  useEffect(() => {
+    if (categoryId && !productsByCategory[categoryId] && !productsLoading[categoryId]) {
+      dispatch(fetchProductsByCategory(categoryId));
+    }
+  }, [categoryId, productsByCategory, productsLoading, dispatch]);
+
+  // Get products for the category
+  const categoryProducts = categoryId ? (productsByCategory[categoryId] || []) : [];
+
+  // Normalize product data to match the component structure
+  const mappedProducts = categoryProducts.length > 0 
+    ? categoryProducts.slice(0, 3).map((p) => {
+        const variant = p.variants?.[0] || {};
+        const basePrice = variant?.price?.base_price || p.price || p.originalPrice || 0;
+        const salePrice = variant?.price?.sale_price || p.salePrice || p.discountedPrice || basePrice;
+
+        return {
+          id: p._id || p.id || `product-${Math.random()}`,
+          name: p.name || p.title || "Unknown Product",
+          brand: p.brand || p.manufacturer || "Fresh",
+          seller: p.vendor_store_id?.store_name || p.seller || "Local Store",
+          discountedPrice: salePrice,
+          originalPrice: basePrice,
+          image: variant?.images?.[0]?.url || p.images?.[0]?.url || p.image || p.imageUrl || "/fallback.png",
+          weight: p.attributes?.find((attr) => attr.name?.toLowerCase() === "weight")?.value || 
+                 p.weight || p.unit || "1 kg",
+          time: p.timing?.end_date || new Date(Date.now() + 12 * 60 * 60 * 1000),
+          discount: basePrice && salePrice
+            ? Math.round(((basePrice - salePrice) / basePrice) * 100)
+            : Math.floor(Math.random() * 30) + 10, // Random discount 10-40% if not available
+        };
+      })
+    : [];
+
+  // Check if we have no data
+  const hasNoData = !homeDataLoading && 
+                   (!categoryId || !productsLoading[categoryId]) && 
+                   mappedProducts.length === 0;
+
+  // Show loading state
+  if (homeDataLoading || (categoryId && productsLoading[categoryId])) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="rounded-3xl p-4 sm:p-6 lg:p-8" style={{ background: "#F5FBF5" }}>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 lg:gap-8">
+            <div className="flex-1 w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="bg-white rounded-2xl p-4 shadow-sm border">
+                    <div className="bg-gray-200 rounded-xl h-24 sm:h-28 lg:h-32 mb-3 animate-pulse"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                      <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex-shrink-0 w-full sm:w-[300px] lg:w-[320px]">
+              <div className="h-40 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show "No data present" message
+  if (hasNoData) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="rounded-3xl p-4 sm:p-6 lg:p-8" style={{ background: "#F5FBF5" }}>
+          <div className="flex items-center justify-center h-32">
+            <div className="text-center">
+              <p className="text-gray-500 text-lg font-medium mb-2">No data present</p>
+              <p className="text-gray-400 text-sm">
+                {!fruitsVegCategory 
+                  ? "Fruits & Vegetables category not found"
+                  : "No products available in this category"
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -85,24 +140,24 @@ const GroceryPromoSection = ({ products = [] }) => {
           <div className="flex-shrink-0 flex flex-col justify-center items-center lg:items-end text-center lg:text-right w-full sm:w-[300px] lg:w-[320px]">
             <div className="mb-4">
               <p className="font-medium mb-2 text-sm sm:text-base" style={{ color: "#B6349A" }}>
-                Get 10% OFF On Your First Order
+                Get 10% OFF On Fresh Produce
               </p>
               <h2 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-gray-900 leading-snug">
-                Order Now Your Grocery!
+                Fresh Fruits & Vegetables!
               </h2>
             </div>
 
             <div className="flex justify-center lg:justify-end gap-4 sm:gap-6 mb-4 sm:mb-6">
               <div className="text-center">
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">1k+</div>
-                <div className="text-xs sm:text-sm text-gray-600">Items</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">100+</div>
+                <div className="text-xs sm:text-sm text-gray-600">Fresh Items</div>
               </div>
               <div className="text-center">
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">20</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">30</div>
                 <div className="text-xs sm:text-sm text-gray-600">Minutes</div>
               </div>
               <div className="text-center">
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">30%</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">25%</div>
                 <div className="text-xs sm:text-sm text-gray-600">Up to offers</div>
               </div>
             </div>
@@ -110,14 +165,21 @@ const GroceryPromoSection = ({ products = [] }) => {
             <Button
               className="cursor-pointer text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full text-base sm:text-lg font-medium flex items-center gap-2 transition w-full sm:w-auto"
               style={{ backgroundColor: "#A02B84" }}
+              onClick={() => {
+                // Navigate to fruits and vegetables category
+                console.log('Navigate to category:', fruitsVegCategory?.name);
+              }}
             >
-              Order Now
+              Shop Now
               <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </Button>
           </div>
         </div>
+
+        {/* Debug info - remove in production */}
+       
       </div>
     </div>
   );
@@ -128,10 +190,6 @@ const ProductCardMini = ({ product }) => {
   const timeLeft = useTimer(product.time);
   const { addToCart, cart } = useCart();
   const isInCart = cart.some((item) => item.id === product.id);
-
-  // Debug logs
-  console.log("🧪 ProductCardMini:", product);
-  console.log("Image source:", product.image);
 
   const handleAddToCart = () => {
     if (!isInCart) {
@@ -173,7 +231,7 @@ const ProductCardMini = ({ product }) => {
         <Button
           onClick={handleAddToCart}
           disabled={!product.id}
-          className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[48px] sm:w-[53px] h-[30px] sm:h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
+          className={`absolute bottom-2 right-2 w-[48px] sm:w-[53px] h-[30px] sm:h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md text-xs
             ${
               isInCart
                 ? "bg-green-50 text-green-500 border-green-400"
@@ -193,11 +251,11 @@ const ProductCardMini = ({ product }) => {
         <p className="text-xs text-gray-500 mb-2">({product.brand})</p>
 
         <div className="mb-3">
-          <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-1">
+          <p className="text-xs sm:text-sm font-semibold text-green-600 mb-1">
             {product.discount}% OFF
           </p>
-          <p className="text-xs text grips-orange-500">
-            {timeLeftCount} Min Left
+          <p className="text-xs text-orange-500">
+            {Math.max(timeLeftCount, 120)} Min Left
           </p>
         </div>
 
