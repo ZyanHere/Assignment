@@ -40,10 +40,10 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-lg sm:text-xl md:text-2xl">Account</h3>
             <ul className="text-sm sm:text-base text-black space-y-3 mt-6">
-              <li><Link href="/profile" className="hover:underline hover:text-yellow-600 transition-colors">My Account</Link></li>
-              <li><Link href="/login" className="hover:underline hover:text-yellow-600 transition-colors">Login / Register</Link></li>
+              <li><Link href="/profile?tab=about" className="hover:underline hover:text-yellow-600 transition-colors">My Account</Link></li>
+              <li><Link href="/auth/login" className="hover:underline hover:text-yellow-600 transition-colors">Login / Register</Link></li>
               <li><Link href="/cart" className="hover:underline hover:text-yellow-600 transition-colors">Cart</Link></li>
-              <li><Link href="/wishlist" className="hover:underline hover:text-yellow-600 transition-colors">Wishlist</Link></li>
+              <li><Link href="/profile?tab=saveddeals" className="hover:underline hover:text-yellow-600 transition-colors">Wishlist</Link></li>
               <li><Link href="/categories" className="hover:underline hover:text-yellow-600 transition-colors">Shop</Link></li>
             </ul>
           </div>

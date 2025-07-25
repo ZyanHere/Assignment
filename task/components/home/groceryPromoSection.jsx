@@ -69,12 +69,12 @@ const GroceryPromoSection = ({ products = [] }) => {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-6">
-      <div className="rounded-3xl p-8" style={{ background: "#F5FBF5" }}>
-        <div className="flex items-center justify-between gap-8">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="rounded-3xl p-4 sm:p-6 lg:p-8" style={{ background: "#F5FBF5" }}>
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 lg:gap-8">
           {/* Left - Product Cards Section */}
-          <div className="flex-1">
-            <div className="grid grid-cols-3 gap-6">
+          <div className="flex-1 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {mappedProducts.map((product, index) => (
                 <ProductCardMini key={product.id || index} product={product} />
               ))}
@@ -82,37 +82,37 @@ const GroceryPromoSection = ({ products = [] }) => {
           </div>
 
           {/* Right - Promo */}
-          <div className="flex-shrink-0 flex flex-col justify-center items-end text-right w-[320px]">
+          <div className="flex-shrink-0 flex flex-col justify-center items-center lg:items-end text-center lg:text-right w-full sm:w-[300px] lg:w-[320px]">
             <div className="mb-4">
-              <p className="font-medium mb-2" style={{ color: "#B6349A" }}>
+              <p className="font-medium mb-2 text-sm sm:text-base" style={{ color: "#B6349A" }}>
                 Get 10% OFF On Your First Order
               </p>
-              <h2 className="text-[28px] font-bold text-gray-900 leading-snug">
+              <h2 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-gray-900 leading-snug">
                 Order Now Your Grocery!
               </h2>
             </div>
 
-            <div className="flex justify-end gap-6 mb-6">
+            <div className="flex justify-center lg:justify-end gap-4 sm:gap-6 mb-4 sm:mb-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">1k+</div>
-                <div className="text-sm text-gray-600">Items</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">1k+</div>
+                <div className="text-xs sm:text-sm text-gray-600">Items</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">20</div>
-                <div className="text-sm text-gray-600">Minutes</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">20</div>
+                <div className="text-xs sm:text-sm text-gray-600">Minutes</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">30%</div>
-                <div className="text-sm text-gray-600">Up to offers</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">30%</div>
+                <div className="text-xs sm:text-sm text-gray-600">Up to offers</div>
               </div>
             </div>
 
             <Button
-              className="cursor-pointer text-white px-8 py-3 rounded-full text-lg font-medium flex items-center gap-2 transition"
+              className="cursor-pointer text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full text-base sm:text-lg font-medium flex items-center gap-2 transition w-full sm:w-auto"
               style={{ backgroundColor: "#A02B84" }}
             >
               Order Now
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </Button>
@@ -158,12 +158,12 @@ const ProductCardMini = ({ product }) => {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 border">
       {/* Product Image */}
-      <div className="relative bg-gray-50 rounded-xl h-32 flex items-center justify-center mb-3">
+      <div className="relative bg-gray-50 rounded-xl h-24 sm:h-28 lg:h-32 flex items-center justify-center mb-3">
         <Image
           src={imageSrc}
           alt={product.name || "Product image"}
-          width={100}
-          height={80}
+          width={80}
+          height={60}
           className="object-contain max-w-full max-h-full"
           onError={(e) => {
             e.target.onerror = null;
@@ -173,7 +173,7 @@ const ProductCardMini = ({ product }) => {
         <Button
           onClick={handleAddToCart}
           disabled={!product.id}
-          className={`absolute bottom-2 right-2 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
+          className={`absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[48px] sm:w-[53px] h-[30px] sm:h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md
             ${
               isInCart
                 ? "bg-green-50 text-green-500 border-green-400"
@@ -187,13 +187,13 @@ const ProductCardMini = ({ product }) => {
 
       {/* Product Info */}
       <div className="text-center">
-        <h3 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
+        <h3 className="font-semibold text-xs sm:text-sm text-gray-900 mb-1 line-clamp-1">
           {product.name}
         </h3>
         <p className="text-xs text-gray-500 mb-2">({product.brand})</p>
 
         <div className="mb-3">
-          <p className="text-sm font-semibold text-blue-600 mb-1">
+          <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-1">
             {product.discount}% OFF
           </p>
           <p className="text-xs text grips-orange-500">
@@ -205,7 +205,7 @@ const ProductCardMini = ({ product }) => {
           <p className="text-xs text-gray-400 line-through">
             MRP: ₹{product.originalPrice}
           </p>
-          <p className="text-sm font-bold text-gray-900">
+          <p className="text-xs sm:text-sm font-bold text-gray-900">
             ₹{product.discountedPrice}
           </p>
         </div>

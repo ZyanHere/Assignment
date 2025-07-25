@@ -23,7 +23,7 @@ export default function EventPage() {
         {isError && <p className="text-red-500">{error.message}</p>}
 
         {!isLoading && data && (
-          <div className="p-6">
+          <div className="space-y-12 pl-12 pr-12 mt-8">
             <UpcomingEvents events={data.upcomingEvents} />
             <FeaturedEvents events={data.featuredEvents} />
             <RecommendedEvents events={data.recommendedEvents} />
