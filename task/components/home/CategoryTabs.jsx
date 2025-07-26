@@ -1,33 +1,44 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import useSWR from "swr";
-import { fetcher } from "@/lib/api";
+import { useSelector, useDispatch } from "react-redux";
+import { setSelectedTab, setIsMobile, setNeedsScrolling, fetchComprehensiveHomeData } from "../../lib/redux/home/homeSlice"; // Update this path
 import { Skeleton } from "@/components/ui/skeleton";
 
-
-
-const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
-  // Reference to scroll container for mobile scrolling via buttons
-
+const CategoryTabs = ({ 
+  activeCategory, 
+  onPrimaryCategoryClick,
+  showAllOption = true 
+}) => {
+  const dispatch = useDispatch();
   const scrollContainerRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [needsScrolling, setNeedsScrolling] = useState(false);
-  const { data, error } = useSWR('/lmd/api/v1/retail/categories', fetcher);
-  const finalCategories = Array.isArray(data?.data)
-    ? [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }, ...data.data]
-    : [{ _id: "all", name: "All", imageUrl: "/home/assets/all_logo.svg" }];
+  
+  const {
+    categories,
+    homeDataLoading,
+    homeDataError,
+    isMobile,
+    needsScrolling
+  } = useSelector(state => state.home);
 
-  // Check if we're on mobile and if scrolling is needed on component mount and window resize
+  // Fetch categories if not already loaded
+  useEffect(() => {
+    if (categories.length === 0 && !homeDataLoading) {
+      dispatch(fetchComprehensiveHomeData());
+    }
+  }, [dispatch, categories.length, homeDataLoading]);
+
+  // Check if we're on mobile and if scrolling is needed
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      dispatch(setIsMobile(mobile));
 
       // Check if scrolling is needed
       if (scrollContainerRef.current) {
         const containerWidth = scrollContainerRef.current.clientWidth;
         const scrollWidth = scrollContainerRef.current.scrollWidth;
-        setNeedsScrolling(scrollWidth > containerWidth);
+        dispatch(setNeedsScrolling(scrollWidth > containerWidth));
       }
     };
 
@@ -41,7 +52,16 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
     return () => {
       window.removeEventListener('resize', checkScreenSize);
     };
-  }, [data]);
+  }, [dispatch]);
+
+  // Check scrolling needs when categories are loaded
+  useEffect(() => {
+    if (!homeDataLoading && categories.length > 0 && scrollContainerRef.current) {
+      const containerWidth = scrollContainerRef.current.clientWidth;
+      const scrollWidth = scrollContainerRef.current.scrollWidth;
+      dispatch(setNeedsScrolling(scrollWidth > containerWidth));
+    }
+  }, [homeDataLoading, categories.length, dispatch]);
 
   // Function to handle scrolling left and right
   const scroll = (direction) => {
@@ -51,6 +71,41 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
         left: scrollAmount,
         behavior: 'smooth'
       });
+    }
+  };
+
+  // Prepare categories - show only first 6 categories
+  const finalCategories = (() => {
+    // Ensure categories have proper structure for display
+    const processedCategories = Array.isArray(categories) 
+      ? categories.slice(0, 6).map(cat => ({
+          ...cat,
+          _id: cat._id || cat.id,
+          id: cat.id || cat._id,
+          name: cat.name || 'Unnamed Category',
+          imageUrl: cat.imageUrl || cat.image || "/home/assets/default_category.svg"
+        }))
+      : [];
+    
+    return processedCategories;
+  })();
+
+  // Debug log - remove in production
+  useEffect(() => {
+    if (finalCategories.length > 0) {
+      console.log('Final categories for tabs:', finalCategories.map(cat => ({ 
+        id: cat._id || cat.id, 
+        name: cat.name 
+      })));
+    }
+  }, [finalCategories]);
+
+  // Handle category click
+  const handleCategoryClick = (categoryId) => {
+    if (onPrimaryCategoryClick) {
+      onPrimaryCategoryClick(categoryId);
+    } else {
+      dispatch(setSelectedTab(categoryId));
     }
   };
 
@@ -83,14 +138,14 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
       {/* Scrollable container */}
       <div
         ref={scrollContainerRef}
-        className="overflow-x-auto no-scrollbar px-4 w-full"
+        className="overflow-x-auto no-scrollbar px-0 md:px-4 w-full"
       >
-        <div className="flex gap-4 whitespace-nowrap min-w-fit">
-          {!data && !error ? (
+        <div className="flex gap-3 md:gap-4 whitespace-nowrap min-w-fit snap-x snap-mandatory">
+          {homeDataLoading ? (
             Array.from({ length: 5 }).map((_, idx) => (
               <div
                 key={idx}
-                className={`flex items-center gap-3 px-5 py-3 w-[180px] flex-shrink-0 rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200`}
+                className={`flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 w-[120px] md:w-[180px] flex-shrink-0 rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200`}
               >
                 <Skeleton className="w-8 h-8 rounded-md" />
                 <div className="flex-1">
@@ -98,29 +153,38 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
                 </div>
               </div>
             ))
+          ) : homeDataError ? (
+            <div className="flex items-center justify-center w-full py-4">
+              <p className="text-red-500 text-sm">Error loading categories</p>
+            </div>
           ) : (
             finalCategories?.map((category) => {
-              const isActive = selectedTab === category._id;
+              const categoryId = category._id || category.id;
+              const isActive = activeCategory === categoryId;
+              
               return (
                 <button
-                  key={category._id}
-                  onClick={() => setSelectedTab(category._id)}
-                  className={`flex items-center rounded-xl transition-all duration-200
+                  key={categoryId}
+                  onClick={() => handleCategoryClick(categoryId)}
+                  className={`flex items-center rounded-xl transition-all duration-200 snap-center
                   ${isActive
-                      ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4"
-                      : "bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200 shadow-sm border-b border-yellow-500"
+                      ? "bg-purple-800 shadow-lg text-white border-2 border-purple-900"
+                      : "bg-gray-200 shadow-sm hover:bg-gray-300"
                     }
                   ${isMobile
-                      ? "gap-2 px-3 py-2 w-[140px] flex-shrink-0"
+                      ? "gap-2 px-3 py-2 w-[120px] flex-shrink-0"
                       : "gap-3 px-5 py-3 w-[180px] flex-shrink-0"
                     }`}
                 >
                   <div className={`relative ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}>
                     <Image
-                      src={category.imageUrl}
+                      src={category.imageUrl || "/home/assets/default_category.svg"}
                       alt={category.name}
                       fill
                       className="object-contain"
+                      onError={(e) => {
+                        e.target.src = "/home/assets/default_category.svg";
+                      }}
                     />
                   </div>
                   <span className={`font-medium break-words text-center ${isMobile ? "text-xs" : "text-sm"} leading-tight`}>
@@ -129,9 +193,7 @@ const CategoryTabs = ({ selectedTab, setSelectedTab }) => {
                 </button>
               );
             })
-
           )}
-
         </div>
       </div>
     </div>
