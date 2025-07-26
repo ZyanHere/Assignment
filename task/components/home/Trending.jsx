@@ -285,7 +285,7 @@ export default function TrendingProducts() {
       <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-gray-800">
       </h2>
       <p className="text-gray-600 text-xs sm:text-sm mt-1">
-   
+
       </p>
     </div>
   </div>
