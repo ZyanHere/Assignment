@@ -47,7 +47,7 @@ const Signup = () => {
       };
 
       const res = await axios.post(
-        "https://lmd-user-2ky8.onrender.com/lmd/api/v1/auth/customer/signup",
+        "https://api.lastminutessdeal.com/lmd/api/v1/auth/customer/signup",
         payload
       );
 
@@ -63,7 +63,7 @@ const Signup = () => {
       // Optionally persist "remember me" here (e.g. cookie/localStorage)
 
       // Redirect to next step (e.g. OTP verification)
-      router.push("/auth/verification");
+      router.push("/auth/verify-email");
     } catch (err) {
       const msg =
         err.response?.data?.message ||

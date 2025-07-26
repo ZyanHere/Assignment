@@ -4,73 +4,75 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-import axios from "axios";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function Success() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(5); // Auto-redirect timer
-  const { phone, password } = useSelector((state) => state.user);
+  const [countdown, setCountdown] = useState(5);
+  const { email, phone, password } = useSelector((state) => state.user);
+  const { data: session, status } = useSession();
 
-  const handleSkip = async () => {
-    if (!phone || !password) {
-      toast.error("Missing credentials");
-      return;
-    }
+  const identifier = phone || email;
+  const hasCredentials = identifier && password;
+  const isPostVerification = !hasCredentials;
 
+  const handleLogin = async () => {
     try {
       const loginRes = await signIn("credentials", {
         redirect: false,
-        phone,
+        email: identifier,
         password,
       });
 
-      if (loginRes.ok && !loginRes.error) {
-        await axios.get("/lmd/api/v1/csrf-token", {
-          withCredentials: true,
-        });
+      if (loginRes.ok) {
         toast.success("Login successful!");
-        router.push("/");
+        router.push("/auth/location");
       } else {
-        toast.error("Login failed");
+        toast.error("Login failed.");
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Login error:", err);
       toast.error("Something went wrong during login.");
-      console.error(error);
     }
   };
 
-  // Auto redirect after countdown
   useEffect(() => {
-    if (isLoading) return; // Cancel countdown if redirect is in progress
-
-    if (countdown > 0) {
-      const timer = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(timer);
-    } else {
+    if (status === "authenticated") {
       router.push("/auth/location");
+      return;
     }
-  }, [countdown, router, isLoading]);
+
+    if (!hasCredentials) {
+      const timer = setTimeout(() => {
+        router.push("/auth/login");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [countdown, hasCredentials, router, status]);
 
   const handleContinue = () => {
-    setIsLoading(true);
-    router.push("/auth/location");
+    if (hasCredentials) {
+      setIsLoading(true);
+      handleLogin();
+    } else {
+      router.push("/auth/login");
+    }
   };
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       {/* Left Side */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-4 py-8 md:py-0 mx-auto">
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-4 py-8 mx-auto">
         <div className="w-full max-w-xs sm:max-w-md md:max-w-[340px] mx-auto flex flex-col items-center">
           {/* Success Icon */}
-          <div
-            role="status"
-            aria-label="Account created successfully"
-            className="w-20 h-20 md:w-24 md:h-24 border-4 border-yellow-400 rounded-full flex items-center justify-center animate-fade-in mx-auto"
-          >
+          <div className="w-20 h-20 md:w-24 md:h-24 border-4 border-yellow-400 rounded-full flex items-center justify-center animate-fade-in mx-auto">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -83,50 +85,36 @@ export default function Success() {
             </svg>
           </div>
 
-          {/* Success Message */}
           <h2 className="text-2xl md:text-3xl font-medium text-black mt-6 text-center">
-            Successfully
+            {isPostVerification ? "Email Verified!" : "Successfully"}
           </h2>
-          <p className="text-gray-600 mt-2  text-center">
-            Your account has been created.
+          <p className="text-gray-600 mt-2 text-center">
+            {isPostVerification
+              ? "Your email has been verified. You can now log in."
+              : "Your account has been created."}
           </p>
 
-          {/* Continue Button */}
           <button
             onClick={handleContinue}
             disabled={isLoading}
-            className={`w-full max-w-xs sm:max-w-md py-3 mt-6 text-white font-semibold rounded-lg transition-colors text-center ${
+            className={`w-full py-3 mt-6 text-white font-semibold rounded-lg transition-colors ${
               isLoading
                 ? "bg-yellow-300 cursor-not-allowed"
                 : "bg-yellow-400 hover:bg-yellow-500"
             }`}
-            aria-label="Continue to homepage"
           >
-            {isLoading ? (
-              <span className="flex items-center justify-center">
-                <svg
-                  className="animate-spin h-5 w-5 mr-2"
-                  viewBox="0 0 24 24"
-                />
-                Logging in...
-              </span>
-            ) : (
-              "CONTINUE NOW"
-            )}
+            {isLoading
+              ? "Logging in..."
+              : isPostVerification
+              ? "Go to Login"
+              : "CONTINUE NOW"}
           </button>
 
-          {/* Optional: Skip and auto-login button */}
-          <button
-            onClick={handleSkip}
-            className="mt-4 text-sm text-gray-500 hover:underline"
-          >
-            Skip and login now
-          </button>
-
-          {/* Countdown Info */}
-          <p className="mt-2 text-xs text-gray-400 text-center">
-            Redirecting in {countdown} seconds...
-          </p>
+          {hasCredentials && (
+            <p className="mt-2 text-xs text-gray-400 text-center">
+              Auto-login in {countdown} seconds...
+            </p>
+          )}
         </div>
       </div>
 
