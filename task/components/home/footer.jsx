@@ -31,9 +31,9 @@ const Footer = () => {
           {/* Support */}
           <div>
             <h3 className="font-bold text-lg sm:text-xl md:text-2xl">Support</h3>
-            <p className="text-sm sm:text-base text-black mt-6 max-w-[180px]">111 Bijoy sarani, Dhaka, DH 1515, India.</p>
-            <p className="text-sm sm:text-base text-black mt-4">exclusive@gmail.com</p>
-            <p className="text-sm sm:text-base text-black mt-4">+88015-88888-9999</p>
+            <p className="text-sm sm:text-base text-black mt-6 max-w-[180px]">Fl no. 01, Dhatrak Sankul, PNVT, Panchvati, Nashik Nashik MAHARASHTRA 422003</p>
+            <p className="text-sm sm:text-base text-black mt-4">info@thelastminutesdeal.com</p>
+            <p className="text-sm sm:text-base text-black mt-4">8149042420</p>
           </div>
 
           {/* Account */}

@@ -187,7 +187,7 @@ const GroceryPromoSection = () => {
 
 // Mini Product Card Component
 const ProductCardMini = ({ product }) => {
-  const timeLeft = useTimer(product.time);
+  // const timeLeft = useTimer(product.time);
   const { addToCart, cart } = useCart();
   const isInCart = cart.some((item) => item.id === product.id);
 
@@ -206,7 +206,7 @@ const ProductCardMini = ({ product }) => {
     }
   };
 
-  const timeLeftCount = timeLeft ? timeLeft.hours * 60 + timeLeft.minutes : 0;
+  // const timeLeftCount = timeLeft ? timeLeft.hours * 60 + timeLeft.minutes : 0;
 
   const imageSrc =
     product.image && typeof product.image === "string" && product.image.trim() !== ""
@@ -254,9 +254,9 @@ const ProductCardMini = ({ product }) => {
           <p className="text-xs sm:text-sm font-semibold text-green-600 mb-1">
             {product.discount}% OFF
           </p>
-          <p className="text-xs text-orange-500">
+          {/* <p className="text-xs text-orange-500">
             {Math.max(timeLeftCount, 120)} Min Left
-          </p>
+          </p> */}
         </div>
 
         <div className="mb-3">

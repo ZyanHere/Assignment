@@ -7,8 +7,8 @@ const navItems = [
   { name: "Home", path: "/" },
   { name: "Categories", path: "/categories" },
   { name: "Stores", path: "/stores" },
-  { name: "Cart", path: "/cart" },
-  { name: "Orders", path: "/orders" },
+  // { name: "Cart", path: "/cart" },
+  // { name: "Orders", path: "/orders" },
 ];
 
 const NavLinks = ({ isMobile = false }) => {

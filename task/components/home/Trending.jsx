@@ -16,7 +16,7 @@ const ProductSkeleton = () => (
     {[...Array(3)].map((_, index) => (
       <div key={index} className="p-2 sm:p-4 md:p-6 border-b-2 border-gray-300 animate-pulse">
         <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
-          <div className="w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20 md:h-24 bg-gray-200 rounded-lg"></div>
+          <div className="w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20  bg-gray-200 rounded-lg"></div>
           <div className="h-4 sm:h-6 bg-gray-200 rounded w-16 sm:w-24 md:w-32"></div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 sm:gap-4">
@@ -268,7 +268,7 @@ export default function TrendingProducts() {
             </div>
           </div>
         ) : (
-          <div className="flex bg-purple-800">
+          <div className="flex bg-purple-800 -mt-6 -mr-6 rounded-tr-4xl">
             <div className="bg-white flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
               <div className="p-2 sm:p-4 md:p-6 pt-2 sm:pt-4 md:pt-6">
                 <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
@@ -280,7 +280,7 @@ export default function TrendingProducts() {
                 />
               </div>
             </div>
-            <div className="bg-white rounded-tr-2xl sm:rounded-tr-3xl md:rounded-tr-4xl overflow-hidden">
+            <div className="bg-white rounded-tr-2xl sm:rounded-tr-3xl md:rounded-tr-4xl overflow-hidden ">
               <PromotionalCard onButtonClick={handlePromotionalClick} />
             </div>
           </div>
