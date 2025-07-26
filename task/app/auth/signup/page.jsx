@@ -57,6 +57,7 @@ const Signup = () => {
           user: res.data.data.user,
           phone: data.phone,
           password: data.password,
+          email: data.email,
         })
       );
 

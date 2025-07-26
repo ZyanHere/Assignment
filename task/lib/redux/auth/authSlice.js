@@ -24,6 +24,7 @@ const authSlice = createSlice({
       state.user = action.payload.user || null;
       state.phone = action.payload.phone;      // Store for auto-login
       state.password = action.payload.password;
+      state.email = action.payload.email;
     },
     
     signUpFailure: (state, action) => {

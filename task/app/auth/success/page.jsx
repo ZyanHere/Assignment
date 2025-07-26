@@ -11,25 +11,20 @@ export default function Success() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(5); // Auto-redirect timer
-  const { phone, password } = useSelector((state) => state.user);
+  const { email, password } = useSelector((state) => state.user);
 
   const handleSkip = async () => {
-    if (!phone || !password) {
+    if (!email || !password) {
       toast.error("Missing credentials");
       return;
     }
-
     try {
       const loginRes = await signIn("credentials", {
         redirect: false,
-        phone,
+        email,
         password,
       });
-
       if (loginRes.ok && !loginRes.error) {
-        await axios.get("/lmd/api/v1/csrf-token", {
-          withCredentials: true,
-        });
         toast.success("Login successful!");
         router.push("/");
       } else {
@@ -55,9 +50,27 @@ export default function Success() {
     }
   }, [countdown, router, isLoading]);
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     setIsLoading(true);
-    router.push("/auth/location");
+    if (!email || !password) {
+      router.push("/auth/location");
+      return;
+    }
+    try {
+      const loginRes = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      if (loginRes.ok && !loginRes.error) {
+        toast.success("Login successful!");
+        router.push("/");
+      } else {
+        router.push("/auth/location");
+      }
+    } catch (error) {
+      router.push("/auth/location");
+    }
   };
 
   return (
