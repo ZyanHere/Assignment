@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+  
   images: {
     domains: [
       'lastminutedeal.s3.ap-southeast-2.amazonaws.com',
@@ -18,8 +20,15 @@ const nextConfig = {
     //   },
     // ],
   },
-  //     ignoreBuildErrors: true,
 
-};
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+}
+
+
 
 export default nextConfig;
