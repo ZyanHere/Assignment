@@ -226,11 +226,7 @@ export const categories = [
           salePrice: "₹255",
         },
       ],
-    },
-  ]
-  
-  export const secondaryCategories = [
-    {
+    },{
       id: "quick-prep-veggies",
       name: "Quick Prep Veggies",
       products: [
@@ -266,8 +262,7 @@ export const categories = [
           salePrice: "₹92",
         },
       ],
-    },
-    {
+    },{
       id: "bakery-dairy",
       name: "Bakery & Dairy",
       products: [
@@ -304,4 +299,45 @@ export const categories = [
         },
       ],
     },
+  ]
+  
+  export const secondaryCategories = [
+    
+    // {
+    //   id: "bakery-dairy",
+    //   name: "Bakery & Dairy",
+    //   products: [
+    //     {
+    //       id: 1,
+    //       name: "Fresh Milk",
+    //       subtitle: "(Farm Fresh Daily)",
+    //       image: "/placeholder.svg?height=120&width=120",
+    //       discount: "5% OFF",
+    //       stock: "50 Left",
+    //       originalPrice: "₹60",
+    //       salePrice: "₹57",
+    //     },
+    //     {
+    //       id: 2,
+    //       name: "Whole Wheat Bread",
+    //       subtitle: "(Freshly Baked)",
+    //       image: "/placeholder.svg?height=120&width=120",
+    //       discount: "15% OFF",
+    //       stock: "12 Left",
+    //       originalPrice: "₹80",
+    //       salePrice: "₹68",
+    //       selected: true,
+    //     },
+    //     {
+    //       id: 3,
+    //       name: "Greek Yogurt",
+    //       subtitle: "(Probiotic Rich)",
+    //       image: "/placeholder.svg?height=120&width=120",
+    //       discount: "20% OFF",
+    //       stock: "30 Left",
+    //       originalPrice: "₹150",
+    //       salePrice: "₹120",
+    //     },
+    //   ],
+    // },
   ]

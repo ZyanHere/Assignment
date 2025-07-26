@@ -13,7 +13,7 @@ const Recommended = ({ movies = [] }) => {
   };
 
   return (
-    <section className="mb-10">
+    <section className="pl-12 pr-12 mt-8">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Recommended for You</h2>
         <Link href="/home/movie/section/recommended" className="text-blue-600 font-medium">

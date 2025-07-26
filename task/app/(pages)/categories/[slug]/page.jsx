@@ -6,25 +6,28 @@ import Image from "next/image";
 import useSWR from "swr";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/footer";
-import CategoryCarousel from "@/components/categories/CategoryCarousel";
 import SubProduct from "@/components/subcategoryProduct/SubProduct";
 import { useState, useEffect, useMemo } from "react";
 import { fetcher } from "@/lib/api";
+import SortSheet from "@/app/components/sortSheet";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Simple FilterButton component
-const FilterButton = ({ children }) => (
-  <button className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+
+const FilterButton = ({ children, onClick }) => (
+  <button
+    onClick={onClick}
+    className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+  >
     {children}
   </button>
 );
 
-// Loading skeleton for subcategories
 const SubcategorySkeleton = () => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 px-3 sm:px-4 md:px-6 lg:px-8 mt-6">
-    {[...Array(8)].map((_, i) => (
-      <div key={i} className="animate-pulse">
-        <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-20 lg:h-20 xl:w-24 xl:h-24 bg-gray-200 rounded-lg mx-auto mb-2"></div>
-        <div className="bg-gray-200 rounded h-3 w-full"></div>
+  <div className="flex flex-col gap-4 p-2">
+    {[...Array(6)].map((_, i) => (
+      <div key={i} className="flex items-center gap-3">
+        <Skeleton className="w-10 h-10 rounded-md" />
+        <Skeleton className="h-4 w-3/4" />
       </div>
     ))}
   </div>
@@ -32,9 +35,17 @@ const SubcategorySkeleton = () => (
 
 export default function CategorySlugPage() {
   const { slug } = useParams();
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
 
-  // Fetch all categories with caching
+  // which subcategory is active?
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(null);
+
+  // current sort
+  const [sortOption, setSortOption] = useState("relevance");
+
+  // control SortSheet open/close
+  const [sortOpen, setSortOpen] = useState(false);
+
+  /* ---------------- Fetch all categories (for slug lookup) ---------------- */
   const {
     data: categoriesData,
     error: categoriesError,
@@ -42,47 +53,47 @@ export default function CategorySlugPage() {
   } = useSWR("/lmd/api/v1/retail/categories", fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 60000, // Cache for 1 minute
+    dedupingInterval: 60_000,
   });
 
-  // Memoize category to prevent unnecessary re-renders
-  const category = useMemo(() => {
-    return categoriesData?.data?.find((cat) => cat.slug === slug);
-  }, [categoriesData?.data, slug]);
+  /* ---------------- Find current category by slug ---------------- */
+  const category = useMemo(
+    () => categoriesData?.data?.find((cat) => cat.slug === slug),
+    [categoriesData?.data, slug]
+  );
 
-  // Fetch subcategories of the matched category
+  /* ---------------- Fetch subcategories for category ---------------- */
   const {
     data: subcategoriesData,
     error: subcategoriesError,
     isLoading: loadingSubcategories,
   } = useSWR(
-    category ? `/lmd/api/v1/retail/categories/${category._id}/subcategories` : null,
+    category
+      ? `/lmd/api/v1/retail/categories/${category._id}/subcategories`
+      : null,
     fetcher,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      dedupingInterval: 60000, // Cache for 1 minute
+      dedupingInterval: 60_000,
     }
   );
 
-  // Auto-select first subcategory when data loads
+  /* ---------------- Auto-select first subcategory when loaded ---------------- */
   useEffect(() => {
-    if (
-      subcategoriesData?.data?.length > 0 &&
-      !selectedSubcategory
-    ) {
-      setSelectedSubcategory(subcategoriesData.data[0]._id);
+    if (subcategoriesData?.data?.length && !selectedSubcategoryId) {
+      setSelectedSubcategoryId(subcategoriesData.data[0]._id);
     }
-  }, [subcategoriesData, selectedSubcategory]);
+  }, [subcategoriesData, selectedSubcategoryId]);
 
-  // Loading state
+  /* ---------------- Loading state (categories) ---------------- */
   if (loadingCategories) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto mb-4" />
             <p className="text-gray-600">Loading category...</p>
           </div>
         </div>
@@ -91,7 +102,7 @@ export default function CategorySlugPage() {
     );
   }
 
-  // Error state
+  /* ---------------- Error / missing category ---------------- */
   if (!category || categoriesError) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
@@ -101,7 +112,9 @@ export default function CategorySlugPage() {
             <h2 className="text-xl sm:text-2xl font-semibold text-red-500 mb-2">
               Category not found
             </h2>
-            <p className="text-gray-600 mb-4">The category you're looking for doesn't exist.</p>
+            <p className="text-gray-600 mb-4">
+              The category you're looking for doesn't exist.
+            </p>
             <Link
               href="/categories"
               className="inline-block px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
@@ -115,6 +128,7 @@ export default function CategorySlugPage() {
     );
   }
 
+  /* ---------------- Render page ---------------- */
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
@@ -123,7 +137,6 @@ export default function CategorySlugPage() {
         {/* Breadcrumb + Filters */}
         <section className="py-4 sm:py-6 md:py-8">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            {/* Breadcrumb Navigation */}
             <nav className="flex items-center text-sm sm:text-base md:text-lg lg:text-xl">
               <Link
                 href="/categories"
@@ -137,16 +150,24 @@ export default function CategorySlugPage() {
               </span>
             </nav>
 
-            {/* Filter Buttons */}
             <div className="flex gap-2 sm:gap-3">
               <FilterButton>Filters</FilterButton>
-              <FilterButton>Sort</FilterButton>
+              <SortSheet
+                open={sortOpen}
+                onOpenChange={setSortOpen}
+                currentSort={sortOption}
+                onApply={(option) => {
+                  setSortOption(option);
+                  setSortOpen(false);
+                }}
+              />
             </div>
           </div>
         </section>
 
-        {/* Subcategories Grid */}
+        {/* Subcategories list + Products grid */}
         <section className="flex flex-1 overflow-hidden min-h-[500px] sm:min-h-[600px]">
+          {/* Left: subcategory list */}
           <div className="w-1/4 sm:w-1/6 overflow-y-auto max-h-[80vh]">
             {loadingSubcategories ? (
               <div className="p-4">
@@ -157,11 +178,12 @@ export default function CategorySlugPage() {
                 {subcategoriesData.data.map((sub) => (
                   <div
                     key={sub._id}
-                    onClick={() => setSelectedSubcategory(sub._id)}
-                    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all ${selectedSubcategory === sub._id
+                    onClick={() => setSelectedSubcategoryId(sub._id)}
+                    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all ${
+                      selectedSubcategoryId === sub._id
                         ? "bg-yellow-100 font-semibold"
                         : "hover:bg-gray-100"
-                      }`}
+                    }`}
                   >
                     <div className="relative w-10 h-10 flex-shrink-0">
                       <Image
@@ -181,20 +203,22 @@ export default function CategorySlugPage() {
               </div>
             )}
           </div>
+
+          {/* Divider */}
           <div className="w-[2px] bg-gray-300" />
+
+          {/* Right: products */}
           <div className="flex-1 overflow-y-auto max-h-[80vh] p-3 sm:p-5">
-            {/* Products for selected subcate gory */}
-            {selectedSubcategory && (
-              <section className="mb-8 sm:mb-12">
-                <SubProduct subCategoryId={selectedSubcategory} />
-              </section>
+            {selectedSubcategoryId && (
+              <SubProduct
+                subCategoryId={selectedSubcategoryId}
+                sortOption={sortOption}
+              />
             )}
           </div>
         </section>
 
-
-
-        {/* Optional carousels - commented out for performance */}
+        {/* Optional carousels – keep commented if heavy */}
         {/* <section className="mt-8 sm:mt-12">
           <CategoryCarousel />
         </section> */}

@@ -50,14 +50,17 @@ export async function updateCartItem(itemId, quantity) {
   }
 }
 
-/** DELETE /retail/cart/me/items/:itemId */
-export async function removeItem(itemId) {
+/** DELETE /retail/cart/me/items */
+export async function removeItem(variantId) {
   try {
-    await api.delete(`/lmd/api/v1/retail/cart/me/items/${itemId}`);
+    await api.delete('/lmd/api/v1/retail/cart/me/items', {
+      data: { variant_id: variantId },
+    });
   } catch (e) {
     unwrapError(e);
   }
 }
+
 
 /** DELETE /retail/cart/me */
 export async function clearCart() {

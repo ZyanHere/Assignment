@@ -7,16 +7,13 @@ import { Button } from "../ui/button";
 import { useProduct } from "@/lib/contexts/productContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
 import { useAuth } from "@/lib/hooks/useAuth";
-
 import { Heart, Loader2 } from "lucide-react";
 import { useWishlist } from "@/lib/hooks/useWishlist";
 import { useSession } from "next-auth/react";
 
 
 const ProductCard = React.memo(({ product }) => {
-  const timeLeft = useTimer(product.time);
   const { addToCart, isInCart, getItemQuantity, isProductLoading: isCartLoading } = useCart();
   const { setSelectedProduct, setSelectedVariant } = useProduct();
   const router = useRouter();
@@ -152,17 +149,18 @@ const ProductCard = React.memo(({ product }) => {
           </Button>
 
         </div>
-        <h3 className="font-bold text-sm mt-2 line-clamp-1">{product.name}</h3>
-        <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className='invisible'>brand</span>})</p>
-        <p className="text-xs text-gray-500">{product.weight || <span className='invisible'>1 unit</span>}</p>
-        <p className="text-xs text-gray-500 line-clamp-1">By {product.seller || <span className='invisible'>seller</span>}</p>
+        <h3 className="font-bold text-sm mt-2 line-clamp-1">{product.name || <span className='text-gray-400'>No name</span>}</h3>
+        <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className='text-gray-400'>No brand</span>})</p>
+        <p className="text-xs text-gray-500">{product.weight || <span className='text-gray-400'>1 unit</span>}</p>
+        <p className="text-xs text-gray-500 line-clamp-1">By {product.seller || <span className='text-gray-400'>Unknown Seller</span>}</p>
         <div className="mt-2 min-h-[40px] flex flex-col justify-between">
-          <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{product.discount ? `${product.discount}% OFF` : <span className='invisible'>discount</span>}</p>
+          <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{product.discount ? `${product.discount}% OFF` : <span className=' text-green-400  rounded'>Best Price</span>}</p>
           <div className="flex items-center gap-2 min-h-[20px]">
-            <p className="text-xs text-gray-400 line-through">{product.originalPrice ? `₹${product.originalPrice}` : <span className='invisible'>price</span>}</p>
-            <p className="text-sm font-bold text-green-600">{product.discountedPrice ? `₹${product.discountedPrice}` : <span className='invisible'>price</span>}</p>
+            <p className="text-xs text-gray-400 line-through">{product.originalPrice ? `₹${product.originalPrice}` : <span className='text-gray-400'>₹100</span>}</p>
+            <p className="text-sm font-bold text-green-600">{product.discountedPrice ? `₹${product.discountedPrice}` : <span className='text-gray-400'>₹100</span>}</p>
           </div>
         </div>
+        <p className="text-xs text-red-500 font-semibold mt-1">{product.stock === 0 ? 'No stock' : ''}</p>
       </div>
     </div>
   );

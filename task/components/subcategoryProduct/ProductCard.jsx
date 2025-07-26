@@ -47,9 +47,11 @@ const ProductCard = React.memo(({ product }) => {
     return primaryImage?.url || "/placeholder-image.jpg";
   };
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
+  const handleImageError = (e) => {
+  e.currentTarget.src = "/fallback.png"; 
+  setImageError(true);
+};
+
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
@@ -137,6 +139,7 @@ const ProductCard = React.memo(({ product }) => {
             className="w-full h-full object-cover"
             quality={90}
             priority={false}
+            
           />
           <Button
             className={buttonClassName}
@@ -150,19 +153,19 @@ const ProductCard = React.memo(({ product }) => {
       </CardHeader>
 
       <CardContent className="px-4 pb-4 space-y-2 min-h-[120px] flex flex-col justify-between">
-        <CardTitle className="text-sm font-bold line-clamp-1">{variantData?.variant?.variant_name || product.name}</CardTitle>
-        <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className='invisible'>brand</span>})</p>
-        <p className="text-xs text-gray-500">By {product.vendor_store_id?.store_name || <span className='invisible'>seller</span>}</p>
-        <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{discount > 0 ? `${discount}% OFF` : <span className='invisible'>discount</span>}</p>
+        <CardTitle className="text-sm font-bold line-clamp-1">{variantData?.variant?.variant_name || product.name || <span className='text-gray-400'>No name</span>}</CardTitle>
+        <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className='text-gray-400'>No brand</span>})</p>
+        <p className="text-xs text-gray-500">By {product.vendor_store_id?.store_name || <span className='text-gray-400'>Unknown Seller</span>}</p>
+        <p className="text-sm text-blue-700 font-semibold min-h-[20px]">{discount > 0 ? `${discount}% OFF` : <span className=' text-green-400 px-2 py-1 rounded'>Best Price</span>}</p>
         <div className="flex items-center gap-2 min-h-[20px]">
-          {originalPrice ? <p className="text-xs text-gray-400 line-through">₹{originalPrice}</p> : <span className='invisible'>price</span>}
-          <p className="text-sm font-bold text-green-600">{displayPrice ? `₹${displayPrice}` : <span className='invisible'>price</span>}</p>
+          {originalPrice ? <p className="text-xs text-gray-400 line-through">₹{originalPrice}</p> : <span className='text-gray-400'>₹100</span>}
+          <p className="text-sm font-bold text-green-600">{displayPrice ? `₹${displayPrice}` : <span className='text-gray-400'>₹100</span>}</p>
         </div>
         <div className="flex items-center gap-2 mt-1 min-h-[20px]">
           <Star className="text-yellow-300 fill-yellow-300" height={16} width={16} />
           <p className="text-xs font-medium text-gray-500">{product.rating?.average || 0} ({product.rating?.count || 0})</p>
         </div>
-        <p className="text-xs text-gray-400 min-h-[16px]">Stock: {variantData?.stock > 0 ? `${variantData.stock} available` : <span className='invisible'>stock</span>}</p>
+        <p className="text-xs text-red-500 font-semibold mt-1">{variantData?.stock === 0 ? 'No stock' : ''}</p>
       </CardContent>
     </Card>
   );
