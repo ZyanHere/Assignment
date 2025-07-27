@@ -11,6 +11,7 @@ import { useState, useEffect, useMemo } from "react";
 import { fetcher } from "@/lib/api";
 import SortSheet from "@/app/components/sortSheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import FilterSheet from "@/app/components/filterSheet";
 
 
 const FilterButton = ({ children, onClick }) => (
@@ -39,12 +40,14 @@ export default function CategorySlugPage() {
   // which subcategory is active?
   const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(null);
 
+  console.log(selectedSubcategoryId);
   // current sort
   const [sortOption, setSortOption] = useState("relevance");
-
   // control SortSheet open/close
   const [sortOpen, setSortOpen] = useState(false);
-
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOption, setFiltersOption] = useState(null);
+  console.log('Filters Options', filtersOption);
   /* ---------------- Fetch all categories (for slug lookup) ---------------- */
   const {
     data: categoriesData,
@@ -79,6 +82,31 @@ export default function CategorySlugPage() {
     }
   );
 
+  // const queryUrl = useMemo(() => {
+  //   if (!category) return null;
+
+  //   const queryParams = new URLSearchParams();
+
+  //   queryParams.append("category", category._id);
+  //   if (selectedSubcategoryId) queryParams.append("subcategory", selectedSubcategoryId);
+  //   if (filtersOption?.priceRange?.min !== undefined) queryParams.append("minPrice", filtersOption.priceRange.min);
+  //   if (filtersOption?.priceRange?.max !== null && filtersOption?.priceRange?.max !== undefined) queryParams.append("maxPrice", filtersOption.priceRange.max);
+  //   if (filtersOption?.rating !== undefined) queryParams.append("minRating", filtersOption.rating);
+  //   if (filtersOption?.availability !== undefined) queryParams.append("inStock", filtersOption.availability);
+
+  //   return `/lmd/api/v1/retail/products?${queryParams.toString()}`;
+  // }, [category, selectedSubcategoryId, filtersOption]);
+
+
+  // const {
+  //   data: filteredData,
+  //   error: filteredDataError,
+  //   isLoading: loadingFilteredData
+  // } = useSWR(queryUrl, fetcher, {
+  //   revalidateOnFocus: false,
+  //   revalidateOnReconnect: false,
+  //   dedupingInterval: 60_000,
+  // });
   /* ---------------- Auto-select first subcategory when loaded ---------------- */
   useEffect(() => {
     if (subcategoriesData?.data?.length && !selectedSubcategoryId) {
@@ -151,10 +179,18 @@ export default function CategorySlugPage() {
             </nav>
 
             <div className="flex gap-2 sm:gap-3">
-              <FilterButton>Filters</FilterButton>
+              <FilterSheet
+                open={filtersOpen}
+                onOpenChange={setFiltersOpen}
+                currentSort={filtersOption}
+                onApply={(option) => {
+                  setFiltersOption(option);
+                  setFiltersOpen(false);
+                }}
+              />
               <SortSheet
-                open={sortOpen}
-                onOpenChange={setSortOpen}
+                open={filtersOpen}
+                onOpenChange={setFiltersOpen}
                 currentSort={sortOption}
                 onApply={(option) => {
                   setSortOption(option);
@@ -179,11 +215,10 @@ export default function CategorySlugPage() {
                   <div
                     key={sub._id}
                     onClick={() => setSelectedSubcategoryId(sub._id)}
-                    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all ${
-                      selectedSubcategoryId === sub._id
-                        ? "bg-yellow-100 font-semibold"
-                        : "hover:bg-gray-100"
-                    }`}
+                    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all ${selectedSubcategoryId === sub._id
+                      ? "bg-yellow-100 font-semibold"
+                      : "hover:bg-gray-100"
+                      }`}
                   >
                     <div className="relative w-10 h-10 flex-shrink-0">
                       <Image
@@ -211,8 +246,10 @@ export default function CategorySlugPage() {
           <div className="flex-1 overflow-y-auto max-h-[80vh] p-3 sm:p-5">
             {selectedSubcategoryId && (
               <SubProduct
+                categoryId={category._id}
                 subCategoryId={selectedSubcategoryId}
                 sortOption={sortOption}
+                filtersOption={filtersOption}
               />
             )}
           </div>
