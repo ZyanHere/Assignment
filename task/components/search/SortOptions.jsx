@@ -1,42 +1,64 @@
-// components/search/SortOptions.jsx
 "use client";
 
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 
-const sortTypes = [
-  { label: "Relevance", value: "relevance" },
-  { label: "Popularity", value: "popularity" },
-  { label: "Price: Low to High", value: "priceLow" },
-  { label: "Price: High to Low", value: "priceHigh" },
-  { label: "Newest First", value: "newest" },
+const sortOptions = [
+  { value: "relevance", label: "Relevance" },
+  { value: "popularity", label: "Popularity" },
+  { value: "price_low_high", label: "Price: Low to High" },
+  { value: "price_high_low", label: "Price: High to Low" },
+  { value: "newest", label: "Newest First" },
+  { value: "rating", label: "Customer Rating" },
+  { value: "discount", label: "Discount" },
 ];
 
-const SortOptions = ({ onChange }) => {
-  const [active, setActive] = useState("relevance");
+export default function SortOptions({ onApply, currentSort = "relevance" }) {
+  const [selected, setSelected] = useState(currentSort);
+  const [hasApplied, setHasApplied] = useState(false);
 
-  const handleSortChange = (value) => {
-    setActive(value);
-    onChange?.(value);
+  useEffect(() => {
+    setSelected(currentSort);
+  }, [currentSort]);
+
+  const handleSelect = (value) => {
+    setSelected(value);
+    onApply(value);
+    setHasApplied(true);
+  };
+
+  const handleClear = () => {
+    setSelected("relevance");
+    onApply("relevance");
+    setHasApplied(false);
   };
 
   return (
-    <div className="flex flex-wrap gap-2 items-center mb-4">
-      <span className="text-sm font-medium text-gray-700">Sort By</span>
-      {sortTypes.map((sort) => (
+    <div className="flex flex-col items-start gap-2 sm:gap-4 text-sm w-full">
+      <div className="flex items-center gap-4 flex-wrap">
+        <span className="text-gray-700 font-medium">Sort By</span>
+        {sortOptions.map((option) => (
+          <button
+            key={option.value}
+            onClick={() => handleSelect(option.value)}
+            className={`px-3 py-1 rounded-full font-medium border transition ${
+              selected === option.value
+                ? "bg-yellow-100 text-yellow-700 border-yellow-400"
+                : "text-gray-600 border-gray-300 hover:bg-yellow-50"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      {hasApplied && selected !== "relevance" && (
         <button
-          key={sort.value}
-          className={`text-xs sm:text-sm px-2.5 py-1.5 rounded-md border transition ${
-            active === sort.value
-              ? "bg-yellow-500 text-white border-yellow-500"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-50"
-          }`}
-          onClick={() => handleSortChange(sort.value)}
+          onClick={handleClear}
+          className="text-yellow-700 text-xs mt-1 underline hover:text-yellow-900"
         >
-          {sort.label}
+          ⟲ Clear Sort
         </button>
-      ))}
+      )}
     </div>
   );
-};
-
-export default SortOptions;
+}
