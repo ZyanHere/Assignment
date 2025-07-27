@@ -1,0 +1,91 @@
+// services/searchService.js
+import { api } from '@/lib/api/axios';
+
+
+/**
+ * @typedef {'simple' | 'pagination' | 'filter' | 'product' | 'store' | 'category' | 'brand' | 'general'} SearchType
+ *
+ * @typedef {Object} SearchParams
+ * @property {string} q - The search query
+ * @property {number} [page] - Optional page number for pagination
+ * @property {number} [limit] - Optional limit per page
+ * @property {string} [category] - Category filter (e.g., 'electronics')
+ * @property {string} [brand] - Brand filter (e.g., 'apple')
+ * @property {number} [minPrice] - Minimum price filter
+ * @property {number} [maxPrice] - Maximum price filter
+ */
+
+/**
+ * Unified function to perform any of the 8 search types.
+ *
+ * @param {SearchType} type - The type of search to perform
+ * @param {SearchParams} params - The parameters used for that search
+ * @returns {Promise<any>} - The response from the backend
+ */
+export const searchAPI = async (type, params) => {
+  const endpoint = '/search';
+
+  // Validate required fields
+  if (!params?.q || typeof params.q !== 'string') {
+    throw new Error(`[searchAPI] Missing or invalid 'q' parameter for "${type}" search`);
+  }
+
+  // Build the appropriate query object based on type
+  const config = {
+    params: buildQueryParams(type, params),
+  };
+
+  try {
+    const res = await api.get(endpoint, config);
+    return res.data;
+  } catch (err) {
+    console.error(`[searchAPI] ${type} search failed:`, err);
+    throw err;
+  }
+};
+
+/**
+ * Builds the search query parameters based on the type.
+ *
+ * @param {SearchType} type
+ * @param {SearchParams} params
+ * @returns {Record<string, any>} Query params object
+ */
+const buildQueryParams = (type, params) => {
+  switch (type) {
+    case 'simple':
+      return { q: params.q };
+
+    case 'pagination':
+      return {
+        q: params.q,
+        page: params.page ?? 1,
+        limit: params.limit ?? 10,
+      };
+
+    case 'filter':
+      return {
+        q: params.q,
+        category: params.category,
+        brand: params.brand,
+        minPrice: params.minPrice,
+        maxPrice: params.maxPrice,
+        page: params.page ?? 1,
+        limit: params.limit ?? 10,
+      };
+
+    case 'product':
+    case 'store':
+    case 'category':
+    case 'brand':
+    case 'general':
+      return {
+        q: params.q,
+        page: params.page ?? 1,
+        limit: params.limit ?? 10,
+      };
+
+    default:
+      throw new Error(`[searchAPI] Unsupported search type: "${type}"`);
+  }
+};
