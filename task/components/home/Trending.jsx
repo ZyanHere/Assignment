@@ -16,7 +16,7 @@ const ProductSkeleton = () => (
     {[...Array(3)].map((_, index) => (
       <div key={index} className="p-2 sm:p-4 md:p-6 border-b-2 border-gray-300 animate-pulse">
         <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
-          <div className="w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20  bg-gray-200 rounded-lg"></div>
+          <div className="w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20 md:h-24 bg-gray-200 rounded-lg"></div>
           <div className="h-4 sm:h-6 bg-gray-200 rounded w-16 sm:w-24 md:w-32"></div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 sm:gap-4">
@@ -242,73 +242,78 @@ export default function TrendingProducts() {
         </div>
       </div>
     )
-  }
+  }return (
+  <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-2 sm:p-4 md:p-8 lg:p-20 rounded-2xl sm:rounded-3xl md:rounded-4xl">
+    <div className="mx-auto bg-white p-2 sm:p-4 md:p-6 rounded-2xl sm:rounded-3xl md:rounded-4xl ">
+      {/* Header Section - Fixed alignment */}
+  <div className="bg-transparent sm:bg-purple-800 sm:flex -mt-4 mr-5 sm:-mt-6 md:-mt-8 lg:-mt-10">
 
-  return (
-    <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-2 sm:p-4 md:p-8 lg:p-20 rounded-2xl sm:rounded-3xl md:rounded-4xl">
-      <div className="mx-auto bg-white p-2 sm:p-4 md:p-6 rounded-2xl sm:rounded-3xl md:rounded-4xl">
-        {/* Header for mobile and desktop */}
-        {isSmallScreen ? (
-          <div className="flex flex-col gap-4">
-            <div className="w-full">
-              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
-                Trending Store Favorites
-              </h1>
-              <CategoryTabs
-                activeCategory={activeCategory}
-                onPrimaryCategoryClick={handlePrimaryCategoryClick}
-              />
-            </div>
-            <div className="w-full">
-              {isSmallScreen ? (
-                <MobilePromotionalCard onButtonClick={handlePromotionalClick} />
-              ) : (
-                <PromotionalCard onButtonClick={handlePromotionalClick} />
-              )}
-            </div>
+        <div className="bg-white flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
+          <div className="p-2 sm:p-4 md:p-6 pt-2 sm:pt-4 md:pt-6">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
+              Trending Store Favorites
+            </h1>
+            <CategoryTabs
+              activeCategory={activeCategory}
+              onPrimaryCategoryClick={handlePrimaryCategoryClick}
+            />
           </div>
-        ) : (
-          <div className="flex bg-purple-800 -mt-6 -mr-6 rounded-tr-4xl">
-            <div className="bg-white flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
-              <div className="p-2 sm:p-4 md:p-6 pt-2 sm:pt-4 md:pt-6">
-                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
-                  Trending Store Favorites
-                </h1>
-                <CategoryTabs
-                  activeCategory={activeCategory}
-                  onPrimaryCategoryClick={handlePrimaryCategoryClick}
-                />
-              </div>
-            </div>
-            <div className="bg-white rounded-tr-2xl sm:rounded-tr-3xl md:rounded-tr-4xl overflow-hidden ">
-              <PromotionalCard onButtonClick={handlePromotionalClick} />
-            </div>
+        </div>
+        
+        {/* Promotional Card - Desktop */}
+        {!isSmallScreen && (
+          <div className="-mr-4 sm:-mr-6 md:-mr-8 lg:-mr-10 bg-white overflow-hidden h-full flex items-end">
+            <PromotionalCard 
+              onButtonClick={handlePromotionalClick} 
+              className="h-full"
+            />
           </div>
         )}
+      </div>
 
-        {/* Products section */}
-        <div className="mt-2 sm:mt-4 md:mt-8">
-          <div className={`grid ${isSmallScreen ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'} gap-2 sm:gap-4`}>
-            {isLoadingCurrentCategory ? (
-              <ProductSkeleton />
-            ) : currentProducts.length === 0 ? (
-              <div className="col-span-full text-center py-2 sm:py-4 md:py-8">
-                <p className="text-gray-500 text-sm sm:text-base md:text-lg">No products available</p>
+      {/* Promotional Card - Mobile */}
+      {isSmallScreen && (
+        <div className="mt-4 mx-auto w-full max-w-md">
+          <MobilePromotionalCard onButtonClick={handlePromotionalClick} />
+        </div>
+      )}
+
+    {/* Category Title - Desktop Only */}
+{!isSmallScreen && (
+  <div className="bg-purple-800 -mr-4 sm:-mr-6 md:-mr-8 lg:-mr-5 -mt-[4px]">
+    <div className="mb-3 bg-white rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px] pt-3 pb-3 px-4">
+      <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-gray-800">
+      </h2>
+      <p className="text-gray-600 text-xs sm:text-sm mt-1">
+
+      </p>
+    </div>
+  </div>
+)}
+
+
+      {/* Product Grid */}
+      <div className="mt-2 sm:mt-4 md:mt-8">
+        <div className={`grid ${isSmallScreen ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'} gap-3 sm:gap-4`}>
+          {isLoadingCurrentCategory ? (
+            <ProductSkeleton />
+          ) : currentProducts.length === 0 ? (
+            <div className="col-span-full text-center py-4 sm:py-6 md:py-10">
+              <p className="text-gray-500 text-sm sm:text-base md:text-lg">No products available</p>
+            </div>
+          ) : (
+            currentProducts.map(product => (
+              <div key={product.id || product._id} className="group">
+                <SubProductRedux
+                  product={product}
+                  onClick={() => handleProductClick(product)}
+                  compact={isSmallScreen}
+                />
               </div>
-            ) : (
-              currentProducts.map(product => (
-                <div key={product.id || product._id} className="group">
-                  <SubProductRedux 
-                    product={product} 
-                    onClick={() => handleProductClick(product)}
-                    compact={isSmallScreen}
-                  />
-                </div>
-              ))
-            )}
-          </div>
+            ))
+          )}
         </div>
       </div>
     </div>
-  )
-}
+  </div>
+)} 
