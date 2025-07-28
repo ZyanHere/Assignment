@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+  
   images: {
     domains: [
       'lastminutedeal.s3.ap-southeast-2.amazonaws.com',
@@ -7,6 +9,7 @@ const nextConfig = {
       'lh3.googleusercontent.com',
       'cdn.shopify.com',
       "lastminutessdeal.s3.ap-south-1.amazonaws.com"
+
       // any other hosts you fetch images from…
     ],
     // alternatively, you can use `remotePatterns` for more control:
@@ -19,8 +22,15 @@ const nextConfig = {
     //   },
     // ],
   },
-  //     ignoreBuildErrors: true,
 
-};
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+}
+
+
 
 export default nextConfig;

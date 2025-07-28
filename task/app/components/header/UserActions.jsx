@@ -16,6 +16,8 @@ import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
 import { clearProfileData } from "@/lib/redux/user/userSlice";
 import { useAuth } from "@/lib/hooks/useAuth";
+import NotificationDropdown from "@/components/Notifications/NotificationDropdown";
+import { getUnreadCount, sampleNotifications } from "@/data/sampleNotifications";
 
 const UserActions = ({ onlyProfile = false }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -25,7 +27,9 @@ const UserActions = ({ onlyProfile = false }) => {
   const [firstName, setFirstName] = useState("Guest");
   const { totalQuantity } = useCart();
   const router = useRouter();
-  const notifications = 5; // placeholder
+  const [notifications, setNotifications] = useState(sampleNotifications);
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
+  const unreadNotifications = getUnreadCount(notifications);
 
   useEffect(() => {
     if (user?.name) {
@@ -161,30 +165,38 @@ const UserActions = ({ onlyProfile = false }) => {
       </Link>
 
       {/* Notifications */}
-      <Link
-        href="/profile?tab=Notifications"
-        className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform"
-        title="Notifications"
-      >
-        <svg
-          className="w-6 h-6 text-gray-700 hover:text-yellow-600 transition-colors"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      <div className="relative">
+        <button
+          onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
+          className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform"
+          title="Notifications"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-          />
-        </svg>
-        {notifications > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
-            {notifications > 99 ? '99+' : notifications}
-          </span>
-        )}
-      </Link>
+          <svg
+            className="w-6 h-6 text-gray-700 hover:text-yellow-600 transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            />
+          </svg>
+          {unreadNotifications > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
+              {unreadNotifications > 99 ? '99+' : unreadNotifications}
+            </span>
+          )}
+        </button>
+        
+        <NotificationDropdown
+          isOpen={isNotificationDropdownOpen}
+          onClose={() => setIsNotificationDropdownOpen(false)}
+          notifications={notifications}
+        />
+      </div>
 
       {/* Profile Dropdown */}
       <DropdownMenu>

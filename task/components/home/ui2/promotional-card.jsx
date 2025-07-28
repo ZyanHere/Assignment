@@ -11,7 +11,7 @@ export function PromotionalCard({
   onButtonClick,
 }) {
   return (
-    <Card className="w-80 bg-purple-800 text-white rounded-bl-4xl rounded-tr-4xl rounded-br-none rounded-tl-none border-none">
+    <Card className="w-80 bg-purple-800 rounded-none border-none text-white rounded-bl-4xl rounded-tr-4xl rounded-br-none rounded-tl-none ">
       <CardContent className="p-6">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-3 h-3 bg-white rounded-full"></div>
