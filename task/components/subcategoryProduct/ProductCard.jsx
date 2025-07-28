@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Star, Heart } from "lucide-react";
 import { Button } from "../home/ui2/button";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useRouter } from "next/navigation";
@@ -9,13 +9,22 @@ import { useProduct } from "@/lib/contexts/productContext";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useSession } from "next-auth/react";
+import { useWishlist } from "@/lib/hooks/useWishlist";
 
 const ProductCard = React.memo(({ product }) => {
-  const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart();
+  const { addToCart, isInCart, getItemQuantity, isProductLoading: isCartLoading } = useCart();
   const router = useRouter();
   const { setSelectedProduct, setSelectedVariant } = useProduct();
   const [imageError, setImageError] = useState(false);
   const { isAuthenticated } = useAuth();
+  const { data: session } = useSession();
+  const {
+    addItem,
+    removeItem,
+    isInWishlist,
+    isProductLoading
+  } = useWishlist();
 
   const handleItemClick = () => {
     setSelectedProduct(product);
@@ -48,9 +57,9 @@ const ProductCard = React.memo(({ product }) => {
   };
 
   const handleImageError = (e) => {
-  e.currentTarget.src = "/fallback.png"; 
-  setImageError(true);
-};
+    e.currentTarget.src = "/fallback.png";
+    setImageError(true);
+  };
 
 
   const handleAddToCart = async (e) => {
@@ -84,6 +93,29 @@ const ProductCard = React.memo(({ product }) => {
     }
   };
 
+  const productId = product?.id || product?._id
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation();
+    if (!session?.user?.token) {
+      toast.error('Please login to save items to wishlist');
+      return;
+    }
+
+    try {
+      if (isInWishlist(productId)) {
+        await removeItem(productId);
+        toast.success('Removed from wishlist');
+      } else {
+        await addItem(productId);
+        toast.success('Added to wishlist');
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to update wishlist');
+    }
+  };
+
+  const inWishlist = useMemo(() => isInWishlist(productId), [isInWishlist, productId]);
+
   const imageUrl = getImageUrl();
   const variantData = getVariantData();
 
@@ -96,7 +128,7 @@ const ProductCard = React.memo(({ product }) => {
   const variantId = variantData?.variant?._id;
   const isProductInCart = useMemo(() => isInCart(variantId), [isInCart, variantId]);
   const cartItemQuantity = useMemo(() => getItemQuantity(variantId), [getItemQuantity, variantId]);
-  const isLoading = useMemo(() => isProductLoading(variantId), [isProductLoading, variantId]);
+  const isLoading = useMemo(() => isCartLoading(variantId), [isCartLoading, variantId]);
 
   // Discount Percentage
   const discount = originalPrice
@@ -130,6 +162,14 @@ const ProductCard = React.memo(({ product }) => {
     >
       <CardHeader className="">
         <div className="relative flex items-center justify-center w-full h-[161px] bg-blue-50 rounded-xl overflow-hidden">
+          <button
+            onClick={handleWishlistToggle}
+            className={`absolute top-2 right-2 z-10 p-1 rounded-full shadow-md transition ${inWishlist ? "bg-white/60 text-red-500" : "bg-white/60 text-gray-600 hover:text-red-500"
+              }`}
+            aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <Heart className="w-5 h-5" fill={inWishlist ? "currentColor" : "none"} />
+          </button>
           <Image
             src={imageUrl}
             alt={product.name}
@@ -139,7 +179,7 @@ const ProductCard = React.memo(({ product }) => {
             className="w-full h-full object-cover"
             quality={90}
             priority={false}
-            
+
           />
           <Button
             className={buttonClassName}
