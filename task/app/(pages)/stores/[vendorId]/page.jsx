@@ -8,6 +8,7 @@ import Link from "next/link";
 import Header from "@/components/home/Header";
 import StoreCard from "@/components/stores/StoreCard";
 import StoreSkeleton from "@/components/stores/StoresSkeleton";
+import SlugBanner from "@/components/stores/SlugBanner";
 
 export default function StoreSlugPage() {
   const { vendorId } = useParams();
@@ -27,22 +28,16 @@ export default function StoreSlugPage() {
 
   const loading = isProductLoading || isVendorLoading;
 
-
   if (loading || !vendor || !products) {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
         <StoreSkeleton />
       </div>
-    )
-  };
+    );
+  }
 
-  const {
-    store_name,
-    bannerUrl,
-    carouselUrls,
-    vendor_id,
-  } = vendor;
+  const { store_name, bannerUrl, carouselUrls, vendor_id } = vendor;
 
   // Transform product data
   const formattedProducts = products.map((p) => {
@@ -76,28 +71,29 @@ export default function StoreSlugPage() {
 
       <main className="pl-12 pr-12 pb-12 mx-auto w-full max-w-[1700px]">
         {/* Breadcrumb */}
-        <nav className="mt-8 mb-8 text-black text-2xl">
+        <nav className="mt-8  text-black text-2xl">
           <Link href="/stores" className="hover:underline font-medium">
             Stores
           </Link>{" "}
-          &gt; <span className="font-semibold text-yellow-500">{store_name}</span>
+          &gt;{" "}
+          <span className="font-semibold text-yellow-500">{store_name}</span>
         </nav>
 
         {/* Banner */}
         {bannerUrl && (
-          <div className="relative w-full aspect-[3/1] rounded-xl shadow-lg overflow-hidden">
-            <Image
-              src={bannerUrl}
-              alt={`${store_name} banner`}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-        )}
+  <div>
+    <SlugBanner
+      bannerUrl={bannerUrl}
+      storeName={vendor.store_name}
+      fullAddress={vendor.fullAddress}
+      duration={3 * 60 * 60 + 60 + 23} 
+    />
+  </div>
+)}
+
 
         {/* Promo (carouselUrls[0]) */}
-        {carouselUrls?.length > 0 && (
+        {/* {carouselUrls?.length > 0 && (
           <div className="my-10">
             <Image
               src={carouselUrls[0]}
@@ -105,10 +101,9 @@ export default function StoreSlugPage() {
               width={1500}
               height={340}
               className="w-[1500px] h-[340px] mx-auto rounded-xl shadow-lg"
-
             />
           </div>
-        )}
+        )} */}
 
         {/* Products Grouped by Category */}
         {productCategories.length > 0 ? (
@@ -118,7 +113,7 @@ export default function StoreSlugPage() {
             );
 
             return (
-              <div key={categoryName} className="mb-12">
+              <div key={categoryName} className="mb-12 mt-12">
                 <h2 className="text-3xl font-semibold text-gray-800 mb-6">
                   {categoryName}
                 </h2>

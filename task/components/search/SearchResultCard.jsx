@@ -42,7 +42,7 @@ const SearchResultCard = ({ item }) => {
         <div className="relative flex items-center justify-center w-full h-[161px] bg-gray-100 rounded-t-2xl overflow-hidden">
           <Image
             src={imageUrl}
-            alt={item.name}
+            alt={"Product Image"}
             height={300}
             width={300}
             className="w-full h-full object-cover"

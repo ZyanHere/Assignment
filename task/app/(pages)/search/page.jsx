@@ -29,7 +29,9 @@ const SearchPage = () => {
     filters,
   });
 
-  const results = data?.results || [];
+      const productData = data?.results?.find((res) => res.type === 'product');
+
+    const results = productData?.results || [];
 
   return (
     <>
