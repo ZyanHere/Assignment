@@ -1,46 +1,50 @@
 // hooks/useStableSearch.js
 import useSWR from "swr";
 import { api } from "@/lib/api/axios";
+import qs from "query-string"; // for building query strings safely
+
+const fetcher = (url) => api.get(url).then((res) => res.data.data);
 
 /**
- * Fetcher function for SWR - hits the general search API with query & sort
- * @param {string} url - SWR key used as API endpoint
- * @returns {Promise<object>} - Parsed API response
- */
-const fetcher = (url) =>
-  api.get(url).then((res) => res.data.data);
-
-/**
- * Stable Search Hook — used for SSR-compatible search
- * Triggers only when user lands on `/search?q=...`
- * Can pass optional sort to backend.
- * 
- * @param {object} options
- * @param {string} options.query - The search query from user
- * @param {string} options.sort - Sort type (e.g., price_low_high, relevance, etc.)
- * @param {number} [options.page=1] - Pagination page number
- * @param {number} [options.limit=12] - Items per page
+ * Stable Search Hook
+ * Supports: search, filters, pagination, and sorting
  */
 export const useStableSearch = ({
-  query,
-  sort = "relevance",
+  q,
+  category,
+  brand,
+  minPrice,
+  maxPrice,
   page = 1,
   limit = 12,
+  sort,
 }) => {
-  const encodedQuery = encodeURIComponent(query || "");
-  const encodedSort = encodeURIComponent(sort || "relevance");
+  // Construct the full query string
+  const queryString = qs.stringify(
+    {
+      q,
+      category,
+      brand,
+      minPrice,
+      maxPrice,
+      page,
+      limit,
+      sort,
+    },
+    { skipNull: true, skipEmptyString: true }
+  );
 
-  const shouldFetch = !!query;
+  const shouldFetch = !!q;
 
-  const url = shouldFetch
-    ? `/lmd/api/v1/retail/search?q=${encodedQuery}&sort=${encodedSort}&page=${page}&limit=${limit}`
-    : null;
-
-  const { data, error, isLoading } = useSWR(url, fetcher);
+  const { data, error, isLoading, mutate } = useSWR(
+    shouldFetch ? `lmd/api/v1/retail/search?${queryString}` : null,
+    fetcher
+  );
 
   return {
-    data, // Expected to contain products, stores, brands, categories, etc.
+    data,
     isLoading,
     isError: !!error,
+    mutate,
   };
 };

@@ -1,70 +1,79 @@
 // components/search/SearchFilters.jsx
 "use client";
 
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 
-const SearchFilters = () => {
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(5000);
+const SearchFilters = ({ filters, setFilters }) => {
+  const [category, setCategory] = useState(filters.category || "");
+  const [brand, setBrand] = useState(filters.brand || "");
+  const [minPrice, setMinPrice] = useState(filters.minPrice || "");
+  const [maxPrice, setMaxPrice] = useState(filters.maxPrice || "");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setFilters((prev) => ({
+        ...prev,
+        category: category || null,
+        brand: brand || null,
+        minPrice: minPrice || null,
+        maxPrice: maxPrice || null,
+        page: 1, // reset to first page on filter change
+      }));
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [category, brand, minPrice, maxPrice]);
 
   return (
-    <aside className="w-full sm:w-64 p-4 border-r border-yellow-300 bg-white">
-      <h2 className="text-lg font-semibold mb-4 text-yellow-600">Filters</h2>
+    <div className="space-y-4 bg-yellow-50 p-4 rounded-lg shadow-sm">
+      <h3 className="text-lg font-semibold text-yellow-700">Filters</h3>
 
-      {/* --- Price Filter --- */}
-      <div className="mb-6">
-        <h3 className="text-sm font-medium mb-2 text-gray-700">PRICE</h3>
+      <div>
+        <label className="block text-sm font-medium text-gray-600 mb-1">Category</label>
         <input
-          type="range"
-          min="0"
-          max="5000"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="w-full"
+          type="text"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="w-full border border-gray-300 px-3 py-1 rounded text-sm"
+          placeholder="e.g. electronics"
         />
-        <div className="flex items-center justify-between mt-2 gap-2 text-sm text-gray-600">
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-600 mb-1">Brand</label>
+        <input
+          type="text"
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          className="w-full border border-gray-300 px-3 py-1 rounded text-sm"
+          placeholder="e.g. apple"
+        />
+      </div>
+
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-600 mb-1">Min Price</label>
           <input
             type="number"
-            min="0"
             value={minPrice}
-            onChange={(e) => setMinPrice(Number(e.target.value))}
-            className="w-1/2 border rounded px-2 py-1 text-xs"
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-full border border-gray-300 px-3 py-1 rounded text-sm"
+            placeholder="100"
           />
-          to
+        </div>
+
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-600 mb-1">Max Price</label>
           <input
             type="number"
-            max="5000"
             value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-            className="w-1/2 border rounded px-2 py-1 text-xs"
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-full border border-gray-300 px-3 py-1 rounded text-sm"
+            placeholder="1000"
           />
         </div>
       </div>
-
-      {/* --- Category Filter --- */}
-      <div className="mb-6">
-        <h3 className="text-sm font-medium mb-2 text-gray-700">Category</h3>
-        {/* Replace with dynamic category checkboxes later */}
-        <label className="block text-sm text-gray-600 mb-1">
-          <input type="checkbox" className="mr-2" /> Electronics
-        </label>
-        <label className="block text-sm text-gray-600 mb-1">
-          <input type="checkbox" className="mr-2" /> Fashion
-        </label>
-      </div>
-
-      {/* --- Subcategory Filter --- */}
-      <div>
-        <h3 className="text-sm font-medium mb-2 text-gray-700">SubCategory</h3>
-        {/* Replace with dynamic subcategory checkboxes later */}
-        <label className="block text-sm text-gray-600 mb-1">
-          <input type="checkbox" className="mr-2" /> Jeans
-        </label>
-        <label className="block text-sm text-gray-600 mb-1">
-          <input type="checkbox" className="mr-2" /> T-Shirts
-        </label>
-      </div>
-    </aside>
+    </div>
   );
 };
 
