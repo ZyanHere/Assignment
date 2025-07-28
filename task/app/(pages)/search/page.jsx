@@ -18,7 +18,10 @@ export default function SearchPage() {
     sort: currentSort,
   });
 
-  const results = data?.results || sampleResults;
+    const productData = data?.results?.find((res) => res.type === 'product');
+
+    const results = productData?.results || [];
+  
 
   return (
     <main className="min-h-screen bg-white">
