@@ -18,6 +18,7 @@ import { clearProfileData } from "@/lib/redux/user/userSlice";
 import { useAuth } from "@/lib/hooks/useAuth";
 import NotificationDropdown from "@/components/Notifications/NotificationDropdown";
 import { getUnreadCount, sampleNotifications } from "@/data/sampleNotifications";
+import { HeartWithBadge } from "@/components/saveDeals/savedealsBadges"; 
 
 const UserActions = ({ onlyProfile = false }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -135,7 +136,7 @@ const UserActions = ({ onlyProfile = false }) => {
         className="relative p-2 hover:bg-gray-100 rounded-lg transition-transform"
         title="Saved Deals"
       >
-        <Heart className="w-6 h-6 text-black hover:text-red-500 transition-colors" />
+        <HeartWithBadge />
       </Link>
 
       {/* Cart */}
