@@ -28,17 +28,16 @@ export default function RestaurantCard({
     <Link
       href={`/home/buffet/restaurant/${id}`}
       key={id}
-      className="block"
+      className="block h-full"
     >
-      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 cursor-pointer">
-        <div className="relative">
+      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer flex flex-col h-full p-3 sm:p-4">
+        <div className="relative w-full aspect-[4/3] sm:aspect-[3/2] rounded-lg overflow-hidden">
           {img ? (
             <Image
               src={img}
               alt={name}
-              width={300}
-              height={200}
-              className="w-full h-40 object-cover rounded-lg"
+              fill
+              className="object-cover"
             />
           ) : (
             <div className="w-full h-40 bg-gray-200 rounded-lg" />
@@ -64,17 +63,17 @@ export default function RestaurantCard({
           </div>
         </div>
 
-        <div className="mt-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">{name}</h3>
-            <div className="flex items-center text-sm text-gray-700">
+        <div className="mt-3 flex flex-col justify-between flex-grow">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-base sm:text-lg font-semibold truncate">{name}</h3>
+            <div className="flex items-center text-sm text-gray-700 whitespace-nowrap">
               <span className="mr-1">⭐</span>
               <span>{rating}</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-2 text-gray-700 text-sm">
-            <span className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center justify-between mt-2 text-gray-700 text-sm gap-y-2">
+            <span className="flex items-center gap-1 whitespace-nowrap">
               <Image
                 src="/buffet/clock.svg"
                 alt="Time"
@@ -83,7 +82,8 @@ export default function RestaurantCard({
               />
               {time}
             </span>
-            <span className="flex items-center gap-1">
+
+            <span className="flex items-center gap-1 whitespace-nowrap">
               <Image
                 src="/buffet/car.svg"
                 alt="Delivery"
@@ -92,7 +92,8 @@ export default function RestaurantCard({
               />
               {price}
             </span>
-            <span className="bg-yellow-400 px-2 py-1 rounded-full font-semibold">
+
+            <span className="bg-yellow-400 px-2 py-1 rounded-full font-semibold whitespace-nowrap">
               {category}
             </span>
           </div>
