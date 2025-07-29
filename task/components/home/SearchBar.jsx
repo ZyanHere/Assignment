@@ -12,12 +12,14 @@ import { useLiveSearch } from "@/lib/hooks/search/useLiveSearch";
  */
 const SearchBar = ({ placeholder = 'Search "stores, products, brands..."' }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const router = useRouter();
 
   const { data: results, isLoading } = useLiveSearch(searchQuery);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setShowSuggestions(false)
     const trimmed = searchQuery.trim();
     if (trimmed) {
       router.push(`/search?q=${encodeURIComponent(trimmed)}`);
@@ -27,6 +29,12 @@ const SearchBar = ({ placeholder = 'Search "stores, products, brands..."' }) => 
   const handleSuggestionClick = (text) => {
     router.push(`/search?q=${encodeURIComponent(text)}`);
     setSearchQuery("");
+    setShowSuggestions(false);
+  };
+
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    setShowSuggestions(true); // Show suggestions when user types
   };
 
   return (
@@ -47,14 +55,14 @@ const SearchBar = ({ placeholder = 'Search "stores, products, brands..."' }) => 
         <input
           type="text"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleInputChange}
           placeholder={placeholder}
           className="w-full pl-8 pr-3 py-1.5 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500 text-gray-700 transition-all border border-transparent hover:border-yellow-400 text-sm"
         />
       </div>
 
       {/* Suggestions Dropdown */}
-      {searchQuery && (
+      {searchQuery && showSuggestions && (
         <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-md max-h-72 overflow-y-auto text-sm">
           {isLoading && (
             <div className="px-4 py-2 text-gray-500">Loading...</div>
