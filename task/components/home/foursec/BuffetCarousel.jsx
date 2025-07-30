@@ -24,8 +24,9 @@ export default function BuffetCarousel({ title, seeAllLink, items }) {
           {items.map((restaurant, index) => (
             <CarouselItem
               key={restaurant.id}
-              className="basis-1/2 md:basis-1/4 pl-4"
+              className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4"
             >
+
               <RestaurantCard {...restaurant} index={index} />
             </CarouselItem>
           ))}
