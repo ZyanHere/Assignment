@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-const UpcomingEvents = ({ events = [] }) => {
+const RecommendedEvents = ({ events = [] }) => {
   const [favorites, setFavorites] = useState([]);
   if (!Array.isArray(events)) events = [];
 
@@ -20,11 +20,13 @@ const UpcomingEvents = ({ events = [] }) => {
 
   return (
     <section className="mb-10">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Upcoming Events</h2>
+      <div className="flex justify-between gap-4 items-start sm:items-center">
+        <h2 className="text-xl font-bold leading-tight sm:leading-normal">
+          Recommended <br className="sm:hidden" /> Events
+        </h2>
         <Link
           href="/home/event/section/upcoming-events"
-          className="text-blue-600 font-medium hover:underline"
+          className="text-blue-600 font-medium hover:underline whitespace-nowrap"
         >
           See All
         </Link>
@@ -33,7 +35,7 @@ const UpcomingEvents = ({ events = [] }) => {
       {safeEvents.length === 0 ? (
         <p className="text-gray-500 mt-4">No upcoming events.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-4">
           {safeEvents.map((event) => {
             const variant = event.variants?.[0];
             const variantImage =
@@ -54,7 +56,8 @@ const UpcomingEvents = ({ events = [] }) => {
                 href={`/home/event/${event.id}`}
                 className="relative block bg-white rounded-lg shadow hover:shadow-lg overflow-hidden transition"
               >
-                <div className="relative w-full h-48 bg-gray-50">
+                
+                <div className="relative w-full h-40 sm:h-48 bg-gray-50">
                   <Image
                     src={displayImage}
                     alt={displayTitle}
@@ -62,6 +65,7 @@ const UpcomingEvents = ({ events = [] }) => {
                     className="object-contain"
                   />
                 </div>
+
                 <div className="p-3">
                   <h3 className="font-semibold text-sm line-clamp-2 min-h-[40px]">
                     {displayTitle}
@@ -104,4 +108,4 @@ const UpcomingEvents = ({ events = [] }) => {
   );
 };
 
-export default UpcomingEvents;
+export default RecommendedEvents;
