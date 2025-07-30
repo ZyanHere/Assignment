@@ -18,23 +18,38 @@ const SORT_PARAM_MAP = {
 };
 
 /* Build endpoint */
-function buildUrl(subCategoryId, sortOption, page = 1, limit = 20) {
+function buildUrl(categoryId, subCategoryId, sortOption, filtersOption = null, page = 1, limit = 20) {
   if (!subCategoryId) return null;
   const params = new URLSearchParams();
-  const apiSort = SORT_PARAM_MAP[sortOption] ?? null;
-  if (apiSort) params.set("sort", apiSort);
+  params.set("category", categoryId);
+  if (subCategoryId) params.set("subcategory", subCategoryId);
+
+  // Pagination
   params.set("page", page);
   params.set("limit", limit);
-  return `/lmd/api/v1/retail/products/subcategory/${subCategoryId}?${params.toString()}`;
+  const apiSort = SORT_PARAM_MAP[sortOption] ?? null;
+  if (apiSort) params.set("sort", apiSort);
+  // Price filters
+  if (filtersOption?.priceRange?.min !== undefined) {
+    params.set("minPrice", filtersOption.priceRange.min);
+  }
+  if (filtersOption?.priceRange?.max !== null && filtersOption?.priceRange?.max !== undefined) {
+    params.set("maxPrice", filtersOption.priceRange.max);
+  }
+
+
+  return `/lmd/api/v1/retail/products?${params.toString()}`;
 }
 
 export default function SubProduct({
+  categoryId,
   subCategoryId,
   sortOption = "relevance",
+  filtersOption = null,
   page = 1,
   limit = 20,
 }) {
-  const swrKey = buildUrl(subCategoryId, sortOption, page, limit);
+  const swrKey = buildUrl(categoryId, subCategoryId, sortOption, filtersOption, page, limit);
 
   const { data, error, isLoading } = useSWR(swrKey, fetcher, {
     revalidateOnFocus: false,
@@ -105,9 +120,9 @@ export default function SubProduct({
 
     const safeImages = Array.isArray(product.images)
       ? product.images.map((img) => ({
-          ...img,
-          url: encodeURI(img.url),
-        }))
+        ...img,
+        url: encodeURI(img.url),
+      }))
       : product.images;
 
     return {

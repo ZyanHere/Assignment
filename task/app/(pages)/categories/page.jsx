@@ -215,7 +215,7 @@ export default function CategoryPage() {
       </section>
 
       {/* Products */}
-      <section className="w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+      <section className="flex flex-col align center w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
           Featured Products
         </h3>
@@ -274,7 +274,7 @@ const CategoryItem = ({ category }) => (
 );
 
 const ProductGrid = ({ products }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
     {products.map((product) => (
       <ProductCard key={product._id} product={product} />
     ))}

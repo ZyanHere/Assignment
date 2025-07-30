@@ -12,8 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 
 const BrandCarousel = ({ data = [], loading = false }) => {
-  // Responsive: detect if mobile
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -58,31 +58,47 @@ const BrandCarousel = ({ data = [], loading = false }) => {
     };
   });
 
-  // Limit products on mobile
-  const productsToShow = isMobile
-    ? mappedProducts.slice(0, Math.ceil(mappedProducts.length / 2))
-    : mappedProducts;
+  // Group products into pairs for the 2x2 grid on mobile
+  const productPairs = [];
+  for (let i = 0; i < mappedProducts.length; i += 4) {
+    const pair = mappedProducts.slice(i, i + 4);
+    if (pair.length) productPairs.push(pair);
+  }
 
-  // Mobile: grid, Desktop: carousel
   if (isMobile) {
     return (
-      <div className="grid grid-cols-2 gap-3 w-full">
-        {productsToShow.map((product) => (
-          <div key={product.id} className="w-full">
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </div>
+      <Carousel className="w-full mx-auto">
+        <CarouselContent className="-ml-1">
+          {productPairs.map((pair, index) => (
+            <CarouselItem key={index} className="pl-2 basis-full">
+              <div className="grid grid-cols-2 gap-2 p-1">
+                {pair.map((product) => (
+                  <div key={product.id}>
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+                {/* Fill empty slots if less than 4 items */}
+                {pair.length < 4 &&
+                  Array.from({ length: 4 - pair.length }).map((_, i) => (
+                    <div key={`empty-${i}`} className="opacity-0 h-0" />
+                  ))}
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-0" />
+        <CarouselNext className="right-0" />
+      </Carousel>
     );
   }
 
   return (
     <Carousel className="w-full mx-auto">
       <CarouselContent className="-ml-1">
-        {productsToShow.map((product) => (
+        {mappedProducts.map((product) => (
           <CarouselItem
             key={product.id}
-            className="pl-2 basis-full xs:basis-1/2 sm:basis-1/3 md:basis-[20%] lg:basis-[16.666%] xl:basis-[12.5%]"
+            className="pl-2 basis-1/2 sm:basis-1/3 md:basis-[30%] lg:basis-[22.666%] xl:basis-[20.5%]"
           >
             <div className="p-1">
               <ProductCard product={product} />
@@ -90,8 +106,8 @@ const BrandCarousel = ({ data = [], loading = false }) => {
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="hidden sm:flex left-0" />
-      <CarouselNext className="hidden sm:flex right-0" />
+      <CarouselPrevious className="left-0" />
+      <CarouselNext className="right-0" />
     </Carousel>
   );
 };

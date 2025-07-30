@@ -1,25 +1,50 @@
 // hooks/useStableSearch.js
 import useSWR from "swr";
 import { api } from "@/lib/api/axios";
+import qs from "query-string"; // for building query strings safely
 
 const fetcher = (url) => api.get(url).then((res) => res.data.data);
 
 /**
- * Stable search hook — used when user lands on /search?q=...
- * This hits the unified general search API
+ * Stable Search Hook
+ * Supports: search, filters, pagination, and sorting
  */
-export const useStableSearch = (query) => {
-  const encodedQuery = encodeURIComponent(query || "");
-  const shouldFetch = !!query;
+export const useStableSearch = ({
+  q,
+  category,
+  brand,
+  minPrice,
+  maxPrice,
+  page = 1,
+  limit = 12,
+  sort,
+}) => {
+  // Construct the full query string
+  const queryString = qs.stringify(
+    {
+      q,
+      category,
+      brand,
+      minPrice,
+      maxPrice,
+      page,
+      limit,
+      sort,
+    },
+    { skipNull: true, skipEmptyString: true }
+  );
 
-  const { data, error, isLoading } = useSWR(
-    shouldFetch ? `lmd/api/v1/retail/search?q=${encodedQuery}&page=1&limit=10` : null,
+  const shouldFetch = !!q;
+
+  const { data, error, isLoading, mutate } = useSWR(
+    shouldFetch ? `lmd/api/v1/retail/search?${queryString}` : null,
     fetcher
   );
 
   return {
-    data, // includes { products, stores, brands, categories }
+    data,
     isLoading,
     isError: !!error,
+    mutate,
   };
 };
