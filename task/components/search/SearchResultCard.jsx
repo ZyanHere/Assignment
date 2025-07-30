@@ -31,7 +31,7 @@ const SearchResultCard = ({ item }) => {
   const imageUrl =
     item.imageUrl ||
     item.image?.url ||
-    "/placeholder-image.jpg";
+    "/auth-asset/logo.png";
 
   return (
     <Card

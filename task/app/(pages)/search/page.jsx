@@ -25,7 +25,7 @@ const SearchPage = () => {
   });
 
   const { data, isLoading } = useStableSearch({
-    query: searchQuery,
+    q: searchQuery,
     filters,
   });
 
@@ -55,13 +55,14 @@ const SearchPage = () => {
                 <p className="text-sm text-gray-500 mt-1">
                   Showing {(filters.page - 1) * filters.limit + 1} –{" "}
                   {(filters.page - 1) * filters.limit + results.length} of{" "}
-                  {data?.meta?.totalResults || results.length} results
+                  {results.length} results
                 </p>
               </div>
               
             </div>
             <SortOptions />
 
+            <div className="mt-6"> 
             {/* Results Grid */}
             {isLoading ? (
               <p>Loading...</p>
@@ -72,6 +73,7 @@ const SearchPage = () => {
                 ))}
               </div>
             )}
+            </div>
 
             {/* Pagination */}
             <div className="mt-8">
