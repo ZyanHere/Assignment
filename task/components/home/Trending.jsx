@@ -8,6 +8,7 @@ import SubProductRedux from "../subcategoryProduct/SubProductRedux"
 import { PromotionalCard } from "../../components/home/ui2/promotional-card.jsx"
 import { Skeleton } from "@/components/ui/skeleton"
 
+
 // Fallback image for invalid URLs
 const FALLBACK_IMAGE = "https://lastminutedeal.s3.ap-southeast-2.amazonaws.com/retail/products/fallback.png"
 
@@ -86,13 +87,13 @@ const CategoryTabs = ({
   const finalCategories = shuffledCategories
 
   return (
-    <div className="mt-2 sm:mt-4 md:mt-6">
-      <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-3 lg:gap-4">
+    <div className="mt-3 sm:mt-4 md:mt-6">
+      <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-2 md:gap-3 lg:gap-4">
         {homeDataLoading ? (
           Array.from({ length: 6 }).map((_, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-center px-2 sm:px-3 py-1 sm:py-2 w-[80px] sm:w-[100px] md:w-[120px] lg:w-[160px] rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200"
+              className="flex items-center justify-center px-2 py-1 sm:px-3 sm:py-2 rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200"
             >
               <Skeleton className="h-3 sm:h-4 w-3/4" />
             </div>
@@ -103,9 +104,9 @@ const CategoryTabs = ({
           </div>
         ) : (
           finalCategories?.map((category) => {
-            const categoryId = category._id || category.id
-            const isActive = activeCategory === categoryId
-            
+            const categoryId = category._id || category.id;
+            const isActive = activeCategory === categoryId;
+
             return (
               <button
                 key={categoryId}
@@ -115,13 +116,13 @@ const CategoryTabs = ({
                     ? "bg-purple-800 shadow-lg text-white border-2 border-purple-900"
                     : "bg-gray-200 shadow-sm hover:bg-gray-300"
                   }
-                  w-[80px] sm:w-[100px] md:w-[120px] lg:w-[160px] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm`}
+                  px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm text-center`}
               >
-                <span className="font-medium break-words text-center leading-tight">
+                <span className="font-medium break-words leading-tight">
                   {category.name}
                 </span>
               </button>
-            )
+            );
           })
         )}
       </div>
@@ -246,9 +247,9 @@ export default function TrendingProducts() {
   <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-2 sm:p-4 md:p-8 lg:p-20 rounded-2xl sm:rounded-3xl md:rounded-4xl">
     <div className="mx-auto bg-white p-2 sm:p-4 md:p-6 rounded-2xl sm:rounded-3xl md:rounded-4xl ">
       {/* Header Section - Fixed alignment */}
-  <div className="bg-transparent sm:bg-purple-800 sm:flex -mt-4 mr-5 sm:-mt-6 md:-mt-8 lg:-mt-10">
+      <div className="bg-transparent sm:flex -mt-4 mr-5 sm:-mt-6 md:-mt-8 lg:-mt-10">
 
-        <div className="bg-white flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
+        <div className="bg-white mt-10 flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
           <div className="p-2 sm:p-4 md:p-6 pt-2 sm:pt-4 md:pt-6">
             <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
               Trending Store Favorites
@@ -262,11 +263,12 @@ export default function TrendingProducts() {
         
         {/* Promotional Card - Desktop */}
         {!isSmallScreen && (
-          <div className="-mr-4 sm:-mr-6 md:-mr-8 lg:-mr-10 bg-white overflow-hidden h-full flex items-end">
-            <PromotionalCard 
+          <div className="-mr-4 sm:-mr-6 md:-mr-11 md:mt-2 lg:-mr-11 lg:mt-4 overflow-hidden h-full flex items-end">
+            {/* <PromotionalCard 
               onButtonClick={handlePromotionalClick} 
               className="h-full"
-            />
+            /> */}
+            <img src="card.svg" alt="Card" className="h-auto w-auto" />
           </div>
         )}
       </div>
@@ -280,7 +282,7 @@ export default function TrendingProducts() {
 
     {/* Category Title - Desktop Only */}
 {!isSmallScreen && (
-  <div className="bg-purple-800 -mr-4 sm:-mr-6 md:-mr-8 lg:-mr-5 -mt-[4px]">
+  <div className="-mr-4 sm:-mr-6 md:-mr-8 lg:-mr-5 -mt-[4px]">
     <div className="mb-3 bg-white rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px] pt-3 pb-3 px-4">
       <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-gray-800">
       </h2>
@@ -294,7 +296,7 @@ export default function TrendingProducts() {
 
       {/* Product Grid */}
       <div className="mt-2 sm:mt-4 md:mt-8">
-        <div className={`grid ${isSmallScreen ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'} gap-3 sm:gap-4`}>
+        <div className={`grid ${isSmallScreen ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'} gap-3 sm:gap-4`}>
           {isLoadingCurrentCategory ? (
             <ProductSkeleton />
           ) : currentProducts.length === 0 ? (

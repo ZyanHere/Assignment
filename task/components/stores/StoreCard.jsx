@@ -113,7 +113,7 @@ const StoreCard = ({
   }, [canAdd, isLoading, isProductInCart, cartItemQuantity]);
 
   const buttonClassName = useMemo(() => {
-    return `absolute bottom-2 right-10 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md transition shadow-md ${
+    return `absolute bottom-2 right-10 -mr-3 transform translate-y-1/2 translate-x-1/2 w-[53px] h-[33px] border font-medium rounded-md transition shadow-md ${
       isProductInCart
         ? "bg-green-50 text-green-500 border-green-400"
         : "bg-white text-blue-400 border-blue-400 hover:bg-blue-100"
@@ -124,36 +124,38 @@ const StoreCard = ({
     <div className="pb-2 group" onClick={handleItemClick}>
       <div className="w-full p-2 border rounded-xl hover:shadow-lg transition-all duration-300 bg-white shadow-sm flex flex-col justify-between min-h-[320px]">
         {/* Image & Wishlist */}
-        <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl overflow-hidden">
-          {/* Wishlist Heart Button */}
-          {showWishlist && (
-            <button
-              onClick={handleWishlistToggle}
-              className={`absolute top-2 right-2 z-10 p-1 rounded-full shadow-md transition ${
-                inWishlist
-                  ? "bg-white/60 text-red-500"
-                  : "bg-white/60 text-gray-600 hover:text-red-500"
-              }`}
-              aria-label={
-                inWishlist ? "Remove from wishlist" : "Add to wishlist"
-              }
-            >
-              <Heart
-                className="w-5 h-5"
-                fill={inWishlist ? "currentColor" : "none"}
-              />
-            </button>
-          )}
+        <div className="relative w-full flex flex-col items-center"> 
+          <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl overflow-hidden">
+            {/* Wishlist Heart Button */}
+            {showWishlist && (
+              <button
+                onClick={handleWishlistToggle}
+                className={`absolute top-2 right-2 z-10 p-1 rounded-full shadow-md transition ${
+                  inWishlist
+                    ? "bg-white/60 text-red-500"
+                    : "bg-white/60 text-gray-600 hover:text-red-500"
+                }`}
+                aria-label={
+                  inWishlist ? "Remove from wishlist" : "Add to wishlist"
+                }
+              >
+                <Heart
+                  className="w-5 h-5"
+                  fill={inWishlist ? "currentColor" : "none"}
+                />
+              </button>
+            )}
 
-          {/* Product Image */}
-          <Image
-            src={imgSrc}
-            alt={product?.name || "Product image"}
-            width={300}
-            height={200}
-            className="w-full h-full object-cover"
-            onError={() => setImageError(true)}
-          />
+            {/* Product Image */}
+            <Image
+              src={imgSrc}
+              alt={product?.name || "Product image"}
+              width={300}
+              height={200}
+              className="w-full h-full object-cover"
+              onError={() => setImageError(true)}
+            />
+          </div>
 
           {/* Add to Cart Button */}
           <Button
