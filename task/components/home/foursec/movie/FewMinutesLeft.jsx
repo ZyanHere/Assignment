@@ -62,12 +62,26 @@ const FewMinutesLeft = ({ movies = [] }) => {
                   />
                   <div className="flex flex-col gap-2 flex-1 overflow-hidden">
                     <h3 className="font-semibold text-sm sm:text-base truncate">
-                      {movie.title} - {movie.date ?? "N/A"}
+                      {movie.title}
                     </h3>
-                    <p className="text-xs sm:text-sm truncate">{movie.time ?? "N/A"}</p>
+                    {movie.date && (
+                      <p className="text-xs sm:text-sm truncate text-gray-600">
+                        {movie.date}
+                      </p>
+                    )}
+                    {movie.time && (
+                      <p className="text-xs sm:text-sm truncate text-gray-600">
+                        {movie.time}
+                      </p>
+                    )}
                     <p className="text-xs sm:text-sm truncate text-gray-600">
-                      📍{movie.location ?? "N/A"}
+                      📍 {movie.location}
                     </p>
+                    {movie.category && movie.category !== "Entertainment" && (
+                      <p className="text-xs sm:text-xs truncate text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                        {movie.category}
+                      </p>
+                    )}
                   </div>
                   <div className="absolute bottom-3 right-3">
                     <span className="bg-green-100 text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">

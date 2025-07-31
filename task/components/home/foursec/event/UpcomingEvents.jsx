@@ -35,7 +35,7 @@ const UpcomingEvents = ({ events = [] }) => {
         <h2 className="text-xl font-bold">Upcoming Events</h2>
         <Link
           href="/home/event/section/upcoming-events"
-          className="text-blue-600 font-medium hover:underline"
+          className="text-blue-600 font-medium hover:underline whitespace-nowrap"
         >
           See All
         </Link>
@@ -70,7 +70,7 @@ const UpcomingEvents = ({ events = [] }) => {
                     href={`/home/event/${event.id}`}
                     className="relative block h-full w-full"
                   >
-                    <div className="relative flex flex-col md:flex-row items-start md:items-center gap-4 border p-4 rounded-lg shadow-md w-full h-[180px] overflow-hidden bg-white">
+                    <div className="relative flex flex-col md:flex-row items-start md:items-center gap-4 border p-4 rounded-lg shadow-md w-full h-auto md:h-[180px] overflow-hidden bg-white">
 
                       <Image
                         src={displayImage}
@@ -96,7 +96,12 @@ const UpcomingEvents = ({ events = [] }) => {
                           📍{event.location || "Location TBA"}
                         </p>
                       </div>
-                      <div className="absolute bottom-3 right-3">
+                      <div className="absolute bottom-3 right-3 md:block hidden">
+                        <span className="bg-green-100 text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
+                          ₹{price}
+                        </span>
+                      </div>
+                      <div className="md:hidden block mt-2">
                         <span className="bg-green-100 text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
                           ₹{price}
                         </span>

@@ -31,11 +31,15 @@ const FeaturedEvents = ({ events = [] }) => {
 
   return (
     <section className="mb-10">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Featured Events</h2>
+      <div className="flex justify-between items-start flex-wrap">
+        <h2 className="text-xl font-bold min-w-0">
+          Featured
+          <br />
+          Events
+        </h2>
         <Link
           href="/home/event/section/featured-events"
-            className="text-blue-600 font-medium hover:underline"
+          className="text-blue-600 font-medium hover:underline whitespace-nowrap"
         >
           See All
         </Link>
@@ -51,7 +55,8 @@ const FeaturedEvents = ({ events = [] }) => {
               const variantImage =
                 variant?.images?.find((img) => img.is_primary)?.url ||
                 variant?.images?.[0]?.url;
-              const displayImage = variantImage || event.poster || "/placeholder.jpg";
+              const displayImage =
+                variantImage || event.poster || "/placeholder.jpg";
               const displayTitle = variant?.name || event.title || "Untitled";
               const price =
                 variant?.price?.sale ??
@@ -61,7 +66,10 @@ const FeaturedEvents = ({ events = [] }) => {
                 0;
 
               return (
-                <CarouselItem key={event.id} className="basis-1/4 min-w-[220px]">
+                <CarouselItem
+                  key={event.id}
+                  className="basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                >
                   <Link
                     href={`/home/event/${event.id}`}
                     className="relative block group"

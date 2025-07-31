@@ -18,61 +18,67 @@ const SearchPage = () => {
   const [filters, setFilters] = useState({
     category: searchParams.get("category") || null,
     brand: searchParams.get("brand") || null,
-    minPrice: searchParams.get("minPrice") || null,
-    maxPrice: searchParams.get("maxPrice") || null,
+    minPrice: searchParams.get("minPrice") || 0,
+    maxPrice: searchParams.get("maxPrice") || 5000,
     page: Number(searchParams.get("page")) || 1,
     limit: 12,
   });
 
   const { data, isLoading } = useStableSearch({
-    query: searchQuery,
+    q: searchQuery,
     filters,
   });
 
-  const results = data?.results || [];
+      const productData = data?.results?.find((res) => res.type === 'product');
+
+    const results = productData?.results || [];
 
   return (
     <>
       <Header />
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
+      <main className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Left: Filters */}
-          <aside className="w-64">
+          <aside className="w-full lg:w-64 lg:sticky lg:top-6 lg:h-fit">
             <SearchFilters filters={filters} setFilters={setFilters} />
           </aside>
 
           {/* Right: Search Results */}
-          <section className="flex-1">
+          <section className="flex-1 min-w-0">
             {/* Top: Header + Sort */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-800">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 truncate">
                   Showing results for:{" "}
                   <span className="text-yellow-600">"{searchQuery}"</span>
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
                   Showing {(filters.page - 1) * filters.limit + 1} –{" "}
                   {(filters.page - 1) * filters.limit + results.length} of{" "}
-                  {data?.meta?.totalResults || results.length} results
+                  {results.length} results
                 </p>
               </div>
               
             </div>
+            <div className="mb-4">
             <SortOptions />
+            </div>
 
+            <div className="mt-6"> 
             {/* Results Grid */}
             {isLoading ? (
               <p>Loading...</p>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="w-full flex flex-wrap gap-3 sm:gap-4 lg:gap-5 xl:gap-6">
                 {results.map((item) => (
                   <SearchResultCard key={item._id} item={item} />
                 ))}
               </div>
             )}
+            </div>
 
             {/* Pagination */}
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8 flex justify-center">
               <PaginationWrapper
                 currentPage={filters.page}
                 totalPages={data?.meta?.totalPages || 1}

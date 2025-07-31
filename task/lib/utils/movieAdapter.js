@@ -34,9 +34,63 @@ function choosePoster(product) {
   return productImg || product?.images?.[0]?.url || "";
 }
 
+// Helper function to extract meaningful information from product data
+function extractProductInfo(product) {
+  // Try to get movie-specific timing information
+  const timing = product.timing || product.schedule || {};
+  const startDate = timing.start_date || timing.startDate || product.date;
+  const endDate = timing.end_date || timing.endDate;
+  
+  // Format date if available
+  let formattedDate = null;
+  let formattedTime = null;
+  
+  if (startDate) {
+    try {
+      const date = new Date(startDate);
+      formattedDate = date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: 'numeric'
+      });
+      formattedTime = date.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+    } catch (e) {
+      // If date parsing fails, use as is
+      formattedDate = startDate;
+      formattedTime = null;
+    }
+  }
+  
+  // Get location information
+  const location = product.vendor_store_id?.store_name || 
+                   product.location || 
+                   product.venue ||
+                   product.store_name ||
+                   "Available";
+  
+  // Get category information
+  const category = product.category?.name || 
+                   product.product_type || 
+                   product.type ||
+                   "Entertainment";
+  
+  return {
+    date: formattedDate,
+    time: formattedTime,
+    location,
+    category
+  };
+}
+
 export function normalizeMovie(product) {
   const variants = (product?.variants || []).map(normalizeVariant);
   const { base, sale } = getLowestVariantPrice(variants);
+  const productInfo = extractProductInfo(product);
+  
   return {
     id: String(product._id),
     title: product.name || "Untitled",
@@ -45,9 +99,10 @@ export function normalizeMovie(product) {
     poster: choosePoster(product),
     ratingAverage: product.rating?.average ?? 0,
     ratingCount: product.rating?.count ?? 0,
-    location: product.vendor_store_id?.store_name || "",
-    date: product.date || null,
-    time: product.time || null,
+    location: productInfo.location,
+    date: productInfo.date,
+    time: productInfo.time,
+    category: productInfo.category,
     variants,
     price: { base, sale },
     raw: product,

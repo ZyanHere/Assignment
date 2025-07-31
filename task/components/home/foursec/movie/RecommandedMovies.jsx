@@ -39,11 +39,26 @@ const Recommended = ({ movies = [] }) => {
 
               <div className="sm:ml-4 flex-1">
                 <h3 className="font-semibold text-sm sm:text-lg">{movie.title}</h3>
-                <p className="text-xs sm:text-sm mt-2">{movie.date ?? "N/A"}</p>
-                <p className="text-xs sm:text-base">{movie.time ?? "N/A"}</p>
+                {movie.date && (
+                  <p className="text-xs sm:text-sm mt-2 text-gray-600">
+                    {movie.date}
+                  </p>
+                )}
+                {movie.time && (
+                  <p className="text-xs sm:text-base text-gray-600">
+                    {movie.time}
+                  </p>
+                )}
                 <p className="text-xs sm:text-sm flex items-center mt-4 text-gray-600">
-                  📍 {movie.location ?? "N/A"}
+                  📍 {movie.location}
                 </p>
+                {movie.category && movie.category !== "Entertainment" && (
+                  <div className="mt-2">
+                    <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                      {movie.category}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <span className="bg-green-100 text-black text-xs sm:text-sm px-4 py-2 font-medium rounded-md mt-4 sm:mt-0 self-start sm:self-end whitespace-nowrap">

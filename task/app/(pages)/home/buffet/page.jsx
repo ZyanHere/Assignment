@@ -7,8 +7,13 @@ import Link from "next/link";
 import useSWR from "swr";
 import { fetcher } from "@/lib/api";
 import { adaptBuffetSections } from "@/lib/utils/buffetAdapters";
+import { usePathname } from "next/navigation";
 
 export default function BuffetPage() {
+  const pathname = usePathname();
+
+  const isChoicesPage = pathname === "/home/buffet/choices";
+
   const { data, error } = useSWR(
     "/lmd/api/v1/retail/home/comprehensive?type=BUFFET",
     fetcher
@@ -16,6 +21,7 @@ export default function BuffetPage() {
 
   if (error)
     return <div className="p-10 text-red-500">Failed to load buffet data</div>;
+
   if (!data)
     return (
       <div className="flex justify-center items-center py-8">
@@ -31,7 +37,7 @@ export default function BuffetPage() {
       <Header />
       <div className="p-6 w-full max-w-[1700px] mx-auto">
         <div className="px-6 md:px-12">
-          <nav className="mb-10 text-black text-4xl">
+          <nav className="mb-4 text-black text-xl">
             <Link href="/" className="hover:underline font-medium">
               Home
             </Link>
@@ -45,19 +51,23 @@ export default function BuffetPage() {
             items={buffet.inYourArea}
           />
 
-          <div className="flex justify-between items-center mt-6">
-            <h2 className="text-xl font-semibold">
-              Based on your previous choices
+          <div className="flex justify-between items-start mt-6">
+            <h2 className="text-xl font-semibold leading-tight">
+              Based on your <br /> previous choices
             </h2>
-            <Link
-              href="/home/buffet/choices"
-              className="text-orange-500 text-sm font-semibold"
-            >
-              See All
-            </Link>
+
+            {!isChoicesPage && (
+              <Link
+                href="/home/buffet/choices"
+                className="text-orange-500 text-sm font-semibold whitespace-nowrap"
+              >
+                See All
+              </Link>
+            )}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+          
+          <div className="grid grid-cols-1 sm:grid-cols- md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
             {buffet.previousChoices.map((restaurant, index) => (
               <RestaurantCard key={restaurant.id} {...restaurant} index={index} />
             ))}
