@@ -79,9 +79,9 @@ const ProductCard = React.memo(({ product }) => {
 
   // Memoize button className to prevent unnecessary re-renders
   const buttonClassName = useMemo(() => {
-    const baseClass = "absolute bottom-3 right-10 transform translate-y-1/2 translate-x-1/2 px-3 py-1.5 border font-medium rounded-md hover:bg-blue-100 transition shadow-md";
+    const baseClass = "absolute bottom-3 right-10 -mr-3 transform translate-y-1/2 translate-x-1/2 px-3 py-1.5 border font-medium rounded-md hover:bg-blue-100 transition shadow-md";
     return `${baseClass} ${isProductInCart
-      ? "bg-green-50 text-green-500 border-green-400"
+      ? "bg-green-50 text-green-500 border-green-400 mr-[3px]"
       : "bg-white text-blue-400 border-blue-400"
       }`;
   }, [isProductInCart]);
@@ -112,29 +112,31 @@ const ProductCard = React.memo(({ product }) => {
   return (
     <div className="pb-2 group" onClick={handleItemClick}>
       <div className="w-full p-2 border rounded-xl hover:shadow-lg transition-all duration-300 bg-white shadow-sm flex flex-col justify-between min-h-[320px]">
-        <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl overflow-hidden">
-          <button
-            onClick={handleWishlistToggle}
-            className={`absolute top-2 right-2 z-10 p-1 rounded-full shadow-md transition ${inWishlist ? "bg-white/60 text-red-500" : "bg-white/60 text-gray-600 hover:text-red-500"
-              }`}
-            aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
-          >
-            <Heart className="w-5 h-5" fill={inWishlist ? "currentColor" : "none"} />
-          </button>
+        <div className="relative w-full flex flex-col items-center">  
+          <div className="relative flex items-center justify-center w-full h-[142px] bg-blue-50 rounded-xl overflow-hidden">
+            <button
+              onClick={handleWishlistToggle}
+              className={`absolute top-2 right-2 z-10 p-1 rounded-full shadow-md transition ${inWishlist ? "bg-white/60 text-red-500" : "bg-white/60 text-gray-600 hover:text-red-500"
+                }`}
+              aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              <Heart className="w-5 h-5" fill={inWishlist ? "currentColor" : "none"} />
+            </button>
 
-          <Image
-            src={product.image}
-            alt={product.name || "Product image"}
-            width={300}
-            height={200}
-            className="w-full h-full object-cover"
-            quality={90}
-            priority={false}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "/fallback.png";
-            }}
-          />
+            <Image
+              src={product.image}
+              alt={product.name || "Product image"}
+              width={300}
+              height={200}
+              className="w-full h-full object-cover"
+              quality={90}
+              priority={false}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/fallback.png";
+              }}
+            />
+          </div>
 
           <Button
             onClick={(e) => {
@@ -162,6 +164,7 @@ const ProductCard = React.memo(({ product }) => {
         </div>
         <p className="text-xs text-red-500 font-semibold mt-1">{product.stock === 0 ? 'No stock' : ''}</p>
       </div>
+      
     </div>
   );
 });

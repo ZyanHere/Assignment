@@ -147,9 +147,9 @@ const ProductCard = React.memo(({ product }) => {
   const buttonClassName = useMemo(() => {
     const baseClass = "absolute -bottom-1.5 right-4 text-xs w-[53px] h-[33px] font-medium rounded-md border transition shadow-md";
     if (isProductInCart) {
-      return `${baseClass} bg-green-50 text-green-500 border-green-400`;
+      return `${baseClass} bg-green-50 -mr-4 text-green-500 border-green-400`;
     } else if (canAddToCart) {
-      return `${baseClass} bg-white text-blue-400 border-blue-400 hover:bg-blue-100`;
+      return `${baseClass} bg-white -mr-4 text-blue-400 border-blue-400 hover:bg-blue-100`;
     } else {
       return `${baseClass} bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed`;
     }
