@@ -49,16 +49,31 @@ const PopularNow = ({ movies = [] }) => {
                       <h3 className="font-semibold text-sm sm:text-base truncate">
                         {movie.title}
                       </h3>
-                      <p className="text-xs sm:text-sm">{movie.date ?? "N/A"}</p>
-                      <p className="text-xs sm:text-sm">{movie.time ?? "N/A"}</p>
+                      {movie.date && (
+                        <p className="text-xs sm:text-sm text-gray-600">
+                          {movie.date}
+                        </p>
+                      )}
+                      {movie.time && (
+                        <p className="text-xs sm:text-sm text-gray-600">
+                          {movie.time}
+                        </p>
+                      )}
                       <div className="mt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                         <p className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-                          📍 {movie.location ?? "N/A"}
+                          📍 {movie.location}
                         </p>
                         <span className="bg-yellow-400 text-black text-xs sm:text-sm px-3 py-1 rounded-md whitespace-nowrap">
                           Rs {movie.price?.sale ?? movie.price?.base ?? 0}
                         </span>
                       </div>
+                      {movie.category && movie.category !== "Entertainment" && (
+                        <div className="mt-2">
+                          <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                            {movie.category}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>
