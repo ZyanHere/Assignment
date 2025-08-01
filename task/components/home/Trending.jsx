@@ -244,80 +244,58 @@ export default function TrendingProducts() {
         </div>
       </div>
     )
-  }return (
-  <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-2 sm:p-4 md:p-8 lg:p-20 rounded-2xl sm:rounded-3xl md:rounded-4xl">
-    <div className="mx-auto bg-white p-2 sm:p-4 md:p-6 rounded-2xl sm:rounded-3xl md:rounded-4xl ">
-      {/* Header Section - Fixed alignment */}
-      <div className="bg-transparent sm:flex -mt-4 mr-5 sm:-mt-6 md:-mt-8 lg:-mt-10">
+  }
 
-        <div className="bg-white mt-10 flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
-          <div className="p-2 sm:p-4 md:p-6 pt-2 sm:pt-4 md:pt-6">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
-              Trending Store Favorites
-            </h1>
-            <CategoryTabs
-              activeCategory={activeCategory}
-              onPrimaryCategoryClick={handlePrimaryCategoryClick}
-            />
+  return (
+    <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-2 sm:p-4 md:p-8 lg:p-20 rounded-2xl sm:rounded-3xl md:rounded-4xl">
+      <div className="mx-auto bg-white p-2 sm:p-4 md:p-6 rounded-2xl sm:rounded-3xl md:rounded-4xl">
 
+        {/* Header Section */}
+        <div className="bg-transparent sm:flex -mt-4 mr-5 sm:-mt-6 md:-mt-8 lg:-mt-10">
+
+          {/* Left Side - Category & Promo */}
+          <div className="bg-white mt-10 flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
+            <div className="p-2 sm:p-4 md:p-6 pt-2 sm:pt-4 md:pt-6">
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
+                Trending Store Favorites
+              </h1>
+              <CategoryTabs
+                activeCategory={activeCategory}
+                onPrimaryCategoryClick={handlePrimaryCategoryClick}
+              />
+            </div>
           </div>
 
-          {/* Promotional Card - Desktop */}
+          {/* Right Side - Promotional Image */}
           {!isSmallScreen && (
-            <div className="-mr-4 sm:-mr-6 md:-mr-8 lg:-mr-10 bg-white overflow-hidden h-full flex items-end">
-              <PromotionalCard
-                onButtonClick={handlePromotionalClick}
-                className="h-full"
-              />
+            <div className="-mr-4 sm:-mr-6 md:-mr-11 md:mt-2 lg:-mr-11 lg:mt-4 overflow-hidden h-full flex items-end">
+              <img src="card.svg" alt="Card" className="h-auto w-auto" />
             </div>
           )}
         </div>
-        
-        {/* Promotional Card - Desktop */}
+
+        {/* Category Title Placeholder (if needed) */}
         {!isSmallScreen && (
-          <div className="-mr-4 sm:-mr-6 md:-mr-11 md:mt-2 lg:-mr-11 lg:mt-4 overflow-hidden h-full flex items-end">
-            {/* <PromotionalCard 
-              onButtonClick={handlePromotionalClick} 
-              className="h-full"
-            /> */}
-            <img src="card.svg" alt="Card" className="h-auto w-auto" />
-
-          </div>
-        )}
-
-    {/* Category Title - Desktop Only */}
-{!isSmallScreen && (
-  <div className="-mr-4 sm:-mr-6 md:-mr-8 lg:-mr-5 -mt-[4px]">
-    <div className="mb-3 bg-white rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px] pt-3 pb-3 px-4">
-      <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-gray-800">
-      </h2>
-      <p className="text-gray-600 text-xs sm:text-sm mt-1">
-
-
+          <div className="-mr-4 sm:-mr-6 md:-mr-8 lg:-mr-5 -mt-[4px]">
+            <div className="mb-3 bg-white rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px] pt-3 pb-3 px-4">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-gray-800">
+                {/* Optional Title */}
+              </h2>
+              <p className="text-gray-600 text-xs sm:text-sm mt-1">
+                {/* Optional Subtitle */}
               </p>
             </div>
           </div>
         )}
 
-
-      {/* Product Grid */}
-      <div className="mt-2 sm:mt-4 md:mt-8">
-        <div className={`grid ${isSmallScreen ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'} gap-3 sm:gap-4`}>
-          {isLoadingCurrentCategory ? (
-            <ProductSkeleton />
-          ) : currentProducts.length === 0 ? (
-            <div className="col-span-full text-center py-4 sm:py-6 md:py-10">
-              <p className="text-gray-500 text-sm sm:text-base md:text-lg">No products available</p>
-            </div>
-          ) : (
-            currentProducts.map(product => (
-              <div key={product.id || product._id} className="group">
-                <SubProductRedux
-                  product={product}
-                  onClick={() => handleProductClick(product)}
-                  compact={isSmallScreen}
-                />
-
+        {/* Product Grid */}
+        <div className="mt-2 sm:mt-4 md:mt-8">
+          <div className={`grid ${isSmallScreen ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'} gap-3 sm:gap-4`}>
+            {isLoadingCurrentCategory ? (
+              <ProductSkeleton />
+            ) : currentProducts.length === 0 ? (
+              <div className="col-span-full text-center py-4 sm:py-6 md:py-10">
+                <p className="text-gray-500 text-sm sm:text-base md:text-lg">No products available</p>
               </div>
             ) : (
               currentProducts.map(product => (
@@ -332,7 +310,9 @@ export default function TrendingProducts() {
             )}
           </div>
         </div>
+
       </div>
     </div>
   )
-} 
+
+}
