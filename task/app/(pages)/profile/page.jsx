@@ -33,7 +33,7 @@ const ProfilePage = () => {
     saveddeals: "saved",
     paymentmethods: "payment",
     messages: "messages",
-    notifications: "notifications",
+    // notifications: "notifications",
     logout: "logout",
   };
 

@@ -47,12 +47,12 @@ const ProfileTabs = ({ selectedTab, setSelectedTab }) => {
       icon: <MessageSquare className="w-5 h-5" />,
       color: "text-purple-500"
     },
-    {
-      key: "notifications",
-      name: "Notifications",
-      icon: <Bell className="w-5 h-5" />,
-      color: "text-yellow-500"
-    },
+    // {
+    //   key: "notifications",
+    //   name: "Notifications",
+    //   icon: <Bell className="w-5 h-5" />,
+    //   color: "text-yellow-500"
+    // },
     {
       key: "logout",
       name: "Log Out",

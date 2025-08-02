@@ -5,7 +5,7 @@ import { getSession } from 'next-auth/react';
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000', 
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: true, // Important for CSRF tokens
+  withCredentials: false, // Important for CSRF tokens
 });
 
 // Automatically attach Bearer token on every request
