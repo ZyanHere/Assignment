@@ -4,11 +4,11 @@ import BrandCarousel from "./BrandCarousel";
 import Essentials from "./Essentials";
 import FestBanner from "./FestBanner";
 import FourSec from "./FourSec";
-import OffersBanner from "./OffersBanner";
-import NearbyStores from './NearbyStores';
-import Component from "./Trending";
-import WomanWithGroceries from "./womanWithGroceries";
 import GroceryPromoSection from "./groceryPromoSection";
+import NearbyStores from './NearbyStores';
+import OffersBanner from "./OffersBanner";
+import Component from "./trending/Trending";
+import WomanWithGroceries from "./womanWithGroceries";
 
 const AllTabContentRedux = ({ products = [], loading = false }) => {
   const featuredProducts = products.slice(0, 10);

@@ -8,7 +8,7 @@ function unwrapError(e) {
 /** Create Razorpay order (Step 1 from official docs) */
 export async function createRazorpayOrder(orderData) {
   try {
-    const { data } = await api.post('/lmd/api/v1/payments/create-order', {
+    const { data } = await api.post('/lmd/api/v1/payments/razorpay/create-order', {
       amount: orderData.amount, // Send raw amount, backend will convert to paise
       currency: orderData.currency || 'INR',
       receipt: orderData.receipt || `receipt_${Date.now()}`,
@@ -24,7 +24,7 @@ export async function createRazorpayOrder(orderData) {
 /** Create payment for an order */
 export async function createPayment(orderId, paymentMethod, notes = '') {
   try {
-    const { data } = await api.post('/lmd/api/v1/payments/create', {
+    const { data } = await api.post('/lmd/api/v1/payments/razorpay/create', {
       order_id: orderId,
       payment_method: paymentMethod,
       notes
@@ -38,7 +38,7 @@ export async function createPayment(orderId, paymentMethod, notes = '') {
 /** Process payment after successful Razorpay payment (Step 1.4 from official docs) */
 export async function processPayment(paymentData) {
   try {
-    const { data } = await api.post('/lmd/api/v1/payments/process-test', {
+    const { data } = await api.post('/lmd/api/v1/payments/razorpay/process', {
       razorpay_payment_id: paymentData.razorpay_payment_id,
       razorpay_order_id: paymentData.razorpay_order_id,
       razorpay_signature: paymentData.razorpay_signature,
@@ -63,7 +63,7 @@ export async function processPayment(paymentData) {
 /** Verify payment signature (Step 1.5 from official docs) */
 export async function verifyPaymentSignature(orderId, paymentId, signature) {
   try {
-    const { data } = await api.post('/lmd/api/v1/payments/verify-signature', {
+    const { data } = await api.post('/lmd/api/v1/payments/razorpay/verify-signature', {
       order_id: orderId,
       razorpay_payment_id: paymentId,
       razorpay_signature: signature
@@ -77,7 +77,7 @@ export async function verifyPaymentSignature(orderId, paymentId, signature) {
 /** Get payment details */
 export async function getPaymentDetails(paymentId) {
   try {
-    const { data } = await api.get(`/lmd/api/v1/payments/${paymentId}`);
+    const { data } = await api.get(`/lmd/api/v1/payments/razorpay/${paymentId}`);
     return data.data;
   } catch (e) {
     unwrapError(e);
@@ -87,7 +87,7 @@ export async function getPaymentDetails(paymentId) {
 /** Verify payment status (Step 1.6 from official docs) */
 export async function verifyPaymentStatus(paymentId) {
   try {
-    const { data } = await api.get(`/lmd/api/v1/payments/${paymentId}/verify`);
+    const { data } = await api.get(`/lmd/api/v1/payments/razorpay/${paymentId}/verify`);
     return data.data;
   } catch (e) {
     unwrapError(e);
@@ -97,7 +97,7 @@ export async function verifyPaymentStatus(paymentId) {
 /** Cancel payment */
 export async function cancelPayment(paymentId) {
   try {
-    const { data } = await api.post(`/lmd/api/v1/payments/${paymentId}/cancel`);
+    const { data } = await api.post(`/lmd/api/v1/payments/razorpay/${paymentId}/cancel`);
     return data.data;
   } catch (e) {
     unwrapError(e);
@@ -107,7 +107,7 @@ export async function cancelPayment(paymentId) {
 /** Create refund */
 export async function createRefund(paymentId, refundData) {
   try {
-    const { data } = await api.post(`/lmd/api/v1/payments/${paymentId}/refund`, refundData);
+    const { data } = await api.post(`/lmd/api/v1/payments/razorpay/${paymentId}/refund`, refundData);
     return data.data;
   } catch (e) {
     unwrapError(e);
@@ -117,7 +117,7 @@ export async function createRefund(paymentId, refundData) {
 /** Get customer payments */
 export async function getCustomerPayments(page = 1, limit = 10) {
   try {
-    const { data } = await api.get(`/lmd/api/v1/payments/customer/payments?page=${page}&limit=${limit}`);
+    const { data } = await api.get(`/lmd/api/v1/payments/razorpay/customer/payments?page=${page}&limit=${limit}`);
     return data.data;
   } catch (e) {
     unwrapError(e);
@@ -127,7 +127,7 @@ export async function getCustomerPayments(page = 1, limit = 10) {
 /** Get order payments */
 export async function getOrderPayments(orderId) {
   try {
-    const { data } = await api.get(`/lmd/api/v1/payments/order/${orderId}`);
+    const { data } = await api.get(`/lmd/api/v1/payments/razorpay/order/${orderId}`);
     return data.data;
   } catch (e) {
     unwrapError(e);

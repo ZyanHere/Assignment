@@ -44,7 +44,7 @@ export async function POST(request) {
     
     // Call backend to process payment
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
-    const response = await fetch(`${backendUrl}/lmd/api/v1/payments/process`, { 
+    const response = await fetch(`${backendUrl}/lmd/api/v1/payments/razorpay/process`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

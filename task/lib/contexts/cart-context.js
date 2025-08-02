@@ -74,7 +74,7 @@ export function CartProvider({ children }) {
     if (fetchTimeout.current) clearTimeout(fetchTimeout.current);
   }, []);
 
-  const addToCart = useCallback(async (item) => {
+  const addToCart = useCallback(async (item, bookingDetails = null) => {
     if (!tokenReady) {
       const message = 'Please login to add items to cart';
       setError(message);
@@ -87,7 +87,12 @@ export function CartProvider({ children }) {
     setError(null);
 
     try {
-      await cartAPI.addOrUpdateItem(item.id, 1);
+      // For hotel bookings, ensure we pass the booking details properly
+      if (bookingDetails && bookingDetails.booking_details) {
+        await cartAPI.addOrUpdateItem(item.id, 1, bookingDetails);
+      } else {
+        await cartAPI.addOrUpdateItem(item.id, 1, bookingDetails);
+      }
       await reload(true);
       toast.success('Item added to cart');
     } catch (err) {
@@ -103,7 +108,7 @@ export function CartProvider({ children }) {
     }
   }, [tokenReady, reload]);
 
-  const updateQuantity = useCallback(async (variantId, delta) => {
+  const updateQuantity = useCallback(async (variantId, delta, bookingDetails = null) => {
     if (!tokenReady) {
       toast.error('Please login to update cart');
       return;
@@ -130,10 +135,20 @@ export function CartProvider({ children }) {
     try {
       const entry = oldCart[entryIndex];
       if (newQty < 1) {
-        await cartAPI.removeItem(entry.id);
+        // Debug: Check if variantId is null or undefined
+        if (!entry.variantId) {
+          console.error('❌ updateQuantity: entry.variantId is null/undefined', {
+            entry,
+            variantId,
+            cartItemId: entry.id
+          });
+          toast.error('Invalid item data - please refresh the page');
+          return;
+        }
+        await cartAPI.removeItem(entry.variantId);
         toast.success('Item removed from cart');
       } else {
-        await cartAPI.updateCartItem(entry.id, newQty);
+        await cartAPI.updateCartItem(entry.id, newQty, bookingDetails);
         toast.success('Quantity updated');
       }
       await reload(true);
@@ -162,6 +177,17 @@ export function CartProvider({ children }) {
       return;
     }
 
+    // Debug: Check if variantId is null or undefined
+    if (!entry.variantId) {
+      console.error('❌ removeFromCart: entry.variantId is null/undefined', {
+        entry,
+        variantId,
+        cartItemId: entry.id
+      });
+      toast.error('Invalid item data - please refresh the page');
+      return;
+    }
+
     const oldCart = [...cart];
     const updatedCart = cart.filter(i => i.variantId !== variantId);
     setCart(updatedCart);
@@ -169,7 +195,8 @@ export function CartProvider({ children }) {
     setError(null);
 
     try {
-      await cartAPI.removeItem(entry.id);
+      // Use the variant ID for the API call as the backend expects variant_id
+      await cartAPI.removeItem(entry.variantId);
       await reload(true);
       toast.success('Item removed from cart');
     } catch (err) {

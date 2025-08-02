@@ -264,7 +264,7 @@ export const getOrderDetails = createAsyncThunk(
       }
 
       const data = await response.json();
-      return data.data;
+      return data; // Return the entire response, not just data.data
     } catch (error) {
       return rejectWithValue(error.message || 'Network error');
     }
@@ -294,6 +294,49 @@ export const cancelOrder = createAsyncThunk(
   }
 );
 
+// Async thunks for order tracking operations
+export const fetchOrderTracking = createAsyncThunk(
+  'user/fetchOrderTracking',
+  async ({ token, orderId }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/lmd/api/v1/retail/orders/${orderId}/track`, {
+        headers: getAuthHeaders(token),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return rejectWithValue(errorData.message || 'Failed to fetch order tracking');
+      }
+
+      const data = await response.json();
+      return { orderId, trackingData: data.data };
+    } catch (error) {
+      return rejectWithValue(error.message || 'Network error');
+    }
+  }
+);
+
+export const refreshOrderTracking = createAsyncThunk(
+  'user/refreshOrderTracking',
+  async ({ token, orderId }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/lmd/api/v1/retail/orders/${orderId}/track`, {
+        headers: getAuthHeaders(token),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return rejectWithValue(errorData.message || 'Failed to refresh order tracking');
+      }
+
+      const data = await response.json();
+      return { orderId, trackingData: data.data };
+    } catch (error) {
+      return rejectWithValue(error.message || 'Network error');
+    }
+  }
+);
+
 const initialState = {
   // Profile data
   profileData: null,
@@ -307,6 +350,9 @@ const initialState = {
   orders: [],
   currentOrder: null,
   
+  // Tracking data
+  orderTracking: {},
+  
   // Loading states
   loading: false,
   profileLoading: false,
@@ -315,17 +361,20 @@ const initialState = {
   ordersLoading: false,
   orderCreating: false,
   orderCancelling: false,
+  trackingLoading: false,
   
   // Error states
   error: null,
   profileError: null,
   addressError: null,
   ordersError: null,
+  trackingError: null,
   
   // Cache timestamps for avoiding redundant calls
   lastFetchTime: null,
   lastAddressFetchTime: null,
   lastOrdersFetchTime: null,
+  lastTrackingFetchTime: null,
 };
 
 const userSlice = createSlice({
@@ -402,6 +451,27 @@ const userSlice = createSlice({
       if (state.currentOrder && (state.currentOrder._id === orderId || state.currentOrder.order_id === orderId)) {
         state.currentOrder.status = status;
       }
+    },
+
+    // Manual tracking management (for immediate UI updates)
+    setOrderTracking: (state, action) => {
+      const { orderId, trackingData } = action.payload;
+      state.orderTracking[orderId] = trackingData;
+      state.lastTrackingFetchTime = Date.now();
+    },
+
+    clearOrderTracking: (state, action) => {
+      const orderId = action.payload;
+      delete state.orderTracking[orderId];
+    },
+
+    clearAllTracking: (state) => {
+      state.orderTracking = {};
+      state.trackingError = null;
+    },
+
+    updateTrackingError: (state, action) => {
+      state.trackingError = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -633,14 +703,31 @@ const userSlice = createSlice({
       })
       .addCase(getOrderDetails.fulfilled, (state, action) => {
         state.ordersLoading = false;
-        state.currentOrder = action.payload;
+        
+        // Handle the response structure: { status, data: { order, orderItems, payments } }
+        const responseData = action.payload;
+        let orderData;
+        
+        if (responseData.data && responseData.data.order) {
+          // Combine order with items and payments
+          orderData = {
+            ...responseData.data.order,
+            items: responseData.data.orderItems || [],
+            payments: responseData.data.payments || []
+          };
+        } else {
+          // Fallback to direct data
+          orderData = responseData;
+        }
+        
+        state.currentOrder = orderData;
         
         // Update the order in the orders list if it exists
         const orderIndex = state.orders.findIndex(order => 
-          order._id === action.payload._id || order.order_id === action.payload.order_id
+          order._id === orderData._id || order.order_id === orderData.order_id
         );
         if (orderIndex !== -1) {
-          state.orders[orderIndex] = action.payload;
+          state.orders[orderIndex] = orderData;
         }
       })
       .addCase(getOrderDetails.rejected, (state, action) => {
@@ -676,6 +763,38 @@ const userSlice = createSlice({
         state.orderCancelling = false;
         state.ordersError = action.payload;
       });
+
+    // Order tracking fetch
+    builder
+      .addCase(fetchOrderTracking.pending, (state) => {
+        state.trackingLoading = true;
+        state.trackingError = null;
+      })
+      .addCase(fetchOrderTracking.fulfilled, (state, action) => {
+        state.trackingLoading = false;
+        state.orderTracking[action.payload.orderId] = action.payload.trackingData;
+        state.lastTrackingFetchTime = Date.now();
+      })
+      .addCase(fetchOrderTracking.rejected, (state, action) => {
+        state.trackingLoading = false;
+        state.trackingError = action.payload;
+      });
+
+    // Order tracking refresh
+    builder
+      .addCase(refreshOrderTracking.pending, (state) => {
+        state.trackingLoading = true;
+        state.trackingError = null;
+      })
+      .addCase(refreshOrderTracking.fulfilled, (state, action) => {
+        state.trackingLoading = false;
+        state.orderTracking[action.payload.orderId] = action.payload.trackingData;
+        state.lastTrackingFetchTime = Date.now();
+      })
+      .addCase(refreshOrderTracking.rejected, (state, action) => {
+        state.trackingLoading = false;
+        state.trackingError = action.payload;
+      });
   }
 });
 
@@ -690,6 +809,10 @@ export const {
   setCurrentOrder,
   addOrder,
   updateOrderStatus,
+  setOrderTracking,
+  clearOrderTracking,
+  clearAllTracking,
+  updateTrackingError,
 } = userSlice.actions;
 
 export default userSlice.reducer;

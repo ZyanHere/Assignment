@@ -1,6 +1,7 @@
 // app/layout.jsx
 import { CartProvider } from "@/lib/contexts/cart-context";
 import { SelectedItemsProvider } from "@/lib/contexts/selected-items-context";
+import { DiscountProvider } from "@/lib/contexts/discount-context";
 import SessionProviderWrapper from "@/lib/NextAuthProvider/SessionProviderWrapper";
 import { Providers } from "@/lib/providers";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -37,8 +38,10 @@ export default function RootLayout({ children }) {
               <CartProvider showCartInHeader={true}>
                 <ProductProvider>
                   <SelectedItemsProvider>
-                    <Toaster />
-                    {children}
+                    <DiscountProvider>
+                      <Toaster />
+                      {children}
+                    </DiscountProvider>
                   </SelectedItemsProvider>
                 </ProductProvider>
               </CartProvider>

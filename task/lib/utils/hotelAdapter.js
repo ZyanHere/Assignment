@@ -41,8 +41,8 @@ function getPrice(p) {
  */
 function formatProduct(p) {
   return {
-    id: p.id,
-    slug: p.slug || String(p.id),
+    id: p._id || p.id,
+    slug: p.slug || String(p._id || p.id),
     name: p.name,
     img: getPrimaryImage(p),
     rating: {
@@ -66,19 +66,7 @@ export function adaptHotelSections(apiData) {
   const allProducts = Array.isArray(apiData?.allProducts) ? apiData.allProducts : [];
 
   const hotels = allProducts
-    // Filter to hotel-like products if API mixes product types
-    .filter((p) => {
-      // Accept if product_type === 'HOTELS' or category hints
-      const type = p?.product_type || p?.type;
-      const catName = p?.category?.name?.toLowerCase?.() || "";
-      return (
-        type === "HOTELS" ||
-        catName.includes("hotel") ||
-        catName.includes("stay") ||
-        catName.includes("resort") ||
-        true // TEMP: include all until backend refined; change to false to strict-filter
-      );
-    })
+    // The API now filters by product_type === 'hotel_booking', so we can trust all products are hotels
     .map(formatProduct);
 
   return {

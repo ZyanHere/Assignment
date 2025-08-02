@@ -136,6 +136,11 @@ export const useAuth = () => {
     orderCancelling: userState?.orderCancelling,
     ordersError: userState?.ordersError,
     
+    // Tracking state
+    orderTracking: userState?.orderTracking || {},
+    trackingLoading: userState?.trackingLoading,
+    trackingError: userState?.trackingError,
+    
     // Image upload state
     imageUploading: userState?.imageUploading,
     
@@ -160,6 +165,9 @@ export const useAuth = () => {
     userState?.orderCreating,
     userState?.orderCancelling,
     userState?.ordersError,
+    userState?.orderTracking,
+    userState?.trackingLoading,
+    userState?.trackingError,
     userState?.imageUploading,
     userState
   ]);

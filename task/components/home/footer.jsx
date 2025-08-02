@@ -1,23 +1,43 @@
+'use client'
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+
+  const handleSendClick = () => {
+    if (!email.trim()) return;
+
+    const subject = encodeURIComponent("Subscribe Me");
+    const body = encodeURIComponent(`Please subscribe me to your list.\nEmail: ${email}`);
+    window.location.href = `mailto:info@thelastminutesdeal.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <footer className="bg-[rgba(246,226,171,0.40)] py-10 px-4 sm:px-8 md:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-10 lg:gap-[82px]">
+          
           {/* Exclusive/Subscribe */}
           <div>
             <h3 className="font-bold text-lg sm:text-xl md:text-2xl">Exclusive</h3>
             <p className="mt-6 font-semibold text-base sm:text-lg">Subscribe</p>
             <p className="mt-4 text-sm text-black">Get 10% off your first order</p>
-            <form className="mt-4 flex items-center border border-black rounded-sm overflow-hidden relative max-w-xs">
+            <div className="mt-4 flex items-center border border-black rounded-sm overflow-hidden relative max-w-xs">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 className="flex-1 px-3 py-2 outline-none bg-transparent pr-10 text-sm sm:text-base"
               />
-              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2">
+              <button
+                type="button"
+                onClick={handleSendClick}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
                 <Image 
                   src="/home/footer/icon-send.svg" 
                   alt="Send Icon" 
@@ -25,7 +45,7 @@ const Footer = () => {
                   height={20} 
                 />
               </button>
-            </form>
+            </div>
           </div>
 
           {/* Support */}
@@ -33,7 +53,7 @@ const Footer = () => {
             <h3 className="font-bold text-lg sm:text-xl md:text-2xl">Support</h3>
             <p className="text-sm sm:text-base text-black mt-6 max-w-[180px]">Fl no. 01, Dhatrak Sankul, PNVT, Panchvati, Nashik Nashik MAHARASHTRA 422003</p>
             <p className="text-sm sm:text-base text-black mt-4">info@thelastminutesdeal.com</p>
-            <p className="text-sm sm:text-base text-black mt-4">8149042420</p>
+            <p className="text-sm sm:text-base text-black mt-4">9067444400</p>
           </div>
 
           {/* Account */}
@@ -62,7 +82,7 @@ const Footer = () => {
           {/* Download App */}
           <div>
             <h3 className="font-bold text-lg sm:text-xl md:text-2xl">Download App</h3>
-            <p className="text-sm text-black mt-6">Save $3 with App New User Only</p>
+            {/* <p className="text-sm text-black mt-6">Save $3 with App New User Only</p> */}
             <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-2">
               <Image
                 src="/home/footer/qrcode.png"

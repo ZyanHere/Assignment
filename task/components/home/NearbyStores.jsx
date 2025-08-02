@@ -15,10 +15,12 @@ import { fetcher } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
 const NearbyStores = () => {
-  const { data: storeResponse, error } = useSWR(
-    `/lmd/api/v1/retail/vendor/public`,
-    fetcher
-  );
+// NearbyStores.js
+const { data: storeResponse, error } = useSWR(
+  ['/lmd/api/v1/retail/vendor/public', false], // false = no credentials
+  ([url, withCredentials]) => fetcher(url, withCredentials)
+);
+
 
   const stores = storeResponse?.data || [];
   const [favorites, setFavorites] = useState({});

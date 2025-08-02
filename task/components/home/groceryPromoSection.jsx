@@ -1,25 +1,18 @@
 "use client";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { fetchComprehensiveHomeData, fetchProductsByCategory } from "@/lib/redux/home/homeSlice"; // Update this path
 import { useCart } from "@/lib/contexts/cart-context";
 import useTimer from "@/lib/hooks/useTimer";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { useSession } from "next-auth/react";
-import { useWishlist } from "@/lib/hooks/useWishlist";
-import { Heart } from "lucide-react";
-import { useProduct } from "@/lib/contexts/productContext";
 
 const GroceryPromoSection = () => {
   const dispatch = useDispatch();
-  const {
-    categories,
-    productsByCategory,
+  const { 
+    categories, 
+    productsByCategory, 
     homeDataLoading,
     productsLoading
   } = useSelector(state => state.home);
@@ -30,7 +23,7 @@ const GroceryPromoSection = () => {
   }, [dispatch]);
 
   // Find Fruits and Vegetables category
-  const fruitsVegCategory = categories.find(cat =>
+  const fruitsVegCategory = categories.find(cat => 
     cat.name?.toLowerCase().includes('fruits') && cat.name?.toLowerCase().includes('vegetables') ||
     cat.name?.toLowerCase().includes('fruit') ||
     cat.name?.toLowerCase().includes('vegetable') ||
@@ -49,39 +42,36 @@ const GroceryPromoSection = () => {
 
   // Get products for the category
   const categoryProducts = categoryId ? (productsByCategory[categoryId] || []) : [];
-  //console.log('Category Products:', categoryProducts);
 
   // Normalize product data to match the component structure
-  const mappedProducts = categoryProducts.length > 0
+  const mappedProducts = categoryProducts.length > 0 
     ? categoryProducts.slice(0, 3).map((p) => {
-      const variant = p.variants?.[0] || {};
-      const basePrice = variant?.price?.base_price || p.price || p.originalPrice || 0;
-      const salePrice = variant?.price?.sale_price || p.salePrice || p.discountedPrice || basePrice;
+        const variant = p.variants?.[0] || {};
+        const basePrice = variant?.price?.base_price || p.price || p.originalPrice || 0;
+        const salePrice = variant?.price?.sale_price || p.salePrice || p.discountedPrice || basePrice;
 
-      return {
-        id: p._id || p.id || `product-${Math.random()}`,
-        name: p.name || p.title || "Unknown Product",
-        brand: p.brand || p.manufacturer || "Fresh",
-        seller: p.vendor_store_id?.store_name || p.seller || "Local Store",
-        discountedPrice: salePrice,
-        originalPrice: basePrice,
-        image: variant?.images?.[0]?.url || p.images?.[0]?.url || p.image || p.imageUrl || "/fallback.png",
-        weight: p.attributes?.find((attr) => attr.name?.toLowerCase() === "weight")?.value ||
-          p.weight || p.unit || "1 kg",
-        time: p.timing?.end_date || new Date(Date.now() + 12 * 60 * 60 * 1000),
-        discount: basePrice && salePrice
-          ? Math.round(((basePrice - salePrice) / basePrice) * 100)
-          : Math.floor(Math.random() * 30) + 10, // Random discount 10-40% if not available
-        variants: p.variants || [],
-        category: p.category
-      };
-    })
+        return {
+          id: p._id || p.id || `product-${Math.random()}`,
+          name: p.name || p.title || "Unknown Product",
+          brand: p.brand || p.manufacturer || "Fresh",
+          seller: p.vendor_store_id?.store_name || p.seller || "Local Store",
+          discountedPrice: salePrice,
+          originalPrice: basePrice,
+          image: variant?.images?.[0]?.url || p.images?.[0]?.url || p.image || p.imageUrl || "/fallback.png",
+          weight: p.attributes?.find((attr) => attr.name?.toLowerCase() === "weight")?.value || 
+                 p.weight || p.unit || "1 kg",
+          time: p.timing?.end_date || new Date(Date.now() + 12 * 60 * 60 * 1000),
+          discount: basePrice && salePrice
+            ? Math.round(((basePrice - salePrice) / basePrice) * 100)
+            : Math.floor(Math.random() * 30) + 10, // Random discount 10-40% if not available
+        };
+      })
     : [];
 
   // Check if we have no data
-  const hasNoData = !homeDataLoading &&
-    (!categoryId || !productsLoading[categoryId]) &&
-    mappedProducts.length === 0;
+  const hasNoData = !homeDataLoading && 
+                   (!categoryId || !productsLoading[categoryId]) && 
+                   mappedProducts.length === 0;
 
   // Show loading state
   if (homeDataLoading || (categoryId && productsLoading[categoryId])) {
@@ -121,7 +111,7 @@ const GroceryPromoSection = () => {
             <div className="text-center">
               <p className="text-gray-500 text-lg font-medium mb-2">No data present</p>
               <p className="text-gray-400 text-sm">
-                {!fruitsVegCategory
+                {!fruitsVegCategory 
                   ? "Fruits & Vegetables category not found"
                   : "No products available in this category"
                 }
@@ -189,7 +179,7 @@ const GroceryPromoSection = () => {
         </div>
 
         {/* Debug info - remove in production */}
-
+       
       </div>
     </div>
   );
@@ -197,98 +187,24 @@ const GroceryPromoSection = () => {
 
 // Mini Product Card Component
 const ProductCardMini = ({ product }) => {
-
   // const timeLeft = useTimer(product.time);
-  const { addToCart, isInCart, getItemQuantity, isProductLoading: isCartLoading } = useCart();
-  const variantId = product.variants[0]?._id;
-  const cartItemQuantity = useMemo(() => getItemQuantity(variantId), [getItemQuantity, variantId]);
-  const isProductInCart = useMemo(() => isInCart(variantId), [isInCart, variantId]);
-  const isLoading = useMemo(() => isCartLoading(variantId), [isCartLoading, variantId]);
-  const { isAuthenticated } = useAuth();
-  const router = useRouter();
-  const canAdd = product?.variants && product.variants?.length > 0 && product.variants[0]?.stock?.quantity > 0;
-  const { setSelectedProduct, setSelectedVariant } = useProduct();
+  const { addToCart, cart } = useCart();
+  const isInCart = cart.some((item) => item.id === product.id);
 
-  const { data: session } = useSession();
-  const {
-    addItem,
-    removeItem,
-    isInWishlist,
-    isProductLoading
-  } = useWishlist();
-
-  // Memoize button text to prevent unnecessary re-renders
-  const buttonText = useMemo(() => {
-    if (!canAdd) return "Out of stock";
-    if (isLoading) return "Adding...";
-    if (isProductInCart) return `Added (${cartItemQuantity})`;
-    return "ADD";
-  }, [canAdd, isLoading, isProductInCart, cartItemQuantity]);
-
-  // Memoize button className to prevent unnecessary re-renders
-  const buttonClassName = useMemo(() => {
-    const baseClass = "absolute bottom-3 right-10 transform translate-y-1/2 translate-x-1/2 px-3 py-1.5 border font-medium rounded-md hover:bg-blue-100 transition shadow-md";
-    return `${baseClass} ${isProductInCart
-      ? "bg-green-50 text-green-500 border-green-400"
-      : "bg-white text-blue-400 border-blue-400"
-      }`;
-  }, [isProductInCart]);
-
-  const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      toast.error('Login to add products');
-      router.push('/auth/login');
-      return;
-    }
-    if (!isProductInCart && product.variants?.[0]) {
-      try {
-        await addToCart({
-          id: product.variants[0]._id,
-          variant: product.variants,
-          product,
-          price: product.variants[0].price.base_price,
-          sale_price: product.variants[0].price.sale_price,
-          stock: product.variants[0].stock.quantity,
-          sku: product.variants[0].sku,
-        });
-        toast.success('Added to Cart successfully');
-      } catch (error) {
-        toast.error(error.message || 'Failed to add to cart');
-      }
-    } else if (isProductInCart) {
-      toast.info('Item already in cart');
+  const handleAddToCart = () => {
+    if (!isInCart) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        seller: product.seller,
+        price: product.discountedPrice,
+        mrp: product.originalPrice,
+        image: product.image,
+        weight: product.weight || "1 unit",
+      });
     }
   };
-
-  const productId = product?.id || product?._id
-  const handleWishlistToggle = async (e) => {
-    e.stopPropagation();
-    if (!session?.user?.token) {
-      toast.error('Please login to save items to wishlist');
-      return;
-    }
-
-    try {
-      if (isInWishlist(productId)) {
-        await removeItem(productId);
-        toast.success('Removed from wishlist');
-      } else {
-        await addItem(productId);
-        toast.success('Added to wishlist');
-      }
-    } catch (error) {
-      toast.error(error.message || 'Failed to update wishlist');
-    }
-  };
-
-  const inWishlist = useMemo(() => isInWishlist(productId), [isInWishlist, productId]);
-
-  const handleItemClick = () => {
-    setSelectedProduct(product);
-    setSelectedVariant(product.variants[0])
-    router.push(`/product/${product._id || product.id}`);
-  }
-
 
   // const timeLeftCount = timeLeft ? timeLeft.hours * 60 + timeLeft.minutes : 0;
 
@@ -298,17 +214,9 @@ const ProductCardMini = ({ product }) => {
       : "/fallback.png";
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 border" onClick={handleItemClick}>
+    <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 border">
       {/* Product Image */}
       <div className="relative bg-gray-50 rounded-xl h-24 sm:h-28 lg:h-32 flex items-center justify-center mb-3">
-        <button
-          onClick={handleWishlistToggle}
-          className={`absolute top-2 right-2 z-10 p-1 rounded-full shadow-md transition ${inWishlist ? "bg-white/60 text-red-500" : "bg-white/60 text-gray-600 hover:text-red-500"
-            }`}
-          aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          <Heart className="w-5 h-5" fill={inWishlist ? "currentColor" : "none"} />
-        </button>
         <Image
           src={imageSrc}
           alt={product.name || "Product image"}
@@ -321,15 +229,17 @@ const ProductCardMini = ({ product }) => {
           }}
         />
         <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAddToCart()
-          }}
-          disabled={!canAdd || isLoading}
-          className={buttonClassName}
-          aria-label={isProductInCart ? "Item added to cart" : "Add item to cart"}
+          onClick={handleAddToCart}
+          disabled={!product.id}
+          className={`absolute bottom-2 right-2 w-[48px] sm:w-[53px] h-[30px] sm:h-[33px] border font-medium rounded-md hover:bg-blue-100 transition shadow-md text-xs
+            ${
+              isInCart
+                ? "bg-green-50 text-green-500 border-green-400"
+                : "bg-white text-blue-400 border-blue-400"
+            }`}
+          aria-label={isInCart ? "Item added to cart" : "Add item to cart"}
         >
-          {buttonText}
+          {isInCart ? "✓" : "ADD"}
         </Button>
       </div>
 

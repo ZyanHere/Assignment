@@ -10,9 +10,11 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { ShoppingBag, MessageSquare, Star } from "lucide-react";
+import { ShoppingBag, MessageSquare, Star, Truck, Eye } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export default function OrderCard({ order, customButtons = null }) {
+export default function OrderCard({ order, customButtons = null, onTrackOrder = null }) {
+  const router = useRouter();
   const { storeName, status, items } = order;
 
   const statusVariant = {
@@ -27,15 +29,26 @@ export default function OrderCard({ order, customButtons = null }) {
     failed: { text: "Failed", class: "bg-red-100 text-red-800" },
   }[status] || { text: "Processing", class: "bg-gray-100 text-gray-800" };
 
+  const handleCardClick = (e) => {
+    // Don't navigate if clicking on action buttons
+    if (e.target.closest('button') || e.target.closest('[data-action]')) {
+      return;
+    }
+    router.push(`/orders/${order.order_id}`);
+  };
+
   return (
-    <div className="border rounded-lg overflow-hidden shadow-sm">
+    <div 
+      className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Card Header */}
       <div className="bg-gray-50 p-4 flex justify-between items-center border-b">
         <div className="flex items-center gap-3">
           <ShoppingBag className="w-5 h-5 text-gray-700" />
           <div>
             <h3 className="font-medium">{storeName}</h3>
-            <p className="text-sm text-gray-500">Order #{order.id}</p>
+            <p className="text-sm text-gray-500">Order #{order.order_id}</p>
             <p className="text-xs text-gray-400">{order.date}</p>
             {order.isMultiVendor && (
               <div className="flex items-center gap-1 mt-1">
@@ -159,7 +172,10 @@ export default function OrderCard({ order, customButtons = null }) {
                 </TableCell>
               )}
               <TableCell className="w-[140px]">
-                <button className="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700">
+                <button 
+                  className="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700"
+                  data-action="true"
+                >
                   {item.actionLabel}
                 </button>
               </TableCell>
@@ -172,16 +188,59 @@ export default function OrderCard({ order, customButtons = null }) {
       <div className="bg-gray-50 p-4 border-t flex justify-end gap-3">
         {customButtons || (
           <>
+            {/* View Details Button */}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/orders/${order.order_id}`);
+              }}
+              className="flex items-center gap-2"
+              data-action="true"
+            >
+              <Eye className="w-4 h-4" />
+              View Details
+            </Button>
+
+            {/* Track Order Button */}
+            {/* {onTrackOrder && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onTrackOrder(order);
+                }}
+                className="flex items-center gap-2"
+                data-action="true"
+              >
+                <Truck className="w-4 h-4" />
+                Track Order
+              </Button>
+            )} */}
+            
             {status === "completed" && (
-              <button className="bg-blue-600 text-white text-sm px-3 py-1 rounded flex items-center gap-2 hover:bg-blue-700">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-2"
+                data-action="true"
+              >
                 <Star className="w-4 h-4" />
                 Leave Review
-              </button>
+              </Button>
             )}
-            <button className="bg-blue-600 text-white text-sm px-3 py-1 rounded flex items-center gap-2 hover:bg-blue-700">
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-2"
+              data-action="true"
+            >
               <MessageSquare className="w-4 h-4" />
               Contact Seller
-            </button>
+            </Button>
           </>
         )}
       </div>

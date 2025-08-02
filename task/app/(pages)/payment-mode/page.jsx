@@ -18,27 +18,31 @@ const PaymentMode = () => {
     selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0) +
     20; // Adding transaction fee
 
-  const paymentOptions = [
+  const paymentGateways = [
     {
-      title: "UPI",
-      methods: [
-        { name: "Paytm UPI", slug: "paytm-upi", src: "/payment/paytm.png" },
-        { name: "PhonePe", slug: "phonepe", src: "/payment/phonepe.png" },
-        { name: "GPay", slug: "gpay", src: "/payment/gpay.png" },
-      ],
+      id: "razorpay",
+      name: "Razorpay",
+      description: "Secure online payments with cards, UPI, wallets & more",
+      logo: "/payment/razorpay.png",
+      features: ["Credit/Debit Cards", "UPI", "Net Banking", "Wallets", "EMI"],
+      color: "#0C4A6E"
     },
     {
-      title: "Card",
-      methods: [
-        { name: "Visa", slug: "visa", src: "/payment/visa.png" },
-        {
-          name: "MasterCard",
-          slug: "mastercard",
-          src: "/payment/mastercard.png",
-        },
-        { name: "RuPay", slug: "rupay", src: "/payment/rupay.png" },
-      ],
+      id: "cashfree",
+      name: "Cashfree",
+      description: "Fast and secure payments with multiple payment options",
+      logo: "/payment/cashfree.png",
+      features: ["Credit/Debit Cards", "UPI", "Net Banking", "Wallets", "EMI"],
+      color: "#1E40AF"
     },
+    {
+      id: "cod",
+      name: "Cash on Delivery",
+      description: "Pay when you receive your order",
+      logo: "/payment/cod.png",
+      features: ["Pay on delivery"],
+      color: "#059669"
+    }
   ];
 
   const handleNext = () => {
@@ -46,7 +50,7 @@ const PaymentMode = () => {
       if (selectedMethod === "cod") {
         handleCODOrder();
       } else {
-        router.push(`/payment-mode/${selectedMethod}`);
+        router.push(`/payment/${selectedMethod}`);
       }
     }
   };
@@ -85,17 +89,17 @@ const PaymentMode = () => {
             </Link>
             <span className="mx-2 text-gray-400">&gt;</span>
             <span className="font-semibold text-yellow-500">
-              Select Payment Mode
+              Select Payment Gateway
             </span>
           </nav>
 
           <div className="mx-auto p-10">
-            <h2 className="text-xl font-semibold mb-4">Select payment mode</h2>
+            <h2 className="text-2xl font-semibold mb-6">Choose your payment gateway</h2>
 
             {/* Payment Summary */}
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
-              <h3 className="font-semibold mb-2">Order Summary</h3>
-              <div className="space-y-1 text-sm">
+            <div className="bg-gray-50 p-6 rounded-lg mb-8">
+              <h3 className="font-semibold mb-3 text-lg">Order Summary</h3>
+              <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Items Total:</span>
                   <span>
@@ -110,123 +114,124 @@ const PaymentMode = () => {
                   <span>Transaction Fee:</span>
                   <span>₹20</span>
                 </div>
-                <div className="border-t pt-1 flex justify-between font-semibold">
+                <div className="border-t pt-2 flex justify-between font-semibold text-lg">
                   <span>Total Amount:</span>
                   <span>₹{totalAmount}</span>
                 </div>
               </div>
             </div>
 
-            {/* Payment Options */}
-            {paymentOptions.map((section) => (
-              <div key={section.title} className="mb-6 p-8">
-                <h3 className="text-lg font-medium mb-2">{section.title}</h3>
-                <div className="bg-white p-4 rounded-lg shadow-md flex items-center gap-6">
-                  {section.methods.map((method) => (
-                    <div
-                      key={method.slug}
-                      className={`flex flex-col items-center cursor-pointer relative w-full ${
-                        selectedMethod === method.slug
-                          ? "border-2 border-orange-500 p-2 rounded-lg"
-                          : ""
-                      }`}
-                      onClick={() => setSelectedMethod(method.slug)}
-                    >
-                      <Image
-                        src={method.src}
-                        alt={method.name}
-                        width={100}
-                        height={100}
-                      />
-                      <p className="mt-2 text-lg">{method.name}</p>
+            {/* Payment Gateway Options */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {paymentGateways.map((gateway) => (
+                <div
+                  key={gateway.id}
+                  className={`bg-white rounded-lg shadow-md border-2 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                    selectedMethod === gateway.id
+                      ? "border-yellow-500 shadow-lg"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                  onClick={() => setSelectedMethod(gateway.id)}
+                >
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src={gateway.logo}
+                          alt={gateway.name}
+                          width={60}
+                          height={60}
+                          className="rounded-lg"
+                        />
+                        <div>
+                          <h3 className="text-lg font-semibold">{gateway.name}</h3>
+                          <p className="text-sm text-gray-600">{gateway.description}</p>
+                        </div>
+                      </div>
                       <input
                         type="radio"
-                        name="paymentMethod"
-                        checked={selectedMethod === method.slug}
-                        onChange={() => setSelectedMethod(method.slug)}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                        name="paymentGateway"
+                        checked={selectedMethod === gateway.id}
+                        onChange={() => setSelectedMethod(gateway.id)}
+                        className="w-5 h-5 text-yellow-500"
                       />
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                    
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">Supported Payment Methods:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {gateway.features.map((feature, index) => (
+                          <span
+                            key={index}
+                            className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
+                          >
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
 
-            {/* Net Banking Option */}
-            <div
-              className={`bg-white py-10 px-20 m-8 rounded-lg shadow-md flex items-center justify-between cursor-pointer relative ${
-                selectedMethod === "net-banking"
-                  ? "border-2 border-orange-500"
-                  : ""
-              }`}
-              onClick={() => setSelectedMethod("net-banking")}
-            >
-              <div className="flex items-center gap-4">
-                <Image
-                  src="/payment/netbanking.png"
-                  alt="Net Banking"
-                  width={100}
-                  height={100}
-                />
-                <p className="text-lg">Net Banking</p>
-              </div>
-              <input
-                type="radio"
-                name="paymentMethod"
-                checked={selectedMethod === "net-banking"}
-                onChange={() => setSelectedMethod("net-banking")}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6"
-              />
+                    {gateway.id === "razorpay" && (
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-xs text-blue-700">
+                          💳 Supports all major cards, UPI, net banking, and digital wallets
+                        </p>
+                      </div>
+                    )}
+
+                    {gateway.id === "cashfree" && (
+                      <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                        <p className="text-xs text-green-700">
+                          🚀 Fast processing with instant payment confirmation
+                        </p>
+                      </div>
+                    )}
+
+                    {gateway.id === "cod" && (
+                      <div className="mt-4 p-3 bg-orange-50 rounded-lg">
+                        <p className="text-xs text-orange-700">
+                          📦 Pay securely when your order arrives
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
 
-            {/* COD */}
-            <div
-              className={`bg-white py-10 px-20 m-8 rounded-lg shadow-md flex items-center justify-between cursor-pointer relative ${
-                selectedMethod === "cod" ? "border-2 border-orange-500" : ""
-              }`}
-              onClick={() => setSelectedMethod("cod")}
-            >
-              <div className="flex items-center gap-4">
-                <Image
-                  src="/payment/cod.png"
-                  alt="Cash on Delivery"
-                  width={100}
-                  height={100}
-                />
+            {/* Security Notice */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+              <div className="flex items-start gap-3">
+                <div className="text-blue-600 text-xl">🔒</div>
                 <div>
-                  <p className="text-lg">Cash on Delivery</p>
-                  <p className="text-sm text-gray-500">
-                    Pay when you receive your order
+                  <h4 className="font-medium text-blue-900 mb-1">Secure Payment</h4>
+                  <p className="text-sm text-blue-700">
+                    All payments are processed through secure, PCI DSS compliant payment gateways. 
+                    Your payment information is encrypted and never stored on our servers.
                   </p>
                 </div>
               </div>
-              <input
-                type="radio"
-                name="paymentMethod"
-                checked={selectedMethod === "cod"}
-                onChange={() => setSelectedMethod("cod")}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6"
-              />
             </div>
 
             {/* Next Button */}
-            <div className="flex justify-end mt-8">
+            <div className="flex justify-end">
               <button
                 onClick={handleNext}
                 disabled={!selectedMethod || isProcessing}
-                className={`flex items-center gap-2 bg-yellow-500 text-white px-6 py-3 rounded-lg text-lg font-medium transition-all ${
+                className={`flex items-center gap-3 bg-yellow-500 text-white px-8 py-4 rounded-lg text-lg font-medium transition-all ${
                   !selectedMethod || isProcessing
                     ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-orange-600"
+                    : "hover:bg-orange-600 hover:shadow-lg"
                 }`}
               >
                 {isProcessing ? (
                   <>
-                    Processing... <span className="animate-spin">⏳</span>
+                    <span className="animate-spin">⏳</span>
+                    Processing...
                   </>
                 ) : (
                   <>
-                    {selectedMethod === "cod" ? "Place Order" : "Next"}{" "}
+                    {selectedMethod === "cod" ? "Place Order" : "Continue to Payment"}
                     <span className="text-xl">➡️</span>
                   </>
                 )}

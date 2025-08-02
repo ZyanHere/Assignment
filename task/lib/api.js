@@ -1,14 +1,11 @@
-export const fetcher = async (url) => {
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
-
-  if (!baseUrl) {
-    throw new Error("API base URL is not defined in environment variables");
-  }
+// lib/api.js
+export const fetcher = async (url, withCredentials = true) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.lastminutessdeal.com'; // use your real URL
 
   const fullUrl = `${baseUrl}${url}`;
 
   const res = await fetch(fullUrl, {
-    credentials: "include",
+    credentials: withCredentials ? "include" : "same-origin", // or "omit"
     headers: {
       "Content-Type": "application/json",
     },
