@@ -105,7 +105,7 @@ export default function TrendingProducts() {
       transition={{ duration: 0.6 }}
       className="relative bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4 sm:p-6 lg:p-8 rounded-3xl border border-purple-100 shadow-2xl"
     >
-      <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl ring-1 ring-purple-100">
+      <div className="bg-white/90 backdrop-blur-sm rounded-4xl p-4 sm:p-6 lg:p-8 shadow-xl ring-1 ring-purple-100">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-8">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-3">

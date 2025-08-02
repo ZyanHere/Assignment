@@ -1,7 +1,8 @@
 "use client"
+
 import React, { useState, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Star, ShoppingCart } from "lucide-react"
+import { Star, ShoppingCart, Heart, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useCart } from "@/lib/contexts/cart-context"
@@ -10,6 +11,8 @@ import { useProduct } from "@/lib/contexts/productContext"
 import Image from "next/image"
 import toast from "react-hot-toast"
 import { useAuth } from "@/lib/hooks/useAuth"
+import { useSession } from "next-auth/react"
+import { useWishlist } from "@/lib/hooks/useWishlist"
 
 const ProductCard = React.memo(({ product }) => {
   const { addToCart, isInCart, getItemQuantity, isProductLoading } = useCart()
@@ -17,6 +20,13 @@ const ProductCard = React.memo(({ product }) => {
   const { setSelectedProduct, setSelectedVariant } = useProduct()
   const [imageError, setImageError] = useState(false)
   const { isAuthenticated } = useAuth()
+  const { data: session } = useSession()
+  const {
+    addItem,
+    removeItem,
+    isInWishlist,
+    isProductLoading: isWishlistLoading,
+  } = useWishlist()
 
   const handleItemClick = () => {
     setSelectedProduct(product)
@@ -76,10 +86,32 @@ const ProductCard = React.memo(({ product }) => {
       }
     } else if (isInCart(data.variant._id)) {
       toast.info("Item already in cart")
-    } else {
-      console.warn("No variant available for this product")
     }
   }
+
+  const productId = product?._id || product?.id
+
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation()
+    if (!session?.user?.token) {
+      toast.error("Please login to save items to wishlist")
+      return
+    }
+
+    try {
+      if (isInWishlist(productId)) {
+        await removeItem(productId)
+        toast.success("Removed from wishlist")
+      } else {
+        await addItem(productId)
+        toast.success("Added to wishlist")
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update wishlist")
+    }
+  }
+
+  const inWishlist = useMemo(() => isInWishlist(productId), [isInWishlist, productId])
 
   const imageUrl = getImageUrl()
   const variantData = getVariantData()
@@ -91,6 +123,7 @@ const ProductCard = React.memo(({ product }) => {
   const isProductInCart = useMemo(() => isInCart(variantId), [isInCart, variantId])
   const cartItemQuantity = useMemo(() => getItemQuantity(variantId), [getItemQuantity, variantId])
   const isLoading = useMemo(() => isProductLoading(variantId), [isProductLoading, variantId])
+  const wishlistLoading = useMemo(() => isWishlistLoading(productId), [isWishlistLoading, productId])
 
   const discount = originalPrice ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100) : 0
 
@@ -117,6 +150,21 @@ const ProductCard = React.memo(({ product }) => {
             quality={90}
           />
 
+          {/* Wishlist Button */}
+          <button
+            onClick={handleWishlistToggle}
+            className={`absolute top-3 right-3 z-20 p-1 rounded-full shadow-md transition ${
+              inWishlist ? "bg-white/80 text-red-500" : "bg-white/80 text-gray-600 hover:text-red-500"
+            }`}
+            aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            {wishlistLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-gray-500" />
+            ) : (
+              <Heart className="w-5 h-5" fill={inWishlist ? "currentColor" : "none"} />
+            )}
+          </button>
+
           {/* Discount Badge */}
           {discount > 0 && (
             <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-xs font-bold px-2 py-1 shadow-lg">
@@ -126,7 +174,7 @@ const ProductCard = React.memo(({ product }) => {
 
           {/* Stock Status */}
           {variantData?.stock === 0 && (
-            <Badge className="absolute top-3 right-3 bg-gray-800 text-white text-xs font-semibold">Out of Stock</Badge>
+            <Badge className="absolute bottom-3 left-3 bg-gray-800 text-white text-xs font-semibold">Out of Stock</Badge>
           )}
 
           {/* Floating Cart Button */}
@@ -165,12 +213,8 @@ const ProductCard = React.memo(({ product }) => {
           <CardTitle className="text-sm font-bold line-clamp-2 text-gray-900 leading-tight">
             {variantData?.variant?.variant_name || product.name || <span className="text-gray-400">No name</span>}
           </CardTitle>
-          <p className="text-xs text-gray-500 line-clamp-1">
-            ({product.brand || <span className="text-gray-400">No brand</span>})
-          </p>
-          <p className="text-xs text-gray-400">
-            By {product.vendor_store_id?.store_name || <span className="text-gray-400">Unknown Seller</span>}
-          </p>
+          <p className="text-xs text-gray-500 line-clamp-1">({product.brand || <span className="text-gray-400">No brand</span>})</p>
+          <p className="text-xs text-gray-400">By {product.vendor_store_id?.store_name || <span className="text-gray-400">Unknown Seller</span>}</p>
 
           {/* Rating */}
           <div className="flex items-center gap-2 mt-1">
