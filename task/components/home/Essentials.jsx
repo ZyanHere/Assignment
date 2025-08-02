@@ -86,13 +86,14 @@ const Essentials = () => {
               className="group flex flex-col items-center text-center transition-all"
             >
               <div className="bg-blue-100 border border-gray-200 p-3 rounded-xl w-full max-w-[120px] h-[110px] sm:h-[120px] flex items-center justify-center shadow-sm hover:shadow-md hover:border-gray-300 hover:-translate-y-1 transition-all duration-300">
+              <div className="relative w-20 h-20">
                 <Image
                   src={`/home/essentials/${imageFile}`}
                   alt={name}
-                  width={70}
-                  height={70}
+                  fill
                   className="object-contain transition-transform duration-300 group-hover:scale-105"
                 />
+                </div>
               </div>
               <span className="mt-2 text-xs sm:text-sm md:text-base font-medium text-gray-800 group-hover:text-black transition-colors duration-300 line-clamp-2">
                 {name}
