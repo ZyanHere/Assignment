@@ -50,14 +50,18 @@ export default function CategorySlugPage() {
   console.log('Filters Options', filtersOption);
   /* ---------------- Fetch all categories (for slug lookup) ---------------- */
   const {
-    data: categoriesData,
-    error: categoriesError,
-    isLoading: loadingCategories,
-  } = useSWR("/lmd/api/v1/retail/categories", fetcher, {
+  data: categoriesData,
+  error: categoriesError,
+  isLoading: loadingCategories,
+} = useSWR(
+  ["/lmd/api/v1/retail/categories", false], // false = no credentials
+  ([url, withCredentials]) => fetcher(url, withCredentials),
+  {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 60_000,
-  });
+  }
+);
 
   /* ---------------- Find current category by slug ---------------- */
   const category = useMemo(
@@ -66,21 +70,21 @@ export default function CategorySlugPage() {
   );
 
   /* ---------------- Fetch subcategories for category ---------------- */
-  const {
-    data: subcategoriesData,
-    error: subcategoriesError,
-    isLoading: loadingSubcategories,
-  } = useSWR(
-    category
-      ? `/lmd/api/v1/retail/categories/${category._id}/subcategories`
-      : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60_000,
-    }
-  );
+const {
+  data: subcategoriesData,
+  error: subcategoriesError,
+  isLoading: loadingSubcategories,
+} = useSWR(
+  category
+    ? [`/lmd/api/v1/retail/categories/${category._id}/subcategories`, false]
+    : null,
+  ([url, withCredentials]) => fetcher(url, withCredentials),
+  {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60_000,
+  }
+);
 
   // const queryUrl = useMemo(() => {
   //   if (!category) return null;

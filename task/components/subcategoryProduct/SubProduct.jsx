@@ -51,10 +51,14 @@ export default function SubProduct({
 }) {
   const swrKey = buildUrl(categoryId, subCategoryId, sortOption, filtersOption, page, limit);
 
-  const { data, error, isLoading } = useSWR(swrKey, fetcher, {
+const { data, error, isLoading } = useSWR(
+  swrKey ? [swrKey, false] : null, // false = no credentials
+  ([url, withCredentials]) => fetcher(url, withCredentials),
+  {
     revalidateOnFocus: false,
     keepPreviousData: true,
-  });
+  }
+);
 
   if (process.env.NEXT_PUBLIC_DEBUG_API === "true") {
     console.log("[SubProduct] key:", swrKey);

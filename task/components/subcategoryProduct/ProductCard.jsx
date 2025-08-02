@@ -87,16 +87,13 @@ const ProductCard = React.memo(({ product }) => {
   const originalPrice = variantData?.sale_price > 0 ? variantData.price : null
   const canAddToCart = variantData?.variant && variantData.stock > 0
 
-  // Memoize cart-related values to prevent unnecessary re-renders
   const variantId = variantData?.variant?._id
   const isProductInCart = useMemo(() => isInCart(variantId), [isInCart, variantId])
   const cartItemQuantity = useMemo(() => getItemQuantity(variantId), [getItemQuantity, variantId])
   const isLoading = useMemo(() => isProductLoading(variantId), [isProductLoading, variantId])
 
-  // Discount Percentage
   const discount = originalPrice ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100) : 0
 
-  // Memoize button text to prevent unnecessary re-renders
   const buttonText = useMemo(() => {
     if (isLoading) return "..."
     if (isProductInCart) return `${cartItemQuantity}`
@@ -106,20 +103,18 @@ const ProductCard = React.memo(({ product }) => {
 
   return (
     <Card
-      className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-0 shadow-lg bg-white overflow-hidden rounded-2xl h-[340px] flex flex-col"
+      className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-0 shadow-lg bg-white overflow-hidden rounded-2xl flex flex-col h-full"
       onClick={handleItemClick}
     >
-      <CardHeader className="p-0 relative overflow-hidden h-[180px]">
-        <div className="relative w-full h-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <CardHeader className="p-0 relative overflow-hidden">
+        <div className="relative w-full aspect-[4/3] bg-white">
           <Image
-            src={imageUrl || "/placeholder.svg"}
+            src={imageUrl}
             alt={product.name}
             onError={handleImageError}
             fill
             className="object-cover transition-all duration-500 group-hover:scale-110"
             quality={90}
-            priority={false}
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
 
           {/* Discount Badge */}
@@ -134,8 +129,8 @@ const ProductCard = React.memo(({ product }) => {
             <Badge className="absolute top-3 right-3 bg-gray-800 text-white text-xs font-semibold">Out of Stock</Badge>
           )}
 
-          {/* Enhanced Cart Button */}
-          <div className="absolute bottom-3 right-3">
+          {/* Floating Cart Button */}
+          <div className="absolute bottom-3 right-3 z-10">
             {isProductInCart ? (
               <div className="flex items-center gap-1 bg-white/95 backdrop-blur-sm rounded-full shadow-xl border border-green-200 p-1">
                 <div className="flex items-center px-2">
@@ -165,22 +160,20 @@ const ProductCard = React.memo(({ product }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 flex-1 flex flex-col justify-between">
-        <div className="space-y-2">
+      <CardContent className="px-4 py-3 flex-1 flex flex-col justify-between">
+        <div>
           <CardTitle className="text-sm font-bold line-clamp-2 text-gray-900 leading-tight">
             {variantData?.variant?.variant_name || product.name || <span className="text-gray-400">No name</span>}
           </CardTitle>
-
           <p className="text-xs text-gray-500 line-clamp-1">
             ({product.brand || <span className="text-gray-400">No brand</span>})
           </p>
-
           <p className="text-xs text-gray-400">
             By {product.vendor_store_id?.store_name || <span className="text-gray-400">Unknown Seller</span>}
           </p>
 
           {/* Rating */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center">
               <Star className="text-yellow-400 fill-yellow-400 h-4 w-4" />
               <p className="text-xs font-medium text-gray-600 ml-1">
@@ -190,8 +183,7 @@ const ProductCard = React.memo(({ product }) => {
           </div>
         </div>
 
-        <div className="mt-auto space-y-2">
-          {/* Discount Badge */}
+        <div className="mt-2 space-y-2">
           <div className="min-h-[24px]">
             {discount > 0 ? (
               <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-semibold">
@@ -204,7 +196,6 @@ const ProductCard = React.memo(({ product }) => {
             )}
           </div>
 
-          {/* Price */}
           <div className="flex items-center gap-2">
             {originalPrice && <p className="text-xs text-gray-400 line-through">₹{originalPrice}</p>}
             <p className="text-base font-bold text-green-600">
@@ -212,8 +203,9 @@ const ProductCard = React.memo(({ product }) => {
             </p>
           </div>
 
-          {/* Stock Status */}
-          {variantData?.stock === 0 && <p className="text-xs text-red-500 font-semibold">No stock</p>}
+          {variantData?.stock === 0 && (
+            <p className="text-xs text-red-500 font-semibold">No stock</p>
+          )}
         </div>
       </CardContent>
     </Card>
