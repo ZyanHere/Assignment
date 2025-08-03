@@ -22,33 +22,38 @@ const AllTabBanner = () => {
   return (
     <div className="w-full">
       <BannerHeader />
-      <div className="px-0 md:px-4 mx-auto"> {/* px-0 for mobile, px-4 for md+ */}
-        <div className="flex flex-col items-center" role="region" aria-label="All tab carousel">
-          <div className="relative w-full h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden rounded-2xl">
+
+      <div className="w-full px-2 md:px-4">
+        <div
+          className="flex flex-col items-center"
+          role="region"
+          aria-label="All tab carousel"
+        >
+          
+          <div className="relative w-full overflow-hidden rounded-md lg:rounded-2xl">
             <div
-              className="flex h-full transition-transform duration-500 ease-out"
+              className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
               style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
               {images.map((src, index) => (
                 <div
                   key={src}
-                  className="w-full h-full flex-shrink-0 relative"
+                  className="w-full flex-shrink-0"
                   aria-hidden={index !== currentIndex}
                 >
-                  <Image
-                    src={src}
-                    alt={`All collection ${index + 1}`}
-                    fill
-                    className="object-contain" // Changed from object-cover to contain
-                    priority={index === 0}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1500px) 80vw, 70vw"
-                  />
+                  <div className="relative w-full">
+                    <Image
+                      src={src}
+                      alt={`All collection ${index + 1}`}
+                      className="rounded-2xl object-contain w-full h-auto" //scales acc to width
+                      width={1200}
+                      height={400}
+                      priority={index === 0}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
-            
-          
-           
           </div>
         </div>
       </div>
