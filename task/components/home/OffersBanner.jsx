@@ -24,7 +24,7 @@ const OffersBanner = () => {
   );
 
   return (
-    <div className="w-full px-4 sm:px-6">
+    <div className="w-full px-4 sm:px-6 md:px-0 md:w-screen md:mx-0">
       <Carousel
         plugins={plugin.current ? [plugin.current] : []}
         opts={{
@@ -32,7 +32,7 @@ const OffersBanner = () => {
           loop: true,
           dragFree: true,
         }}
-        className="w-full max-w-[1600px] mx-auto"
+        className="w-full max-w-none" // full width for desktop
       >
         <CarouselContent className="-ml-4">
           {images.map((src, index) => (
