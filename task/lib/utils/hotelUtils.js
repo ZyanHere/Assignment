@@ -8,10 +8,10 @@ import { differenceInDays, addDays, isBefore, isAfter, startOfDay } from 'date-f
  */
 export const calculateNights = (checkInDate, checkOutDate) => {
   if (!checkInDate || !checkOutDate) return 0;
-  
+
   const checkIn = typeof checkInDate === 'string' ? new Date(checkInDate) : checkInDate;
   const checkOut = typeof checkOutDate === 'string' ? new Date(checkOutDate) : checkOutDate;
-  
+
   return differenceInDays(checkOut, checkIn);
 };
 
@@ -33,24 +33,24 @@ export const calculateTotalPrice = (pricePerNight, nights) => {
  */
 export const generateSelectedDates = (checkInDate, checkOutDate) => {
   if (!checkInDate || !checkOutDate) return [];
-  
+
   const checkIn = typeof checkInDate === 'string' ? new Date(checkInDate) : checkInDate;
   const checkOut = typeof checkOutDate === 'string' ? new Date(checkOutDate) : checkOutDate;
-  
+
   const dates = [];
   let currentDate = new Date(checkIn);
-  
+
   // Handle same-day bookings
   if (differenceInDays(checkOut, checkIn) === 0) {
     dates.push(new Date(checkIn));
     return dates;
   }
-  
+
   while (isBefore(currentDate, checkOut)) {
     dates.push(new Date(currentDate));
     currentDate = addDays(currentDate, 1);
   }
-  
+
   return dates;
 };
 
@@ -62,29 +62,29 @@ export const generateSelectedDates = (checkInDate, checkOutDate) => {
  */
 export const validateBookingDates = (checkInDate, checkOutDate) => {
   const errors = [];
-  
+
   if (!checkInDate) {
     errors.push('Check-in date is required');
   }
-  
+
   if (!checkOutDate) {
     errors.push('Check-out date is required');
   }
-  
+
   if (checkInDate && checkOutDate) {
     const checkIn = typeof checkInDate === 'string' ? new Date(checkInDate) : checkInDate;
     const checkOut = typeof checkOutDate === 'string' ? new Date(checkOutDate) : checkOutDate;
     const today = startOfDay(new Date());
-    
+
     if (isBefore(checkIn, today)) {
       errors.push('Check-in date cannot be in the past');
     }
-    
+
     if (isBefore(checkOut, checkIn)) {
       errors.push('Check-out date cannot be before check-in date');
     }
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors
@@ -98,24 +98,24 @@ export const validateBookingDates = (checkInDate, checkOutDate) => {
  */
 export const validateGuests = (guests) => {
   const errors = [];
-  
+
   if (!guests) {
     errors.push('Guest information is required');
     return { isValid: false, errors };
   }
-  
+
   if (!guests.adults || guests.adults < 1) {
     errors.push('At least 1 adult is required');
   }
-  
+
   if (guests.children < 0) {
     errors.push('Children cannot be negative');
   }
-  
+
   if (guests.infants < 0) {
     errors.push('Infants cannot be negative');
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors
@@ -129,9 +129,9 @@ export const validateGuests = (guests) => {
  */
 export const formatGuestSummary = (guests) => {
   if (!guests) return '';
-  
+
   const parts = [];
-  
+
   if (guests.adults > 0) {
     parts.push(`${guests.adults} adult${guests.adults !== 1 ? 's' : ''}`);
   }
@@ -141,7 +141,7 @@ export const formatGuestSummary = (guests) => {
   if (guests.infants > 0) {
     parts.push(`${guests.infants} infant${guests.infants !== 1 ? 's' : ''}`);
   }
-  
+
   return parts.join(', ');
 };
 
@@ -152,9 +152,9 @@ export const formatGuestSummary = (guests) => {
  */
 export const formatRoomPreferences = (preferences) => {
   if (!preferences) return 'Standard preferences';
-  
+
   const parts = [];
-  
+
   if (preferences.bed_type && preferences.bed_type !== 'any') {
     parts.push(preferences.bed_type.charAt(0).toUpperCase() + preferences.bed_type.slice(1));
   }
@@ -164,7 +164,7 @@ export const formatRoomPreferences = (preferences) => {
   if (preferences.floor_preference && preferences.floor_preference !== 'any') {
     parts.push(`${preferences.floor_preference} floor`);
   }
-  
+
   return parts.length > 0 ? parts.join(', ') : 'Standard preferences';
 };
 
@@ -176,31 +176,31 @@ export const formatRoomPreferences = (preferences) => {
 export const isHotelBooking = (item) => {
   // Check for explicit hotel booking flags
   if (item.isHotelBooking) return true;
-  
-  // Check for hotel booking specific data
-  if (item.booking_details || item.selectedDates || item.checkIn || item.hotelName) return true;
-  
-  // Check product type
-  const productType = item.product?.product_type || item.variant?.product?.product_type;
-  if (productType === 'hotel_booking' || productType === 'hotel') return true;
-  
-  // Check category type
-  const categoryType = item.product?.category?.type || item.variant?.product?.category?.type;
-  if (categoryType === 'hotel') return true;
-  
-  // Check category names (case insensitive)
-  const categoryName = (item.product?.category?.name || item.variant?.product?.category?.name || '').toLowerCase();
-  const hotelCategories = [
-    'business hotels', 'hotels', 'hotel', 'accommodation', 'lodging', 
-    'resort', 'motel', 'inn', 'guesthouse', 'bed and breakfast'
-  ];
-  if (hotelCategories.some(cat => categoryName.includes(cat))) return true;
-  
-  // Check if the item name contains hotel-related keywords
-  const itemName = (item.name || item.variant?.variant_name || item.product?.name || '').toLowerCase();
-  const hotelKeywords = ['hotel', 'room', 'suite', 'accommodation', 'booking', 'stay'];
-  if (hotelKeywords.some(keyword => itemName.includes(keyword))) return true;
-  
+
+  // // Check for hotel booking specific data
+  // if (item.booking_details || item.selectedDates || item.checkIn || item.hotelName) return true;
+
+  // // Check product type
+  // const productType = item.product?.product_type || item.variant?.product?.product_type;
+  // if (productType === 'hotel_booking' || productType === 'hotel') return true;
+
+  // // Check category type
+  // const categoryType = item.product?.category?.type || item.variant?.product?.category?.type;
+  // if (categoryType === 'hotel') return true;
+
+  // // Check category names (case insensitive)
+  // const categoryName = (item.product?.category?.name || item.variant?.product?.category?.name || '').toLowerCase();
+  // const hotelCategories = [
+  //   'business hotels', 'hotels', 'hotel', 'accommodation', 'lodging', 
+  //   'resort', 'motel', 'inn', 'guesthouse', 'bed and breakfast'
+  // ];
+  // if (hotelCategories.some(cat => categoryName.includes(cat))) return true;
+
+  // // Check if the item name contains hotel-related keywords
+  // const itemName = (item.name || item.variant?.variant_name || item.product?.name || '').toLowerCase();
+  // const hotelKeywords = ['hotel', 'room', 'suite', 'accommodation', 'booking', 'stay'];
+  // if (hotelKeywords.some(keyword => itemName.includes(keyword))) return true;
+
   return false;
 };
 
@@ -211,27 +211,27 @@ export const isHotelBooking = (item) => {
  */
 export const getHotelBookingDetails = (item) => {
   if (!isHotelBooking(item)) return null;
-  
+
   const bookingDetails = item.booking_details || {};
   const selectedDates = item.selectedDates || [];
-  
+
   // Try to get check-in/check-out from multiple sources
-  const checkIn = item.checkIn || 
-                 bookingDetails.check_in_date || 
-                 bookingDetails.checkIn ||
-                 (selectedDates.length > 0 ? selectedDates[0] : null);
-  
-  const checkOut = item.checkOut || 
-                  bookingDetails.check_out_date || 
-                  bookingDetails.checkOut ||
-                  (selectedDates.length > 1 ? selectedDates[selectedDates.length - 1] : null);
-  
+  const checkIn = item.checkIn ||
+    bookingDetails.check_in_date ||
+    bookingDetails.checkIn ||
+    (selectedDates.length > 0 ? selectedDates[0] : null);
+
+  const checkOut = item.checkOut ||
+    bookingDetails.check_out_date ||
+    bookingDetails.checkOut ||
+    (selectedDates.length > 1 ? selectedDates[selectedDates.length - 1] : null);
+
   // Calculate nights
-  const nights = item.nights || 
-                bookingDetails.nights ||
-                (checkIn && checkOut ? 
-                  Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)) : 0);
-  
+  const nights = item.nights ||
+    bookingDetails.nights ||
+    (checkIn && checkOut ?
+      Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)) : 0);
+
   return {
     bookingDetails,
     selectedDates,

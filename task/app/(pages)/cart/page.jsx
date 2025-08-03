@@ -24,7 +24,7 @@ import DiscountCodeInput from '@/components/discount/DiscountCodeInput';
 import DiscountSummary from '@/components/discount/DiscountSummary';
 import HotelCartItem from '@/components/hotel/HotelCartItem';
 import { isHotelBooking, getHotelBookingDetails } from '@/lib/utils/hotelUtils';
-import toast from 'react-hot-toast';
+
 
 export default function CartPage() {
   const { isAuthenticated } = useAuth();
@@ -43,7 +43,7 @@ export default function CartPage() {
     isInCart,
     getItemQuantity,
   } = useCart();
-  
+
   const [selected, setSelected] = React.useState([]);
   const { setSelectedItems } = useSelectedItems();
   const router = useRouter();
@@ -89,7 +89,7 @@ export default function CartPage() {
 
   // Calculate total for selected items
   const selectedItems = cart.filter((i) => selected.includes(i.cart_item_id || i.id));
-  
+
   // Group selected items by vendor
   const vendorGroups = selectedItems.reduce((groups, item) => {
     const vendorId = item.vendorId || 'default';
@@ -126,7 +126,7 @@ export default function CartPage() {
   const handleQuantityUpdate = async (variantId, change) => {
     const currentQuantity = getItemQuantity(variantId);
     const newQuantity = currentQuantity + change;
-    
+
     if (newQuantity <= 0) {
       // Remove item if quantity becomes 0
       await removeFromCart(variantId);
@@ -164,7 +164,7 @@ export default function CartPage() {
                   Cart
                 </Link>
               </nav>
-              
+
               {/* Refresh button */}
               <Button
                 onClick={refreshCart}
@@ -225,7 +225,7 @@ export default function CartPage() {
                     // Check if this is a hotel booking
                     const isHotelItem = isHotelBooking(item);
                     const itemId = item.cart_item_id || item.id;
-                    
+
                     // Console log if hotel booking is detected (mobile view)
                     if (isHotelItem) {
                       const hotelDetails = getHotelBookingDetails(item);
@@ -241,7 +241,7 @@ export default function CartPage() {
                         category: item.product?.category?.name || item.variant?.product?.category?.name
                       });
                     }
-                    
+
                     if (isHotelItem) {
                       return (
                         <HotelCartItem
@@ -254,7 +254,7 @@ export default function CartPage() {
                         />
                       );
                     }
-                    
+
                     return (
                       <div
                         key={itemId}
@@ -285,7 +285,7 @@ export default function CartPage() {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
                             <Button
@@ -310,7 +310,7 @@ export default function CartPage() {
                               <span className="block w-full text-center">+</span>
                             </Button>
                           </div>
-                          
+
                           <div className="flex items-center space-x-2">
                             <div className="text-right">
                               <p className="text-sm sm:text-base font-semibold">
@@ -358,9 +358,11 @@ export default function CartPage() {
                     <TableBody>
                       {cart.map((item) => {
                         // Check if this is a hotel booking
+                        console.log('Item', item);
                         const isHotelItem = isHotelBooking(item);
+                        console.log('Is hotel item:', isHotelItem);
                         const itemId = item.cart_item_id || item.id;
-                        
+
                         // Console log if hotel booking is detected
                         if (isHotelItem) {
                           const hotelDetails = getHotelBookingDetails(item);
@@ -376,18 +378,18 @@ export default function CartPage() {
                             category: item.product?.category?.name || item.variant?.product?.category?.name
                           });
                         }
-                        
+
                         if (isHotelItem) {
                           // For hotel bookings, we'll render a special row
                           const bookingDetails = item.booking_details || {};
-                          const checkInDate = item.checkIn ? new Date(item.checkIn) : 
-                                            bookingDetails.check_in_date ? new Date(bookingDetails.check_in_date) : null;
-                          const checkOutDate = item.checkOut ? new Date(item.checkOut) : 
-                                             bookingDetails.check_out_date ? new Date(bookingDetails.check_out_date) : null;
-                          const nights = item.nights || (checkInDate && checkOutDate ? 
+                          const checkInDate = item.checkIn ? new Date(item.checkIn) :
+                            bookingDetails.check_in_date ? new Date(bookingDetails.check_in_date) : null;
+                          const checkOutDate = item.checkOut ? new Date(item.checkOut) :
+                            bookingDetails.check_out_date ? new Date(bookingDetails.check_out_date) : null;
+                          const nights = item.nights || (checkInDate && checkOutDate ?
                             Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)) : 0);
                           const totalPrice = item.totalPrice || item.total_price || (item.unit_price || item.price) * (nights || 1);
-                          
+
                           return (
                             <TableRow key={itemId}>
                               <TableCell>
@@ -401,9 +403,9 @@ export default function CartPage() {
                               <TableCell>
                                 <div className="flex items-center space-x-3 sm:space-x-4">
                                   <Image
-                                    src={item.variant?.images?.[0]?.url || 
-                                         item.product?.images?.[0]?.url || 
-                                         item.image}
+                                    src={item.variant?.images?.[0]?.url ||
+                                      item.product?.images?.[0]?.url ||
+                                      item.image}
                                     alt={item.variant?.variant_name || item.product?.name || item.name}
                                     width={100}
                                     height={100}
@@ -414,9 +416,9 @@ export default function CartPage() {
                                       {item.variant?.variant_name || item.product?.name || item.name}
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-500">
-                                      {item.variant?.product?.vendor_store_id?.store_name || 
-                                       item.product?.vendor_store_id?.store_name || 
-                                       'Hotel'}
+                                      {item.variant?.product?.vendor_store_id?.store_name ||
+                                        item.product?.vendor_store_id?.store_name ||
+                                        'Hotel'}
                                     </p>
                                     {checkInDate && checkOutDate && (
                                       <div className="text-xs text-gray-600 mt-1">
@@ -476,7 +478,7 @@ export default function CartPage() {
                             </TableRow>
                           );
                         }
-                        
+
                         // Regular item
                         return (
                           <TableRow key={itemId}>
@@ -559,10 +561,10 @@ export default function CartPage() {
           <div className="w-full xl:w-80 2xl:w-96 bg-gray-50 border-t xl:border-l xl:border-t-0 flex flex-col">
             <div className="p-4 sm:p-6 flex-1 overflow-y-auto">
               <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Order Summary</h2>
-              
+
               {/* Discount Code Section */}
               <div className="mb-4 sm:mb-6">
-                <DiscountCodeInput 
+                <DiscountCodeInput
                   cartDetails={{
                     total_amount: selected.length > 0 ? selectedSubtotal : allItemsSubtotal,
                     items: (selected.length > 0 ? selectedItems : cart).map(item => ({
@@ -574,12 +576,12 @@ export default function CartPage() {
                   }}
                 />
               </div>
-              
+
               {/* Selected Items Summary */}
               {selected.length > 0 && (
                 <div className="mb-4 sm:mb-6">
                   <h3 className="text-base sm:text-lg font-medium mb-2 sm:mb-3">Selected Items</h3>
-                  
+
                   {/* Vendor Breakdown */}
                   {Object.keys(vendorGroups).length > 1 && (
                     <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-white rounded-lg border">
@@ -599,27 +601,27 @@ export default function CartPage() {
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="bg-white rounded-lg border p-3 sm:p-4">
                     <div className="space-y-2 mb-3 sm:mb-4">
                       <div className="flex justify-between text-sm sm:text-base">
                         <span>Items ({selected.length})</span>
                         <span>₹{selectedSubtotal}</span>
                       </div>
-                      
+
                       <DiscountSummary subtotal={selectedSubtotal} />
-                      
+
                       <div className="flex justify-between text-sm sm:text-base">
                         <span>Transaction Fee</span>
                         <span>₹20</span>
                       </div>
-                      
+
                       <div className="border-t pt-2 flex justify-between font-semibold text-base sm:text-lg">
                         <span>Total</span>
                         <span className="text-orange-500">₹{selectedTotal.toFixed(2)}</span>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2 sm:space-y-3">
                       <Button
                         onClick={() => handleCheckout(selectedItems)}
@@ -638,7 +640,7 @@ export default function CartPage() {
                           </>
                         )}
                       </Button>
-                      
+
                       <Button
                         onClick={handleProceed}
                         disabled={isLoading}
@@ -656,7 +658,7 @@ export default function CartPage() {
               {cart.length > 0 && selected.length === 0 && (
                 <div className="mb-4 sm:mb-6">
                   <h3 className="text-base sm:text-lg font-medium mb-2 sm:mb-3">All Items</h3>
-                  
+
                   {/* All Items Vendor Breakdown */}
                   {(() => {
                     const allVendorGroups = cart.reduce((groups, item) => {
@@ -672,7 +674,7 @@ export default function CartPage() {
                       groups[vendorId].subtotal += item.price * item.quantity;
                       return groups;
                     }, {});
-                    
+
                     return Object.keys(allVendorGroups).length > 1 ? (
                       <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-white rounded-lg border">
                         <h4 className="text-xs sm:text-sm font-medium mb-2">By Vendor</h4>
@@ -692,27 +694,27 @@ export default function CartPage() {
                       </div>
                     ) : null;
                   })()}
-                  
+
                   <div className="bg-white rounded-lg border p-3 sm:p-4">
                     <div className="space-y-2 mb-3 sm:mb-4">
                       <div className="flex justify-between text-sm sm:text-base">
                         <span>Items ({cart.length})</span>
                         <span>₹{allItemsSubtotal}</span>
                       </div>
-                      
+
                       <DiscountSummary subtotal={allItemsSubtotal} />
-                      
+
                       <div className="flex justify-between text-sm sm:text-base">
                         <span>Transaction Fee</span>
                         <span>₹20</span>
                       </div>
-                      
+
                       <div className="border-t pt-2 flex justify-between font-semibold text-base sm:text-lg">
                         <span>Total</span>
                         <span className="text-orange-500">₹{allItemsTotal.toFixed(2)}</span>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2 sm:space-y-3">
                       <Button
                         onClick={() => handleCheckout(cart)}
@@ -731,7 +733,7 @@ export default function CartPage() {
                           </>
                         )}
                       </Button>
-                      
+
                       <Button
                         onClick={() => selectAll(true)}
                         disabled={isLoading}
