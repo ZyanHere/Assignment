@@ -160,7 +160,7 @@ export default function FourSec() {
   }, [activeIndex])
 
   return (
-    <motion.div style={{ backgroundColor: background }} className="relative py-8 overflow-hidden">
+    <motion.div style={{ backgroundColor: background }} className="relative  overflow-hidden">
       {/* Background Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -331,7 +331,7 @@ export default function FourSec() {
 
                     {/* Gradient Overlay */}
                     <motion.div
-                      className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent`}
+                      className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent `}
                       animate={{ opacity: isHovered ? 1 : 0.6 }}
                       transition={{ duration: 0.3 }}
                     />
