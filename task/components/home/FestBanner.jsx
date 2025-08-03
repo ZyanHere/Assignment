@@ -9,21 +9,14 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 
-const images = [
-  "/home/music/music1.png",
-  "/home/music/music2.png",
-  "/home/music/music3.png",
-  "/home/music/music4.png",
-  "/home/music/music5.png",
-  "/home/music/music6.png",
-];
-
-const FestBanner = () => {
+const FestBanner = ({ images = [] }) => {
   const plugin = useRef(
     typeof window !== "undefined"
       ? Autoplay({ delay: 3500, stopOnInteraction: false })
       : null
   );
+
+  if (!images?.length) return null;
 
   return (
     <div className="w-full px-4 sm:px-6">
@@ -44,7 +37,7 @@ const FestBanner = () => {
               <div className="relative h-[140px] sm:h-[160px] md:h-[180px] lg:h-[200px] rounded-xl overflow-hidden shadow-md">
                 <Image
                   src={src}
-                  alt={`Music Banner ${index + 1}`}
+                  alt={`Banner ${index + 1}`}
                   fill
                   priority={index === 0}
                   sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"

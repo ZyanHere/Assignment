@@ -73,7 +73,7 @@ export async function fetchCart() {
 /** POST /retail/cart/me/items */
 export async function addOrUpdateItem(variantId, quantity = 1, bookingDetails = null) {
   try {
-    const payload = { quantity };
+    const payload = { variant_id: variantId, quantity }
     
     // Add hotel booking details if provided
     if (bookingDetails) {

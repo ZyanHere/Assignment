@@ -10,6 +10,25 @@ import OffersBanner from "./OffersBanner";
 import Component from "./trending/Trending";
 import WomanWithGroceries from "./womanWithGroceries";
 
+
+const musicImages = [
+  "/home/music/music1.png",
+  "/home/music/music2.png",
+  "/home/music/music3.png",
+  "/home/music/music4.png",
+  "/home/music/music5.png",
+  "/home/music/music6.png",
+];
+
+
+const offerImages = [
+  "/home/offers/offer1.png",
+  "/home/offers/offer2.png",
+  "/home/offers/offer3.png",
+  "/home/offers/offer4.png",
+];
+
+
 const AllTabContentRedux = ({ products = [], loading = false }) => {
   const featuredProducts = products.slice(0, 10);
   const bestSellerProducts = products.slice(10, 20);
@@ -36,14 +55,14 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
         </section>
       </div>
 
-      <OffersBanner />
+      <FestBanner images={offerImages} />;
       <Component />
       <Essentials />
 
       {/* Grocery Promotional Section */}
       <GroceryPromoSection products={featuredProducts} />
 
-      <FestBanner />
+      <FestBanner images={musicImages} />;
 
       {/* Products section */}
       <div className="px-0 md:pl-6 w-full mt-5">

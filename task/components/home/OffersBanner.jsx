@@ -32,7 +32,7 @@ const OffersBanner = () => {
           loop: true,
           dragFree: true,
         }}
-        className="w-full max-w-none" // full width for desktop
+        className="w-full max-w-[1600px] mx-auto"// full width for desktop
       >
         <CarouselContent className="-ml-4">
           {images.map((src, index) => (
