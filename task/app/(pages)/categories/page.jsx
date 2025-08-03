@@ -66,21 +66,36 @@ export default function CategoryPage() {
   if (sortedError) {
     console.error("Sorted fetch error:", sortedError);
   }
-  console.log("Sorted Option:", sortOption);
-  console.log("Sorted API Response:", sortedData);
 
   const sortedProducts = sortedData?.products || sortedData?.data?.products || [];
 
   const scrollRef = useRef(null);
   const [pageIndex, setPageIndex] = useState(0);
   const [needsScrolling, setNeedsScrolling] = useState(false);
-  const itemsPerPage = 16;
-  const pageCount = Math.ceil(categories.length / itemsPerPage);
+  const [itemsPerPage, setItemsPerPage] = useState(6); // Default to mobile (3 rows × 2 items)
 
   useEffect(() => {
     fetchCategories();
     fetchAllProducts();
   }, [fetchCategories, fetchAllProducts]);
+
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerPage(6); // 3 rows × 2 items for mobile
+      } else if (window.innerWidth < 1024) {
+        setItemsPerPage(8); // 2 rows × 4 items for tablet
+      } else {
+        setItemsPerPage(12); // 2 rows × 6 items for desktop
+      }
+    };
+
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
+
+  const pageCount = Math.ceil(categories.length / itemsPerPage);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -94,7 +109,7 @@ export default function CategoryPage() {
     checkScroll();
     window.addEventListener("resize", checkScroll);
     return () => window.removeEventListener("resize", checkScroll);
-  }, [categories]);
+  }, [categories, itemsPerPage]);
 
   const pages = Array.from({ length: pageCount }, (_, i) =>
     categories.slice(i * itemsPerPage, (i + 1) * itemsPerPage)
@@ -125,7 +140,7 @@ export default function CategoryPage() {
       <Header />
 
       {/* Page Header */}
-      <section className="w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 mt-4 sm:mt-6">
+      <section className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mt-4 sm:mt-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
             Categories
@@ -138,7 +153,7 @@ export default function CategoryPage() {
               onApply={(option, newLimit) => {
                 setSortOption(option);
                 if (newLimit) setLimit(newLimit);
-                setPage(1); // reset to page 1 on sort change
+                setPage(1);
               }}
             />
           </div>
@@ -146,7 +161,7 @@ export default function CategoryPage() {
       </section>
 
       {/* Categories Carousel */}
-      <section className="relative px-3 sm:px-4 md:px-6 lg:px-8 mt-6 sm:mt-8">
+      <section className="relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mt-6 sm:mt-8">
         {categoriesLoading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
@@ -157,7 +172,7 @@ export default function CategoryPage() {
               <>
                 <button
                   onClick={() => scroll("left")}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all duration-200"
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all duration-200"
                   aria-label="Scroll left"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -166,7 +181,7 @@ export default function CategoryPage() {
                 </button>
                 <button
                   onClick={() => scroll("right")}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all duration-200"
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 rounded-full p-2 shadow-lg hover:bg-white transition-all duration-200"
                   aria-label="Scroll right"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -181,7 +196,7 @@ export default function CategoryPage() {
                 {pages.map((page, idx) => (
                   <div
                     key={idx}
-                    className="w-full shrink-0 snap-start px-3 sm:px-6 py-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4 justify-center"
+                    className="w-full shrink-0 snap-start px-2 py-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4"
                   >
                     {page.map((cat) => (
                       <CategoryItem key={cat._id} category={cat} />
@@ -208,14 +223,20 @@ export default function CategoryPage() {
       </section>
 
       {/* Banner */}
-      <section className="w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 mt-6 sm:mt-8">
+      <section className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mt-6 sm:mt-8">
         <div className="relative aspect-[3.5/1] w-full rounded-xl overflow-hidden">
-          <Image src="/categories/category-bg.png" alt="Category Background" fill className="object-cover" />
+          <Image 
+            src="/categories/category-bg.png" 
+            alt="Category Background" 
+            fill 
+            className="object-cover"
+            priority
+          />
         </div>
       </section>
 
       {/* Products */}
-      <section className="w-full max-w-[1700px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+      <section className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 sm:py-8 lg:py-12">
         <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
           Featured Products
         </h3>
@@ -235,7 +256,6 @@ export default function CategoryPage() {
           <NoProducts />
         )}
 
-        {/* Load More Button */}
         {sortOption !== "relevance" && sortedProducts.length >= limit && (
           <div className="text-center mt-6">
             <Button
@@ -274,7 +294,7 @@ const CategoryItem = ({ category }) => (
 );
 
 const ProductGrid = ({ products }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6">
     {products.map((product) => (
       <ProductCard key={product._id} product={product} />
     ))}
@@ -282,7 +302,7 @@ const ProductGrid = ({ products }) => (
 );
 
 const ProductSkeleton = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6">
     {Array.from({ length: 12 }).map((_, i) => (
       <div key={i} className="space-y-3">
         <Skeleton className="h-48 w-full rounded-lg" />

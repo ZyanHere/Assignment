@@ -13,9 +13,9 @@ import CategoryCard from "./CategoryCard";
 const CategoryCarousel = ({ data = [], loading = false }) => {
   if (loading) {
     return (
-      <div className="flex gap-4 px-4">
+      <div className="w-full flex gap-4 px-4 overflow-hidden">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="w-[230px] h-[390px] rounded-2xl" />
+          <Skeleton key={i} className="w-[230px] h-[390px] rounded-2xl flex-shrink-0" />
         ))}
       </div>
     );
@@ -39,13 +39,13 @@ const CategoryCarousel = ({ data = [], loading = false }) => {
   });
 
   return (
-    <div className="py-6">
-      <Carousel className="w-full mx-auto">
+    <div className="w-full py-6">
+      <Carousel className="w-full">
         <CarouselContent className="-ml-4">
           {mappedProducts.map((product) => (
             <CarouselItem
               key={product.id}
-              className="pl-4 basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-[16.66%] flex-shrink-0"
+              className="pl-4 basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-[14.28%] flex-shrink-0"
             >
               <div className="p-1">
                 <CategoryCard {...product} />

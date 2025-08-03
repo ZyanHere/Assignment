@@ -4,8 +4,8 @@ import Link from "next/link";
 
 const CategoryFooter = () => {
   return (
-    <div className="w-full px-4 md:px-6">
-      <div className="max-w-[1650px] mx-auto flex flex-col lg:flex-row gap-4 p-4 md:p-8">
+    <div className="w-full h-auto px-4 md:px-6">
+      <div className="w-full flex flex-col lg:flex-row gap-4 p-4 md:p-8">
         {/* Main Banner */}
         <Link href="/categories/vegetables" className="lg:w-1/3 aspect-square relative rounded-xl overflow-hidden hover:shadow-xl transition-shadow">
           <Image
