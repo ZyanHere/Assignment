@@ -1,40 +1,60 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Clock } from "lucide-react";
 
 const FourSec = () => {
   const items = [
-    { img: "/home/hero1/stay.png", label: "Stay", link: "/home/hotel" },
-    { img: "/home/hero1/movie.png", label: "Movie", link: "/home/movie" },
-    { img: "/home/hero1/buffet.png", label: "Buffet", link: "/home/buffet" },
-    { img: "/home/hero1/event.png", label: "Event", link: "/home/event" },
+    { img: "/home/hero1/stay.jpg", label: "Stay", link: "/home/hotel" },
+    { img: "/home/hero1/movie.jpg", label: "Movie", link: "/home/movie" },
+    { img: "/home/hero1/buffet.jpg", label: "Buffet", link: "/home/buffet" },
+    { img: "/home/hero1/event.jpg", label: "Event", link: "/home/event" },
   ];
 
   return (
-    <div className="flex gap-4 px-0 md:px-4 w-full overflow-x-auto flex-nowrap snap-x snap-mandatory">
-      {items.map((item, index) => (
-        <Link
-          key={index}
-          href={item.link}
-          className="min-w-[70vw] max-w-xs md:min-w-0 md:max-w-full flex-1 rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1.5 border-b border-yellow-500 snap-center"
-        >
-          {/* Image section */}
-          <div className="relative w-full h-32 sm:h-40 md:h-48">
-            <Image
-              src={item.img}
-              alt={item.label}
-              fill
-              className="object-cover"
-            />
-          </div>
+    <div className="w-full space-y-3">
+      
+      <Carousel className="w-full">
+        <CarouselContent className="-ml-1">
+          {items.map((item, index) => (
+            <CarouselItem key={index} className="pl-1 basis-[65%] sm:basis-1/3 md:basis-1/4">
+              <Link
+                href={item.link}
+                className="group block h-full rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 bg-white border border-gray-100 hover:border-amber-200"
+              >
+                {/* Image with gradient overlay */}
+                <div className="relative w-full aspect-[5/4]">
+                  <Image
+                    src={item.img}
+                    alt={item.label}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                </div>
 
-          {/* Label */}
-          <div className="p-4">
-            <span className="font-semibold text-md text-gray-800 block text-center">
-              {item.label}
-            </span>
-          </div>
-        </Link>
-      ))}
+                {/* Content */}
+                <div className="p-4 relative text-center">
+                  {/* Label with creative styling */}
+                  <h3 className="text-lg font-bold text-gray-800 group-hover:text-amber-600 transition-colors">
+                    {item.label}
+                  </h3>
+                </div>
+              </Link>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-0  sm:flex" />
+        <CarouselNext className="right-0  sm:flex" />
+      </Carousel>
     </div>
   );
 };

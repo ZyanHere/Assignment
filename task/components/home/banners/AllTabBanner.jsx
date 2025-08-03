@@ -39,7 +39,7 @@ const AllTabBanner = () => {
                     src={src}
                     alt={`All collection ${index + 1}`}
                     fill
-                    className="object-contain" // Changed from object-cover to contain
+                    className="object-inherit" // Changed from object-cover to contain
                     priority={index === 0}
                     sizes="(max-width: 768px) 100vw, (max-width: 1500px) 80vw, 70vw"
                   />

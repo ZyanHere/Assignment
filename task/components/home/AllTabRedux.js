@@ -17,7 +17,7 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
   return (
     <main className="space-y-6 md:space-y-8">
       <section className="p-4 md:p-2">
-        <h2 className="text-lg md:text-xl font-semibold mb-4 text-black ml-5">
+        <h2 className="text-lg md:text-xl font-semibold mb-4 text-black ">
           Few minutes left...
         </h2>
         <FourSec />

@@ -121,7 +121,7 @@ const CategoryTabsRedux = () => {
                 <button
                   key={category._id}
                   onClick={() => setSelectedTab(category._id)}
-                  className={`flex items-center rounded-xl transition-all duration-200 snap-center
+                  className={`grid items-center md:flex md:items-center rounded-xl transition-all duration-200 snap-center
                   ${isActive
                       ? "bg-gray-50 shadow-lg text-black border-2 border-black border-b-4"
                       : "bg-gray-200 shadow-sm  "
@@ -131,7 +131,7 @@ const CategoryTabsRedux = () => {
                       : "gap-3 px-5 py-3 w-[180px] flex-shrink-0"
                     }`}
                 >
-                  <div className={`relative ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}>
+                  <div className={`relative  ${isMobile ? "w-6 h-6 mx-auto" : "w-8 h-8"}`}>
                     <Image
                       src={category.imageUrl}
                       alt={category.name}

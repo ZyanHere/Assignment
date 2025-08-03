@@ -98,7 +98,7 @@ const BrandCarousel = ({ data = [], loading = false }) => {
         {mappedProducts.map((product) => (
           <CarouselItem
             key={product.id}
-            className="pl-2 basis-1/2 sm:basis-1/3 md:basis-[30%] lg:basis-[22.666%] xl:basis-[20.5%]"
+            className="pl-2 basis-1/2 sm:basis-1/3 md:basis-[24%] lg:basis-[12.666%] xl:basis-[12.5%]"
           >
             <div className="p-1">
               <ProductCard product={product} />

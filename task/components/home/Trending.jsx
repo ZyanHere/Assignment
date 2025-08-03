@@ -45,15 +45,13 @@ const CategoryTabs = ({
     homeDataError,
   } = useSelector(state => state.home)
 
-  // State to store shuffled categories - only shuffle once
   const [shuffledCategories, setShuffledCategories] = useState([])
 
-  // Function to shuffle array
   const shuffleArray = (array) => {
     const shuffled = [...array]
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Corrected swap using destructuring
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
   }
@@ -65,7 +63,6 @@ const CategoryTabs = ({
   }, [dispatch, categories.length, homeDataLoading])
 
   useEffect(() => {
-    // Only shuffle when categories are first loaded or changed
     if (categories.length > 0 && shuffledCategories.length === 0) {
       const processedCategories = Array.isArray(categories)
         ? categories.slice(0, 6).map(cat => ({
@@ -87,18 +84,18 @@ const CategoryTabs = ({
 
   return (
     <div className="mt-2 sm:mt-4 md:mt-6">
-      <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-3 lg:gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
         {homeDataLoading ? (
           Array.from({ length: 6 }).map((_, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-center px-2 sm:px-3 py-1 sm:py-2 w-[80px] sm:w-[100px] md:w-[120px] lg:w-[160px] rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200"
+              className="flex items-center justify-center px-2 sm:px-3 py-1 sm:py-2 rounded-xl bg-gray-200 bg-gradient-to-r from-yellow-50 to-gray-200"
             >
               <Skeleton className="h-3 sm:h-4 w-3/4" />
             </div>
           ))
         ) : homeDataError ? (
-          <div className="flex items-center justify-center w-full py-2 sm:py-4">
+          <div className="col-span-full flex items-center justify-center py-2 sm:py-4">
             <p className="text-red-500 text-xs sm:text-sm">Error loading categories</p>
           </div>
         ) : (
@@ -112,10 +109,10 @@ const CategoryTabs = ({
                 onClick={() => onPrimaryCategoryClick(categoryId)}
                 className={`flex items-center justify-center rounded-xl transition-all duration-200
                   ${isActive
-                    ? "bg-purple-800 shadow-lg text-white border-2 border-purple-900"
-                    : "bg-gray-200 shadow-sm hover:bg-gray-300"
+                    ? "bg-purple-700 text-white shadow-md"
+                    : "bg-gray-200 hover:bg-gray-300 text-gray-800"
                   }
-                  w-[80px] sm:w-[100px] md:w-[120px] lg:w-[160px] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm`}
+                  px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm w-full`}
               >
                 <span className="font-medium break-words text-center leading-tight">
                   {category.name}
@@ -219,7 +216,6 @@ export default function TrendingProducts() {
         : FALLBACK_IMAGE
     })) || []
 
-    // Limit to maximum 5 products
     return products.slice(0, 5)
   }
 
@@ -242,64 +238,43 @@ export default function TrendingProducts() {
         </div>
       </div>
     )
-  } return (
-    <div className="bg-gradient-to-br from-purple-100 to-pink-50 p-2 sm:p-4 md:p-8 lg:p-20 rounded-2xl sm:rounded-3xl md:rounded-4xl">
-      <div className="mx-auto bg-white p-2 sm:p-4 md:p-6 rounded-2xl sm:rounded-3xl md:rounded-4xl ">
-        {/* Header Section - Fixed alignment */}
-        <div className="bg-transparent sm:bg-purple-800 sm:flex -mt-4 mr-5 sm:-mt-6 md:-mt-8 lg:-mt-10">
+  }
 
-          <div className="bg-white flex-1 rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px]">
-            <div className="p-2 sm:p-4 md:p-6 pt-2 sm:pt-4 md:pt-6">
-              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
-                Trending Store Favorites
-              </h1>
-              <CategoryTabs
-                activeCategory={activeCategory}
-                onPrimaryCategoryClick={handlePrimaryCategoryClick}
-              />
-            </div>
+  return (
+    <div className="relative bg-gradient-to-br from-purple-100 to-pink-50 p-2 sm:p-4 md:p-8 lg:p-20 rounded-2xl sm:rounded-3xl md:rounded-4xl">
+      <div className=" mx-auto bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-md">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="w-full sm:w-3/4 ">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Trending Store Favorites
+            </h1>
+            <CategoryTabs
+              activeCategory={activeCategory}
+              onPrimaryCategoryClick={handlePrimaryCategoryClick}
+            />
           </div>
-
-          {/* Promotional Card - Desktop */}
           {!isSmallScreen && (
-            <div className="-mr-4 sm:-mr-6 md:-mr-8 lg:-mr-10 bg-white overflow-hidden h-full flex items-end">
+            <div className="w-full sm:w-1/4">
               <PromotionalCard
                 onButtonClick={handlePromotionalClick}
-                className="h-full"
               />
             </div>
           )}
         </div>
 
-        {/* Promotional Card - Mobile */}
         {isSmallScreen && (
-          <div className="mt-4 mx-auto w-full max-w-md">
+          <div className="mt-4">
             <MobilePromotionalCard onButtonClick={handlePromotionalClick} />
           </div>
         )}
 
-        {/* Category Title - Desktop Only */}
-        {!isSmallScreen && (
-          <div className="bg-purple-800 -mr-4 sm:-mr-6 md:-mr-8 lg:-mr-5 -mt-[4px]">
-            <div className="mb-3 bg-white rounded-tr-[20px] sm:rounded-tr-[30px] md:rounded-tr-[40px] pt-3 pb-3 px-4">
-              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-gray-800">
-              </h2>
-              <p className="text-gray-600 text-xs sm:text-sm mt-1">
-
-              </p>
-            </div>
-          </div>
-        )}
-
-
-        {/* Product Grid */}
-        <div className="mt-2 sm:mt-4 md:mt-8">
+        <div className="mt-6 sm:mt-8 md:mt-10">
           <div className={`grid ${isSmallScreen ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'} gap-3 sm:gap-4`}>
             {isLoadingCurrentCategory ? (
               <ProductSkeleton />
             ) : currentProducts.length === 0 ? (
-              <div className="col-span-full text-center py-4 sm:py-6 md:py-10">
-                <p className="text-gray-500 text-sm sm:text-base md:text-lg">No products available</p>
+              <div className="col-span-full text-center py-4 sm:py-6">
+                <p className="text-gray-500 text-sm sm:text-base">No products available</p>
               </div>
             ) : (
               currentProducts.map(product => (
@@ -317,4 +292,4 @@ export default function TrendingProducts() {
       </div>
     </div>
   )
-} 
+}

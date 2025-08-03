@@ -11,8 +11,8 @@ export function PromotionalCard({
   onButtonClick,
 }) {
   return (
-    <Card className="w-80 bg-purple-800 rounded-none border-none text-white rounded-bl-4xl rounded-tr-4xl rounded-br-none rounded-tl-none ">
-      <CardContent className="p-6">
+    <Card className="absolute top-0 right-0 w-80 bg-purple-800 rounded-none border-none text-white rounded-bl-4xl rounded-tr-4xl rounded-br-none rounded-tl-none py-2 ">
+      <CardContent className="p-6 sm:p-2">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-3 h-3 bg-white rounded-full"></div>
           <span className="text-sm opacity-90">{subtitle}</span>
