@@ -1,12 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { BannerHeader } from "./BannerHeader";
+import EcommerceBanner from "./ecommerce-banner";
+import EcommerceBannerV2 from "./ecommerce-banner-v2";
+import EcommerceBannerV3 from "./ecommerce-banner-v3";
 
-const images = [
-  "/home/all/all-banner3.png",
-  "/home/all/all-banner2.png",
-  "/home/all/all-banner1.png",
+
+
+const banners = [
+  <EcommerceBanner key="v1" />,
+  <EcommerceBannerV2 key="v2" />,
+  <EcommerceBannerV3 key="v3" />,
 ];
 
 const AllTabBanner = () => {
@@ -14,7 +18,7 @@ const AllTabBanner = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
+      setCurrentIndex((prev) => (prev + 1) % banners.length);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -29,28 +33,18 @@ const AllTabBanner = () => {
           role="region"
           aria-label="All tab carousel"
         >
-          
           <div className="relative w-full overflow-hidden rounded-md lg:rounded-2xl">
             <div
               className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
               style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
-              {images.map((src, index) => (
+              {banners.map((Component, index) => (
                 <div
-                  key={src}
+                  key={index}
                   className="w-full flex-shrink-0"
                   aria-hidden={index !== currentIndex}
                 >
-                  <div className="relative w-full">
-                    <Image
-                      src={src}
-                      alt={`All collection ${index + 1}`}
-                      className="rounded-2xl object-contain w-full h-auto" //scales acc to width
-                      width={1200}
-                      height={400}
-                      priority={index === 0}
-                    />
-                  </div>
+                  {Component}
                 </div>
               ))}
             </div>
