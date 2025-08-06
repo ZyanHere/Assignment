@@ -35,7 +35,7 @@ const ExploreSection = () => {
           <div className="w-full lg:w-[500px] h-[220px] sm:h-[300px] lg:h-[380px] relative p-4 sm:p-6 order-1 lg:order-2">
             <div className="relative w-full h-full rounded-2xl overflow-hidden  transform transition-transform duration-300 hover:scale-105">
               <Image
-                src="/2bb1805c846c0354ff493b5c975e401b109c3dc1.png"
+                src="/home/women.png"
                 alt="Woman with groceries"
                 fill
                 priority

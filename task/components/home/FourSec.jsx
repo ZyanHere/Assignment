@@ -1,21 +1,16 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion"
-import { useState, useEffect, useRef } from "react"
-import { ChevronRight, Sparkles, ArrowRight, Play, Calendar, Utensils, Hotel } from "lucide-react"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { Sparkles, ArrowRight, Play, Calendar, Utensils, Hotel, MapPin, Users, Clock } from 'lucide-react';
 
-export default function FourSec() {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-  const [hoveredIndex, setHoveredIndex] = useState(null)
-  const scrollRef = useRef(null)
-  const x = useMotionValue(0)
-  const background = useTransform(x, [-100, 0, 100], ["#f8fafc", "#fef7ff", "#f0f9ff"])
+export default function FourSecImproved() {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const items = [
     {
-      img: "/home/hero1/stay.png?height=192&width=300",
+      img: "/home/hero1/stay2.png",
       label: "Stay",
       link: "/home/hotel",
       icon: Hotel,
@@ -24,7 +19,7 @@ export default function FourSec() {
       color: "blue",
     },
     {
-      img: "/home/hero1/movie.png?height=192&width=300",
+      img: "/home/hero1/movies2.png",
       label: "Movie",
       link: "/home/movie",
       icon: Play,
@@ -33,7 +28,7 @@ export default function FourSec() {
       color: "purple",
     },
     {
-      img: "/home/hero1/buffet.png?height=192&width=300",
+      img: "/home/hero1/buffet2.png",
       label: "Buffet",
       link: "/home/buffet",
       icon: Utensils,
@@ -42,7 +37,7 @@ export default function FourSec() {
       color: "orange",
     },
     {
-      img: "/home/hero1/event.png?height=192&width=300",
+      img: "/home/hero1/event2.png",
       label: "Event",
       link: "/home/event",
       icon: Calendar,
@@ -50,394 +45,192 @@ export default function FourSec() {
       description: "Special occasions",
       color: "green",
     },
-  ]
-
-  // Auto-play functionality
-  useEffect(() => {
-    if (!isAutoPlaying) return
-
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % items.length)
-    }, 4000)
-
-    return () => clearInterval(interval)
-  }, [isAutoPlaying, items.length])
-
-  // Scroll to active item
-  useEffect(() => {
-    if (scrollRef.current) {
-      const container = scrollRef.current
-      const containerWidth = container.clientWidth
-      let itemWidth
-
-      // Calculate item width based on screen size
-      if (window.innerWidth >= 1024) {
-        // Desktop: 25% - 12px gap
-        itemWidth = containerWidth * 0.25 - 12
-      } else if (window.innerWidth >= 768) {
-        // Tablet: 50% - 8px gap
-        itemWidth = containerWidth * 0.5 - 8
-      } else if (window.innerWidth >= 640) {
-        // Small tablet: 45vw
-        itemWidth = window.innerWidth * 0.45
-      } else {
-        // Mobile: 70vw
-        itemWidth = window.innerWidth * 0.7
-      }
-
-      const gap = window.innerWidth >= 768 ? 16 : 16
-      const scrollPosition = activeIndex * (itemWidth + gap)
-
-      container.scrollTo({
-        left: scrollPosition,
-        behavior: "smooth",
-      })
-    }
-  }, [activeIndex])
-
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      const container = scrollRef.current
-      const containerWidth = container.clientWidth
-      let itemWidth
-
-      if (window.innerWidth >= 1024) {
-        itemWidth = containerWidth * 0.25 - 12
-      } else if (window.innerWidth >= 768) {
-        itemWidth = containerWidth * 0.5 - 8
-      } else if (window.innerWidth >= 640) {
-        itemWidth = window.innerWidth * 0.45
-      } else {
-        itemWidth = window.innerWidth * 0.7
-      }
-
-      const gap = 16
-      const scrollLeft = container.scrollLeft
-      const newIndex = Math.round(scrollLeft / (itemWidth + gap))
-
-      if (newIndex !== activeIndex && newIndex >= 0 && newIndex < items.length) {
-        setActiveIndex(newIndex)
-        setIsAutoPlaying(false)
-      }
-    }
-  }
-
-  useEffect(() => {
-    const handleResize = () => {
-      // Recalculate scroll position when screen size changes
-      if (scrollRef.current) {
-        setTimeout(() => {
-          // Use setTimeout to ensure DOM has updated
-          const container = scrollRef.current
-          if (container) {
-            const containerWidth = container.clientWidth
-            let itemWidth
-
-            if (window.innerWidth >= 1024) {
-              itemWidth = containerWidth * 0.25 - 12
-            } else if (window.innerWidth >= 768) {
-              itemWidth = containerWidth * 0.5 - 8
-            } else if (window.innerWidth >= 640) {
-              itemWidth = window.innerWidth * 0.45
-            } else {
-              itemWidth = window.innerWidth * 0.7
-            }
-
-            const gap = 16
-            const scrollPosition = activeIndex * (itemWidth + gap)
-
-            container.scrollTo({
-              left: scrollPosition,
-              behavior: "smooth",
-            })
-          }
-        }, 100)
-      }
-    }
-
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [activeIndex])
+  ];
 
   return (
-    <motion.div style={{ backgroundColor: background }} className="relative  overflow-hidden">
-      {/* Background Particles */}
+    <div className="relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-[700px]">
+      {/* Refined Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-30"
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              scale: [1, 1.5, 1],
-              opacity: [0.3, 0.6, 0.3],
-            }}
-            transition={{
-              duration: 3 + Math.random() * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: Math.random() * 2,
-            }}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
+        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-purple-100/30 to-blue-100/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-48 h-48 bg-gradient-to-br from-pink-100/30 to-orange-100/30 rounded-full blur-2xl"></div>
       </div>
 
-      {/* Header Section */}
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="px-4 mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+      <div className="flex flex-col lg:flex-row items-stretch gap-12 p-8 lg:p-12 min-h-[700px]">
+        {/* Left Side - Services Grid (55%) */}
+        <div className="w-full lg:w-[55%] space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center lg:text-left"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-blue-800 bg-clip-text text-transparent mb-4">
               Explore Services
             </h2>
-            <p className="text-gray-600 mt-1">Discover amazing experiences</p>
-          </div>
+            <p className="text-gray-600 text-xl max-w-md">
+              Curated experiences for every moment
+            </p>
+          </motion.div>
 
-          {/* Auto-play Toggle */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-            className={`p-2 rounded-full transition-all duration-300 ${
-              isAutoPlaying ? "bg-purple-100 text-purple-600" : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            <motion.div
-              animate={{ rotate: isAutoPlaying ? 360 : 0 }}
-              transition={{ duration: 2, repeat: isAutoPlaying ? Infinity : 0, ease: "linear" }}
-            >
-              <Sparkles className="w-5 h-5" />
-            </motion.div>
-          </motion.button>
-        </div>
-      </motion.div>
-
-      {/* Progress Indicators */}
-      <div className="flex justify-center gap-2 mb-6 px-4">
-        {items.map((_, index) => (
-          <motion.button
-            key={index}
-            onClick={() => {
-              setActiveIndex(index)
-              setIsAutoPlaying(false)
-            }}
-            className="relative h-1 bg-gray-200 rounded-full overflow-hidden"
-            style={{ width: index === activeIndex ? "32px" : "16px" }}
-            animate={{ width: index === activeIndex ? "32px" : "16px" }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div
-              className={`h-full bg-gradient-to-r ${items[index].gradient} rounded-full`}
-              initial={{ width: "0%" }}
-              animate={{
-                width: index === activeIndex ? "100%" : "0%",
-                opacity: index === activeIndex ? 1 : 0.5,
-              }}
-              transition={{
-                duration: index === activeIndex && isAutoPlaying ? 4 : 0.3,
-                ease: "linear",
-              }}
-            />
-          </motion.button>
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="flex gap-3 sm:gap-4 px-4 w-full overflow-x-auto flex-nowrap snap-x snap-mandatory no-scrollbar"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {items.map((item, index) => {
-          const Icon = item.icon
-          const isActive = index === activeIndex
-          const isHovered = hoveredIndex === index
-
-          return (
-            <Link
-              key={index}
-              href={item.link}
-              className="min-w-[70vw] sm:min-w-[45vw] md:min-w-[calc(50%-8px)] lg:min-w-[calc(25%-12px)] flex-shrink-0 snap-center"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <motion.div
-                layout
-                whileHover={{
-                  scale: 1.02,
-                  y: -8,
-                  rotateY: 5,
-                }}
-                whileTap={{ scale: 0.98 }}
-                animate={{
-                  scale: isActive ? 1.05 : 1,
-                  y: isActive ? -4 : 0,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 20,
-                  layout: { duration: 0.3 },
-                }}
-                className="h-full relative group cursor-pointer"
-              >
-                {/* Glassmorphism Card */}
-                <div
-                  className={`
-                  relative h-full rounded-3xl overflow-hidden
-                  bg-white/80 backdrop-blur-xl border border-white/20
-                  shadow-xl hover:shadow-2xl transition-all duration-500
-                  ${isActive ? "shadow-purple-200/50" : ""}
-                `}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {items.map((item, index) => {
+              const Icon = item.icon;
+              const isHovered = hoveredIndex === index;
+              return (
+                <Link
+                  key={index}
+                  href={item.link}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  {/* Gradient Border Animation */}
                   <motion.div
-                    className={`absolute inset-0 rounded-3xl bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
-                    animate={{ opacity: isActive ? 0.1 : 0 }}
-                  />
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.03, y: -5 }}
+                    className="h-full relative group cursor-pointer"
+                  >
+                    <div className="relative h-full rounded-3xl overflow-hidden bg-white/90 backdrop-blur-xl border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-500">
+                      <div className="relative w-full h-40 overflow-hidden">
+                        <Image
+                          src={item.img || "/placeholder.svg"}
+                          alt={item.label}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-700"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                        
+                        <motion.div
+                          className="absolute top-4 right-4 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg"
+                          whileHover={{ scale: 1.1, rotate: 5 }}
+                        >
+                          <Icon className={`w-5 h-5 text-${item.color}-600`} />
+                        </motion.div>
+                      </div>
+                      
+                      <div className="p-6">
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">{item.label}</h3>
+                        <p className="text-gray-600 text-sm mb-4">{item.description}</p>
+                        <motion.div
+                          whileHover={{ x: 5 }}
+                          className="flex items-center gap-2 text-purple-600 font-medium"
+                        >
+                          <span>Explore</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
 
-                  {/* Image Section */}
-                  <div className="relative w-full h-32 sm:h-36 md:h-44 lg:h-48 overflow-hidden rounded-t-3xl">
-                    <motion.div
-                      animate={{ scale: isHovered ? 1.1 : 1 }}
-                      transition={{ duration: 0.6, ease: "easeOut" }}
-                      className="w-full h-full"
-                    >
-                      <Image
-                        src={item.img || "/placeholder.svg?height=192&width=300&query=service image"}
-                        alt={item.label}
-                        fill
-                        className="object-cover"
-                      />
-                    </motion.div>
-
-                    {/* Floating Icon */}
-                    <motion.div
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={{
-                        scale: isActive ? 1 : 0.8,
-                        rotate: isActive ? 0 : -90,
-                        y: isHovered ? -5 : 0,
-                      }}
-                      transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                      className={`absolute top-4 right-4 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-white/20`}
-                    >
-                      <Icon className={`w-5 h-5 text-${item.color}-600`} />
-                    </motion.div>
-
-                    {/* Gradient Overlay */}
-                    <motion.div
-                      className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent `}
-                      animate={{ opacity: isHovered ? 1 : 0.6 }}
-                      transition={{ duration: 0.3 }}
+        {/* Right Side - Enhanced Hero (45%) */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="w-full lg:w-[45%] flex flex-col justify-center"
+        >
+          <div className="relative">
+            {/* Main Hero Content */}
+            <div className="relative bg-gradient-to-br from-white/80 to-purple-50/80 backdrop-blur-xl rounded-3xl p-8 lg:p-10 shadow-2xl border border-white/30">
+              
+              {/* Typography */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mb-8"
+              >
+                <h3 className="text-3xl lg:text-4xl xl:text-5xl font-light leading-tight text-gray-800 mb-6">
+                  <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent font-semibold">
+                    Discover hidden gems
+                  </span>{' '}
+                  <span className="text-gray-700">
+                    across categories — from{' '}
+                  </span>
+                  <span className="relative inline-block font-semibold text-gray-900">
+                    hotels
+                    <motion.span 
+                      className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 1, duration: 0.8 }}
                     />
+                  </span>{' '}
+                  <span className="text-gray-700">
+                    to delightful{' '}
+                  </span>
+                  <span className="relative inline-block font-semibold text-gray-900">
+                    concerts
+                    <motion.span 
+                      className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-pink-400 to-blue-400 rounded-full"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 1.2, duration: 0.8 }}
+                    />
+                  </span>
+                  <span className="text-gray-700">.</span>
+                </h3>
+              </motion.div>
 
-                    {/* Sparkle Effects */}
-                    <AnimatePresence>
-                      {isActive && (
-                        <>
-                          {Array.from({ length: 3 }).map((_, i) => (
-                            <motion.div
-                              key={i}
-                              initial={{ scale: 0, opacity: 0 }}
-                              animate={{
-                                scale: [0, 1, 0],
-                                opacity: [0, 1, 0],
-                                x: [0, Math.random() * 40 - 20],
-                                y: [0, Math.random() * 40 - 20],
-                              }}
-                              transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                delay: i * 0.5,
-                                ease: "easeInOut",
-                              }}
-                              className="absolute top-1/2 left-1/2 w-2 h-2"
-                            >
-                              <Sparkles className="w-full h-full text-white" />
-                            </motion.div>
-                          ))}
-                        </>
-                      )}
-                    </AnimatePresence>
+              {/* Feature Highlights */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="space-y-4 mb-8"
+              >
+                <div className="flex items-center gap-3 text-gray-700">
+                  <div className="p-2 rounded-full bg-purple-100">
+                    <MapPin className="w-4 h-4 text-purple-600" />
                   </div>
-
-                  {/* Content Section */}
-                  <div className="p-4 sm:p-5 md:p-6 relative">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-5">
-                      <div className={`w-full h-full bg-gradient-to-br ${item.gradient}`} />
-                    </div>
-
-                    <div className="relative z-10">
-                      {/* Label */}
-                      <motion.h3
-                        animate={{
-                          scale: isActive ? 1.05 : 1,
-                          color: isHovered
-                            ? `rgb(${item.color === "blue" ? "59, 130, 246" : item.color === "purple" ? "147, 51, 234" : item.color === "orange" ? "249, 115, 22" : "34, 197, 94"})`
-                            : "#1f2937",
-                        }}
-                        className="font-bold text-xl md:text-2xl text-gray-900 mb-2 tracking-wide"
-                      >
-                        {item.label}
-                      </motion.h3>
-
-                      {/* Description */}
-                      <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="text-gray-600 text-sm mb-4"
-                      >
-                        {item.description}
-                      </motion.p>
-
-                      {/* Action Button */}
-                      <motion.div
-                        whileHover={{ x: 5 }}
-                        className="flex items-center gap-2 text-gray-700 group-hover:text-purple-600 transition-colors duration-300"
-                      >
-                        <span className="text-sm font-medium">Explore</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </motion.div>
-                    </div>
+                  <span className="font-medium">50+ Cities Worldwide</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-700">
+                  <div className="p-2 rounded-full bg-pink-100">
+                    <Users className="w-4 h-4 text-pink-600" />
                   </div>
-
-                  {/* Hover Glow Effect */}
-                  <motion.div
-                    className={`absolute inset-0 rounded-3xl bg-gradient-to-r ${item.gradient} opacity-0 blur-xl -z-10`}
-                    animate={{ opacity: isHovered ? 0.3 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  <span className="font-medium">Trusted by 100K+ Users</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-700">
+                  <div className="p-2 rounded-full bg-blue-100">
+                    <Clock className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <span className="font-medium">24/7 Customer Support</span>
                 </div>
               </motion.div>
-            </Link>
-          )
-        })}
-      </div>
 
-      {/* Bottom Navigation Hint */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex justify-center mt-6 md:hidden"
-      >
-        <div className="flex items-center gap-2 text-gray-500 text-sm">
-          <span>Swipe to explore</span>
-          <motion.div
-            animate={{ x: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ChevronRight className="w-4 h-4" />
-          </motion.div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
+              {/* Enhanced Image */}
+              
+
+              {/* Stats */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.4 }}
+                className="mt-6 grid grid-cols-3 gap-4 text-center"
+              >
+                <div>
+                  <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">1000+</div>
+                  <div className="text-xs text-gray-600">Experiences</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">50+</div>
+                  <div className="text-xs text-gray-600">Cities</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-red-600 bg-clip-text text-transparent">4.9★</div>
+                  <div className="text-xs text-gray-600">Rating</div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
 }

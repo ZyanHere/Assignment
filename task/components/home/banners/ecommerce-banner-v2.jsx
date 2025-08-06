@@ -2,7 +2,7 @@ import { ShoppingCart, Heart, Zap, Award, Clock, Percent, ArrowRight, Package } 
 
 export default function EcommerceBannerV2() {
   return (
-    <div className="w-full max-w-[1240px] mx-auto h-[200px] bg-gradient-to-r from-emerald-50 via-white to-teal-50 relative overflow-hidden border border-gray-100 shadow-lg">
+    <div className="w-full max-w-[1700px] mx-auto h-[200px] bg-gradient-to-r from-emerald-50 via-white to-teal-50 relative overflow-hidden border border-gray-100 shadow-lg">
       {/* Geometric Background Pattern */}
       <div className="absolute inset-0">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-emerald-100/50 to-transparent rounded-full -translate-y-32 translate-x-32"></div>
@@ -13,7 +13,7 @@ export default function EcommerceBannerV2() {
       {/* Main Content */}
       <div className="relative z-10 h-full flex items-center px-8">
         {/* Left Section - Brand & Hero Message */}
-        <div className="flex-1 max-w-md">
+        <div className="flex-1 ">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-white font-black text-lg">L</span>

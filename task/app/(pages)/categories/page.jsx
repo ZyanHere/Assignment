@@ -5,21 +5,7 @@ import useSWR from "swr"
 import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  Grid3X3,
-  List,
-  Search,
-  Star,
-  TrendingUp,
-  Sparkles,
-  ArrowRight,
-  Heart,
-  ShoppingCart,
-  Eye,
-} from "lucide-react"
+import { ChevronLeft, ChevronRight, Filter, Grid3X3, List, Search, Star, TrendingUp, Sparkles, ArrowRight, Heart, ShoppingCart, Eye, Zap, Gift, Percent } from 'lucide-react'
 import CategoryFooter from "@/components/categories/CategoryFooter"
 import Footer from "@/components/home/footer"
 import Header from "@/components/home/Header"
@@ -33,15 +19,13 @@ import ProductCard from "@/components/subcategoryProduct/ProductCard"
 export default function CategoryPage() {
   const { categories, categoriesLoading, allProducts, allProductsLoading, fetchCategories, fetchAllProducts } =
     useHome()
-
   const [sortOption, setSortOption] = useState("relevance")
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(20)
   const [viewMode, setViewMode] = useState("grid")
   const [hoveredCategory, setHoveredCategory] = useState(null)
-  const [showAllProducts, setShowAllProducts] = useState(false)
 
-  // Randomized products for default view
+  // Randomized products for default view (removed limit)
   const shuffledProducts = useMemo(() => {
     if (!allProducts || !Array.isArray(allProducts)) return []
     const array = [...allProducts]
@@ -51,6 +35,82 @@ export default function CategoryPage() {
     }
     return array
   }, [allProducts])
+
+  // Banner data
+  const banners = [
+    {
+      id: 1,
+      title: "Flash Sale",
+      subtitle: "Up to 70% Off",
+      description: "Limited time offer on electronics",
+      bgColor: "from-red-500 to-pink-500",
+      icon: Zap,
+      image: "/placeholder.svg?height=200&width=300"
+    },
+    {
+      id: 2,
+      title: "New Arrivals",
+      subtitle: "Fresh Collection",
+      description: "Discover the latest trends",
+      bgColor: "from-blue-500 to-cyan-500",
+      icon: Gift,
+      image: "/placeholder.svg?height=200&width=300"
+    },
+    {
+      id: 3,
+      title: "Special Deals",
+      subtitle: "Best Prices",
+      description: "Unbeatable offers just for you",
+      bgColor: "from-green-500 to-emerald-500",
+      icon: Percent,
+      image: "/placeholder.svg?height=200&width=300"
+    },
+  ]
+
+  // Create products with banners injected randomly
+  const productsWithBanners = useMemo(() => {
+    if (!shuffledProducts.length) return []
+    
+    const itemsPerRow = viewMode === "grid" ? 6 : 1
+    const result = []
+    const usedBanners = new Set()
+    
+    for (let i = 0; i < shuffledProducts.length; i += itemsPerRow) {
+      const rowProducts = shuffledProducts.slice(i, i + itemsPerRow)
+      
+      // Randomly decide if this row should have a banner (30% chance)
+      const shouldHaveBanner = Math.random() < 0.3 && usedBanners.size < banners.length
+      
+      if (shouldHaveBanner && viewMode === "grid") {
+        // Choose a random banner that hasn't been used
+        const availableBanners = banners.filter(banner => !usedBanners.has(banner.id))
+        if (availableBanners.length > 0) {
+          const randomBanner = availableBanners[Math.floor(Math.random() * availableBanners.length)]
+          usedBanners.add(randomBanner.id)
+          
+          // Randomly choose left or right position
+          const position = Math.random() < 0.5 ? 'left' : 'right'
+          
+          if (position === 'left') {
+            result.push({ type: 'banner', ...randomBanner, position })
+            result.push(...rowProducts.map(product => ({ type: 'product', ...product })))
+          } else {
+            result.push(...rowProducts.slice(0, -1).map(product => ({ type: 'product', ...product })))
+            result.push({ type: 'banner', ...randomBanner, position })
+            if (rowProducts.length === itemsPerRow) {
+              result.push({ type: 'product', ...rowProducts[rowProducts.length - 1] })
+            }
+          }
+        } else {
+          result.push(...rowProducts.map(product => ({ type: 'product', ...product })))
+        }
+      } else {
+        result.push(...rowProducts.map(product => ({ type: 'product', ...product })))
+      }
+    }
+    
+    return result
+  }, [shuffledProducts, viewMode])
 
   const SORT_PARAM_MAP = {
     relevance: "relevance",
@@ -79,6 +139,7 @@ export default function CategoryPage() {
   const scrollRef = useRef(null)
   const [pageIndex, setPageIndex] = useState(0)
   const [needsScrolling, setNeedsScrolling] = useState(false)
+
   const itemsPerPage = 16
   const pageCount = Math.ceil(categories.length / itemsPerPage)
 
@@ -106,9 +167,9 @@ export default function CategoryPage() {
   const scroll = (direction) => {
     const container = scrollRef.current
     if (!container) return
+
     const width = container.offsetWidth
     const newIndex = direction === "left" ? Math.max(0, pageIndex - 1) : Math.min(pageCount - 1, pageIndex + 1)
-
     container.scrollTo({ left: width * newIndex, behavior: "smooth" })
     setPageIndex(newIndex)
   }
@@ -116,6 +177,7 @@ export default function CategoryPage() {
   const handleScroll = () => {
     const container = scrollRef.current
     if (!container) return
+
     const newIndex = Math.round(container.scrollLeft / container.offsetWidth)
     if (newIndex !== pageIndex) setPageIndex(newIndex)
   }
@@ -169,7 +231,6 @@ export default function CategoryPage() {
                 <p className="text-gray-600 text-sm">Discover amazing products across all categories</p>
               </div>
             </div>
-
             <div className="flex items-center gap-3">
               {/* View Mode Toggle */}
               <div className="flex bg-gray-100 rounded-lg p-1">
@@ -192,7 +253,6 @@ export default function CategoryPage() {
                   <List className="w-4 h-4" />
                 </motion.button>
               </div>
-
               <motion.div whileTap={{ scale: 0.95 }}>
                 <Button
                   variant="outline"
@@ -202,7 +262,6 @@ export default function CategoryPage() {
                   <span className="hidden sm:inline">Filters</span>
                 </Button>
               </motion.div>
-
               <SortSheet
                 onApply={(option, newLimit) => {
                   setSortOption(option)
@@ -315,31 +374,7 @@ export default function CategoryPage() {
         )}
       </motion.section>
 
-      {/* Banner */}
-      {/* <motion.section
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2 }}
-        className="w-full max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 mt-8"
-      >
-        <div className="relative aspect-[3.5/1] w-full rounded-2xl overflow-hidden shadow-2xl">
-          <Image src="/categories/category-bg.png" alt="Category Background" fill className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-center text-white"
-            >
-              <h2 className="text-2xl sm:text-4xl font-bold mb-2">Discover Amazing Deals</h2>
-              <p className="text-sm sm:text-lg opacity-90">Up to 70% off on selected categories</p>
-            </motion.div>
-          </div>
-        </div>
-      </motion.section> */}
-
-      {/* Products */}
+      {/* Products with Integrated Banners */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -356,15 +391,6 @@ export default function CategoryPage() {
               <p className="text-gray-600">Handpicked items just for you</p>
             </div>
           </div>
-
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            onClick={() => setShowAllProducts(true)}
-            className="hidden sm:flex items-center gap-2 text-blue-600 cursor-pointer"
-          >
-            <span className="font-medium">View All</span>
-            <ArrowRight className="w-4 h-4" />
-          </motion.div>
         </div>
 
         {sortOption !== "relevance" ? (
@@ -377,8 +403,8 @@ export default function CategoryPage() {
           )
         ) : allProductsLoading ? (
           <ProductSkeleton />
-        ) : shuffledProducts.length > 0 ? (
-          <ProductGrid products={shuffledProducts.slice(0, showAllProducts ? 40 : 12)} viewMode={viewMode} />
+        ) : productsWithBanners.length > 0 ? (
+          <ProductGridWithBanners items={productsWithBanners} viewMode={viewMode} />
         ) : (
           <NoProducts />
         )}
@@ -395,6 +421,7 @@ export default function CategoryPage() {
               </Button>
             </motion.div>
           </motion.div>
+          
         )}
       </motion.section>
 
@@ -462,6 +489,80 @@ const CategoryItem = ({ category, isHovered, onHover }) => (
   </Link>
 )
 
+const ProductGridWithBanners = ({ items, viewMode }) => (
+  <motion.div
+    layout
+    className={`grid gap-6 ${
+      viewMode === "grid"
+        ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+        : "grid-cols-1 gap-4"
+    }`}
+  >
+    <AnimatePresence>
+      {items.map((item, index) => (
+        <motion.div
+          key={item.type === 'product' ? item._id : `banner-${item.id}`}
+          layout
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ delay: index * 0.02 }}
+          className={`${viewMode === "list" ? "w-full" : ""} ${
+            item.type === 'banner' && viewMode === 'grid' ? 'col-span-2' : ''
+          }`}
+        >
+          {item.type === 'product' ? (
+            <ProductCard product={item} viewMode={viewMode} />
+          ) : (
+            <BannerCard banner={item} />
+          )}
+        </motion.div>
+      ))}
+    </AnimatePresence>
+  </motion.div>
+)
+
+const BannerCard = ({ banner }) => {
+  const IconComponent = banner.icon
+  
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02, y: -5 }}
+      className="relative h-full min-h-[280px] bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 overflow-hidden group cursor-pointer"
+    >
+      {/* Background Gradient */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${banner.bgColor} opacity-10 group-hover:opacity-20 transition-opacity duration-300`} />
+      
+      {/* Content */}
+      <div className="relative z-10 p-6 h-full flex flex-col justify-between">
+        <div>
+          <div className={`w-12 h-12 bg-gradient-to-br ${banner.bgColor} rounded-xl flex items-center justify-center mb-4`}>
+            <IconComponent className="w-6 h-6 text-white" />
+          </div>
+          
+          <h3 className="text-xl font-bold text-gray-900 mb-2">{banner.title}</h3>
+          <p className={`text-lg font-semibold bg-gradient-to-r ${banner.bgColor} bg-clip-text text-transparent mb-3`}>
+            {banner.subtitle}
+          </p>
+          <p className="text-gray-600 text-sm leading-relaxed">{banner.description}</p>
+        </div>
+        
+        <motion.div
+          whileHover={{ x: 5 }}
+          className="flex items-center gap-2 text-gray-700 font-medium mt-4"
+        >
+          <span>Explore Now</span>
+          <ArrowRight className="w-4 h-4" />
+        </motion.div>
+      </div>
+      
+      {/* Decorative Elements */}
+      <div className="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl" />
+      <div className="absolute bottom-4 left-4 w-16 h-16 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-lg" />
+    </motion.div>
+  )
+}
+
 const ProductGrid = ({ products, viewMode }) => (
   <motion.div
     layout
@@ -488,97 +589,6 @@ const ProductGrid = ({ products, viewMode }) => (
     </AnimatePresence>
   </motion.div>
 )
-
-const EnhancedProductCard = ({ product, viewMode }) => {
-  const [isHovered, setIsHovered] = useState(false)
-
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className={`relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl transition-all duration-300 ${
-        viewMode === "list" ? "flex gap-4 p-4" : "flex flex-col"
-      }`}
-    >
-      {/* Product Image */}
-      <div
-        className={`relative ${viewMode === "list" ? "w-32 h-32 flex-shrink-0" : "aspect-square"} overflow-hidden ${viewMode === "grid" ? "rounded-t-2xl" : "rounded-xl"}`}
-      >
-        <Image
-          src={product.images?.[0]?.url || "/placeholder.svg?height=200&width=200&query=product"}
-          alt={product.name}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-110"
-        />
-
-        {/* Overlay Actions */}
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2"
-            >
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition-colors"
-              >
-                <Eye className="w-5 h-5 text-gray-700" />
-              </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition-colors"
-              >
-                <Heart className="w-5 h-5 text-gray-700" />
-              </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
-              >
-                <ShoppingCart className="w-5 h-5 text-white" />
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Discount Badge */}
-        {product.discount && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-            -{product.discount}%
-          </div>
-        )}
-      </div>
-
-      {/* Product Info */}
-      <div className={`${viewMode === "grid" ? "p-4" : "flex-1"}`}>
-        <h4 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">{product.name}</h4>
-
-        {product.rating && (
-          <div className="flex items-center gap-1 mb-2">
-            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm text-gray-600">
-              {typeof product.rating === "object"
-                ? product.rating.average || product.rating.count || "0"
-                : product.rating}
-            </span>
-            {typeof product.rating === "object" && product.rating.count && (
-              <span className="text-xs text-gray-400">({product.rating.count})</span>
-            )}
-          </div>
-        )}
-
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-gray-900">₹{product.price?.toLocaleString() || "N/A"}</span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-sm text-gray-400 line-through">₹{product.originalPrice.toLocaleString()}</span>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  )
-}
 
 const ProductSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">

@@ -35,14 +35,7 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
 
   return (
     <main className="space-y-6 md:space-y-8">
-      <section className="p-4 md:p-2">
-        <FourSec />
-      </section>
 
-      {/* Woman with Groceries Section - placed above Top Brands */}
-      <WomanWithGroceries />
-
-      {/* Top Brands/Last Minute Deal section */}
       <div className="px-0 md:pl-6 w-full mt-5">
         <section>
           <h2 className="text-lg md:text-xl font-semibold mb-3 text-black">
@@ -51,6 +44,16 @@ const AllTabContentRedux = ({ products = [], loading = false }) => {
           <BrandCarousel data={featuredProducts} loading={loading} />
         </section>
       </div>
+      
+      <section className="p-4 md:p-2">
+        <FourSec />
+      </section>
+
+      {/* Woman with Groceries Section - placed above Top Brands */}
+      {/* <WomanWithGroceries /> */}
+
+      {/* Top Brands/Last Minute Deal section */}
+      
 
       <FestBanner images={offerImages} />;
       <Component />

@@ -2,7 +2,7 @@ import { ShoppingBag, Star, Truck, Shield, Users, TrendingUp, Gift, Sparkles, Ta
 
 export default function EcommerceBannerV3() {
   return (
-    <div className="w-full max-w-[1240px] mx-auto h-[200px] bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 relative overflow-hidden shadow-2xl">
+    <div className="w-full max-w-[1700px] mx-auto h-[200px] bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 relative overflow-hidden shadow-2xl">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0">
         {/* Animated Shapes */}
