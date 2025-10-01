@@ -4,10 +4,9 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/home/Header";
-import MovieVariant from "@/components/home/foursec/movie/movieVariant";
 import { useMoviesSWR } from "@/lib/hooks/useMoviesSWR";
 import { useProduct } from "@/lib/contexts/productContext";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelectedItems } from "@/lib/contexts/selected-items-context";
 import { useSession } from "next-auth/react";
 import { useCart } from "@/lib/contexts/cart-context";
@@ -25,230 +24,249 @@ const fallbackSeatVariants = [
 
 export default function MovieDetailPage() {
   const { id } = useParams();
-  const { data, isLoading, isError, error } = useMoviesSWR({ moviesOnly: true, productsLimit: 100 });
-  const { selectedVariant, setSelectedProduct, setSelectedVariant } = useProduct();
+  const { data, isLoading, isError, error } = useMoviesSWR({
+    moviesOnly: true,
+    productsLimit: 100,
+  });
+  const [movieDoc, setMovieDoc] = useState(null);
+  const [movieLoading, setMovieLoading] = useState(true);
+  const [theaters, setTheaters] = useState([]);
+  const [showtimes, setShowtimes] = useState([]);
+  const [selectedShow, setSelectedShow] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const d = new Date();
+    return d.toISOString().slice(0, 10);
+  });
+
+  const next7Days = useMemo(() => {
+    const days = [];
+    const base = new Date();
+    for (let i = 0; i < 7; i += 1) {
+      const d = new Date(base);
+      d.setDate(base.getDate() + i);
+      days.push({
+        key: d.toISOString().slice(0, 10),
+        label: d.toLocaleDateString(undefined, { weekday: "short" }),
+        dateNum: d.getDate(),
+        month: d.toLocaleDateString(undefined, { month: "short" }),
+      });
+    }
+    return days;
+  }, []);
+
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    (typeof window !== "undefined"
+      ? window.location.origin.includes("localhost")
+        ? "http://localhost:4000"
+        : window.location.origin
+      : "http://localhost:4000");
+  const API = (p) => `${API_BASE}/lmd/api/v1${p}`;
+
+  // Fetch Movie
+  useEffect(() => {
+    const fetchMovie = async () => {
+      if (!id) return;
+      try {
+        setMovieLoading(true);
+        const r = await fetch(API(`/movies/movies/${id}`));
+        const d = await r.json();
+        if (r.ok && (d?.success || d?.status === "success")) {
+          setMovieDoc(d.data);
+        }
+      } finally {
+        setMovieLoading(false);
+      }
+    };
+    fetchMovie();
+  }, [id]);
+
+  // Fetch Showtimes
+  useEffect(() => {
+    const fetchTheatersAndShowtimes = async () => {
+      try {
+        const r = await fetch(
+          API(`/movies/showtimes/movie/${id}?date=${selectedDate}`)
+        );
+        const d = await r.json();
+        if (r.ok && (d?.success || d?.status === "success")) {
+          setTheaters(d.data.map((g) => g.theater));
+          setShowtimes(d.data);
+        }
+      } catch {}
+    };
+    if (id) fetchTheatersAndShowtimes();
+  }, [id, selectedDate]);
+
+  const { selectedVariant } = useProduct();
   const { addToCart, clearCart } = useCart();
-  const [loading, setLoading] = useState(false);
-  const [grabLoading, setGrabLoading] = useState(false);
   const { setSingleItem, setSelectedItems } = useSelectedItems();
   const { data: session } = useSession();
   const router = useRouter();
+  const [grabLoading, setGrabLoading] = useState(false);
 
-  if (isLoading) {
-    return (
-      <div className="p-6 text-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto"></div>
-        <p>Loading movie details...</p>
-      </div>
-    );
-  }
-  if (isError || !data) {
-    return (
-      <div className="p-6 text-red-500">
-        {error?.message || "Failed to load movie details."}
-      </div>
-    );
-  }
+  const swrMovie = data?.all?.find((m) => String(m.id) === String(id));
+  const movie =
+    swrMovie ||
+    (movieDoc
+      ? {
+          id: movieDoc._id,
+          title: movieDoc.title,
+          poster: movieDoc.posterImage,
+          description: movieDoc.description,
+          genre: movieDoc.genre,
+          language: movieDoc.language,
+          releaseDate: movieDoc.releaseDate,
+          duration: movieDoc.duration,
+          raw: {},
+        }
+      : showtimes?.length
+      ? { id, title: "Movie", poster: "", description: "", raw: {} }
+      : null);
 
-  const movie = data.all.find((m) => m.id === id);
   if (!movie) {
+    if (isLoading || movieLoading) {
+      return (
+        <div className="p-6 text-center text-white">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto"></div>
+          <p>Loading movie details...</p>
+        </div>
+      );
+    }
+    if (isError) {
+      return (
+        <div className="p-6 text-red-500">
+          {error?.message || "Failed to load movie details."}
+        </div>
+      );
+    }
     return <div className="p-6 text-gray-500">Movie not found.</div>;
   }
 
-  const selectedProduct = movie;
-
-  // console.log('Selected Product', movie);
-  // Prepare variants
-  const seatVariants = movie.variants.length
-    ? movie.variants.map((v) => ({
-      type: v.name,
-      price: v.price.sale,
-      seatsLeft: v.stock.available,
-    }))
-    : fallbackSeatVariants;
-
-  // original design used movie.desc[0] for details; we'll use raw fields if present
-  const details = movie.raw?.desc?.[0] || {
-    image: movie.poster,
-    duration: movie.raw?.duration || "N/A",
-    location: movie.location || "N/A",
-    seatsLeft: seatVariants.reduce((sum, s) => sum + s.seatsLeft, 0),
+  const details = {
+    image: movie.poster || movieDoc?.posterImage,
+    duration:
+      movie.duration ||
+      movie.raw?.duration ||
+      "N/A",
+    seatsLeft:
+      fallbackSeatVariants.reduce((sum, s) => sum + s.seatsLeft, 0),
     ageLimit: movie.raw?.ageLimit || "N/A",
     description: movie.description,
   };
 
-  const variantData = movie?.variants ?? fallbackSeatVariants;
-
-  // console.log('Variant Data', variantData);
-
-  // console.log('Movie variants', movie.variants);
-  console.log("Selected Variant", selectedVariant);
-
-  const handleGrab = async () => {
-    if (!session?.user?.token) {
-      toast.error('Please login to grab this item');
-      return;
-    }
-
-    if (selectedVariant) {
-      try {
-        setGrabLoading(true);
-
-        // Clear existing cart first
-        await clearCart();
-
-        // Add only this product to cart
-        await addToCart({
-          id: selectedVariant.id,
-          variant: selectedVariant,
-          selectedVariant,
-          price: selectedVariant.price.base,
-          sale_price: selectedVariant.price.sale,
-          stock: selectedVariant.stock.qty,
-          sku: selectedVariant.sku || 'N/A',
-        });
-
-        // Also populate selectedItems context for buy-now page
-        const cartItemData = [{
-          id: selectedVariant.id,
-          variantId: selectedVariant.id,
-          name: selectedVariant.name,
-          brand: selectedProduct.raw?.brand || 'Last Minute Deal',
-          seller: selectedProduct.raw.vendor_store_id?.store_name || 'Last Minute Deal',
-          vendorId: selectedProduct.raw.vendor_store_id?._id || 'default',
-          vendorName: selectedProduct.raw.vendor_store_id?.store_name || 'Last Minute Deal',
-          price: selectedVariant.price.sale,
-          mrp: selectedVariant.price.base,
-          image: selectedProduct.raw.images[0].url,
-          weight: selectedVariant.name,
-          quantity: 1,
-        }];
-
-        setSelectedItems(cartItemData);
-        setSingleItem(false); // This is from cart, not single item
-
-        // Add a small delay to ensure cart is updated
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        toast.success('Item grabbed successfully!');
-
-        // Navigate to buy-now page
-        router.push('/buy-now');
-      } catch (error) {
-        console.error('Error grabbing item:', error);
-        toast.error('Failed to grab item. Please try again.');
-      } finally {
-        setGrabLoading(false);
-      }
-    } else {
-      toast.error('No variant selected');
-    }
-  }
-
-
   return (
-    <div className="flex-1 bg-white">
+    <div className="flex-1 bg-black text-white min-h-screen">
       <Header />
-      <div className="p-4 sm:p-6 max-w-[95%] lg:max-w-6xl mx-auto">
-        {/* Breadcrumb */}
-        <nav className="text-sm sm:text-lg lg:text-2xl mb-1 sm:mb-2 mt-2 sm:mt-4">
-          <Link href="/" className="text-gray-500">Home</Link> &gt;{" "}
-          <Link href="/home/movie" className="text-gray-500">Movies</Link> &gt;{" "}
-          <span className="text-yellow-500 font-semibold">{movie.title}</span>
-        </nav>
 
-        {/* Banner Image */}
-        <div className="relative w-full h-[180px] sm:h-[260px] md:h-[340px] lg:h-[420px] xl:h-[480px] rounded-lg sm:rounded-2xl overflow-hidden mb-2 sm:mb-3">
+      {/* Hero Section */}
+      <div className="relative w-full h-[400px] md:h-[550px]">
+        <Image
+          src={details.image}
+          alt={movie.title}
+          fill
+          className="object-cover brightness-50"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+
+        <div className="absolute bottom-6 left-6 flex items-center gap-6">
           <Image
             src={details.image}
             alt={movie.title}
-            fill
-            className="object-contain bg-white"
-            priority
+            width={140}
+            height={200}
+            className="rounded-xl shadow-lg border border-gray-800"
           />
+          <div>
+            <h1 className="text-3xl md:text-5xl font-bold">{movie.title}</h1>
+            <p className="text-gray-300">
+              {movie.genre?.join(", ")} • {movie.language || "N/A"}
+            </p>
+            <p className="text-gray-400 text-sm">
+              {details.duration} • {details.ageLimit} •{" "}
+              {movie.releaseDate
+                ? new Date(movie.releaseDate).toLocaleDateString()
+                : "TBA"}
+            </p>
+          </div>
         </div>
+      </div>
 
-        {/* Movie Details */}
-        <div>
-          {/* Title */}
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold uppercase mb-3 sm:mb-4 mt-1 sm:mt-2">
-            {movie.title}
-          </h1>
+      {/* Date Selector */}
+      <div className="sticky top-0 bg-black z-10 px-4 py-3 overflow-x-auto flex gap-3 border-b border-gray-800">
+        {next7Days.map((d) => (
+          <button
+            key={d.key}
+            onClick={() => setSelectedDate(d.key)}
+            className={`flex flex-col items-center px-4 py-2 rounded-full border transition-all ${
+              selectedDate === d.key
+                ? "bg-yellow-400 text-black border-yellow-500 font-bold"
+                : "bg-black text-gray-300 border-gray-600 hover:bg-gray-800"
+            }`}
+          >
+            <span className="text-xs">{d.label}</span>
+            <span className="text-lg">{d.dateNum}</span>
+          </button>
+        ))}
+      </div>
 
-          {/* Info Grid */}
-          <div className="bg-gray-100 p-4 sm:p-6 rounded-lg sm:rounded-xl mb-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base lg:text-lg">
-              <div className="flex items-center gap-2">
-                <span>🗓</span>
-                <span className="font-semibold">{movie.date || "TBA"}</span>
+      {/* Showtimes */}
+      <div className="p-6 space-y-6">
+        {showtimes.length === 0 ? (
+          <p className="text-gray-500">
+            No showtimes for the selected date.
+          </p>
+        ) : (
+          showtimes.map((group) => (
+            <div
+              key={group.theater?._id}
+              className="bg-gray-900 border border-gray-800 rounded-xl shadow-lg p-5"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold">
+                    {group.theater?.name}
+                  </h2>
+                  <p className="text-gray-500 text-sm">
+                    {group.theater?.address?.city}
+                  </p>
+                </div>
+                <Button
+                  variant="link"
+                  className="text-yellow-400 hover:text-yellow-500 text-sm mt-2 sm:mt-0"
+                >
+                  View on Map
+                </Button>
               </div>
-              <div className="flex items-center gap-2">
-                <span>⏰</span>
-                <span className="font-semibold">Duration - {details.duration}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>📍</span>
-                <span className="font-semibold">{details.location}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>⏰</span>
-                <span className="font-semibold">Show Time - {movie.time || "TBA"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>💺</span>
-                <span className="font-semibold">{details.seatsLeft} seats left</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>🔞</span>
-                <span className="font-semibold">Age Limit - {details.ageLimit}</span>
+
+              <div className="flex flex-wrap gap-3">
+                {group.shows.map((s) => (
+                  <button
+                    key={s._id}
+                    onClick={() =>
+                      (window.location.href = `/home/movie/show/${s._id}`)
+                    }
+                    className="px-4 py-2 rounded-full border border-gray-700 bg-black hover:bg-gray-800 text-sm font-medium"
+                  >
+                    {new Date(s.startTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
+          ))
+        )}
+      </div>
 
-          {/* About Section */}
-          <section className="mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">
-              ABOUT THE MOVIE
-            </h2>
-            <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-              {details.description}
-            </p>
-          </section>
-
-          {/* Variant Options */}
-          {/* <MovieVariant seatVariants={seatVariants} /> */}
-          <MovieVariant seatVariants={variantData} />
-
-          {/* Terms & Conditions */}
-          <div className="p-4 sm:p-6 shadow-lg sm:shadow-2xl rounded-lg sm:rounded-xl mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-8">
-              TERMS & CONDITIONS
-            </h2>
-            <ul className="list-disc pl-4 sm:pl-6 space-y-2 text-sm sm:text-base">
-              <li>Registration is required to attend the Movie</li>
-              <li>All fees (if applicable) must be paid in full before the event date</li>
-              <li>Tickets are non-refundable, except as stated in our refund policy</li>
-              <li>Participants must follow all Event rules, schedules, and instructions</li>
-            </ul>
-          </div>
-
-          {/* Grab Deal Button */}
-          <Button className="w-full h-12 py-3 sm:py-4 bg-yellow-400 text-black font-bold rounded-lg sm:rounded-xl hover:bg-yellow-500 transition-colors text-sm sm:text-base lg:text-lg"
-            onClick={handleGrab}
-            disabled={grabLoading}
-          >
-            {grabLoading ? (
-              <div className="flex items-center gap-2">
-                <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-white" />
-                <span>Grabbing...</span>
-              </div>
-            ) : (
-              `GRAB DEAL${selectedVariant ? ` - ₹${selectedVariant.price?.sale ?? 0}` : ''}`
-            )}
-
-          </Button>
-
-        </div>
+      {/* About */}
+      <div className="px-6 py-8 border-t border-gray-800">
+        <h2 className="text-2xl font-bold mb-4">About the Movie</h2>
+        <p className="text-gray-400 leading-relaxed">
+          {details.description}
+        </p>
       </div>
     </div>
   );

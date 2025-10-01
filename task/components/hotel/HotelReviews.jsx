@@ -1,85 +1,159 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getReviews, likeReview, unlikeReview } from '@/lib/api/review';
 import { Star, ThumbsUp, MessageCircle, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 
-const HotelReviews = ({ 
-  reviews = [], 
-  averageRating = 0, 
-  totalReviews = 0,
-  showAll = false,
-  maxDisplay = 5 
-}) => {
+const HotelReviews = ({ productId, variantId }) => {
+  const [reviews, setReviews] = useState([]);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
+  const [ratingDistribution, setRatingDistribution] = useState({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
 
-  // Filter reviews based on rating
-  const filteredReviews = reviews.filter(review => {
-    if (selectedFilter === 'all') return true;
-    if (selectedFilter === '5') return review.rating === 5;
-    if (selectedFilter === '4') return review.rating === 4;
-    if (selectedFilter === '3') return review.rating === 3;
-    if (selectedFilter === '2') return review.rating === 2;
-    if (selectedFilter === '1') return review.rating === 1;
-    return true;
-  });
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!productId) {
+        setIsLoading(false);
+        return;
+      }
 
-  // Sort reviews
-  const sortedReviews = [...filteredReviews].sort((a, b) => {
-    if (sortBy === 'newest') return new Date(b.date) - new Date(a.date);
-    if (sortBy === 'oldest') return new Date(a.date) - new Date(b.date);
-    if (sortBy === 'highest') return b.rating - a.rating;
-    if (sortBy === 'lowest') return a.rating - b.rating;
-    return 0;
-  });
+      setIsLoading(true);
+      try {
+        const params = { product_id: productId, sort: sortBy };
+        if (variantId) params.variant_id = variantId;
+        if (selectedFilter !== 'all') params.stars = selectedFilter;
 
-  const displayReviews = showAll ? sortedReviews : sortedReviews.slice(0, maxDisplay);
+        const result = await getReviews(params);
+
+        if (result.status === 'success') {
+          const reviewsWithLikeState = result.data.reviews.map(r => ({ ...r, likedByCurrentUser: false }));
+          setReviews(reviewsWithLikeState);
+          setTotalReviews(result.results);
+
+          if (result.results > 0) {
+            const allReviewsResult = await getReviews({ product_id: productId });
+            if (allReviewsResult.status === 'success' && allReviewsResult.results > 0) {
+              const totalStars = allReviewsResult.data.reviews.reduce((sum, r) => sum + r.stars, 0);
+              const allReviewsCount = allReviewsResult.results;
+              setAverageRating(allReviewsCount > 0 ? totalStars / allReviewsCount : 0);
+
+              const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+              allReviewsResult.data.reviews.forEach(review => {
+                if (distribution[review.stars] !== undefined) {
+                  distribution[review.stars]++;
+                }
+              });
+              setRatingDistribution(distribution);
+            }
+          } else {
+            setAverageRating(0);
+            setRatingDistribution({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch reviews from component:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [productId, variantId, selectedFilter, sortBy]);
+
+  const mappedReviews = reviews.map(review => ({
+    id: review._id,
+    rating: review.stars,
+    comment: review.content,
+    date: review.createdAt,
+    helpful: review.like_count,
+    likedByCurrentUser: review.likedByCurrentUser,
+    user: {
+      name: review.customer_id?.userName || 'Anonymous',
+      avatar: review.customer_id?.avatar,
+    },
+    reply: review.reply,
+  }));
+
+  const handleLikeToggle = async (reviewId, isCurrentlyLiked) => {
+    const originalReviews = [...reviews];
+    try {
+      setReviews(currentReviews =>
+        currentReviews.map(review =>
+          review._id === reviewId
+            ? {
+              ...review,
+              like_count: isCurrentlyLiked ? review.like_count - 1 : review.like_count + 1,
+              likedByCurrentUser: !isCurrentlyLiked,
+            }
+            : review
+        )
+      );
+
+      if (isCurrentlyLiked) {
+        await unlikeReview(reviewId);
+      } else {
+        await likeReview(reviewId);
+      }
+
+    } catch (error) {
+      console.error("Failed to toggle like from component:", error);
+      setReviews(originalReviews);
+    }
+  };
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${
-          i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-        }`}
+        className={`h-4 w-4 ${i < Math.round(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+          }`}
       />
     ));
   };
 
-  const getRatingDistribution = () => {
-    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    reviews.forEach(review => {
-      distribution[review.rating]++;
-    });
-    return distribution;
-  };
-
-  const ratingDistribution = getRatingDistribution();
-
   const getRatingPercentage = (rating) => {
-    if (totalReviews === 0) return 0;
-    return Math.round((ratingDistribution[rating] / totalReviews) * 100);
+    const allReviewsCount = Object.values(ratingDistribution).reduce((a, b) => a + b, 0);
+    if (allReviewsCount === 0) return 0;
+    return Math.round((ratingDistribution[rating] / allReviewsCount) * 100);
   };
 
-  if (reviews.length === 0) {
+  if (isLoading) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-yellow-400" />
-            Reviews
+            <Star className="h-5 w-5 text-yellow-400" /> Reviews
+          </CardTitle>
+        </CardHeader>
+        <CardContent><div className="text-center py-8">Loading...</div></CardContent>
+      </Card>
+    );
+  }
+
+  const allReviewsCount = Object.values(ratingDistribution).reduce((a, b) => a + b, 0);
+
+  if (allReviewsCount === 0 && !isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Star className="h-5 w-5 text-yellow-400" /> Reviews
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <MessageCircle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">No reviews yet</p>
-            <p className="text-sm text-gray-400">Be the first to review this hotel!</p>
+            <p className="text-sm text-gray-400">Be the first to review this product!</p>
           </div>
         </CardContent>
       </Card>
@@ -91,24 +165,18 @@ const HotelReviews = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Star className="h-5 w-5 text-yellow-400" />
-          Reviews ({totalReviews})
+          Reviews ({allReviewsCount})
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Overall Rating Summary */}
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Average Rating */}
           <div className="flex items-center gap-4">
             <div className="text-center">
               <div className="text-3xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
-              <div className="flex justify-center mt-1">
-                {renderStars(Math.round(averageRating))}
-              </div>
+              <div className="flex justify-center mt-1">{renderStars(averageRating)}</div>
               <div className="text-sm text-gray-600 mt-1">out of 5</div>
             </div>
           </div>
-
-          {/* Rating Distribution */}
           <div className="flex-1">
             <div className="space-y-2">
               {[5, 4, 3, 2, 1].map((rating) => (
@@ -120,16 +188,12 @@ const HotelReviews = ({
                       style={{ width: `${getRatingPercentage(rating)}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-600 w-12">
-                    {ratingDistribution[rating]}
-                  </span>
+                  <span className="text-sm text-gray-600 w-12">{ratingDistribution[rating]}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
-
-        {/* Filter and Sort Controls */}
         <div className="flex flex-wrap gap-2">
           <Button
             variant={selectedFilter === 'all' ? 'default' : 'outline'}
@@ -149,7 +213,6 @@ const HotelReviews = ({
             </Button>
           ))}
         </div>
-
         <div className="flex justify-end">
           <select
             value={sortBy}
@@ -160,47 +223,36 @@ const HotelReviews = ({
             <option value="oldest">Oldest First</option>
             <option value="highest">Highest Rated</option>
             <option value="lowest">Lowest Rated</option>
+            <option value="helpful">Most Helpful</option>
           </select>
         </div>
-
-        {/* Reviews List */}
         <div className="space-y-4">
-          {displayReviews.map((review) => (
+          {mappedReviews.map((review) => (
             <div key={review.id} className="border-b pb-4 last:border-b-0">
               <div className="flex items-start gap-4">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={review.user?.avatar} />
-                  <AvatarFallback>
-                    {review.user?.name?.charAt(0) || 'U'}
-                  </AvatarFallback>
+                  <AvatarFallback>{review.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                 </Avatar>
-                
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="font-medium">{review.user?.name || 'Anonymous'}</span>
-                    <div className="flex">
-                      {renderStars(review.rating)}
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {review.rating}.0
-                    </Badge>
+                    <div className="flex">{renderStars(review.rating)}</div>
+                    <Badge variant="outline" className="text-xs">{review.rating.toFixed(1)}</Badge>
                   </div>
-                  
                   <p className="text-gray-700 mb-2">{review.comment}</p>
-                  
                   <div className="flex items-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {format(new Date(review.date), 'MMM dd, yyyy')}
                     </div>
-                    {review.helpful && (
-                      <div className="flex items-center gap-1">
-                        <ThumbsUp className="h-3 w-3" />
+                    {review.helpful > 0 && (
+                      <div className="flex items-center gap-1 cursor-pointer" onClick={() => handleLikeToggle(review.id, review.likedByCurrentUser)}>
+                        <ThumbsUp className={`h-3 w-3 ${review.likedByCurrentUser ? 'text-blue-500 fill-current' : ''}`} />
                         {review.helpful} found this helpful
                       </div>
                     )}
                   </div>
-                  
                   {review.reply && (
                     <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center gap-2 mb-1">
@@ -215,18 +267,9 @@ const HotelReviews = ({
             </div>
           ))}
         </div>
-
-        {/* Show More Button */}
-        {!showAll && sortedReviews.length > maxDisplay && (
-          <div className="text-center pt-4">
-            <Button variant="outline">
-              Show All {totalReviews} Reviews
-            </Button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
 };
 
-export default HotelReviews; 
+export default HotelReviews;

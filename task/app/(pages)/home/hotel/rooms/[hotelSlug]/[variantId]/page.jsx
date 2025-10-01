@@ -535,7 +535,7 @@ export default function RoomDetailsPage() {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
             priority
           />
-          <div className="absolute inset-0 bg-black bg-opacity-20" />
+
           
           {/* Image Gallery Badge */}
           {roomImages.length > 1 && (
